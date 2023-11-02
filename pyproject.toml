@@ -1,21 +1,19 @@
 [build-system]
-requires = [
-    "hatchling",
-    "hatch-gradle-version>=0.8.0",
-]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 # project metadata
 
 [project]
 name = "hexdoc"
+version = "1!0.1.0"
 description = "Python web book docgen for Patchouli and Hex Casting."
 authors = [
     { name="object-Object" },
     { name="Alwinfy" },
 ]
-readme = "doc/README.md"
-license = { file = "doc/LICENSE.txt" }
+readme = "README.md"
+license = { file = "LICENSE" }
 keywords = [
     "hexdoc",
 ]
@@ -51,7 +49,6 @@ dependencies = [
     "ordered-set~=4.1",
     "minecraft-render~=2.0a",
 ]
-dynamic = ["version"]
 
 [project.optional-dependencies]
 test = [
@@ -67,33 +64,17 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://object-object.github.io/HexMod/" # TODO: replace
-Source = "https://github.com/object-Object/HexMod/tree/docgen-2-1.20/doc" # TODO: replace
-
-# Gradle version/deps
-
-[tool.hatch.version]
-scheme = "gradle"
-source = "gradle-properties"
-py-path = "doc/src/hexdoc/__version__.py"
-
-# project structure
-
-[tool.hatch.build]
-artifacts = [
-    "/doc/src/hexdoc/_export/generated",
-    "/doc/src/hexdoc/__gradle_version__.py",
-]
+Homepage = "https://object-object.github.io/HexMod/" # TODO: replace?
+Source = "https://github.com/object-Object/hexdoc"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
-    "doc/src/hexdoc",
-    "gradle.properties",
+    "src/hexdoc",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "doc/src/hexdoc",
+    "src/hexdoc",
 ]
 
 [project.scripts]
@@ -102,7 +83,6 @@ hexdoc = "hexdoc.cli.main:app"
 # hexdoc
 
 [project.entry-points.hexdoc]
-hexcasting = "hexdoc.hexcasting._hooks:HexcastingPlugin"
 minecraft = "hexdoc.minecraft._hooks:MinecraftPlugin"
 patchouli = "hexdoc.patchouli._hooks:PatchouliPlugin"
 
@@ -111,41 +91,35 @@ patchouli = "hexdoc.patchouli._hooks:PatchouliPlugin"
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
 markers = ["template"]
-testpaths = ["doc/test"]
+testpaths = ["test"]
 
 [tool.coverage.report]
 include_namespace_packages = true
 
-# formatting and linting
+# formatting
 
 [tool.isort]
 profile = "black"
 combine_as_imports = true
 known_first_party = ["hexdoc"]
 
+# type checking
+
 [tool.pyright]
 pythonVersion = "3.11"
 pythonPlatform = "All"
 
-include = [
-    "doc/src",
-    "doc/test",
-]
-extraPaths = [
-    "doc/src",
-    "doc/test",
-]
 exclude = [
-    "doc/{{cookiecutter.directory}}",
+    "venv",
+    "**/.*",
+    "**/node_modules",
+    "**/__pycache__",
+    "{{cookiecutter.output_directory}}",
 ]
 
-enableExperimentalFeatures = true
-
-# mostly we use strict mode
-# but pyright doesn't allow decreasing error severity in strict mode
-# so we need to manually specify all of the strict mode overrides so we can do that :/
 typeCheckingMode = "basic"
 
+enableExperimentalFeatures = true
 strictDictionaryInference = true
 strictListInference = true
 strictSetInference = true

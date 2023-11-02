@@ -1,48 +1,76 @@
-# Hex Casting
+# hexdoc
 
-[Curseforge](https://www.curseforge.com/minecraft/mc-mods/hexcasting) | [Modrinth](https://modrinth.com/mod/hex-casting)
-| [Source](https://github.com/gamma-delta/HexMod)
+This is the Python docgen for Hex Casting.
 
-A minecraft mod about casting Hexes, powerful and programmable magical effects, inspired by PSI.
+## Version scheme
 
-[Curseforge Link](https://www.curseforge.com/minecraft/mc-mods/hexcasting)
+We use [hatch-gradle-version](https://pypi.org/project/hatch-gradle-version) to generate the version number based on whichever mod version the docgen was built with.
 
-On Forge, this mod requires:
+The version is in this format: `mod-version.python-version.mod-pre.python-dev.python-post`
 
-- PAUCAL
-- Patchouli
-- Kotlin for Forge
-- Caelus elytra api
+For example:
+* Mod version: `0.11.1-7`
+* Python package version: `1.0.dev0`
+* Full version: `0.11.1.1.0rc7.dev0`
 
-On Fabric, it requires:
+## Creating a plugin / addon
 
-- PAUCAL
-- Patchouli
-- Fabric Language Kotlin
-- Cardinal Components
-- ClothConfig and ModMenu
+WIP.
 
-- [Read the documentation online here!](https://gamma-delta.github.io/HexMod/)
-- [Discord link](https://discord.gg/4xxHGYteWk)
+- Run these commands, then follow the prompts:
+  ```sh
+  pip3 install cruft
+  cruft create gh:object-Object/hexdoc --directory doc
+  ```
+  - `--directory doc` tells Cookiecutter to look for a template in the `doc` directory of hexdoc, and cannot be omitted.
+  - If you run this from within an existing mod repo, add the flag `-f`, and leave the `output_directory` option blank when prompted by Cookiecutter.
+    - Note: this currently overwrites any conflicting files, including your .gitignore, so you may need to use your Git history to re-add anything not covered by the new file.
+- Fill in the TODOs in `doc/properties.toml` (mostly paths to files/folders in your mod so hexdoc can find the data it needs).
+- Try running the docgen locally by following the instructions in `doc/README.md`.
+- If it doesn't already exist, create an empty `gh-pages` branch and push it.
+- On GitHub, under `Settings > Pages`, set the source to `Deploy from a branch`, the branch to `gh-pages`, and the folder to `docs/`.
+- Commit and push the docgen, and see if the CI works.
+- On GitHub, under `Settings > Environments`, create two new environments called `pypi` and `testpypi`.
+- Follow these instructions for PyPI and TestPyPI: https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/
+  - TestPyPI is a duplicate of PyPI which can be used for testing package publishing without affecting the real index. The CI workflow includes a manual execution option to publish to TestPyPI.
+  - If you like to live dangerously, this step is optional - you can remove the `publish-testpypi` job and the `TestPyPI` release choice from your workflow without impacting the rest of the CI.
 
-## The Branches
+### Updating to the latest Cookiecutter template
 
-We are currently developing Hexcasting v1.x for 1.19.2, on the `main` branch.
+Run this command: `cruft update`
 
-The 0.9.x versions, for 1.18.2, are in long-term support. We probably won't be adding any new features, but we will try
-to fix bugs. Those are on the `1.18` branch.
+See also: https://cruft.github.io/cruft/#updating-a-project
 
-The `gh-pages` branch is for the online Hex book.
+## Setup
 
-Other branches are old detritus from potential features.
+```sh
+python3.11 -m venv venv
 
-## For Developers
+.\venv\Scripts\activate   # Windows
+. venv/bin/activate.fish  # fish
+source venv/bin/activate  # everything else
 
-We publish artifacts on Maven at [https://maven.blamejared.com/at/petra-k/hexcasting/]. The modern coordinates are at:
+# run from the repo root, not doc/
+pip install -e .[dev]
+```
 
-> `hexcasting-[PLATFORM]-[MC VERSION]/[MOD VERSION]`
+## Usage
 
-There are some other folders in the `hexcasting` folder from old CI configurations; ignore those, they're stale.
+For local testing, create a file called `.env` in the repo root following this template:
+```sh
+GITHUB_REPOSITORY=gamma-delta/HexMod
+GITHUB_SHA=main
+GITHUB_PAGES_URL=https://gamma-delta.github.io/HexMod
+```
 
-Please only use things in the `at.petrak.hexcasting.api` package. (We do try to keep the API fairly stable, but we don't
-do a very good job.) If you find you need something not in there yell at me on Discord.
+Then run these commands to generate the book:
+```sh
+# run from the repo root, not doc/
+hexdoc render
+hexdoc merge
+```
+
+Or, run this command to render the book and start a local web server:
+```sh
+hexdoc serve --lang en_us
+```
