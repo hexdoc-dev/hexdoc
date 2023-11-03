@@ -114,6 +114,7 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
+    "test/_submodules",
     "{{cookiecutter.output_directory}}",
 ]
 

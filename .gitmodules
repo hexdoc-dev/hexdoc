@@ -1,0 +1,3 @@
+[submodule "test/_submodules/HexMod"]
+	path = test/_submodules/HexMod
+	url = https://github.com/object-Object/HexMod
