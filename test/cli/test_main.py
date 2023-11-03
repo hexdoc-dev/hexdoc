@@ -11,7 +11,7 @@ from hexdoc.cli.main import render
 
 from ..conftest import longrun
 
-PROPS_FILE = Path("doc/properties.toml")
+PROPS_FILE = Path("test/_submodules/HexMod/doc/properties.toml")
 
 RENDERED_FILENAMES = [
     "v/latest/index.html",
