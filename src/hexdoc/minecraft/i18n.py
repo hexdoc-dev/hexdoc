@@ -9,7 +9,7 @@ from typing import Any, Callable, Self
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.compat import HexVersion
+from hexdoc.core.compat import StrIfVersion
 from hexdoc.core.loader import LoaderContext, ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResourceLocation
 from hexdoc.model import HexdocModel
@@ -209,11 +209,7 @@ class I18n(HexdocModel):
 
         Raises KeyError if i18n is enabled and skip_errors is False but the key has no localization.
         """
-        match HexVersion.get():
-            case HexVersion.v0_11_x:
-                key_group = "action"
-            case HexVersion.v0_10_x | HexVersion.v0_9_x:
-                key_group = "spell"
+        key_group = StrIfVersion(">=1.20", "action", "spell")
 
         # prefer the book-specific translation if it exists
         return self.localize(

@@ -93,6 +93,35 @@ class PluginManager:
     def mod_version(self, modid: str):
         return self._hook_caller(PluginSpec.hexdoc_mod_version, modid)()
 
+    def minecraft_version(self) -> str:
+        versions = dict[str, str]()
+
+        for modid, caller in self._all_callers(PluginSpec.hexdoc_minecraft_version):
+            caller_versions = set(caller.try_call() or [])
+            if not caller_versions:
+                continue
+
+            if len(caller_versions) > 1:
+                raise ValueError(
+                    f"{modid} returned multiple Minecraft versions, expected at most 1: "
+                    + ", ".join(caller_versions)
+                )
+
+            versions[modid] = caller_versions.pop()
+
+        match len(versions):
+            case 0:
+                raise ValueError(f"No plugins implement hexdoc_minecraft_version")
+            case 1:
+                return versions.popitem()[1]
+            case n:
+                raise ValueError(
+                    f"Got {n} Minecraft versions, expected 1:"
+                    + ", ".join(
+                        f"{modid}={version}" for modid, version in versions.items()
+                    )
+                )
+
     def validate_format_tree(
         self,
         tree: FormatTree,
@@ -148,7 +177,7 @@ class PluginManager:
         for package in flatten(packages):
             yield import_package(package)
 
-    def _all_hook_callers(
+    def _all_callers(
         self,
         spec: Callable[_P, _R | None],
     ) -> Iterator[tuple[str, TypedHookCaller[_P, _R]]]:

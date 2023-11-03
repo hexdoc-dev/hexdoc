@@ -1,15 +1,19 @@
 import logging
 import subprocess
 from pathlib import Path
+from typing import Any, Mapping
 
+from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.metadata import HexdocMetadata
 from hexdoc.core.properties import Properties
-from hexdoc.hexcasting.hex_book import load_hex_book
+from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import Texture
-from hexdoc.patchouli import Book
+from hexdoc.model.base import init_context
+from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
+from hexdoc.utils.deserialize import cast_or_raise
 
 from .logging import setup_logging
 
@@ -18,9 +22,11 @@ def load_common_data(props_file: Path, verbosity: int):
     setup_logging(verbosity)
 
     props = Properties.load(props_file)
-    pm = PluginManager()
 
+    pm = PluginManager()
     version = load_version(props, pm)
+    MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
+
     return props, pm, version
 
 
@@ -74,7 +80,7 @@ def load_book(
         i18n = _load_i18n(loader, None, allow_missing)[lang]
 
         data = Book.load_book_json(loader, props.book)
-        book = load_hex_book(data, pm, loader, i18n, all_metadata)
+        book = _load_book(data, pm, loader, i18n, all_metadata)
 
     return lang, book, i18n
 
@@ -94,11 +100,30 @@ def load_books(
         books = dict[str, tuple[Book, I18n]]()
 
         for lang, i18n in _load_i18n(loader, lang, allow_missing).items():
-            book = load_hex_book(book_data, pm, loader, i18n, all_metadata)
+            book = _load_book(book_data, pm, loader, i18n, all_metadata)
             books[lang] = (book, i18n)
             loader.export_dir = None  # only export the first (default) book
 
         return books, all_metadata
+
+
+def _load_book(
+    data: Mapping[str, Any],
+    pm: PluginManager,
+    loader: ModResourceLoader,
+    i18n: I18n,
+    all_metadata: dict[str, HexdocMetadata],
+):
+    with init_context(data):
+        context = BookContext(
+            pm=pm,
+            loader=loader,
+            i18n=i18n,
+            # this SHOULD be set (as a ResourceLocation) by Book.get_book_json
+            book_id=cast_or_raise(data["id"], ResourceLocation),
+            all_metadata=all_metadata,
+        )
+    return Book.load_all_from_data(data, context)
 
 
 def _load_i18n(

@@ -3,14 +3,16 @@ from __future__ import annotations
 from contextvars import ContextVar
 from typing import TYPE_CHECKING, Any, Self, dataclass_transform
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
 from pydantic.config import ConfigDict
+from pydantic.functional_validators import ModelBeforeValidator
 
 from hexdoc.utils.classproperty import ClassPropertyDescriptor
 from hexdoc.utils.contextmanagers import set_contextvar
 
 DEFAULT_CONFIG = ConfigDict(
     extra="forbid",
+    validate_default=True,
     ignored_types=(  # pyright: ignore[reportUnknownArgumentType]
         ClassPropertyDescriptor,
     ),
@@ -35,6 +37,8 @@ class HexdocBaseModel(BaseModel):
 
     model_config = DEFAULT_CONFIG
 
+    __hexdoc_before_validator__: ModelBeforeValidator | None = None
+
     def __init__(__pydantic_self__, **data: Any) -> None:  # type: ignore
         __tracebackhide__ = True
         __pydantic_self__.__pydantic_validator__.validate_python(
@@ -44,6 +48,13 @@ class HexdocBaseModel(BaseModel):
         )
 
     __init__.__pydantic_base_init__ = True  # type: ignore
+
+    @model_validator(mode="before")
+    @classmethod
+    def _call_hexdoc_before_validator(cls, value: Any, info: ValidationInfo):
+        if cls.__hexdoc_before_validator__:
+            return cls.__hexdoc_before_validator__(cls, value, info)
+        return value
 
 
 @dataclass_transform()

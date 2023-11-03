@@ -1,15 +1,9 @@
 from collections import defaultdict
 from typing import Any, Literal, Mapping, Self
 
-from pydantic import (
-    Field,
-    PrivateAttr,
-    ValidationInfo,
-    field_validator,
-    model_validator,
-)
+from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
-from hexdoc.core.compat import HexVersion
+from hexdoc.core.compat import AtLeast_1_20, Before_1_20, IsVersion
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResLoc, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
@@ -48,7 +42,7 @@ class Book(HexdocModel):
 
     # required in 1.20 but optional in 1.19
     # so we'll make it optional and validate later
-    use_resource_pack: bool = False
+    use_resource_pack: AtLeast_1_20[Literal[True]] | Before_1_20[bool] = False
 
     # optional
     book_texture: ResourceLocation = ResLoc("patchouli", "textures/gui/book_brown.png")
@@ -84,7 +78,7 @@ class Book(HexdocModel):
     def load_book_json(cls, loader: ModResourceLoader, id: ResourceLocation):
         data = cls._load_book_resource(loader, id)
 
-        if HexVersion.get() <= HexVersion.v0_10_x and "extend" in data:
+        if IsVersion("<=1.19") and "extend" in data:
             id = loader.book_id = ResourceLocation.model_validate(data["extend"])
             return cls._load_book_resource(loader, id)
 
@@ -157,12 +151,6 @@ class Book(HexdocModel):
         if isinstance(data, dict) and "index_icon" not in data:
             data["index_icon"] = data.get("model")
         return data
-
-    @field_validator("use_resource_pack", mode="after")
-    def _check_use_resource_pack(cls, value: bool):
-        if HexVersion.get() >= HexVersion.v0_11_x and not value:
-            raise ValueError(f"use_resource_pack must be True on this version")
-        return value
 
     @model_validator(mode="after")
     def _post_root(self, info: ValidationInfo):

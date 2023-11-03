@@ -31,6 +31,11 @@ class PluginSpec(Protocol):
 
     @staticmethod
     @hookspec
+    def hexdoc_minecraft_version() -> list[str]:
+        ...
+
+    @staticmethod
+    @hookspec
     def hexdoc_validate_format_tree(
         tree: FormatTree,
         macros: dict[str, str],
@@ -81,6 +86,13 @@ class ModVersionImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_mod_version() -> str:
         """Return your plugin's mod version (ie. `GRADLE_VERSION`)."""
+        ...
+
+
+class MinecraftVersionImpl(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_minecraft_version() -> str:
+        """Return the version of Minecraft supported by this version of your plugin."""
         ...
 
 
