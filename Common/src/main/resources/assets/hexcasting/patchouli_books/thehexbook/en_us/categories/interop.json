@@ -1,0 +1,8 @@
+{
+  "name": "hexcasting.category.interop",
+  "icon": "minecraft:chain",
+  "description": "hexcasting.category.interop.desc",
+  "sortnum": 99,
+  
+  "flag": "hexcasting:any_interop"
+}

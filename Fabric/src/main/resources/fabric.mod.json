@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "id": "hexcasting",
+  "version": "${version}",
+  "name": "Hex Casting",
+  "description": "Cast powerful Hexes on the fly by drawing patterns with a staff.",
+  "authors": [
+    "petrak@ (aka gamma-delta)"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hexcasting",
+    "sources": "https://github.com/gamma-delta/HexMod"
+  },
+  "license": "MIT",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "at.petrak.hexcasting.fabric.FabricHexInitializer"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "at.petrak.hexcasting.fabric.FabricHexClientInitializer"
+      }
+    ],
+    "fabric-datagen": [
+      "at.petrak.hexcasting.fabric.datagen.HexFabricDataGenerators"
+    ],
+    "cardinal-components": [
+      "at.petrak.hexcasting.fabric.cc.HexCardinalComponents"
+    ],
+    "emi": [
+      "at.petrak.hexcasting.fabric.interop.emi.HexEMIPlugin"
+    ],
+    "modmenu": [
+      "at.petrak.hexcasting.fabric.interop.ModMenuInterop"
+    ]
+  },
+  "mixins": [
+    "hexplat.mixins.json",
+    "fabricasting.mixins.json"
+  ],
+  "accessWidener": "fabricasting.accesswidener",
+  "depends": {
+    "minecraft": "=1.20.1",
+    "java": ">=17",
+    "fabricloader": ">=0.14",
+    "fabric": ">=0.84",
+    "fabric-language-kotlin": ">=1.9.4+kotlin.1.8.21",
+    "cardinal-components-base": "~5.2.1",
+    "cardinal-components-entity": "~5.2.1",
+    "cardinal-components-item": "~5.2.1",
+    "cardinal-components-block": "~5.2.1",
+    "paucal": "0.6.*",
+    "cloth-config": "11.0.*",
+    "patchouli": ">=1.20.1-80"
+  },
+  "suggests": {
+    "pehkui": "3.7.6"
+  },
+  "custom": {
+    "cardinal-components": [
+      "hexcasting:brainswept",
+      "hexcasting:favored_pigment",
+      "hexcasting:sentinel",
+      "hexcasting:flight",
+      "hexcasting:altiora",
+      "hexcasting:harness",
+      "hexcasting:patterns",
+      "hexcasting:client_casting_stack",
+      "hexcasting:pigment",
+      "hexcasting:iota_holder",
+      "hexcasting:media_holder",
+      "hexcasting:hex_holder",
+      "hexcasting:variant_item"
+    ]
+  }
+}

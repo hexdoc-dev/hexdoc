@@ -1,0 +1,23 @@
+{
+  "name": "hexcasting.entry.lens",
+  "icon": "hexcasting:lens",
+  "category": "hexcasting:items",
+  "advancement": "hexcasting:root",
+  "priority": true,
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "hexcasting.page.lens.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "hexcasting.page.lens.2"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "hexcasting:lens",
+      "text": "hexcasting.page.lens.crafting.desc"
+    }
+  ]
+}
