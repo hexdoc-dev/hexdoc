@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
 from pathlib import Path
 from typing import Annotated, Any, Self
 
@@ -22,7 +21,7 @@ NoTrailingSlashHttpUrl = Annotated[
 
 
 class EnvironmentVariableProps(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="allow")
 
     # default Actions environment variables
     github_repository: str
@@ -62,12 +61,6 @@ class EnvironmentVariableProps(BaseSettings):
         return owner, repo_name
 
 
-class PatternStubProps(StripHiddenModel):
-    path: RelativePath
-    regex: re.Pattern[str]
-    per_world_value: str | None = "true"
-
-
 class TemplateProps(StripHiddenModel):
     static_dir: RelativePath | None = None
     include: list[str]
@@ -103,16 +96,36 @@ class GaslightingProps(StripHiddenModel):
 
 
 class TexturesProps(StripHiddenModel):
-    missing: list[ResourceLocation]
-    override: dict[ResourceLocation, ResourceLocation]
-    gaslighting: dict[ResourceLocation, GaslightingProps]
+    missing: list[ResourceLocation] = Field(default_factory=list)
+    override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
+    gaslighting: dict[ResourceLocation, GaslightingProps] = Field(default_factory=dict)
 
 
-class Properties(StripHiddenModel):
+class BaseProperties(StripHiddenModel):
     env: EnvironmentVariableProps
+    props_dir: Path
 
+    @classmethod
+    def load(cls, path: Path) -> Self:
+        props_dir = path.parent
+
+        with relative_path_root(props_dir):
+            env = EnvironmentVariableProps.model_validate_env()
+            props = cls.model_validate(
+                load_toml_with_placeholders(path)
+                | {
+                    "env": env,
+                    "props_dir": props_dir,
+                },
+            )
+
+        logging.getLogger(__name__).debug(props)
+        return props
+
+
+class Properties(BaseProperties):
     modid: str
-    book: ResourceLocation
+    book: ResourceLocation | None
     default_lang: str
     is_0_black: bool = Field(default=False)
     """If true, the style `$(0)` changes the text color to black; otherwise it resets
@@ -121,27 +134,16 @@ class Properties(StripHiddenModel):
     resource_dirs: list[ResourceDir]
     export_dir: RelativePath | None = None
 
-    pattern_stubs: list[PatternStubProps]
-
     entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
 
     minecraft_assets: MinecraftAssetsProps
 
     # FIXME: remove this and get the data from the actual model files
-    textures: TexturesProps
+    textures: TexturesProps = Field(default_factory=TexturesProps)
 
-    template: TemplateProps
+    template: TemplateProps | None
 
-    @classmethod
-    def load(cls, path: Path) -> Self:
-        with relative_path_root(path.parent):
-            env = EnvironmentVariableProps.model_validate_env()
-            props = cls.model_validate(
-                load_toml_with_placeholders(path) | {"env": env},
-            )
-
-        logging.getLogger(__name__).debug(props)
-        return props
+    extra: dict[str, Any] = Field(default_factory=dict)
 
     def mod_loc(self, path: str) -> ResourceLocation:
         """Returns a ResourceLocation with self.modid as the namespace."""

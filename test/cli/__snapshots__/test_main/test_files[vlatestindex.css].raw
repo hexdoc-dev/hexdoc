@@ -162,19 +162,6 @@ p.todo-note {
 .spoilered.unspoilered {
   filter: blur(0);
 }
-canvas.spell-viz {
-  --dot-color: #777f;
-  --dot-color: #777f;
-  --start-dot-color: #f009;
-  --moving-dot-color: #0fa9;
-  --path-color: darkgray;
-  --visited-path-color: #0c8;
-  --dot-scale: 0.0625;
-  --moving-dot-scale: 0.125;
-  --line-scale: 0.08333;
-  --pausetext-scale: 0.5;
-  --dark-mode: 0;
-}
 .dropdown-menu .divider {
   margin: 4px 0;
 }
@@ -249,6 +236,21 @@ canvas.spell-viz {
     color: #ccc;
     background-color: #553455;
   }
+}
+canvas.spell-viz {
+  --dot-color: #777f;
+  --dot-color: #777f;
+  --start-dot-color: #f009;
+  --moving-dot-color: #0fa9;
+  --path-color: darkgray;
+  --visited-path-color: #0c8;
+  --dot-scale: 0.0625;
+  --moving-dot-scale: 0.125;
+  --line-scale: 0.08333;
+  --pausetext-scale: 0.5;
+  --dark-mode: 0;
+}
+@media (prefers-color-scheme: dark) {
   canvas.spell-viz {
     /* hack */
     --dark-mode: 1;

@@ -67,7 +67,7 @@
 {% macro render_ingredients(ingredients, is_recursive=false) -%}
   {% for ingredient in ingredients %}
     {% if ingredient.type|string == "hexcasting:mod_conditional" %}
-      {# recursion! what could possibly go wrong? #}
+      {# recursion! what could possibly go wrong? (TODO: refactor out of hexdoc) #}
       {{ render_ingredients(ingredient.default, true) }}
       {{ render_ingredients(ingredient.if_loaded, true) }}
     {% else %}
@@ -90,7 +90,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="{{ 'hexcasting:textures/gui/hexdoc/crafting_table.png'|hexdoc_texture }}"
+              src="{{ 'hexdoc:textures/gui/crafting_table.png'|hexdoc_texture }}"
             >
             
             <div class="crafting-table-grid">

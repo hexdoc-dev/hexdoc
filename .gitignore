@@ -1,5 +1,5 @@
 # hexdoc
-doc/**/_export/generated/
+**/_export/generated/
 _site/
 _checkout/
 __gradle_version__.py

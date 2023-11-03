@@ -46,9 +46,9 @@ pip install -e .[dev]
 
 For local testing, create a file called `.env` in the repo root following this template:
 ```sh
-GITHUB_REPOSITORY=gamma-delta/HexMod
 GITHUB_SHA=main
-GITHUB_PAGES_URL=https://gamma-delta.github.io/HexMod
+GITHUB_REPOSITORY=object-Object/hexdoc
+GITHUB_PAGES_URL=https://object-object.github.io/hexdoc
 ```
 
 Then run these commands to generate the book:

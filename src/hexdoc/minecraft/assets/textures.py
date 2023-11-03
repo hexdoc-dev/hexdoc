@@ -29,12 +29,16 @@ class Texture(InlineModel):
 
     @classmethod
     def load_all(cls, root: Path, loader: ModResourceLoader):
-        for _, id, path in loader.find_resources(
+        for resource_dir, id, path in loader.find_resources(
             "assets",
             namespace="*",
             folder="textures",
             glob=f"**/*.png",
+            allow_missing=True,
         ):
+            if resource_dir.external:
+                continue
+
             relative_path = path.resolve().relative_to(root)
             url = f"{loader.props.env.asset_url}/{relative_path.as_posix()}"
 

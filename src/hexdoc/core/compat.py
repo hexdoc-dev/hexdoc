@@ -12,7 +12,7 @@ from hexdoc.model.base import HexdocBaseModel
 
 _T = TypeVar("_T")
 
-_T_Model = TypeVar("_T_Model", bound=HexdocBaseModel)
+_T_ModelType = TypeVar("_T_ModelType", bound=type[HexdocBaseModel])
 
 _If = TypeVar("_If")
 _Else = TypeVar("_Else")
@@ -46,7 +46,7 @@ class MinecraftVersion(VersionSource):
         return cls.MINECRAFT_VERSION in specifier
 
 
-@dataclass
+@dataclass(frozen=True)
 class Versioned:
     """Base class for types which can behave differently based on a version source,
     which defaults to MinecraftVersion."""
@@ -59,6 +59,7 @@ class Versioned:
         return self.version_source.matches(self.version_spec)
 
 
+@dataclass(frozen=True)
 class IsVersion(Versioned):
     """Instances of this class are truthy if version_spec matches version_source, which
     defaults to MinecraftVersion.
@@ -76,7 +77,7 @@ class IsVersion(Versioned):
     def __bool__(self):
         return self.is_current
 
-    def __call__(self, cls: _T_Model) -> _T_Model:
+    def __call__(self, cls: _T_ModelType) -> _T_ModelType:
         cls.__hexdoc_before_validator__ = self._model_validator
         return cls
 
@@ -116,7 +117,7 @@ After_1_20 = Annotated[_T, IsVersion(">1.20")]
 """Alias for `Annotated[_T, IsVersion("<1.20")]`."""
 
 
-@dataclass
+@dataclass(frozen=True)
 class ValueIfVersion(Versioned, Generic[_If, _Else]):
     value_if: _If
     value_else: ValueIfVersion[_If | _Else, _If | _Else] | _Else
@@ -129,23 +130,3 @@ class ValueIfVersion(Versioned, Generic[_If, _Else]):
             return self.value_else()  # pyright: ignore[reportUnknownVariableType]
 
         return self.value_else
-
-
-@dataclass
-class StrIfVersion(str, Versioned):
-    value_if: str
-    value_else: str
-
-    def __str__(self) -> str:
-        if self.is_current:
-            return self.value_if
-        return self.value_else
-
-    def __repr__(self) -> str:
-        return repr(str(self))
-
-    def __eq__(self, other: object) -> bool:
-        return str(self) == other
-
-    def __hash__(self) -> int:
-        return str(self).__hash__()

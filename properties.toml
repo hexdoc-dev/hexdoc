@@ -1,0 +1,16 @@
+modid = "hexdoc"
+book = { "!None"={} }
+default_lang = "en_us"
+
+_export_root = "src/hexdoc/_export"
+resource_dirs = [  # top takes priority
+    "{_export_root}/resources",
+]
+export_dir = "{_export_root}/generated"
+
+template = { "!None"={} }
+
+[minecraft_assets]
+# https://github.com/PrismarineJS/minecraft-assets/tree/83e2169afbbce40990d69fc53e5962e4a793d467/data/1.19.1
+ref = "83e2169afbbce40990d69fc53e5962e4a793d467"
+version = "1.19.1"

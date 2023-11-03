@@ -38,7 +38,7 @@ VerbosityOption = Annotated[int, typer.Option("--verbose", "-v", count=True)]
 UpdateLatestOption = Annotated[bool, typer.Option(envvar="UPDATE_LATEST")]
 ReleaseOption = Annotated[bool, typer.Option(envvar="RELEASE")]
 
-DEFAULT_PROPS_FILE = Path("doc/properties.toml")
+DEFAULT_PROPS_FILE = Path(os.getenv("HEXDOC_PROPS", "doc/properties.toml"))
 DEFAULT_MERGE_SRC = Path("_site/src/docs")
 DEFAULT_MERGE_DST = Path("_site/dst/docs")
 
@@ -102,7 +102,7 @@ def export(
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, _ = load_common_data(props_file, verbosity)
-    load_book(props, pm, lang, allow_missing)
+    load_book(props.book, props, pm, lang, allow_missing)
 
 
 @app.command()
@@ -121,7 +121,12 @@ def render(
 
     # load data
     props, pm, version = load_common_data(props_file, verbosity)
-    books, all_metadata = load_books(props, pm, lang, allow_missing)
+    if not props.book:
+        raise ValueError("Expected a value for props.book, got None")
+    if not props.template:
+        raise ValueError("Expected a value for props.template, got None")
+
+    books, all_metadata = load_books(props.book, props, pm, lang, allow_missing)
 
     textures = dict[ResourceLocation, Texture]()
     animations = list[AnimatedTexture]()

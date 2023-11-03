@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, Any, Self, dataclass_transform
+from typing import TYPE_CHECKING, Any, ClassVar, Self, dataclass_transform
 
 from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
 from pydantic.config import ConfigDict
@@ -37,7 +37,7 @@ class HexdocBaseModel(BaseModel):
 
     model_config = DEFAULT_CONFIG
 
-    __hexdoc_before_validator__: ModelBeforeValidator | None = None
+    __hexdoc_before_validator__: ClassVar[ModelBeforeValidator | None] = None
 
     def __init__(__pydantic_self__, **data: Any) -> None:  # type: ignore
         __tracebackhide__ = True

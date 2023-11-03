@@ -24,6 +24,7 @@ from jinja2.sandbox import SandboxedEnvironment
 from hexdoc.model import ValidationContext
 
 if TYPE_CHECKING:
+    from hexdoc.patchouli.book_context import BookContext
     from hexdoc.core.resource import ResourceLocation
     from hexdoc.minecraft.i18n import I18n
     from hexdoc.patchouli.text import FormatTree
@@ -109,14 +110,14 @@ class PluginManager:
 
             versions[modid] = caller_versions.pop()
 
-        match len(versions):
+        match len(set(versions.values())):
             case 0:
                 raise ValueError(f"No plugins implement hexdoc_minecraft_version")
             case 1:
                 return versions.popitem()[1]
             case n:
                 raise ValueError(
-                    f"Got {n} Minecraft versions, expected 1:"
+                    f"Got {n} Minecraft versions, expected 1: "
                     + ", ".join(
                         f"{modid}={version}" for modid, version in versions.items()
                     )
@@ -139,6 +140,11 @@ class PluginManager:
             is_0_black=is_0_black,
         )
         return tree
+
+    def update_context(self, context: BookContext):
+        caller = self._hook_caller(PluginSpec.hexdoc_update_context)
+        caller.try_call(context=context)
+        return context
 
     def update_jinja_env(self, env: SandboxedEnvironment):
         caller = self._hook_caller(PluginSpec.hexdoc_update_jinja_env)

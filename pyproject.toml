@@ -48,6 +48,7 @@ dependencies = [
     "requests~=2.31",
     "ordered-set~=4.1",
     "minecraft-render~=2.0a",
+    "packaging~=23.2",
 ]
 
 [project.optional-dependencies]
@@ -67,6 +68,11 @@ dev = [
 Homepage = "https://object-object.github.io/HexMod/" # TODO: replace?
 Source = "https://github.com/object-Object/hexdoc"
 
+[tool.hatch.build]
+artifacts = [
+    "/src/hexdoc/_export/generated",
+]
+
 [tool.hatch.build.targets.sdist]
 only-include = [
     "src/hexdoc",
@@ -83,6 +89,7 @@ hexdoc = "hexdoc.cli.main:app"
 # hexdoc
 
 [project.entry-points.hexdoc]
+hexdoc = "hexdoc._hooks:HexdocPlugin"
 minecraft = "hexdoc.minecraft._hooks:MinecraftPlugin"
 patchouli = "hexdoc.patchouli._hooks:PatchouliPlugin"
 

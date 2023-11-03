@@ -33,7 +33,7 @@ ExportFn = Callable[[_T, _T | None], str]
 @dataclass(config=DEFAULT_CONFIG, kw_only=True)
 class ModResourceLoader:
     props: Properties
-    book_id: ResourceLocation
+    book_id: ResourceLocation | None
     export_dir: Path | None
     resource_dirs: list[PathResourceDir]
 
@@ -103,6 +103,7 @@ class ModResourceLoader:
         *,
         name_pattern: str = "{modid}",
         model_type: type[_T_Model],
+        allow_missing: bool = False,
     ) -> dict[str, _T_Model]:
         """eg. `"{modid}.patterns"`"""
         metadata = dict[str, _T_Model]()
@@ -113,11 +114,17 @@ class ModResourceLoader:
             if modid is None or modid in metadata:
                 continue
 
-            _, metadata[modid] = self.load_resource(
-                Path(name_pattern.format(modid=modid) + METADATA_SUFFIX),
-                decode=model_type.model_validate_json,
-                export=False,
-            )
+            try:
+                _, metadata[modid] = self.load_resource(
+                    Path(name_pattern.format(modid=modid) + METADATA_SUFFIX),
+                    decode=model_type.model_validate_json,
+                    export=False,
+                )
+            except FileNotFoundError:
+                if allow_missing:
+                    continue
+                else:
+                    raise
 
         return metadata
 
@@ -138,12 +145,13 @@ class ModResourceLoader:
                 allow_missing=True,
             )
 
-        yield from self._load_book_assets(
-            self.book_id,
-            folder,
-            use_resource_pack=use_resource_pack,
-            allow_missing=is_extension,
-        )
+        if self.book_id:
+            yield from self._load_book_assets(
+                self.book_id,
+                folder,
+                use_resource_pack=use_resource_pack,
+                allow_missing=is_extension,
+            )
 
     def _load_book_assets(
         self,

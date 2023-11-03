@@ -71,6 +71,13 @@ class PathResourceDir(BaseResourceDir):
             return {"path": value}
         return value
 
+    @field_validator("path", mode="after")
+    @classmethod
+    def _assert_exists(cls, path: Path):
+        if not path.exists():
+            raise ValueError(f"PathResourceDir path does not exist: {path}")
+        return path
+
 
 class PluginResourceDir(BaseResourceDir):
     modid: str

@@ -68,6 +68,9 @@ def render_book(
     version: str,
     is_root: bool,
 ):
+    if not props.template:
+        raise ValueError("Expected a value for props.template, got None")
+
     # /index.html
     # /lang/index.html
     # /v/version/index.html

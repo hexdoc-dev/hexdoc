@@ -18,6 +18,7 @@ RENDERED_FILENAMES = [
     "v/latest/index.css",
     "v/latest/textures.css",
     "v/latest/index.js",
+    "v/latest/hexcasting.js",
 ]
 
 

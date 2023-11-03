@@ -1,7 +1,7 @@
 import logging
 import subprocess
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, overload
 
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.loader import ModResourceLoader
@@ -65,7 +65,30 @@ def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceL
     return loader.load_metadata(model_type=HexdocMetadata) | {props.modid: metadata}
 
 
+@overload
 def load_book(
+    book_id: ResourceLocation,
+    props: Properties,
+    pm: PluginManager,
+    lang: str | None,
+    allow_missing: bool,
+) -> tuple[str, Book, I18n]:
+    ...
+
+
+@overload
+def load_book(
+    book_id: None,
+    props: Properties,
+    pm: PluginManager,
+    lang: str | None,
+    allow_missing: bool,
+) -> tuple[str, None, I18n]:
+    ...
+
+
+def load_book(
+    book_id: ResourceLocation | None,
     props: Properties,
     pm: PluginManager,
     lang: str | None,
@@ -79,13 +102,17 @@ def load_book(
         all_metadata = load_all_metadata(props, pm, loader)
         i18n = _load_i18n(loader, None, allow_missing)[lang]
 
-        data = Book.load_book_json(loader, props.book)
-        book = _load_book(data, pm, loader, i18n, all_metadata)
+        if book_id:
+            data = Book.load_book_json(loader, book_id)
+            book = _load_book(data, pm, loader, i18n, all_metadata)
+        else:
+            book = None
 
     return lang, book, i18n
 
 
 def load_books(
+    book_id: ResourceLocation,
     props: Properties,
     pm: PluginManager,
     lang: str | None,
@@ -96,7 +123,7 @@ def load_books(
     with ModResourceLoader.clean_and_load_all(props, pm) as loader:
         all_metadata = load_all_metadata(props, pm, loader)
 
-        book_data = Book.load_book_json(loader, props.book)
+        book_data = Book.load_book_json(loader, book_id)
         books = dict[str, tuple[Book, I18n]]()
 
         for lang, i18n in _load_i18n(loader, lang, allow_missing).items():
@@ -123,6 +150,7 @@ def _load_book(
             book_id=cast_or_raise(data["id"], ResourceLocation),
             all_metadata=all_metadata,
         )
+        pm.update_context(context)
     return Book.load_all_from_data(data, context)
 
 

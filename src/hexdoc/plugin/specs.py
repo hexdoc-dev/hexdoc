@@ -9,6 +9,7 @@ from jinja2.sandbox import SandboxedEnvironment
 if TYPE_CHECKING:
     from hexdoc.core.resource import ResourceLocation
     from hexdoc.minecraft import I18n
+    from hexdoc.patchouli.book_context import BookContext
     from hexdoc.patchouli.text import FormatTree
 
 HEXDOC_PROJECT_NAME = "hexdoc"
@@ -43,6 +44,11 @@ class PluginSpec(Protocol):
         book_id: ResourceLocation,
         is_0_black: bool,
     ) -> None:
+        ...
+
+    @staticmethod
+    @hookspec
+    def hexdoc_update_context(context: BookContext) -> None:
         ...
 
     @staticmethod
@@ -105,6 +111,12 @@ class ValidateFormatTreeImpl(PluginImpl, Protocol):
         i18n: I18n,
         is_0_black: bool,
     ) -> None:
+        ...
+
+
+class UpdateContextImpl(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_update_context(context: BookContext) -> None:
         ...
 
 

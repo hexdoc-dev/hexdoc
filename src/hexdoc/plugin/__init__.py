@@ -7,6 +7,8 @@ __all__ = [
     "UpdateJinjaEnvImpl",
     "UpdateTemplateArgsImpl",
     "ValidateFormatTreeImpl",
+    "MinecraftVersionImpl",
+    "UpdateContextImpl",
     "PluginManager",
     "HookReturn",
 ]
@@ -20,7 +22,9 @@ from .specs import (
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
     LoadTaggedUnionsImpl,
+    MinecraftVersionImpl,
     ModVersionImpl,
+    UpdateContextImpl,
     UpdateJinjaEnvImpl,
     UpdateTemplateArgsImpl,
     ValidateFormatTreeImpl,

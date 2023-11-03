@@ -20,6 +20,7 @@ TOMLValue = (
     | datetime.time
     | list["TOMLValue"]
     | TOMLDict
+    | None
 )
 
 
@@ -90,6 +91,9 @@ def _handle_child(
             # interpolaten't
             expanded.add((id(stack[-1]), key))
             update(key, raw)
+
+        case {"!None": _}:
+            update(key, None)
 
         case list():
             # handle each item in the list without adding the list to the stack
