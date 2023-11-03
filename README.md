@@ -1,17 +1,6 @@
 # hexdoc
 
-This is the Python docgen for Hex Casting.
-
-## Version scheme
-
-We use [hatch-gradle-version](https://pypi.org/project/hatch-gradle-version) to generate the version number based on whichever mod version the docgen was built with.
-
-The version is in this format: `mod-version.python-version.mod-pre.python-dev.python-post`
-
-For example:
-* Mod version: `0.11.1-7`
-* Python package version: `1.0.dev0`
-* Full version: `0.11.1.1.0rc7.dev0`
+This is the library that powers [Hex Casting](https://github.com/gamma-delta/HexMod)'s web book docgen.
 
 ## Creating a plugin / addon
 
@@ -50,7 +39,6 @@ python3.11 -m venv venv
 . venv/bin/activate.fish  # fish
 source venv/bin/activate  # everything else
 
-# run from the repo root, not doc/
 pip install -e .[dev]
 ```
 
@@ -65,7 +53,6 @@ GITHUB_PAGES_URL=https://gamma-delta.github.io/HexMod
 
 Then run these commands to generate the book:
 ```sh
-# run from the repo root, not doc/
 hexdoc render
 hexdoc merge
 ```
@@ -74,3 +61,5 @@ Or, run this command to render the book and start a local web server:
 ```sh
 hexdoc serve --lang en_us
 ```
+
+Nodemon is also configured.

@@ -1,0 +1,12 @@
+{
+    "watch": [
+        "src",
+        "test/_submodules/HexMod/src",
+        "test/_submodules/HexMod/doc/resources",
+        "test/_submodules/HexMod/doc/properties.toml",
+        "test/_submodules/HexMod/Common/src/main/resources/assets/*/lang"
+    ],
+    "ignore": ["**/generated/**"],
+    "ext": "jinja,html,css,js,ts,toml,json,json5,py",
+    "exec": "hexdoc serve test/_submodules/HexMod/doc/properties.toml --lang en_us --allow-missing"
+}
