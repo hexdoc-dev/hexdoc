@@ -56,7 +56,7 @@ def hexdoc_block(value: FormatTree):
 def test_link():
     tree = format_with_mocks("$(l:http://google.com)A$(/l)")
     assert (
-        hexdoc_block(tree) == "<p><a href='http://google.com' target='_blank'>A</a></p>"
+        hexdoc_block(tree) == '<p><a href="http://google.com" target="_blank">A</a></p>'
     )
 
 
@@ -69,9 +69,9 @@ def test_link_in_color():
 
     assert html == flatten_html(
         """<p>
-            <span style='color: #111'>
+            <span style="color: #111">
                 A
-                <a href='http://google.com' target='_blank'>
+                <a href="http://google.com" target="_blank">
                     B
                 </a>
                 C
@@ -90,18 +90,18 @@ def test_colors_across_link():
 
     assert html == flatten_html(
         """<p>
-            <span style='color: #111'>
+            <span style="color: #111">
                 A
             </span>
-            <a href='http://google.com' target='_blank'>
-                <span style='color: #222'>
+            <a href="http://google.com" target="_blank">
+                <span style="color: #222">
                     C
                 </span>
-                <span style='color: #111'>
+                <span style="color: #111">
                     D
                 </span>
             </a>
-            <span style='color: #111'>
+            <span style="color: #111">
                 E
             </span>
         </p>"""
