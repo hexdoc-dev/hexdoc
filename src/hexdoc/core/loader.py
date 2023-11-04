@@ -30,6 +30,8 @@ _T_Model = TypeVar("_T_Model", bound=HexdocModel)
 
 ExportFn = Callable[[_T, _T | None], str]
 
+BookFolder = Literal["categories", "entries", "templates"]
+
 
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
@@ -141,7 +143,7 @@ class ModResourceLoader:
     def load_book_assets(
         self,
         book_id: ResourceLocation,
-        folder: Literal["categories", "entries", "templates"],
+        folder: BookFolder,
         use_resource_pack: bool,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
         if not self.root_book_id:
@@ -168,7 +170,7 @@ class ModResourceLoader:
     def _load_book_assets(
         self,
         book_id: ResourceLocation,
-        folder: Literal["categories", "entries", "templates"],
+        folder: BookFolder,
         *,
         use_resource_pack: bool,
         allow_missing: bool,
