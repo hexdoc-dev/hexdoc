@@ -98,7 +98,6 @@ class InternallyTaggedUnion(HexdocModel):
         # stop when we reach a non-union or a type with a different key (or no key)
         for base in cls.__bases__:
             if issubclass(base, InternallyTaggedUnion) and base._tag_key == tag_key:
-                yield base
                 yield from base._supertypes()
 
     @model_validator(mode="wrap")
