@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hexdoc"
-version = "1!0.1.0"
+version = "1!0.1.0.dev0"
 description = "Python web book docgen for Patchouli and Hex Casting."
 authors = [
     { name="object-Object" },
