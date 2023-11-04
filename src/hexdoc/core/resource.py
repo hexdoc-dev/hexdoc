@@ -18,6 +18,18 @@ from hexdoc.model import DEFAULT_CONFIG
 
 ResourceType = Literal["assets", "data", ""]
 
+MODEL_PATH_REGEX = re.compile(
+    r"""
+    assets
+    /(?P<namespace>[a-z0-9_\-.]+)
+    /(?:
+        models/(?P<model_type>[a-z0-9_\-.]+)
+        | blockstates
+    )
+    /(?P<path>[a-z0-9_\-./]+)\.json""",
+    re.VERBOSE,
+)
+
 
 def _make_regex(count: bool = False, nbt: bool = False) -> re.Pattern[str]:
     pattern = r"(?:(?P<namespace>[0-9a-z_\-.]+):)?(?P<path>[0-9a-z_\-./*]+)"
@@ -103,6 +115,13 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
     def from_file(cls, modid: str, base_dir: Path, path: Path) -> Self:
         resource_path = path.relative_to(base_dir).with_suffix("").as_posix()
         return ResourceLocation(modid, resource_path)
+
+    @classmethod
+    def from_model_path(cls, model_path: str | Path) -> Self:
+        match = MODEL_PATH_REGEX.search(Path(model_path).as_posix())
+        if not match:
+            raise ValueError(f"Failed to match model path: {model_path}")
+        return ResourceLocation(match["namespace"], match["path"])
 
     @property
     def href(self) -> str:

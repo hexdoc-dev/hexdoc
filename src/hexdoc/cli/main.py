@@ -1,4 +1,3 @@
-import base64
 import code
 import json
 import logging
@@ -8,18 +7,9 @@ import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Annotated, Union
+from typing import Union
 
 import typer
-from minecraft_render import (
-    IPythonResourceLoader,
-    MinecraftAssetsLoader,
-    PythonLoaderWrapper,
-    RenderClass,
-    ResourcePath,
-    createMultiloader,
-    resourcePathAsString,
-)
 
 from hexdoc.cli.utils.logging import repl_readfunc
 from hexdoc.core.loader import ModResourceLoader
@@ -27,6 +17,17 @@ from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets.textures import AnimatedTexture, Texture
 
+from . import render_block
+from .utils.args import (
+    DEFAULT_MERGE_DST,
+    DEFAULT_MERGE_SRC,
+    DEFAULT_PROPS_FILE,
+    PathArgument,
+    PropsOption,
+    ReleaseOption,
+    UpdateLatestOption,
+    VerbosityOption,
+)
 from .utils.load import load_book, load_book_and_loader, load_books, load_common_data
 from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
@@ -37,22 +38,19 @@ from .utils.sitemap import (
     load_sitemap,
 )
 
-PathArgument = Annotated[Path, typer.Argument()]
-VerbosityOption = Annotated[int, typer.Option("--verbose", "-v", count=True)]
-UpdateLatestOption = Annotated[bool, typer.Option(envvar="UPDATE_LATEST")]
-ReleaseOption = Annotated[bool, typer.Option(envvar="RELEASE")]
-
-DEFAULT_PROPS_FILE = Path(os.getenv("HEXDOC_PROPS", "doc/properties.toml"))
-DEFAULT_MERGE_SRC = Path("_site/src/docs")
-DEFAULT_MERGE_DST = Path("_site/dst/docs")
-
-app = typer.Typer(pretty_exceptions_enable=False)
+app = typer.Typer(
+    pretty_exceptions_enable=False,
+    context_settings={
+        "help_option_names": ["--help", "-h"],
+    },
+)
+app.add_typer(render_block.app)
 
 
 @app.command()
 def list_langs(
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
     *,
+    props_file: PropsOption = DEFAULT_PROPS_FILE,
     verbosity: VerbosityOption = 0,
 ):
     """Get the available language codes as a JSON list."""
@@ -64,8 +62,8 @@ def list_langs(
 
 @app.command()
 def repl(
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
     *,
+    props_file: PropsOption = DEFAULT_PROPS_FILE,
     lang: Union[str, None] = None,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
@@ -104,43 +102,9 @@ def repl(
 
 
 @app.command()
-def render_block(
-    block: str,
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
-    *,
-    verbosity: VerbosityOption = 0,
-):
-    """Render a 3D image of a block."""
-    props, pm, _ = load_common_data(props_file, verbosity)
-    with ModResourceLoader.load_all(props, pm, export=False) as loader:
-
-        class HexdocPythonResourceLoader(IPythonResourceLoader):
-            def loadJSON(self, resource_path: ResourcePath) -> str:
-                path = "assets" / Path(resourcePathAsString(resource_path))
-                return loader.load_resource(path, decode=lambda v: v)[1]
-
-            def loadTexture(self, resource_path: ResourcePath) -> str:
-                path = "assets" / Path(resourcePathAsString(resource_path))
-                _, resolved_path = loader.find_resource(path)
-                with open(resolved_path, "rb") as f:
-                    return base64.b64encode(f.read()).decode()
-
-        render_loader = createMultiloader(
-            PythonLoaderWrapper(HexdocPythonResourceLoader()),
-            MinecraftAssetsLoader.fetchAll(
-                props.minecraft_assets.ref,
-                props.minecraft_assets.version,
-            ),
-        )
-        renderer = RenderClass(render_loader, {"outDir": "out"})
-        output_path = renderer.renderToFile(block)
-        print(f"Rendered: {output_path}")
-
-
-@app.command()
 def export(
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
     *,
+    props_file: PropsOption = DEFAULT_PROPS_FILE,
     lang: Union[str, None] = None,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
@@ -152,9 +116,9 @@ def export(
 
 @app.command()
 def render(
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
     *,
+    props_file: PropsOption = DEFAULT_PROPS_FILE,
     update_latest: UpdateLatestOption = True,
     release: ReleaseOption = False,
     clean: bool = False,
@@ -265,8 +229,8 @@ def merge(
 
 @app.command()
 def serve(
-    props_file: PathArgument = DEFAULT_PROPS_FILE,
     *,
+    props_file: PropsOption = DEFAULT_PROPS_FILE,
     port: int = 8000,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
