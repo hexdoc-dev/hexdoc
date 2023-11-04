@@ -8,5 +8,5 @@
     ],
     "ignore": ["**/generated/**"],
     "ext": "jinja,html,css,js,ts,toml,json,json5,py",
-    "exec": "hexdoc serve test/_submodules/HexMod/doc/properties.toml --lang en_us --allow-missing"
+    "exec": "hexdoc export -p properties.toml && hexdoc serve --props test/_submodules/HexMod/doc/properties.toml --lang en_us --allow-missing"
 }
