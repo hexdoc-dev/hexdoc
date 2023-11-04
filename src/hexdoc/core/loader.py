@@ -8,7 +8,7 @@ from collections.abc import Iterator
 from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, Literal, Self, TypeVar, overload
+from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
@@ -34,9 +34,9 @@ ExportFn = Callable[[_T, _T | None], str]
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
     props: Properties
-    book_id: ResourceLocation | None
+    root_book_id: ResourceLocation | None
     export_dir: Path | None
-    resource_dirs: list[PathResourceDir]
+    resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
 
     @classmethod
@@ -75,7 +75,7 @@ class ModResourceLoader:
         stack = ExitStack()
         return cls(
             props=props,
-            book_id=props.book,
+            root_book_id=props.book,
             export_dir=export_dir,
             resource_dirs=[
                 path_resource_dir
@@ -144,22 +144,26 @@ class ModResourceLoader:
         folder: Literal["categories", "entries", "templates"],
         use_resource_pack: bool,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
-        is_extension = book_id != self.book_id
-        if is_extension:
-            yield from self._load_book_assets(
-                book_id,
-                folder,
-                use_resource_pack=use_resource_pack,
-                allow_missing=True,
-            )
+        if not self.root_book_id:
+            raise RuntimeError("Unable to call load_book_assets, root_book_id is None")
 
-        if self.book_id:
-            yield from self._load_book_assets(
-                self.book_id,
-                folder,
-                use_resource_pack=use_resource_pack,
-                allow_missing=is_extension,
-            )
+        # self.root_book_id: hexcasting:thehexbook
+        # book_id:           hexal:hexalbook
+        if book_id != self.root_book_id:
+            for extra_book_id in [book_id] + self.props.extra_books:
+                yield from self._load_book_assets(
+                    extra_book_id,
+                    folder,
+                    use_resource_pack=use_resource_pack,
+                    allow_missing=True,
+                )
+
+        yield from self._load_book_assets(
+            self.root_book_id,
+            folder,
+            use_resource_pack=use_resource_pack,
+            allow_missing=False,
+        )
 
     def _load_book_assets(
         self,

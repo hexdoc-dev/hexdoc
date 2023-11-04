@@ -79,7 +79,7 @@ class Book(HexdocModel):
         data = cls._load_book_resource(loader, id)
 
         if IsVersion("<=1.19") and "extend" in data:
-            id = loader.book_id = ResourceLocation.model_validate(data["extend"])
+            id = loader.root_book_id = ResourceLocation.model_validate(data["extend"])
             return cls._load_book_resource(loader, id)
 
         return data

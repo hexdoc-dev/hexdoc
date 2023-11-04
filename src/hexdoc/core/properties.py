@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Annotated, Any, Self
+from typing import Annotated, Any, Self, Sequence
 
 from pydantic import AfterValidator, Field, HttpUrl, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -126,12 +126,13 @@ class BaseProperties(StripHiddenModel):
 class Properties(BaseProperties):
     modid: str
     book: ResourceLocation | None
+    extra_books: list[ResourceLocation] = Field(default_factory=list)
     default_lang: str
     is_0_black: bool = Field(default=False)
     """If true, the style `$(0)` changes the text color to black; otherwise it resets
     the text color to the default."""
 
-    resource_dirs: list[ResourceDir]
+    resource_dirs: Sequence[ResourceDir]
     export_dir: RelativePath | None = None
 
     entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
