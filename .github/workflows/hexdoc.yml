@@ -87,11 +87,11 @@ jobs:
         run: |
           if [[ ${{ inputs.checkout }} == true ]]; then
             branch='${{ inputs.branch }}'
-            props_path=_checkout/doc/properties.toml
+            props_path=_checkout/${{ inputs.props-path }}
             echo "HATCH_GRADLE_DIR=_checkout" >> "$GITHUB_ENV"
           else
             branch=none
-            props_path=doc/properties.toml
+            props_path=${{ inputs.props-path }}
           fi
 
           echo "PROPS_PATH=$props_path" >> "$GITHUB_ENV"
