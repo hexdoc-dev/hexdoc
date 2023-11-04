@@ -41,6 +41,7 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
 
 
 @longrun
+@pytest.mark.dependency()
 def test_render_app(app_output_dir: Path):
     render(
         props_file=PROPS_FILE,
@@ -50,6 +51,7 @@ def test_render_app(app_output_dir: Path):
 
 
 @longrun
+@pytest.mark.dependency()
 def test_render_subprocess(subprocess_output_dir: Path):
     cmd = [
         "hexdoc",
@@ -58,10 +60,10 @@ def test_render_subprocess(subprocess_output_dir: Path):
         subprocess_output_dir.as_posix(),
         "--lang=en_us",
     ]
-    subprocess.run(cmd)
+    subprocess.run(cmd, check=True)
 
 
-@longrun
+@pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
 @pytest.mark.parametrize("filename", RENDERED_FILENAMES)
 def test_files(
     filename: str,
