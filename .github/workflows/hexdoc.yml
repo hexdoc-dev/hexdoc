@@ -92,7 +92,6 @@ jobs:
       
       - name: Checkout input branch
         if: steps.parse-inputs.outputs.branch != 'none'
-        id: checkout-input
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.parse-inputs.outputs.branch }}
@@ -131,13 +130,13 @@ jobs:
           path: dist
 
       - name: Copy build to Pages
-        if: steps.parse-inputs.outputs.update-latest
+        if: env.UPDATE_LATEST
         run: |
           mkdir -p _site/v/latest
           cp -r dist _site/v/latest/dist
 
       - name: Upload temporary Pages artifact
-        if: steps.parse-inputs.outputs.update-latest
+        if: env.UPDATE_LATEST
         uses: actions/upload-artifact@v3
         with:
           name: github-pages-tmp
