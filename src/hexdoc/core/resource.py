@@ -151,6 +151,9 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
     def __truediv__(self, other: str) -> Self:
         return ResourceLocation(self.namespace, f"{self.path}/{other}")
 
+    def __rtruediv__(self, other: str) -> Self:
+        return ResourceLocation(self.namespace, f"{other}/{self.path}")
+
     def __repr__(self) -> str:
         s = super().__repr__()
         if self.is_tag:

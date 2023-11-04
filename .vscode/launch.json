@@ -27,6 +27,17 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": false
+        },
+        {
+            "name": "Python: hexdoc repl",
+            "type": "python",
+            "request": "launch",
+            "module": "hexdoc.cli.main",
+            "args": [
+                "repl",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }

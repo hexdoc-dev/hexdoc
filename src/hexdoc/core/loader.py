@@ -5,11 +5,12 @@ from __future__ import annotations
 import logging
 import subprocess
 from collections.abc import Iterator
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, TypeVar, overload
 
+from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
 
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContext
@@ -30,12 +31,13 @@ _T_Model = TypeVar("_T_Model", bound=HexdocModel)
 ExportFn = Callable[[_T, _T | None], str]
 
 
-@dataclass(config=DEFAULT_CONFIG, kw_only=True)
+@dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
     props: Properties
     book_id: ResourceLocation | None
     export_dir: Path | None
     resource_dirs: list[PathResourceDir]
+    _stack: SkipValidation[ExitStack]
 
     @classmethod
     def clean_and_load_all(
@@ -62,29 +64,35 @@ class ModResourceLoader:
         return cls.load_all(props, pm, export=export)
 
     @classmethod
-    @contextmanager
     def load_all(
         cls,
         props: Properties,
         pm: PluginManager,
         *,
         export: bool = True,
-    ) -> Iterator[Self]:
+    ) -> Self:
         export_dir = props.export_dir if export else None
+        stack = ExitStack()
+        return cls(
+            props=props,
+            book_id=props.book,
+            export_dir=export_dir,
+            resource_dirs=[
+                path_resource_dir
+                for resource_dir in props.resource_dirs
+                for path_resource_dir in stack.enter_context(resource_dir.load(pm))
+            ],
+            _stack=stack,
+        )
 
-        with ExitStack() as stack:
-            loader = cls(
-                props=props,
-                book_id=props.book,
-                export_dir=export_dir,
-                resource_dirs=[
-                    path_resource_dir
-                    for resource_dir in props.resource_dirs
-                    for path_resource_dir in stack.enter_context(resource_dir.load(pm))
-                ],
-            )
+    def __enter__(self):
+        return self
 
-            yield loader
+    def __exit__(self, *exc_details: Any):
+        return self._stack.__exit__(*exc_details)
+
+    def close(self):
+        self._stack.close()
 
     def _map_own_assets(self, folder: str, *, root: str | Path):
         return {

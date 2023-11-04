@@ -1,4 +1,5 @@
 import logging
+import sys
 
 
 def setup_logging(verbosity: int):
@@ -18,3 +19,24 @@ def log_level(verbosity: int) -> int:
             return logging.INFO
         case _:
             return logging.DEBUG
+
+
+def repl_readfunc():
+    exit_next = False
+
+    def inner(prompt: str) -> str:
+        nonlocal exit_next
+        try:
+            response = input(prompt)
+            exit_next = False
+            return response
+        except KeyboardInterrupt:
+            if exit_next:
+                print("\nExiting.")
+                sys.exit()
+
+            print(f"\nPress ctrl+c again to exit.", end="")
+            exit_next = True
+            raise
+
+    return inner

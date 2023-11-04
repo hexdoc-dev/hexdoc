@@ -1,10 +1,13 @@
 import base64
+import code
 import json
 import logging
 import os
 import shutil
+import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
+from textwrap import dedent
 from typing import Annotated, Union
 
 import typer
@@ -18,12 +21,13 @@ from minecraft_render import (
     resourcePathAsString,
 )
 
+from hexdoc.cli.utils.logging import repl_readfunc
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets.textures import AnimatedTexture, Texture
 
-from .utils.load import load_book, load_books, load_common_data
+from .utils.load import load_book, load_book_and_loader, load_books, load_common_data
 from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
     assert_version_exists,
@@ -56,6 +60,47 @@ def list_langs(
     with ModResourceLoader.load_all(props, pm, export=False) as loader:
         langs = sorted(I18n.list_all(loader))
         print(json.dumps(langs))
+
+
+@app.command()
+def repl(
+    props_file: PathArgument = DEFAULT_PROPS_FILE,
+    *,
+    lang: Union[str, None] = None,
+    allow_missing: bool = False,
+    verbosity: VerbosityOption = 0,
+):
+    """Start a Python shell with some helpful extra locals added from hexdoc."""
+    props, pm, _ = load_common_data(props_file, verbosity)
+
+    _, book, i18n, loader, context = load_book_and_loader(
+        props.book,
+        props,
+        pm,
+        lang,
+        allow_missing,
+        export=False,
+    )
+
+    repl_locals = dict(
+        props=props,
+        pm=pm,
+        book=book,
+        i18n=i18n,
+        loader=loader,
+        context=context,
+    )
+
+    code.interact(
+        banner=dedent(
+            f"""\
+            [hexdoc repl] Python {sys.version}
+            Locals: {', '.join(sorted(repl_locals.keys()))}"""
+        ),
+        readfunc=repl_readfunc(),
+        local=repl_locals,
+        exitmsg="",
+    )
 
 
 @app.command()
@@ -102,7 +147,7 @@ def export(
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, _ = load_common_data(props_file, verbosity)
-    load_book(props.book, props, pm, lang, allow_missing)
+    load_book(props.book, props, pm, lang, allow_missing, export=True)
 
 
 @app.command()

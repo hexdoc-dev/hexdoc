@@ -72,6 +72,7 @@ def load_book(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
+    export: bool,
 ) -> tuple[str, Book, I18n]:
     ...
 
@@ -83,6 +84,7 @@ def load_book(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
+    export: bool,
 ) -> tuple[str, None, I18n]:
     ...
 
@@ -93,22 +95,70 @@ def load_book(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
+    export: bool,
 ):
+    """lang, book, i18n"""
+    lang, book, i18n, loader, _ = load_book_and_loader(
+        book_id=book_id,
+        props=props,
+        pm=pm,
+        lang=lang,
+        allow_missing=allow_missing,
+        export=export,
+    )
+    loader.close()
+    return lang, book, i18n
+
+
+@overload
+def load_book_and_loader(
+    book_id: ResourceLocation,
+    props: Properties,
+    pm: PluginManager,
+    lang: str | None,
+    allow_missing: bool,
+    export: bool,
+) -> tuple[str, Book, I18n, ModResourceLoader, BookContext]:
+    ...
+
+
+@overload
+def load_book_and_loader(
+    book_id: None,
+    props: Properties,
+    pm: PluginManager,
+    lang: str | None,
+    allow_missing: bool,
+    export: bool,
+) -> tuple[str, None, I18n, ModResourceLoader, None]:
+    ...
+
+
+def load_book_and_loader(
+    book_id: ResourceLocation | None,
+    props: Properties,
+    pm: PluginManager,
+    lang: str | None,
+    allow_missing: bool,
+    export: bool,
+) -> tuple[str, Book | None, I18n, ModResourceLoader, BookContext | None]:
     """lang, book, i18n"""
     if lang is None:
         lang = props.default_lang
 
-    with ModResourceLoader.clean_and_load_all(props, pm) as loader:
-        all_metadata = load_all_metadata(props, pm, loader)
-        i18n = _load_i18n(loader, None, allow_missing)[lang]
+    loader = ModResourceLoader.clean_and_load_all(props, pm, export=export)
 
-        if book_id:
-            data = Book.load_book_json(loader, book_id)
-            book = _load_book(data, pm, loader, i18n, all_metadata)
-        else:
-            book = None
+    all_metadata = load_all_metadata(props, pm, loader)
+    i18n = _load_i18n(loader, None, allow_missing)[lang]
 
-    return lang, book, i18n
+    if book_id:
+        data = Book.load_book_json(loader, book_id)
+        book, context = _load_book(data, pm, loader, i18n, all_metadata)
+    else:
+        book = None
+        context = None
+
+    return lang, book, i18n, loader, context
 
 
 def load_books(
@@ -127,7 +177,7 @@ def load_books(
         books = dict[str, tuple[Book, I18n]]()
 
         for lang, i18n in _load_i18n(loader, lang, allow_missing).items():
-            book = _load_book(book_data, pm, loader, i18n, all_metadata)
+            book, _ = _load_book(book_data, pm, loader, i18n, all_metadata)
             books[lang] = (book, i18n)
             loader.export_dir = None  # only export the first (default) book
 
@@ -151,7 +201,7 @@ def _load_book(
             all_metadata=all_metadata,
         )
         pm.update_context(context)
-    return Book.load_all_from_data(data, context)
+    return Book.load_all_from_data(data, context), context
 
 
 def _load_i18n(
