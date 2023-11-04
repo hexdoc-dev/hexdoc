@@ -95,7 +95,7 @@
 <div class="container">
     <header class="jumbotron">
       <h1 class="book-title">Hex Notebook</h1>
-      <p>I seem to have discovered a new method of magical arts, in which one draws patterns strange and wild onto a hexagonal grid. It fascinates me. I&#39;ve decided to start a journal of my thoughts and findings.</p><p><a href='https://forum.petra-k.at/index.php'>Forum Link</a></p>
+      <p>I seem to have discovered a new method of magical arts, in which one draws patterns strange and wild onto a hexagonal grid. It fascinates me. I&#39;ve decided to start a journal of my thoughts and findings.</p><p><a href='https://forum.petra-k.at/index.php' target='_blank'>Forum Link</a></p>
     </header>
 <div id="table-of-contents"></div>
 <nav class="toc-container">
@@ -391,7 +391,7 @@
 <br />
       <p>I have also found an amusing tidbit on why so many practitioners of magic in general seem to go mad, which I may like as some light and flavorful reading not canonical to my world.</p><p><i>Content Warning: some body horror and suggestive elements.</i></p>
   <h4 class="linkout">
-    <a href="https://goblinpunch.blogspot.com/2014/05/a-digression-about-wizards.html">Goblin Punch</a>
+    <a href="https://goblinpunch.blogspot.com/2014/05/a-digression-about-wizards.html" target="_blank">Goblin Punch</a>
   </h4>
 <br />
     <p>Finally, it seems spells have a maximum range of influence, about 32 blocks from my position. Trying to affect anything outside of that will cause the spell to fail.</p><p>Despite this, if I have a player&#39;s reference, I can affect them from anywhere. This only applies to affecting them directly, though; I cannot use this to affect the world around them if they&#39;re outside of my range.<br />I ought to be careful when giving out a reference like that. While friendly <span style='color: #b38ef3'>Hexcasters</span> could use them to great effect and utility, I shudder to think of what someone malicious might do with this.</p>
@@ -409,14 +409,14 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
       <p>It seems I will need to be adroit with vectors if I am to get anywhere in my studies. I have compiled some resources here on vectors if I find I do not know how to work with them.</p><p>First off, an enlightening video on the topic.</p>
   <h4 class="linkout">
-    <a href="https://www.youtube.com/watch?v=fNk_zzaMoSs">3blue1brown</a>
+    <a href="https://www.youtube.com/watch?v=fNk_zzaMoSs" target="_blank">3blue1brown</a>
   </h4>
 <br />
     <p>Additionally, it seems that the mages who manipulated <span style='color: #8d6acc'>Psi energy</span> (the so-called &#34;spellslingers&#34;), despite their poor naming sense, had some quite-effective lessons on vectors to teach their acolytes. I&#39;ve taken the liberty of linking to one of their texts on the next page.</p><p>They seem to have used different language for their spellcasting:</p><p class='fake-li'>A &#34;Spell Piece&#34; was their name for an action;</p><p class='fake-li'>a &#34;Trick&#34; was their name for a spell; and</p><p class='fake-li'>an &#34;Operator&#34; was their name for a non-spell action.</p>
 <br />
       <p>Link here.</p>
   <h4 class="linkout">
-    <a href="https://psi.vazkii.us/codex.php#vectorPrimer">Psi Codex</a>
+    <a href="https://psi.vazkii.us/codex.php#vectorPrimer" target="_blank">Psi Codex</a>
   </h4>
 <br />
 </div>
@@ -476,7 +476,7 @@
     <p>I tried to cast an action that has been disallowed by a server administrator.</p><p>Causes black sparks.</p>
 <br />
   <h4>Catastrophic Failure</h4>
-    <p>A bug in the mod caused an iota of an invalid type or otherwise caused the spell to crash. <a href='https://github.com/gamma-delta/HexMod/issues'>Please open a bug report!</a></p><p>Causes black sparks.</p>
+    <p>A bug in the mod caused an iota of an invalid type or otherwise caused the spell to crash. <a href='https://github.com/gamma-delta/HexMod/issues' target='_blank'>Please open a bug report!</a></p><p>Causes black sparks.</p>
 <br />
 </div>
 <div id="casting/stack">
@@ -9632,7 +9632,7 @@
       <p>Perform multiplication or the dot product.</p>
   </div>
 <br />
-    <p>As such:</p><p class='fake-li'>With two numbers, combines them into their product.</p><p class='fake-li'>With a number and a vector, removes the number from the stack and multiplies each component of the vector by that number.</p><p class='fake-li'>With two vectors, combines them into their <a href='https://www.mathsisfun.com/algebra/vectors-dot-product.html'>dot product</a>.</p>
+    <p>As such:</p><p class='fake-li'>With two numbers, combines them into their product.</p><p class='fake-li'>With a number and a vector, removes the number from the stack and multiplies each component of the vector by that number.</p><p class='fake-li'>With two vectors, combines them into their <a href='https://www.mathsisfun.com/algebra/vectors-dot-product.html' target='_blank'>dot product</a>.</p>
 <br />
   <div id="patterns/math@hexcasting:div">
 <h4 class="pattern-title">Division Dstl. (num|vec, num|vec → num|vec)<a
@@ -9654,7 +9654,7 @@
       <p>Perform division or the cross product.</p>
   </div>
 <br />
-    <p>As such:</p><p class='fake-li'>With two numbers, combines them into their quotient.</p><p class='fake-li'>With a number and a vector, removes the number and divides it by each element of the vector.</p><p class='fake-li'>With two vectors, combines them into their <a href='https://www.mathsisfun.com/algebra/vectors-cross-product.html'>cross product</a>.</p><p>In the first and second cases, the top of the stack or its components comprise the dividend, and the second-from-the-top or its components are the divisor.</p><p>WARNING: Never divide by zero!</p>
+    <p>As such:</p><p class='fake-li'>With two numbers, combines them into their quotient.</p><p class='fake-li'>With a number and a vector, removes the number and divides it by each element of the vector.</p><p class='fake-li'>With two vectors, combines them into their <a href='https://www.mathsisfun.com/algebra/vectors-cross-product.html' target='_blank'>cross product</a>.</p><p>In the first and second cases, the top of the stack or its components comprise the dividend, and the second-from-the-top or its components are the divisor.</p><p>WARNING: Never divide by zero!</p>
 <br />
   <div id="patterns/math@hexcasting:abs">
 <h4 class="pattern-title">Length Purification (num|vec → number)<a
@@ -9698,7 +9698,7 @@
       <p>Perform exponentiation or vector projection.</p>
   </div>
 <br />
-    <p>With two numbers, combines them by raising the first to the power of the second.</p><p class='fake-li'>With a number and a vector, removes the number and raises each component of the vector to the number&#39;s power.</p><p class='fake-li'>With two vectors, combines them into the <a href='https://en.wikipedia.org/wiki/Vector_projection'>vector projection</a> of the top of the stack onto the second-from-the-top.</p><p>In the first and second cases, the first argument or its components are the base, and the second argument or its components are the exponent.</p>
+    <p>With two numbers, combines them by raising the first to the power of the second.</p><p class='fake-li'>With a number and a vector, removes the number and raises each component of the vector to the number&#39;s power.</p><p class='fake-li'>With two vectors, combines them into the <a href='https://en.wikipedia.org/wiki/Vector_projection' target='_blank'>vector projection</a> of the top of the stack onto the second-from-the-top.</p><p>In the first and second cases, the first argument or its components are the base, and the second argument or its components are the exponent.</p>
 <br />
   <div id="patterns/math@hexcasting:floor">
 <h4 class="pattern-title">Floor Purification (num|vec → num|vec)<a
@@ -10386,7 +10386,7 @@
 <br />
       <p>Although I can&#39;t pretend to know the mathematics behind calculating this permutation code, I have managed to dig up an extensive chart of them, enumerating all permutations of up to six elements.</p><p>If I wish to do further study, the key word is &#34;Lehmer Code.&#34;</p>
   <h4 class="linkout">
-    <a href="https://github.com/gamma-delta/HexMod/wiki/Table-of-Lehmer-Codes-for-Swindler&#39;s-Gambit">Table of Codes</a>
+    <a href="https://github.com/gamma-delta/HexMod/wiki/Table-of-Lehmer-Codes-for-Swindler&#39;s-Gambit" target="_blank">Table of Codes</a>
   </h4>
 <br />
 </div>

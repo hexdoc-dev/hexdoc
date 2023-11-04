@@ -212,7 +212,8 @@ class Style(HexdocModel, frozen=True):
 
             # links
             if name == SpecialStyleType.link.value:
-                return LinkStyle(value=_format_href(value, book_id))
+                value, external = _format_href(value, book_id)
+                return LinkStyle(value=value, external=external)
 
             # all the other functions
             if style_type := FunctionStyleType.get(name):
@@ -244,11 +245,13 @@ def is_external_link(value: str) -> bool:
     return value.startswith(("https:", "http:"))
 
 
-def _format_href(value: str, book_id: ResourceLocation) -> str | BookLink:
+def _format_href(value: str, book_id: ResourceLocation) -> tuple[str | BookLink, bool]:
+    if is_external_link(value):
+        return value, True
     # TODO: kinda hacky, BookLink should *probably* support query params
-    if value.startswith("?") or is_external_link(value):
-        return value
-    return BookLink.from_str(value, book_id)
+    if value.startswith("?"):
+        return value, False
+    return BookLink.from_str(value, book_id), False
 
 
 class CommandStyle(Style, frozen=True):
@@ -295,6 +298,7 @@ class FunctionStyle(Style, frozen=True):
 class LinkStyle(Style, frozen=True):
     type: Literal[SpecialStyleType.link] = SpecialStyleType.link
     value: str | BookLink
+    external: bool
 
     @pass_context
     def href(self, context: Context | dict[{"link_bases": BookLinkBases}]):

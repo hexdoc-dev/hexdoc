@@ -55,7 +55,9 @@ def hexdoc_block(value: FormatTree):
 
 def test_link():
     tree = format_with_mocks("$(l:http://google.com)A$(/l)")
-    assert hexdoc_block(tree) == "<p><a href='http://google.com'>A</a></p>"
+    assert (
+        hexdoc_block(tree) == "<p><a href='http://google.com' target='_blank'>A</a></p>"
+    )
 
 
 def test_link_in_color():
@@ -69,7 +71,7 @@ def test_link_in_color():
         """<p>
             <span style='color: #111'>
                 A
-                <a href='http://google.com'>
+                <a href='http://google.com' target='_blank'>
                     B
                 </a>
                 C
@@ -91,7 +93,7 @@ def test_colors_across_link():
             <span style='color: #111'>
                 A
             </span>
-            <a href='http://google.com'>
+            <a href='http://google.com' target='_blank'>
                 <span style='color: #222'>
                     C
                 </span>
@@ -124,6 +126,7 @@ def test_format_string():
                                 "patterns/readwrite#hexcasting:write/local",
                                 ResourceLocation("hexcasting", "thehexbook"),
                             ),
+                            external=False,
                         ),
                         children=[
                             FormatTree(
@@ -142,6 +145,7 @@ def test_format_string():
                                 "patterns/readwrite#hexcasting:write/local",
                                 ResourceLocation("hexcasting", "thehexbook"),
                             ),
+                            external=False,
                         ),
                         children=[
                             FormatTree(
@@ -160,6 +164,7 @@ def test_format_string():
                                 "items/focus",
                                 ResourceLocation("hexcasting", "thehexbook"),
                             ),
+                            external=False,
                         ),
                         children=[
                             FormatTree(
@@ -178,6 +183,7 @@ def test_format_string():
                                 "casting/influences",
                                 ResourceLocation("hexcasting", "thehexbook"),
                             ),
+                            external=False,
                         ),
                         children=[
                             FormatTree(
@@ -196,6 +202,7 @@ def test_format_string():
                                 "patterns/meta#hexcasting:for_each",
                                 ResourceLocation("hexcasting", "thehexbook"),
                             ),
+                            external=False,
                         ),
                         children=[
                             FormatTree(

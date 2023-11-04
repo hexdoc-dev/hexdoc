@@ -41,7 +41,7 @@
 {# LinkStyle #}
 
 {% macro special_link(style) -%}
-  <a href='{{ style.href() }}'>{{ caller() }}</a>
+  <a href='{{ style.href() }}'{{ " target='_blank'"|safe if style.external }}>{{ caller() }}</a>
 {%- endmacro %}
 
 {# ParagraphStyle #}
