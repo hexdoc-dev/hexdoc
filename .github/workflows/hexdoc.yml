@@ -27,6 +27,15 @@ on:
         description: Version segment to bump with Hatch
         type: string
         required: false
+      props-path:
+        description: Path to your properties.toml
+        type: string
+        required: false
+        default: doc/properties.toml
+      pip-extras:
+        description: Pip extras for your package (eg. [dev])
+        type: string
+        required: false
     outputs:
       publish-release:
         description: Value of publish-release input for convenience.
@@ -98,7 +107,7 @@ jobs:
           path: _checkout
 
       - name: Install docgen from source
-        run: pip install . hatch
+        run: pip install .${{ inputs.pip-extras }} hatch
 
       - name: List book languages
         id: list-langs
@@ -165,6 +174,7 @@ jobs:
         with:
           name: hexdoc-build
           python-version: ${{ inputs.python-version }}
+          pip-extras: ${{ inputs.pip-extras }}
 
       - name: Checkout input branch
         if: needs.build.outputs.branch != 'none'
@@ -207,6 +217,7 @@ jobs:
         with:
           name: hexdoc-build
           python-version: ${{ inputs.python-version }}
+          pip-extras: ${{ inputs.pip-extras }}
       
       - name: Checkout current Pages
         uses: actions/checkout@v3

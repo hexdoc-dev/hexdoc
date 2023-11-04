@@ -8,6 +8,9 @@ inputs:
   python-version:
     description: Version range or exact version of Python to use.
     required: true
+  pip-extras:
+    description: Pip extras for your package (eg. [dev])
+    required: false
 
 runs:
   using: composite
@@ -28,5 +31,5 @@ runs:
       shell: bash
       run: |
         wheels=( _dist/*-py3-none-any.whl )
-        pip install "${wheels[0]}"
+        pip install "${wheels[0]}${{ inputs.pip-extras }}"
         rm -r _dist
