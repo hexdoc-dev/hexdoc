@@ -69,7 +69,7 @@ def assert_version_exists(*, root: Path, version: str):
 def delete_root_book(*, root: Path):
     """Remove the book from the site root."""
     for path in root.iterdir():
-        if path.name in ["v", "meta"]:
+        if path.name in ["v", "meta", "CNAME"]:
             continue
 
         if path.is_dir():
