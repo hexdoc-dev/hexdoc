@@ -170,7 +170,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: object-Object/hexdoc/.github/actions/install-artifact-wheel@v0
+      - uses: ./.github/actions/install-artifact-wheel
         with:
           name: hexdoc-build
           python-version: ${{ inputs.python-version }}
@@ -213,7 +213,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: object-Object/hexdoc/.github/actions/install-artifact-wheel@v0
+      - uses: ./.github/actions/install-artifact-wheel
         with:
           name: hexdoc-build
           python-version: ${{ inputs.python-version }}
