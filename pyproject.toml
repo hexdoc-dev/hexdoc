@@ -122,6 +122,7 @@ include_namespace_packages = true
 # formatting
 
 [tool.ruff]
+extend-select = ["I"]
 extend-exclude = [
     "vendor",
     "venv",

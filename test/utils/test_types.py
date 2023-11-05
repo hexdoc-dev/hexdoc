@@ -1,8 +1,7 @@
 import pytest
-from pydantic import TypeAdapter, ValidationError
-
 from hexdoc.model.types import Color
 from hexdoc.utils.types import PydanticOrderedSet
+from pydantic import TypeAdapter, ValidationError
 
 colors: list[str] = [
     "#0099FF",

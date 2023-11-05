@@ -4,11 +4,10 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from hexdoc._cli.app import export, render
 from hexdoc_hexcasting import _hooks
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
-
-from hexdoc._cli.app import export, render
 
 from ..conftest import longrun
 

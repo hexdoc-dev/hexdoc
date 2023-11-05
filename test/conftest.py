@@ -2,12 +2,11 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch, Parser
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
-
-from hexdoc.plugin import PluginManager
 
 longrun = pytest.mark.skipif("not config.getoption('longrun')")
 nox_only = pytest.mark.skipif("not config.getoption('nox')")

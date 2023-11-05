@@ -3,10 +3,6 @@
 from typing import Any, Callable
 
 import pytest
-from jinja2.sandbox import SandboxedEnvironment
-from markupsafe import Markup
-from pytest import FixtureRequest, Mark
-
 from hexdoc._cli.utils.render import create_jinja_env
 from hexdoc.plugin import (
     PluginManager,
@@ -14,6 +10,9 @@ from hexdoc.plugin import (
     UpdateTemplateArgsImpl,
     hookimpl,
 )
+from jinja2.sandbox import SandboxedEnvironment
+from markupsafe import Markup
+from pytest import FixtureRequest, Mark
 
 RenderTemplate = Callable[[], str]
 
