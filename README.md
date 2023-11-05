@@ -1,3 +1,12 @@
+<p align="center">
+  <img alt="hexdoc logo" src="https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.svg" height="128" />
+  <br /><br />
+  <a href="https://hexdoc.hexxy.media/"><img alt="Docs - hexdoc.hexxy.media" src="https://img.shields.io/badge/docs-hexdoc.hexxy.media-darkmagenta"></a>
+  <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/object-Object/hexdoc/pypi?logo=github&label=CI">
+  <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
+  <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
+</p>
+
 # hexdoc
 
 A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based documentation generator for [Patchouli](https://github.com/VazkiiMods/Patchouli) books.

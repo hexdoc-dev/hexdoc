@@ -30,7 +30,7 @@ jobs:
             --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/ \
             --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png \
             --footer-text "Version: $(hatch version) ($(git rev-parse --short HEAD))" \
-            --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png \
+            --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.svg \
             --logo-link https://pypi.org/project/hexdoc/ \
             --output-directory docs/
 
