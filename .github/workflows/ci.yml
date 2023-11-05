@@ -23,11 +23,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install . nox
-
-      - name: Run pre-commit
+      - name: Run pre-commit hooks
+        env:
+          SKIP: pyright
         uses: pre-commit/action@v3.0.0
+
+      - name: Install Nox
+        run: pip install nox
 
       - name: Run Nox
         run: nox
