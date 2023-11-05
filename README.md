@@ -4,7 +4,7 @@
   <a href="https://hexdoc.hexxy.media/"><img alt="Docs - hexdoc.hexxy.media" src="https://img.shields.io/badge/docs-hexdoc.hexxy.media-darkmagenta"></a>
   <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
-  <a href="https://github.com/object-Object/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/object-Object/hexdoc/ci.yml?logo=github&label=CI"></a>
+  <a href="https://github.com/object-Object/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/object-Object/hexdoc/ci.yml?logo=github&label=ci"></a>
 </p>
 
 # hexdoc
