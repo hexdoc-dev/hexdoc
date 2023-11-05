@@ -13,7 +13,7 @@ from hexdoc.core.compat import ValueIfVersion
 from hexdoc.core.loader import LoaderContext, ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResourceLocation
 from hexdoc.model import HexdocModel
-from hexdoc.utils.deserialize import cast_or_raise
+from hexdoc.utils import cast_or_raise
 from hexdoc.utils.deserialize.json import decode_and_flatten_json_dict
 
 

@@ -6,7 +6,7 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model.tagged_union import TypeTaggedUnion
-from hexdoc.utils.classproperty import classproperty
+from hexdoc.utils.classproperties import classproperty
 from hexdoc.utils.singletons import Inherit, InheritType, NoValue
 
 from ..text import FormatTree

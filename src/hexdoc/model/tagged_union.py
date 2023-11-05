@@ -9,12 +9,10 @@ from pydantic import ConfigDict, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.core.resource import ResourceLocation
-from hexdoc.plugin.manager import PluginManagerContext
-from hexdoc.utils.classproperty import classproperty
-from hexdoc.utils.deserialize import cast_or_raise
+from hexdoc.utils import cast_or_raise, classproperty
 from hexdoc.utils.singletons import Inherit, InheritType, NoValue, NoValueType
 
-from .base import HexdocModel
+from .base_model import HexdocModel, PluginManagerContext
 
 TagValue = str | NoValueType
 

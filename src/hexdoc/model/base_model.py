@@ -7,8 +7,9 @@ from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
 from pydantic.config import ConfigDict
 from pydantic.functional_validators import ModelBeforeValidator
 
-from hexdoc.utils.classproperty import ClassPropertyDescriptor
-from hexdoc.utils.contextmanagers import set_contextvar
+from hexdoc.plugin import PluginManager
+from hexdoc.utils import set_contextvar
+from hexdoc.utils.classproperties import ClassPropertyDescriptor
 
 DEFAULT_CONFIG = ConfigDict(
     extra="forbid",
@@ -60,6 +61,10 @@ class HexdocBaseModel(BaseModel):
 @dataclass_transform()
 class ValidationContext(HexdocBaseModel):
     """Base class for Pydantic validation context for `HexdocModel`."""
+
+
+class PluginManagerContext(ValidationContext, arbitrary_types_allowed=True):
+    pm: PluginManager
 
 
 @dataclass_transform()

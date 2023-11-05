@@ -5,13 +5,13 @@ from jinja2.runtime import Context
 from markupsafe import Markup
 from pydantic import ConfigDict, validate_call
 
-from hexdoc.core.properties import Properties
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import Properties, ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import Texture
 from hexdoc.patchouli import Book, FormatTree
-from hexdoc.plugin.manager import PluginManager
-from hexdoc.utils.deserialize import cast_or_raise
+from hexdoc.plugin import PluginManager
+
+from ..deserialize.assertions import cast_or_raise
 
 
 def hexdoc_wrap(value: str, *args: str):

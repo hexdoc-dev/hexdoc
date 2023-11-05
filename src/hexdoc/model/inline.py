@@ -9,10 +9,9 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 from hexdoc.core.loader import LoaderContext, ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.utils.deserialize import cast_or_raise
-from hexdoc.utils.deserialize.json import JSONDict
+from hexdoc.utils import JSONDict, cast_or_raise
 
-from .base import HexdocModel, ValidationContext
+from .base_model import HexdocModel, ValidationContext
 from .id import IDModel
 
 

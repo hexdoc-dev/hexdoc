@@ -8,9 +8,10 @@ from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResLoc, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import HexdocModel
+from hexdoc.model.types import Color
 from hexdoc.patchouli.text import BookLinkBases
-from hexdoc.utils.deserialize import cast_or_raise
-from hexdoc.utils.types import Color, sorted_dict
+from hexdoc.utils import cast_or_raise
+from hexdoc.utils.types import sorted_dict
 
 from .book_context import BookContext
 from .category import Category

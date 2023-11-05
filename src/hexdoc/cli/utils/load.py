@@ -3,17 +3,19 @@ import subprocess
 from pathlib import Path
 from typing import Any, Mapping, overload
 
-from hexdoc.core.compat import MinecraftVersion
-from hexdoc.core.loader import ModResourceLoader
-from hexdoc.core.metadata import HexdocMetadata
-from hexdoc.core.properties import Properties
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import (
+    HexdocMetadata,
+    MinecraftVersion,
+    ModResourceLoader,
+    Properties,
+    ResourceLocation,
+)
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import Texture
-from hexdoc.model.base import init_context
+from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
-from hexdoc.utils.deserialize import cast_or_raise
+from hexdoc.utils import cast_or_raise
 
 from .logging import setup_logging
 

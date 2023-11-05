@@ -1,13 +1,13 @@
 __all__ = [
-    "Recipe",
-    "ItemIngredient",
-    "ItemIngredientList",
-    "MinecraftItemIdIngredient",
-    "MinecraftItemTagIngredient",
     "CraftingRecipe",
     "CraftingShapedRecipe",
     "CraftingShapelessRecipe",
+    "ItemIngredient",
+    "ItemIngredientList",
     "ItemResult",
+    "MinecraftItemIdIngredient",
+    "MinecraftItemTagIngredient",
+    "Recipe",
 ]
 
 from .abstract_recipes import CraftingRecipe, Recipe

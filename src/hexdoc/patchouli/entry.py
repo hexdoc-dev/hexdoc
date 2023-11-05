@@ -2,17 +2,15 @@ from typing import Iterable, Iterator
 
 from pydantic import Field, ValidationInfo, model_validator
 
-from hexdoc.core.resource import ItemStack, ResourceLocation
+from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.recipe.abstract_recipes import CraftingRecipe
-from hexdoc.model.inline import IDModel
-from hexdoc.patchouli.page.abstract_pages import PageWithTitle
-from hexdoc.patchouli.text import FormatTree
-from hexdoc.utils.deserialize import cast_or_raise
-from hexdoc.utils.types import Color, Sortable
+from hexdoc.minecraft.recipe import CraftingRecipe
+from hexdoc.model import Color, IDModel
+from hexdoc.utils import Sortable, cast_or_raise
 
 from .book_context import BookContext
-from .page.pages import CraftingPage, Page
+from .page import CraftingPage, Page, PageWithTitle
+from .text import FormatTree
 
 
 class Entry(IDModel, Sortable):
@@ -54,7 +52,7 @@ class Entry(IDModel, Sortable):
 
     def preprocess_pages(self) -> Iterator[Page]:
         """Combines adjacent CraftingPage recipes as much as possible."""
-        accumulator = CraftingAccumulator.empty()
+        accumulator = _CraftingPageAccumulator.blank()
 
         for page in self.pages:
             match page:
@@ -73,7 +71,7 @@ class Entry(IDModel, Sortable):
                 ):
                     if accumulator.recipes:
                         yield accumulator
-                    accumulator = CraftingAccumulator.empty()
+                    accumulator = _CraftingPageAccumulator.blank()
                     accumulator.recipes += recipes
                     accumulator.title = title
                 case CraftingPage(
@@ -86,11 +84,11 @@ class Entry(IDModel, Sortable):
                     accumulator.text = text
                     accumulator.recipes += recipes
                     yield accumulator
-                    accumulator = CraftingAccumulator.empty()
+                    accumulator = _CraftingPageAccumulator.blank()
                 case _:
                     if accumulator.recipes:
                         yield accumulator
-                        accumulator = CraftingAccumulator.empty()
+                        accumulator = _CraftingPageAccumulator.blank()
                     yield page
 
         if accumulator.recipes:
@@ -109,9 +107,9 @@ class Entry(IDModel, Sortable):
         return self
 
 
-class CraftingAccumulator(PageWithTitle, template_type="patchouli:crafting"):
+class _CraftingPageAccumulator(PageWithTitle, template_type="patchouli:crafting"):
     recipes: list[CraftingRecipe] = Field(default_factory=list)
 
     @classmethod
-    def empty(cls):
+    def blank(cls):
         return cls.model_construct()

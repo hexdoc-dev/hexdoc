@@ -1,15 +1,16 @@
 __all__ = [
     "Book",
+    "BookContext",
     "Category",
     "Entry",
-    "Page",
     "FormatTree",
-    "BookContext",
+    "FormattingContext",
+    "page",
 ]
 
+from . import page
 from .book import Book
 from .book_context import BookContext
 from .category import Category
 from .entry import Entry
-from .page import Page
-from .text import FormatTree
+from .text import FormattingContext, FormatTree

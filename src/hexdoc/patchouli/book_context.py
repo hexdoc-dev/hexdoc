@@ -6,7 +6,7 @@ from hexdoc.core.metadata import MetadataContext
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
 from hexdoc.minecraft import Tag
-from hexdoc.model.base import ValidationContext
+from hexdoc.model.base_model import ValidationContext
 
 from .text import FormattingContext
 

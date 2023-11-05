@@ -12,15 +12,11 @@ from pydantic import Field, ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.loader import LoaderContext
-from hexdoc.core.resource import ResourceLocation
-from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.i18n import I18n, I18nContext
-from hexdoc.model import DEFAULT_CONFIG, HexdocModel
-from hexdoc.plugin.manager import PluginManager, PluginManagerContext
-from hexdoc.utils.classproperty import classproperty
-from hexdoc.utils.deserialize import cast_or_raise
-from hexdoc.utils.types import TryGetEnum
+from hexdoc.core import LoaderContext, ResourceLocation
+from hexdoc.minecraft import I18n, I18nContext, LocalizedStr
+from hexdoc.model import DEFAULT_CONFIG, HexdocModel, PluginManagerContext
+from hexdoc.plugin import PluginManager
+from hexdoc.utils import TryGetEnum, cast_or_raise, classproperty
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",

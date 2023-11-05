@@ -21,8 +21,6 @@ import pluggy
 from jinja2 import PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.model import ValidationContext
-
 if TYPE_CHECKING:
     from hexdoc.patchouli.book_context import BookContext
     from hexdoc.core.resource import ResourceLocation
@@ -227,10 +225,6 @@ class PluginManager:
         )
 
         return TypedHookCaller(modid, caller)
-
-
-class PluginManagerContext(ValidationContext, arbitrary_types_allowed=True):
-    pm: PluginManager
 
 
 def flatten(values: list[list[_T] | _T]) -> Iterator[_T]:

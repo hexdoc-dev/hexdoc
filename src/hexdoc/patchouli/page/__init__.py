@@ -1,18 +1,18 @@
 __all__ = [
+    "CraftingPage",
+    "EmptyPage",
+    "EntityPage",
+    "ImagePage",
+    "LinkPage",
+    "MultiblockPage",
     "Page",
     "PageWithText",
     "PageWithTitle",
-    "TextPage",
-    "ImagePage",
-    "CraftingPage",
-    "SmeltingPage",
-    "MultiblockPage",
-    "EntityPage",
-    "SpotlightPage",
-    "LinkPage",
-    "RelationsPage",
     "QuestPage",
-    "EmptyPage",
+    "RelationsPage",
+    "SmeltingPage",
+    "SpotlightPage",
+    "TextPage",
 ]
 
 from .abstract_pages import Page, PageWithText, PageWithTitle

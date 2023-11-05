@@ -91,14 +91,20 @@ class PluginImpl(Protocol):
 class ModVersionImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_mod_version() -> str:
-        """Return your plugin's mod version (ie. `GRADLE_VERSION`)."""
+        """Return your plugin's mod version (eg. `0.10.3` for Hex Casting).
+
+        This should generally use a constant from `__gradle_version__.py`.
+        """
         ...
 
 
 class MinecraftVersionImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_minecraft_version() -> str:
-        """Return the version of Minecraft supported by this version of your plugin."""
+        """Return the version of Minecraft supported by this version of your plugin.
+
+        This should generally use a constant from `__gradle_version__.py`.
+        """
         ...
 
 
@@ -111,24 +117,39 @@ class ValidateFormatTreeImpl(PluginImpl, Protocol):
         i18n: I18n,
         is_0_black: bool,
     ) -> None:
+        """This is called as the last step when a FormatTree (styled Patchouli text) is
+        generated. You can use this to modify or validate the text and styles.
+
+        For example, Hex Casting uses this to ensure all $(action) styles are in a link.
+        """
         ...
 
 
 class UpdateContextImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_update_context(context: BookContext) -> None:
+        """Modify the book validation context.
+
+        For example, Hex Casting uses this to add pattern data needed by pattern pages.
+        """
         ...
 
 
 class UpdateJinjaEnvImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_update_jinja_env(env: SandboxedEnvironment) -> None:
+        """Modify the Jinja environment/configuration.
+
+        This is called after hexdoc is done setting up the Jinja environment, before
+        rendering the book.
+        """
         ...
 
 
 class UpdateTemplateArgsImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_update_template_args(template_args: dict[str, Any]) -> None:
+        """Add extra template args (global variables for the Jinja templates)."""
         ...
 
 
@@ -149,4 +170,14 @@ class LoadTaggedUnionsImpl(PluginImpl, Protocol):
 class LoadJinjaTemplatesImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_load_jinja_templates() -> HookReturn[tuple[Package, str]]:
+        """Return the module that contains the folder with your plugin's Jinja
+        templates, and the name of that folder.
+
+        For example:
+        ```py
+        @hookimpl
+        def hexdoc_load_jinja_templates():
+            return hexdoc, "_templates"
+        ```
+        """
         ...

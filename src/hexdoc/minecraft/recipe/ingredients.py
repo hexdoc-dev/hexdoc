@@ -11,7 +11,7 @@ from hexdoc.minecraft.assets.textures import (
 from hexdoc.minecraft.tags import Tag
 from hexdoc.model import HexdocModel
 from hexdoc.model.tagged_union import NoValue, TypeTaggedUnion
-from hexdoc.utils.deserialize import cast_or_raise
+from hexdoc.utils import cast_or_raise
 from hexdoc.utils.iterators import listify
 
 
@@ -36,7 +36,7 @@ class ItemResult(HexdocModel):
     count: int = 1
 
 
-def to_list(value: Any):
+def _validate_single_item_to_list(value: Any):
     match value:
         case [*contents]:
             return contents
@@ -45,7 +45,7 @@ def to_list(value: Any):
 
 
 @listify
-def unwrap_tags(
+def _validate_flatten_nested_tags(
     ingredients: list[ItemIngredient],
     info: ValidationInfo,
 ) -> Iterator[ItemIngredient]:
@@ -55,10 +55,10 @@ def unwrap_tags(
         yield ingredient
 
         if isinstance(ingredient, MinecraftItemTagIngredient):
-            yield from unwrap_tag(ingredient.tag.id, context)
+            yield from _items_in_tag(ingredient.tag.id, context)
 
 
-def unwrap_tag(
+def _items_in_tag(
     tag_id: ResourceLocation,
     context: TextureContext,
 ) -> Iterator[ItemIngredient]:
@@ -74,11 +74,11 @@ def unwrap_tag(
                 context=context,
             )
         except ValidationError:
-            yield from unwrap_tag(id, context)
+            yield from _items_in_tag(id, context)
 
 
 ItemIngredientList = Annotated[
     list[ItemIngredient],
-    BeforeValidator(to_list),
-    AfterValidator(unwrap_tags),
+    BeforeValidator(_validate_single_item_to_list),
+    AfterValidator(_validate_flatten_nested_tags),
 ]

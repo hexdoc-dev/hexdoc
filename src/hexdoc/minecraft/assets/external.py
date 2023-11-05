@@ -3,6 +3,8 @@ from typing import TypedDict
 
 import requests
 
+# TODO: remove this file, use minecraft-render
+
 
 class MinecraftAssetsTextureContent(TypedDict):
     name: str

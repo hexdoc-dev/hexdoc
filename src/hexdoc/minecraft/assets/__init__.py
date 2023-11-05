@@ -1,19 +1,19 @@
 __all__ = [
     "AnimatedTexture",
+    "AnimationMeta",
     "ItemWithGaslightingTexture",
+    "ItemWithNormalTexture",
     "ItemWithTexture",
-    "MISSING_TEXTURE",
-    "TAG_TEXTURE",
     "TagWithTexture",
     "Texture",
     "TextureContext",
 ]
 
 from .textures import (
-    MISSING_TEXTURE,
-    TAG_TEXTURE,
     AnimatedTexture,
+    AnimationMeta,
     ItemWithGaslightingTexture,
+    ItemWithNormalTexture,
     ItemWithTexture,
     TagWithTexture,
     Texture,

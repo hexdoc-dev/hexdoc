@@ -116,6 +116,7 @@ include_namespace_packages = true
 [tool.isort]
 profile = "black"
 combine_as_imports = true
+sort_reexports = true
 known_first_party = ["hexdoc"]
 
 # type checking

@@ -7,7 +7,7 @@ from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
 from hexdoc.utils.deserialize.json import JSONDict
 
-from .base import HexdocModel, ValidationContext
+from .base_model import HexdocModel, ValidationContext
 
 
 @dataclass_transform()
