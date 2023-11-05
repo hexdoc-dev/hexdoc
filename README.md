@@ -1,10 +1,10 @@
 <p align="center">
   <img alt="hexdoc logo" src="https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.svg" height="200" />
   <br /><br />
-  <a href="https://hexdoc.hexxy.media/" target="_blank"><img alt="Docs - hexdoc.hexxy.media" src="https://img.shields.io/badge/docs-hexdoc.hexxy.media-darkmagenta"></a>
-  <a href="https://github.com/object-Object/hexdoc/actions" target="_blank"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/object-Object/hexdoc/pypi?logo=github&label=CI"></a>
-  <a href="https://pypi.org/project/hexdoc/" target="_blank"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
+  <a href="https://hexdoc.hexxy.media/"><img alt="Docs - hexdoc.hexxy.media" src="https://img.shields.io/badge/docs-hexdoc.hexxy.media-darkmagenta"></a>
+  <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
+  <a href="https://github.com/object-Object/hexdoc/actions"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/object-Object/hexdoc/pypi?logo=github&label=CI"></a>
 </p>
 
 # hexdoc
