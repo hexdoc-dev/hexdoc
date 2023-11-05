@@ -2,9 +2,15 @@
     "output_directory": "",
 
     "modid": "",
+    "book_id": "hexcasting:thehexbook",
     "mod_display_name": "{{ cookiecutter.modid|capitalize }}",
     "plugin_classname": "{{ cookiecutter.modid|capitalize }}Plugin",
+    
     "gradle_mod_version_key": "modVersion",
+    "multiloader": true,
+    "java_lang": ["java", "kotlin"],
+    "java_package": "com/example/{{ cookiecutter.modid }}",
+    "pattern_registry": "registry/{{ cookiecutter.modid|capitalize }}PatternRegistry.{{ 'java' if cookiecutter.java_lang == 'java' else 'kt' }}",
 
     "github_repo": "{{ cookiecutter.modid|capitalize }}",
     "author": "TODO",

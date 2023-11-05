@@ -5,18 +5,20 @@ from hexdoc.plugin import (
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
     ModVersionImpl,
+    MinecraftVersionImpl,
     hookimpl,
 )
 
 import {{ cookiecutter.__project_slug }}
 
-from .__gradle_version__ import GRADLE_VERSION
+from .__gradle_version__ import GRADLE_VERSION, MINECRAFT_VERSION
 
 
 class {{ cookiecutter.plugin_classname }}(
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
     ModVersionImpl,
+    MinecraftVersionImpl,
 ):
     @staticmethod
     @hookimpl
@@ -25,12 +27,17 @@ class {{ cookiecutter.plugin_classname }}(
 
     @staticmethod
     @hookimpl
+    def hexdoc_minecraft_version() -> str:
+        return MINECRAFT_VERSION
+
+    @staticmethod
+    @hookimpl
     def hexdoc_load_resource_dirs() -> HookReturn[Package]:
         # This needs to be a lazy import because they may not exist when this file is
         # first loaded, eg. when generating the contents of generated.
-        from ._export import generated, resources
+        from ._export import generated
 
-        return [generated, resources]
+        return generated
     
     @staticmethod
     @hookimpl

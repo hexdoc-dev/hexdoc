@@ -86,7 +86,7 @@ class Texture(InlineModel):
         for missing_id in props.textures.missing:
             for id in ids:
                 if id.match(missing_id):
-                    logging.getLogger(__name__).warn(message)
+                    logging.getLogger(__name__).warning(message)
                     return Texture(file_id=id, url=MISSING_TEXTURE)
 
         raise KeyError(message)

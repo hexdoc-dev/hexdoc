@@ -1,0 +1,27 @@
+name: Run CI
+
+on:
+  push:
+    branches: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Nox
+        run: pip install nox
+
+      - name: Run tests
+        run: nox
