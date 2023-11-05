@@ -10,6 +10,7 @@ from syrupy.types import SerializableData, SerializedData
 from hexdoc.plugin import PluginManager
 
 longrun = pytest.mark.skipif("not config.getoption('longrun')")
+nox_only = pytest.mark.skipif("not config.getoption('nox')")
 
 
 # https://stackoverflow.com/a/43938191
@@ -19,6 +20,12 @@ def pytest_addoption(parser: Parser):
         action="store_false",
         dest="longrun",
         help="disable longrun-decorated tests",
+    )
+    parser.addoption(
+        "--nox",
+        action="store_true",
+        dest="nox",
+        help="enable nox_only-decorated tests",
     )
 
 

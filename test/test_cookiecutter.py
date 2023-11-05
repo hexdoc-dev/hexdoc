@@ -11,10 +11,10 @@ from pytest_cookies.plugin import Cookies
 
 from hexdoc._cli.app import render
 
-from .conftest import longrun
+from .conftest import nox_only
 
 
-@longrun
+@nox_only
 def test_cookiecutter(cookies: Cookies, monkeypatch: MonkeyPatch):
     result = cookies.bake(
         {
