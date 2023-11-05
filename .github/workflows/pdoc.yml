@@ -18,7 +18,7 @@ jobs:
 
       - run: pip install -e .[pdoc] hatch
       - run: |-
-          pdoc hexdoc
+          pdoc hexdoc !hexdoc._cli !hexdoc._export !hexdoc._templates !hexdoc.__main__
             --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/
             --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png
             --footer-text "hexdoc $(hatch version) ($(git rev-parse --short HEAD))"
