@@ -10,10 +10,6 @@
     "[yaml][html][css][javascript][jinja-html][jinja-css][jinja-js]": {
         "editor.tabSize": 2,
     },
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.formatOnSave": true,
-    },
     "[html][jinja-html]": {
         "editor.rulers": [120],
     },
