@@ -4,6 +4,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from hexdoc_hexcasting import _hooks
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
@@ -22,6 +23,11 @@ RENDERED_FILENAMES = [
 ]
 
 
+def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
+    root = Path(root)
+    return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))
+
+
 @pytest.fixture(autouse=True)
 def patch_env(monkeypatch: MonkeyPatch):
     monkeypatch.setenv("GITHUB_REPOSITORY", "GITHUB_REPOSITORY")
@@ -32,12 +38,32 @@ def patch_env(monkeypatch: MonkeyPatch):
 
 @pytest.fixture(scope="session")
 def app_output_dir(tmp_path_factory: TempPathFactory) -> Path:
-    return tmp_path_factory.mktemp("app", numbered=False)
+    return tmp_path_factory.mktemp("app")
 
 
 @pytest.fixture(scope="session")
 def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
-    return tmp_path_factory.mktemp("subprocess", numbered=False)
+    return tmp_path_factory.mktemp("subprocess")
+
+
+@longrun
+@pytest.mark.dependency()
+def test_render_app_release(
+    monkeypatch: MonkeyPatch,
+    tmp_path_factory: TempPathFactory,
+    snapshot: SnapshotAssertion,
+):
+    monkeypatch.setattr(_hooks, "GRADLE_VERSION", "VERSION")
+    app_output_dir = tmp_path_factory.mktemp("app")
+
+    render(
+        output_dir=app_output_dir,
+        props_file=PROPS_FILE,
+        lang="en_us",
+        release=True,
+    )
+
+    assert list_directory(app_output_dir) == snapshot
 
 
 @longrun
@@ -61,6 +87,19 @@ def test_render_subprocess(subprocess_output_dir: Path):
         "--lang=en_us",
     ]
     subprocess.run(cmd, check=True)
+
+
+@pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
+def test_file_structure(
+    app_output_dir: Path,
+    subprocess_output_dir: Path,
+    snapshot: SnapshotAssertion,
+):
+    app_list = list_directory(app_output_dir)
+    subprocess_list = list_directory(subprocess_output_dir)
+
+    assert app_list == subprocess_list
+    assert app_list == snapshot
 
 
 @pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
