@@ -61,6 +61,7 @@ pdoc = [
 ]
 test = [
     "pytest~=7.4",
+    "pytest-cookies~=0.7.0",
     "pytest-dependency~=0.5.1",
     "syrupy~=4.6",
 ]
@@ -158,7 +159,6 @@ reportInvalidStubStatement = "error"
 reportInvalidTypeVarUse = "error"
 reportMatchNotExhaustive = "error"
 reportMissingParameterType = "error"
-reportMissingTypeStubs = "error"
 reportOverlappingOverload = "error"
 reportSelfClsParameterName = "error"
 reportTypeCommentUsage = "error"
@@ -185,3 +185,5 @@ reportUnusedExpression = "warning"
 reportUnusedFunction = "warning"
 reportUnusedImport = "warning"
 reportUnusedVariable = "warning"
+
+reportMissingTypeStubs = "none"
