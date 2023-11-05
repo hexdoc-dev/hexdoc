@@ -23,7 +23,13 @@ jobs:
       - run: pip install -e .[pdoc] hatch
       - name: Generate docs
         timeout-minutes: 1
-        run: pdoc hexdoc \!hexdoc._cli \!hexdoc._export \!hexdoc._templates --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/ --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png --logo-link https://pypi.org/project/hexdoc/ --output-directory docs/
+        run: |-
+          pdoc hexdoc \!hexdoc._cli \!hexdoc._export \!hexdoc._templates
+            --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/
+            --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png
+            --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png
+            --logo-link https://pypi.org/project/hexdoc/
+            --output-directory docs/
 
       - uses: actions/upload-pages-artifact@v2
         with:
