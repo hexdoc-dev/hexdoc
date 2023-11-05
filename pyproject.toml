@@ -121,17 +121,25 @@ include_namespace_packages = true
 
 # formatting
 
-[tool.isort]
-profile = "black"
-combine_as_imports = true
-sort_reexports = true
-known_first_party = ["hexdoc"]
+[tool.ruff]
+extend-exclude = [
+    "vendor",
+    "venv",
+    "**/.*",
+    "**/node_modules",
+    "**/__pycache__",
+    "test/_submodules",
+    "[{][{]cookiecutter.output_directory[}][}]",
+]
 
 # type checking
 
 [tool.pyright]
 pythonVersion = "3.11"
 pythonPlatform = "All"
+
+venvPath = "."
+venv = "venv"
 
 extraPaths = [
     "vendor",
