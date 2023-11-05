@@ -9,6 +9,7 @@ def tests(session: nox.Session):
 
     session.run("pyright", "--warnings")
 
+    session.env["GITHUB_PAGES_URL"] = "https://hexdoc.hexxy.media"  # TODO: remove
     session.run("hexdoc", "export", "--props", "properties.toml")
     session.run(
         "hexdoc", "export", "--props", "test/_submodules/HexMod/doc/properties.toml"
