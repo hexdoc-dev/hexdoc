@@ -20,7 +20,7 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
         cache: pip
-    
+
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:

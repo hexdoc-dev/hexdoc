@@ -5,7 +5,7 @@
     "book_id": "hexcasting:thehexbook",
     "mod_display_name": "{{ cookiecutter.modid|capitalize }}",
     "plugin_classname": "{{ cookiecutter.modid|capitalize }}Plugin",
-    
+
     "gradle_mod_version_key": "modVersion",
     "multiloader": true,
     "java_lang": ["java", "kotlin"],
@@ -17,7 +17,7 @@
     "main_branch": "main",
 
     "pages_url": "https://{{ cookiecutter.author|lower }}.github.io/{{ cookiecutter.github_repo }}/",
-    
+
     "pattern_regex": [
         "hex_latest",
         "hex_0.10.3",

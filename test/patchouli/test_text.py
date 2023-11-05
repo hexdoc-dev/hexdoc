@@ -3,11 +3,8 @@ from argparse import Namespace
 from typing import Any, cast
 
 import pytest
-from jinja2 import Environment, PackageLoader
-
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.i18n import I18n
 from hexdoc.patchouli.text import (
     DEFAULT_MACROS,
     BookLink,
@@ -18,7 +15,8 @@ from hexdoc.patchouli.text import (
     ParagraphStyle,
     SpecialStyleType,
 )
-from hexdoc.plugin.manager import PluginManager
+from hexdoc.plugin import PluginManager
+from jinja2 import Environment, PackageLoader
 
 
 class MockPluginManager:

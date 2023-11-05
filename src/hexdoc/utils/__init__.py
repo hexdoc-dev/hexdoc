@@ -32,7 +32,17 @@ __all__ = [
 from .cd import RelativePath, relative_path_root
 from .classproperties import classproperty
 from .contextmanagers import set_contextvar
-from .deserialize import *
+from .deserialize import (
+    JSONDict,
+    JSONValue,
+    TOMLDict,
+    TOMLValue,
+    cast_or_raise,
+    decode_and_flatten_json_dict,
+    decode_json_dict,
+    isinstance_or_raise,
+    load_toml_with_placeholders,
+)
 from .iterators import listify, must_yield_something
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType

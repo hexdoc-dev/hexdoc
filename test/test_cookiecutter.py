@@ -6,10 +6,9 @@ import sys
 from pathlib import Path
 from textwrap import dedent
 
+from hexdoc._cli.app import render
 from pytest import MonkeyPatch
 from pytest_cookies.plugin import Cookies
-
-from hexdoc._cli.app import render
 
 from .conftest import nox_only
 
@@ -35,7 +34,7 @@ def test_cookiecutter(cookies: Cookies, monkeypatch: MonkeyPatch):
 
     Path("gradle.properties").write_text(
         dedent(
-            f"""\
+            """\
             modVersion=1.0.0
             hexcastingVersion=0.11.1-7
             minecraftVersion=1.20.1
@@ -89,10 +88,11 @@ def test_cookiecutter(cookies: Cookies, monkeypatch: MonkeyPatch):
 
     (result.project_path / ".env").write_text(
         dedent(
-            f"""\
+            """\
             GITHUB_REPOSITORY=GITHUB/REPOSITORY
             GITHUB_SHA=GITHUB_SHA
-            GITHUB_PAGES_URL=GITHUB_PAGES_URL"""
+            GITHUB_PAGES_URL=GITHUB_PAGES_URL
+            """
         )
     )
 

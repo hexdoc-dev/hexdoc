@@ -22,10 +22,9 @@ from jinja2 import PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
 if TYPE_CHECKING:
-    from hexdoc.patchouli import BookContext
     from hexdoc.core import ResourceLocation
     from hexdoc.minecraft import I18n
-    from hexdoc.patchouli import FormatTree
+    from hexdoc.patchouli import BookContext, FormatTree
 
 from .specs import HEXDOC_PROJECT_NAME, HookReturns, PluginSpec
 
@@ -110,7 +109,7 @@ class PluginManager:
 
         match len(set(versions.values())):
             case 0:
-                raise ValueError(f"No plugins implement hexdoc_minecraft_version")
+                raise ValueError("No plugins implement hexdoc_minecraft_version")
             case 1:
                 return versions.popitem()[1]
             case n:

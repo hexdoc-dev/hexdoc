@@ -4,7 +4,6 @@ from contextvars import ContextVar
 from typing import TYPE_CHECKING, Any, ClassVar, Self, dataclass_transform
 
 from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
-from pydantic.config import ConfigDict
 from pydantic.functional_validators import ModelBeforeValidator
 
 from hexdoc.plugin import PluginManager

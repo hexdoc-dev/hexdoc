@@ -30,7 +30,7 @@ class Texture(InlineModel):
             "assets",
             namespace="*",
             folder="textures",
-            glob=f"**/*.png",
+            glob="**/*.png",
             allow_missing=True,
         ):
             if resource_dir.external:

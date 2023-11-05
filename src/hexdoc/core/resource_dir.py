@@ -19,7 +19,7 @@ class BaseResourceDir(HexdocModel, ABC):
     external: bool
     reexport: bool
     """If not set, the default value will be `not self.external`.
-    
+
     Must be defined AFTER `external` in the Pydantic model.
     """
 

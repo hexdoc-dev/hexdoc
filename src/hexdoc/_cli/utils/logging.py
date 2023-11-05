@@ -35,7 +35,7 @@ def repl_readfunc():
                 print("\nExiting.")
                 sys.exit()
 
-            print(f"\nPress ctrl+c again to exit.", end="")
+            print("\nPress ctrl+c again to exit.", end="")
             exit_next = True
             raise
 

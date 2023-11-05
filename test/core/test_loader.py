@@ -64,7 +64,8 @@ def test_multi_book(tmp_path: Path):
         with open(path / "tmp.json", "w") as f:
             json.dump(data, f)
 
-    sortkey: Callable[[JSONDict], str] = lambda v: str(v["id"])
+    def sortkey(v: JSONDict) -> str:
+        return str(v["id"])
 
     props = Properties.model_construct(
         modid="hexal",

@@ -7,7 +7,7 @@ let cycleNodes = [];
 function hookLoad(elem) {
   elem.addEventListener("toggle", () => {
     cycleNodes = document.querySelectorAll(".details-collapsible[open] .cycle-textures");
-    
+
     if (elem.hasAttribute("open")) {
       for (const child of cycleNodes) {
         setEnabledMultiTexture(child, cycleIndex);
@@ -82,7 +82,7 @@ function startGaslighting(timeMs) {
   if (newGaslight >= 40) {
     currentGaslight = newGaslight - 40;
   }
-  
+
   for (const elem of gaslightNodes) {
     setEnabledMultiTexture(elem, currentGaslight);
   }
@@ -185,7 +185,7 @@ function versionDropdownItem(sitemap, version) {
   } else {
     path = defaultPath;
   }
-  
+
   return dropdownItem(version, BOOK_URL + path);
 }
 
@@ -206,7 +206,7 @@ function dropdownSeparator() {
 function partition(array, predicate) {
   let matched = [];
   let unmatched = [];
-  
+
   array.forEach((value, index) => {
     if (predicate(value, index, array)) {
       matched.push(value);
@@ -245,7 +245,7 @@ function addDropdowns(sitemap) {
     dropdownSeparator(),
     ...versionDropdownItems(sitemap, versions),
   );
-  
+
   // languages for the current version
   const langNames = sitemap[VERSION].langNames;
   const langPaths = sitemap[VERSION].langPaths;

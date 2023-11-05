@@ -297,7 +297,7 @@ class LinkStyle(Style, frozen=True):
     external: bool
 
     @pass_context
-    def href(self, context: Context | dict[{"link_bases": BookLinkBases}]):
+    def href(self, context: Context | dict[{"link_bases": BookLinkBases}]):  # noqa
         match self.value:
             case str(href):
                 return href
