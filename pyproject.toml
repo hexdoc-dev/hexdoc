@@ -69,10 +69,10 @@ test = [
 ]
 dev = [
     "hexdoc[pdoc,test]",
-    "black==23.7.0",
-    "isort==5.12.0",
+    "ruff==0.1.4",
     "hatch",
     "nox",
+    "pre-commit",
 ]
 
 [project.urls]

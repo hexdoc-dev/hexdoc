@@ -53,6 +53,7 @@ python3.11 -m venv venv
 source venv/bin/activate  # everything else
 
 pip install -e .[dev]
+pre-commit install
 ```
 
 ## Usage
