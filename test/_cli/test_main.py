@@ -28,16 +28,16 @@ def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
     return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))
 
 
-@pytest.fixture(autouse=True)
-def patch_env(monkeypatch: MonkeyPatch):
-    monkeypatch.setenv("GITHUB_REPOSITORY", "GITHUB_REPOSITORY")
-    monkeypatch.setenv("GITHUB_SHA", "GITHUB_SHA")
-    monkeypatch.setenv("GITHUB_PAGES_URL", "GITHUB_PAGES_URL")
-    monkeypatch.setenv("DEBUG_GITHUBUSERCONTENT", "DEBUG_GITHUBUSERCONTENT")
+@pytest.fixture(autouse=True, scope="session")
+def patch_env(monkeysession: MonkeyPatch):
+    monkeysession.setenv("GITHUB_REPOSITORY", "GITHUB_REPOSITORY")
+    monkeysession.setenv("GITHUB_SHA", "GITHUB_SHA")
+    monkeysession.setenv("GITHUB_PAGES_URL", "GITHUB_PAGES_URL")
+    monkeysession.setenv("DEBUG_GITHUBUSERCONTENT", "DEBUG_GITHUBUSERCONTENT")
 
 
 @pytest.fixture(autouse=True, scope="session")
-def export_hexdoc_data():
+def export_hexdoc_data(patch_env: None):
     export(props_file=Path("properties.toml"))
     export(props_file=HEXCASTING_PROPS_FILE)
 

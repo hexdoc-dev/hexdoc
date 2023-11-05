@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from pytest import Parser
+from pytest import MonkeyPatch, Parser
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
@@ -53,3 +53,9 @@ def path_snapshot(snapshot: SnapshotAssertion):
 @pytest.fixture
 def pm():
     return PluginManager()
+
+
+@pytest.fixture(scope="session")
+def monkeysession():
+    with MonkeyPatch.context() as mp:
+        yield mp
