@@ -1,8 +1,9 @@
 {
     "watch": [
         "src",
-        "test/_submodules/HexMod/src",
-        "test/_submodules/HexMod/static",
+        "resources",
+        "vendor",
+        "test/_submodules/HexMod/doc/src",
         "test/_submodules/HexMod/doc/resources",
         "test/_submodules/HexMod/doc/properties.toml",
         "test/_submodules/HexMod/Common/src/main/resources/assets/*/lang"
