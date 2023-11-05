@@ -63,6 +63,7 @@ class EnvironmentVariableProps(BaseSettings):
 
 class TemplateProps(StripHiddenModel):
     static_dir: RelativePath | None = None
+    icon: RelativePath
     include: list[str]
 
     render: dict[Path, str] = Field(

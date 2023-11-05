@@ -1,11 +1,12 @@
 # pyright: reportUnknownMemberType=false, reportUnknownArgumentType=false
-# pyright: reportUnknownLambdaType=false
+# pyright: reportUnknownLambdaType=false, reportUnknownVariableType=false
 
 import logging
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
+from favicons import Favicons
 from jinja2 import ChoiceLoader, PrefixLoader, StrictUndefined, Template
 from jinja2.sandbox import SandboxedEnvironment
 
@@ -51,6 +52,13 @@ def create_jinja_env(pm: PluginManager, include: list[str]):
     return pm.update_jinja_env(env)
 
 
+class FaviconDict(TypedDict):
+    image_format: str
+    dimensions: tuple[int, int]
+    prefix: str
+    rel: str | None
+
+
 def render_book(
     *,
     props: Properties,
@@ -87,6 +95,15 @@ def render_book(
 
     logging.getLogger(__name__).info(f"Rendering {output_dir}")
 
+    output_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy(props.template.icon, output_dir)
+
+    with Favicons(props.template.icon, output_dir, base_url="") as favicons:
+        favicons.sgenerate()
+        # unfortunately this "strongly typed library" is full of unknown types
+        favicons_html: tuple[str, ...] = favicons.html()
+        favicons_formats: tuple[FaviconDict, ...] = favicons.formats()
+
     template_args: dict[str, Any] = {
         "book": book,
         "props": props,
@@ -100,6 +117,11 @@ def render_book(
         "animations": animations,
         "is_bleeding_edge": version == "latest",
         "link_bases": book.link_bases,
+        "favicons_html": favicons_html,
+        "favicons_formats": favicons_formats,
+        "icon_href": props.template.icon.name,
+        "safari_pinned_tab_href": "https://raw.githubusercontent.com/object-Object/hexdoc/main/media/safari-pinned-tab.svg",
+        "safari_pinned_tab_color": "#332233",
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,
             do_format=False,

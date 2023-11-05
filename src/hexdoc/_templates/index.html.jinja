@@ -3,13 +3,19 @@
   <head>
     {% block head %}
       <title>{{ _("hexdoc."~props.modid~".title") }}</title>
-      <link rel="icon shortcut apple-touch-icon" href="{{ icon_href }}">
 
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="description" content="{{ _('hexdoc.'~props.modid~'.description') }}" />
       <meta name="author" content="{{ author }}" />
     {% endblock head %}
+
+    {% block favicon %}
+      {% for element in favicons_html %}
+        {{ element|safe }}
+      {% endfor %}
+      <link rel="mask-icon" href="{{ safari_pinned_tab_href }}" color="{{ safari_pinned_tab_color }}">
+    {% endblock favicon %}
 
     {% block opengraph %}
       <meta property="og:type" content="website" />
