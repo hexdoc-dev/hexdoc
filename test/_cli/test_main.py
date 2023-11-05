@@ -8,11 +8,11 @@ from hexdoc_hexcasting import _hooks
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
-from hexdoc._cli.app import render
+from hexdoc._cli.app import export, render
 
 from ..conftest import longrun
 
-PROPS_FILE = Path("test/_submodules/HexMod/doc/properties.toml")
+HEXCASTING_PROPS_FILE = Path("test/_submodules/HexMod/doc/properties.toml")
 
 RENDERED_FILENAMES = [
     "v/latest/index.html",
@@ -34,6 +34,12 @@ def patch_env(monkeypatch: MonkeyPatch):
     monkeypatch.setenv("GITHUB_SHA", "GITHUB_SHA")
     monkeypatch.setenv("GITHUB_PAGES_URL", "GITHUB_PAGES_URL")
     monkeypatch.setenv("DEBUG_GITHUBUSERCONTENT", "DEBUG_GITHUBUSERCONTENT")
+
+
+@pytest.fixture(autouse=True, scope="session")
+def export_hexdoc_data():
+    export(props_file=Path("properties.toml"))
+    export(props_file=HEXCASTING_PROPS_FILE)
 
 
 @pytest.fixture(scope="session")
@@ -58,7 +64,7 @@ def test_render_app_release(
 
     render(
         output_dir=app_output_dir,
-        props_file=PROPS_FILE,
+        props_file=HEXCASTING_PROPS_FILE,
         lang="en_us",
         release=True,
     )
@@ -71,7 +77,7 @@ def test_render_app_release(
 def test_render_app(app_output_dir: Path):
     render(
         output_dir=app_output_dir,
-        props_file=PROPS_FILE,
+        props_file=HEXCASTING_PROPS_FILE,
         lang="en_us",
     )
 
@@ -83,7 +89,7 @@ def test_render_subprocess(subprocess_output_dir: Path):
         "hexdoc",
         "render",
         subprocess_output_dir.as_posix(),
-        f"--props={PROPS_FILE.as_posix()}",
+        f"--props={HEXCASTING_PROPS_FILE.as_posix()}",
         "--lang=en_us",
     ]
     subprocess.run(cmd, check=True)
