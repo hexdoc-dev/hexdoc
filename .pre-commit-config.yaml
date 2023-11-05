@@ -17,3 +17,4 @@ repos:
     hooks:
       - id: pyright
         args: ["--warnings"]
+        files: '^src/'
