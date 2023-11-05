@@ -10,7 +10,7 @@ from hexdoc._cli.app import render
 from pytest import MonkeyPatch
 from pytest_cookies.plugin import Cookies
 
-from .conftest import nox_only
+from ..conftest import nox_only
 
 
 @nox_only
@@ -112,6 +112,15 @@ def test_cookiecutter(cookies: Cookies, monkeypatch: MonkeyPatch):
 
     monkeypatch.syspath_prepend(result.project_path / "doc" / "src")
 
-    subprocess.run([sys.executable, "-m", "pip", "install", "-e", "."])
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", ".", "--force-reinstall", "--no-deps"],
+        check=True,
+    )
 
-    render()
+    try:
+        render()
+    finally:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "uninstall", "hexdoc-mod", "-y"],
+            check=True,
+        )
