@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from hexdoc._cli.app import export
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch, Parser
 from syrupy.assertion import SnapshotAssertion
@@ -44,6 +45,9 @@ class FilePathSnapshotExtension(SingleFileSnapshotExtension):
         return path.read_text(self._text_encoding)
 
 
+# fixtures
+
+
 @pytest.fixture
 def path_snapshot(snapshot: SnapshotAssertion):
     return snapshot.use_extension(FilePathSnapshotExtension)
@@ -58,3 +62,38 @@ def pm():
 def monkeysession():
     with MonkeyPatch.context() as mp:
         yield mp
+
+
+@pytest.fixture(scope="session")
+def env_overrides():
+    return {
+        "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
+        "GITHUB_SHA": "GITHUB_SHA",
+        "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
+        "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
+    }
+
+
+@pytest.fixture(scope="session")
+def hexcasting_props_file():
+    return Path("test/_submodules/HexMod/doc/properties.toml")
+
+
+@pytest.fixture(autouse=True, scope="session")
+def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
+    for name, value in env_overrides.items():
+        monkeysession.setenv(name, value)
+
+
+@pytest.fixture(autouse=True, scope="session")
+def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
+    export(props_file=Path("properties.toml"))
+    export(props_file=hexcasting_props_file)
+
+
+# helpers
+
+
+def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
+    root = Path(root)
+    return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))

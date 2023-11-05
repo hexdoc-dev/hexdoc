@@ -14,6 +14,9 @@
         "editor.rulers": [120],
     },
     "ruff.organizeImports": true,
+    "ruff.lint.args": [
+        "--extend-ignore=I", // format on save is enabled, so don't show the squiggles
+    ],
     "python.languageServer": "Pylance",
     "python.analysis.diagnosticMode": "workspace",
     "python.testing.unittestEnabled": false,
@@ -27,4 +30,7 @@
         "*.css[].].raw": "css",
         "*.js[].].raw": "javascript",
     },
+    "python.analysis.packageIndexDepths": [
+        {"name": "syrupy", "depth": 2},
+    ],
 }

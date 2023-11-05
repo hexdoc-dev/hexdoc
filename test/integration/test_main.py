@@ -4,41 +4,20 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from hexdoc._cli.app import export, render
+from hexdoc._cli.app import render
 from hexdoc_hexcasting import _hooks
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
-from ..conftest import longrun
+from ..conftest import list_directory, longrun
 
-HEXCASTING_PROPS_FILE = Path("test/_submodules/HexMod/doc/properties.toml")
-
-RENDERED_FILENAMES = [
+CHECK_RENDERED_FILENAMES = [
     "v/latest/index.html",
     "v/latest/index.css",
     "v/latest/textures.css",
     "v/latest/index.js",
     "v/latest/hexcasting.js",
 ]
-
-
-def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
-    root = Path(root)
-    return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))
-
-
-@pytest.fixture(autouse=True, scope="session")
-def patch_env(monkeysession: MonkeyPatch):
-    monkeysession.setenv("GITHUB_REPOSITORY", "GITHUB_REPOSITORY")
-    monkeysession.setenv("GITHUB_SHA", "GITHUB_SHA")
-    monkeysession.setenv("GITHUB_PAGES_URL", "GITHUB_PAGES_URL")
-    monkeysession.setenv("DEBUG_GITHUBUSERCONTENT", "DEBUG_GITHUBUSERCONTENT")
-
-
-@pytest.fixture(autouse=True, scope="session")
-def export_hexdoc_data(patch_env: None):
-    export(props_file=Path("properties.toml"))
-    export(props_file=HEXCASTING_PROPS_FILE)
 
 
 @pytest.fixture(scope="session")
@@ -57,13 +36,14 @@ def test_render_app_release(
     monkeypatch: MonkeyPatch,
     tmp_path_factory: TempPathFactory,
     snapshot: SnapshotAssertion,
+    hexcasting_props_file: Path,
 ):
     monkeypatch.setattr(_hooks, "GRADLE_VERSION", "VERSION")
     app_output_dir = tmp_path_factory.mktemp("app")
 
     render(
         output_dir=app_output_dir,
-        props_file=HEXCASTING_PROPS_FILE,
+        props_file=hexcasting_props_file,
         lang="en_us",
         release=True,
     )
@@ -73,22 +53,22 @@ def test_render_app_release(
 
 @longrun
 @pytest.mark.dependency()
-def test_render_app(app_output_dir: Path):
+def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
     render(
         output_dir=app_output_dir,
-        props_file=HEXCASTING_PROPS_FILE,
+        props_file=hexcasting_props_file,
         lang="en_us",
     )
 
 
 @longrun
 @pytest.mark.dependency()
-def test_render_subprocess(subprocess_output_dir: Path):
+def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",
         "render",
         subprocess_output_dir.as_posix(),
-        f"--props={HEXCASTING_PROPS_FILE.as_posix()}",
+        f"--props={hexcasting_props_file.as_posix()}",
         "--lang=en_us",
     ]
     subprocess.run(cmd, check=True)
@@ -108,7 +88,7 @@ def test_file_structure(
 
 
 @pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
-@pytest.mark.parametrize("filename", RENDERED_FILENAMES)
+@pytest.mark.parametrize("filename", CHECK_RENDERED_FILENAMES)
 def test_files(
     filename: str,
     app_output_dir: Path,

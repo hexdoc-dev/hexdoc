@@ -122,7 +122,13 @@ include_namespace_packages = true
 # formatting
 
 [tool.ruff]
-extend-select = ["I"]
+extend-select = [
+    "I", # import sorting
+]
+extend-ignore = [
+    # covered by Pyright
+    "F821", # undefined variable
+]
 extend-exclude = [
     "vendor",
     "venv",
@@ -165,7 +171,6 @@ strictSetInference = true
 reportAssertAlwaysTrue = "error"
 reportConstantRedefinition = "error"
 reportDeprecated = "error"
-reportDuplicateImport = "error"
 reportFunctionMemberAccess = "error"
 reportIncompatibleMethodOverride = "error"
 reportIncompatibleVariableOverride = "error"
@@ -204,3 +209,4 @@ reportUnusedImport = "warning"
 reportUnusedVariable = "warning"
 
 reportMissingTypeStubs = "none"
+reportDuplicateImport = "none"
