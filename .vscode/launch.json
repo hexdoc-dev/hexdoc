@@ -16,7 +16,7 @@
             "name": "Python: Generate Docs",
             "type": "python",
             "request": "launch",
-            "module": "hexdoc.cli.main",
+            "module": "hexdoc",
             "args": [
                 "render",
                 "doc/properties.toml",

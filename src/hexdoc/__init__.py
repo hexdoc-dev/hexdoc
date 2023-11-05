@@ -1,5 +1,5 @@
 """
-A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based website generator for [Patchouli](https://github.com/VazkiiMods/Patchouli) books.
+A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based documentation generator for [Patchouli](https://github.com/VazkiiMods/Patchouli) books.
 """
 
 # attempt to reduce the amount of breaking changes from moving hexdoc out of hexmod

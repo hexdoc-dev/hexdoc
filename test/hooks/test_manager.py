@@ -7,7 +7,7 @@ from jinja2.sandbox import SandboxedEnvironment
 from markupsafe import Markup
 from pytest import FixtureRequest, Mark
 
-from hexdoc.cli.utils.render import create_jinja_env
+from hexdoc._cli.utils.render import create_jinja_env
 from hexdoc.plugin import (
     PluginManager,
     UpdateJinjaEnvImpl,

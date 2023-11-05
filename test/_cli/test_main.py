@@ -7,7 +7,7 @@ import pytest
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
-from hexdoc.cli.main import render
+from hexdoc._cli.app import render
 
 from ..conftest import longrun
 
