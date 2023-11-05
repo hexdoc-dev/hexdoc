@@ -18,3 +18,5 @@ repos:
       - id: pyright
         args: ["--warnings"]
         files: '^src/'
+        additional_dependencies:
+          - "."
