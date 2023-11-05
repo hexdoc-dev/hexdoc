@@ -5,8 +5,7 @@ from pydantic import model_validator
 
 from hexdoc.minecraft.assets import Texture, TextureContext
 from hexdoc.model import HexdocModel
-
-from .properties import NoTrailingSlashHttpUrl
+from hexdoc.utils import NoTrailingSlashHttpUrl
 
 
 class HexdocMetadata(HexdocModel):

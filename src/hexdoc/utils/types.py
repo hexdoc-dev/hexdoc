@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from enum import Enum, unique
-from typing import Any, Mapping, Protocol, TypeVar, get_args
+from typing import Annotated, Any, Mapping, Protocol, TypeVar, get_args
 
 from ordered_set import OrderedSet, OrderedSetInitializer
-from pydantic import GetCoreSchemaHandler
+from pydantic import AfterValidator, GetCoreSchemaHandler, HttpUrl
 from pydantic_core import core_schema
 
 _T = TypeVar("_T")
@@ -100,3 +100,10 @@ class PydanticOrderedSet(OrderedSet[_T]):
 
     def _get_items(self):
         return self.items
+
+
+NoTrailingSlashHttpUrl = Annotated[
+    str,
+    HttpUrl,
+    AfterValidator(lambda u: str(u).rstrip("/")),
+]

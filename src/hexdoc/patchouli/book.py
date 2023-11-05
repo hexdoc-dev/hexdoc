@@ -3,20 +3,23 @@ from typing import Any, Literal, Mapping, Self
 
 from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
-from hexdoc.core.compat import AtLeast_1_20, Before_1_20, IsVersion
-from hexdoc.core.loader import ModResourceLoader
-from hexdoc.core.resource import ItemStack, ResLoc, ResourceLocation
+from hexdoc.core import (
+    AtLeast_1_20,
+    Before_1_20,
+    IsVersion,
+    ItemStack,
+    ModResourceLoader,
+    ResLoc,
+    ResourceLocation,
+)
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.model import HexdocModel
-from hexdoc.model.types import Color
-from hexdoc.patchouli.text import BookLinkBases
-from hexdoc.utils import cast_or_raise
-from hexdoc.utils.types import sorted_dict
+from hexdoc.model import Color, HexdocModel
+from hexdoc.utils import cast_or_raise, sorted_dict
 
 from .book_context import BookContext
 from .category import Category
 from .entry import Entry
-from .text import FormatTree
+from .text import BookLinkBases, FormatTree
 
 
 class Book(HexdocModel):

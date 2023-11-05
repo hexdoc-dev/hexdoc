@@ -8,7 +8,7 @@ from pydantic import GetCoreSchemaHandler, ValidationInfo
 from pydantic_core import core_schema
 from typing_extensions import override
 
-from hexdoc.model.base_model import HexdocBaseModel
+from hexdoc.model.base import HexdocBaseModel
 
 _T = TypeVar("_T")
 

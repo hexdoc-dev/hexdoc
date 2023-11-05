@@ -4,11 +4,9 @@ from typing import Iterator, Self
 
 from pydantic import Field
 
-from hexdoc.core.loader import LoaderContext
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import LoaderContext, ResourceLocation
 from hexdoc.model import HexdocModel
-from hexdoc.utils.deserialize.json import decode_json_dict
-from hexdoc.utils.types import PydanticOrderedSet
+from hexdoc.utils import PydanticOrderedSet, decode_json_dict
 
 
 class OptionalTagValue(HexdocModel, frozen=True):

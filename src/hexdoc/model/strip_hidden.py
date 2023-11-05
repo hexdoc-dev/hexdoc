@@ -2,7 +2,7 @@ from typing import Any, dataclass_transform
 
 from pydantic import model_validator
 
-from hexdoc.model import HexdocModel
+from .base import HexdocModel
 
 
 @dataclass_transform()

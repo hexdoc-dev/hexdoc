@@ -10,8 +10,7 @@ from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import Texture
 from hexdoc.patchouli import Book, FormatTree
 from hexdoc.plugin import PluginManager
-
-from ..deserialize.assertions import cast_or_raise
+from hexdoc.utils import cast_or_raise
 
 
 def hexdoc_wrap(value: str, *args: str):

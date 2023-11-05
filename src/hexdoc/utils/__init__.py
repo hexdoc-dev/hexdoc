@@ -4,6 +4,7 @@ __all__ = [
     "InheritType",
     "JSONDict",
     "JSONValue",
+    "NoTrailingSlashHttpUrl",
     "NoValue",
     "NoValueType",
     "PydanticOrderedSet",
@@ -35,4 +36,11 @@ from .deserialize import *
 from .iterators import listify, must_yield_something
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
-from .types import IProperty, PydanticOrderedSet, Sortable, TryGetEnum, sorted_dict
+from .types import (
+    IProperty,
+    NoTrailingSlashHttpUrl,
+    PydanticOrderedSet,
+    Sortable,
+    TryGetEnum,
+    sorted_dict,
+)

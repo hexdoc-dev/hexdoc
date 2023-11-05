@@ -2,17 +2,12 @@ from typing import Annotated, Any, Iterator
 
 from pydantic import AfterValidator, BeforeValidator, ValidationError, ValidationInfo
 
-from hexdoc.core.resource import ResourceLocation
-from hexdoc.minecraft.assets.textures import (
-    ItemWithTexture,
-    TagWithTexture,
-    TextureContext,
-)
-from hexdoc.minecraft.tags import Tag
-from hexdoc.model import HexdocModel
-from hexdoc.model.tagged_union import NoValue, TypeTaggedUnion
-from hexdoc.utils import cast_or_raise
-from hexdoc.utils.iterators import listify
+from hexdoc.core import ResourceLocation
+from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
+from hexdoc.utils import cast_or_raise, listify
+
+from ..assets import ItemWithTexture, TagWithTexture, TextureContext
+from ..tags import Tag
 
 
 class ItemIngredient(TypeTaggedUnion, type=None):

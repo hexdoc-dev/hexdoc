@@ -2,11 +2,10 @@ from typing import Self
 
 from pydantic import Field, model_validator
 
-from hexdoc.core.metadata import MetadataContext
-from hexdoc.core.resource import ResourceLocation
-from hexdoc.core.resource_dir import PathResourceDir
+from hexdoc.core import PathResourceDir, ResourceLocation
+from hexdoc.data import MetadataContext
 from hexdoc.minecraft import Tag
-from hexdoc.model.base_model import ValidationContext
+from hexdoc.model import ValidationContext
 
 from .text import FormattingContext
 

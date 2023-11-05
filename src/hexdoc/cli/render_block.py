@@ -14,8 +14,7 @@ from minecraft_render import (
     resourcePathAsString,
 )
 
-from hexdoc.core.loader import ModResourceLoader
-from hexdoc.core.resource import ResLoc, ResourceLocation
+from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
 
 from .utils.args import DEFAULT_PROPS_FILE, PropsOption, VerbosityOption
 from .utils.load import load_common_data

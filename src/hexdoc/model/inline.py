@@ -6,13 +6,10 @@ from typing import Any, Self, dataclass_transform
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.loader import LoaderContext, ModResourceLoader
 from hexdoc.core.resource import ItemStack, ResourceLocation
-from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.utils import JSONDict, cast_or_raise
+from hexdoc.utils import cast_or_raise
 
-from .base_model import HexdocModel, ValidationContext
-from .id import IDModel
+from .base import HexdocModel, ValidationContext
 
 
 @dataclass_transform()
@@ -81,20 +78,3 @@ class InlineItemModel(HexdocModel, ABC):
         # load the data
         context = cast_or_raise(info.context, ValidationContext)
         return cls.load_id(item, context)
-
-
-@dataclass_transform()
-class InlineIDModel(IDModel, InlineModel, ABC):
-    @classmethod
-    def load_id(cls, id: ResourceLocation, context: LoaderContext):
-        resource_dir, data = cls.load_resource(id, context.loader)
-        return cls.load(resource_dir, id, data, context)
-
-    @classmethod
-    @abstractmethod
-    def load_resource(
-        cls,
-        id: ResourceLocation,
-        loader: ModResourceLoader,
-    ) -> tuple[PathResourceDir, JSONDict]:
-        ...

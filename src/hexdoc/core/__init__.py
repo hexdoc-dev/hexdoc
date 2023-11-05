@@ -10,12 +10,10 @@ __all__ = [
     "BookFolder",
     "Entity",
     "ExportFn",
-    "HexdocMetadata",
     "IsVersion",
     "ItemStack",
     "LoaderContext",
     "METADATA_SUFFIX",
-    "MetadataContext",
     "MinecraftVersion",
     "ModResourceLoader",
     "PathResourceDir",
@@ -50,7 +48,6 @@ from .loader import (
     LoaderContext,
     ModResourceLoader,
 )
-from .metadata import HexdocMetadata, MetadataContext
 from .properties import BaseProperties, Properties
 from .resource import Entity, ItemStack, ResLoc, ResourceLocation, ResourceType
 from .resource_dir import (

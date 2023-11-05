@@ -7,11 +7,8 @@ from typing import Literal, Self
 
 from pydantic import Field, model_validator
 
-from hexdoc.core.loader import ModResourceLoader
-from hexdoc.core.properties import Properties
-from hexdoc.core.resource import ItemStack, ResourceLocation
-from hexdoc.model import HexdocModel
-from hexdoc.model.inline import InlineItemModel, InlineModel
+from hexdoc.core import ItemStack, ModResourceLoader, Properties, ResourceLocation
+from hexdoc.model import HexdocModel, InlineItemModel, InlineModel
 
 from ..i18n import I18nContext, LocalizedStr
 from .external import fetch_minecraft_textures

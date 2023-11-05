@@ -12,7 +12,7 @@ from pydantic import ValidationInfo, field_validator, model_validator
 
 from hexdoc.model import HexdocModel
 from hexdoc.plugin import PluginManager
-from hexdoc.utils.cd import RelativePath, relative_path_root
+from hexdoc.utils import RelativePath, relative_path_root
 
 
 class BaseResourceDir(HexdocModel, ABC):

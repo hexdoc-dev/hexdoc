@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import Field, TypeAdapter
 
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel
-from hexdoc.utils.path import write_to_path
+from hexdoc.utils import write_to_path
 
 MARKER_NAME = ".sitemap-marker.json"
 

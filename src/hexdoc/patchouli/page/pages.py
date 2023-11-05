@@ -2,9 +2,9 @@ from typing import Any, Self
 
 from pydantic import model_validator
 
-from hexdoc.core.resource import Entity, ItemStack, ResourceLocation
+from hexdoc.core import Entity, ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets.textures import ItemWithTexture, Texture
+from hexdoc.minecraft.assets import ItemWithTexture, Texture
 from hexdoc.minecraft.recipe import CraftingRecipe
 
 from ..text import FormatTree

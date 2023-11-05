@@ -10,16 +10,19 @@ from favicons import Favicons
 from jinja2 import ChoiceLoader, PrefixLoader, StrictUndefined, Template
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.core.metadata import HexdocMetadata
-from hexdoc.core.properties import Properties
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import Properties, ResourceLocation
+from hexdoc.data import HexdocMetadata
+from hexdoc.jinja import (
+    IncludeRawExtension,
+    hexdoc_localize,
+    hexdoc_texture,
+    hexdoc_wrap,
+)
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.textures import AnimatedTexture, Texture
+from hexdoc.minecraft.assets import AnimatedTexture, Texture
 from hexdoc.patchouli import Book
 from hexdoc.plugin import PluginManager
-from hexdoc.utils.jinja.extensions import IncludeRawExtension
-from hexdoc.utils.jinja.filters import hexdoc_localize, hexdoc_texture, hexdoc_wrap
-from hexdoc.utils.path import write_to_path
+from hexdoc.utils import write_to_path
 
 from .sitemap import MARKER_NAME, SitemapMarker
 

@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Any, Mapping, overload
 
 from hexdoc.core import (
-    HexdocMetadata,
     MinecraftVersion,
     ModResourceLoader,
     Properties,
     ResourceLocation,
 )
+from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import Texture
 from hexdoc.model import init_context

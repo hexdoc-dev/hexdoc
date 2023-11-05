@@ -3,11 +3,10 @@ from typing import Any, ClassVar, Self, Unpack
 from pydantic import ConfigDict, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import ResourceLocation
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.model.tagged_union import TypeTaggedUnion
-from hexdoc.utils.classproperties import classproperty
-from hexdoc.utils.singletons import Inherit, InheritType, NoValue
+from hexdoc.model import TypeTaggedUnion
+from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
 from ..text import FormatTree
 

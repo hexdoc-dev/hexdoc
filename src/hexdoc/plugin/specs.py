@@ -7,10 +7,9 @@ import pluggy
 from jinja2.sandbox import SandboxedEnvironment
 
 if TYPE_CHECKING:
-    from hexdoc.core.resource import ResourceLocation
+    from hexdoc.core import ResourceLocation
     from hexdoc.minecraft import I18n
-    from hexdoc.patchouli.book_context import BookContext
-    from hexdoc.patchouli.text import FormatTree
+    from hexdoc.patchouli import BookContext, FormatTree
 
 HEXDOC_PROJECT_NAME = "hexdoc"
 

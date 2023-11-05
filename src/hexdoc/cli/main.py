@@ -11,11 +11,9 @@ from typing import Union
 
 import typer
 
-from hexdoc.cli.utils.logging import repl_readfunc
-from hexdoc.core.loader import ModResourceLoader
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.textures import AnimatedTexture, Texture
+from hexdoc.minecraft.assets import AnimatedTexture, Texture
 
 from . import render_block
 from .utils.args import (
@@ -29,6 +27,7 @@ from .utils.args import (
     VerbosityOption,
 )
 from .utils.load import load_book, load_book_and_loader, load_books, load_common_data
+from .utils.logging import repl_readfunc
 from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
     assert_version_exists,

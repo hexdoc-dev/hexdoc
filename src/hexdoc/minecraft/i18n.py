@@ -9,12 +9,15 @@ from typing import Any, Callable, Self
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.compat import ValueIfVersion
-from hexdoc.core.loader import LoaderContext, ModResourceLoader
-from hexdoc.core.resource import ItemStack, ResourceLocation
+from hexdoc.core import (
+    ItemStack,
+    LoaderContext,
+    ModResourceLoader,
+    ResourceLocation,
+    ValueIfVersion,
+)
 from hexdoc.model import HexdocModel
-from hexdoc.utils import cast_or_raise
-from hexdoc.utils.deserialize.json import decode_and_flatten_json_dict
+from hexdoc.utils import cast_or_raise, decode_and_flatten_json_dict
 
 
 @total_ordering

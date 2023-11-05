@@ -1,6 +1,6 @@
 from typing import Literal
 
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import ResourceLocation
 from hexdoc.model import HexdocModel
 
 ItemDisplayPosition = Literal[

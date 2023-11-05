@@ -22,10 +22,10 @@ from jinja2 import PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
 if TYPE_CHECKING:
-    from hexdoc.patchouli.book_context import BookContext
-    from hexdoc.core.resource import ResourceLocation
-    from hexdoc.minecraft.i18n import I18n
-    from hexdoc.patchouli.text import FormatTree
+    from hexdoc.patchouli import BookContext
+    from hexdoc.core import ResourceLocation
+    from hexdoc.minecraft import I18n
+    from hexdoc.patchouli import FormatTree
 
 from .specs import HEXDOC_PROJECT_NAME, HookReturns, PluginSpec
 

@@ -4,7 +4,7 @@ from typing import Any
 from pydantic import field_validator, model_validator
 from pydantic.dataclasses import dataclass
 
-from .base_model import DEFAULT_CONFIG
+from .base import DEFAULT_CONFIG
 
 
 @dataclass(config=DEFAULT_CONFIG, frozen=True)

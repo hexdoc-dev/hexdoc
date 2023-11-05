@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from hexdoc.core.compat import AtLeast_1_20, Before_1_20
+from hexdoc.core import AtLeast_1_20, Before_1_20
 
 from .abstract_recipes import CraftingRecipe
 from .ingredients import ItemIngredientList
