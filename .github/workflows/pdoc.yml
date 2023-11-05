@@ -27,6 +27,7 @@ jobs:
           pdoc hexdoc \!hexdoc._cli \!hexdoc._export \!hexdoc._templates \
             --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/ \
             --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png \
+            --footer-text "hexdoc $(hatch version) ($(git rev-parse --short HEAD))" \
             --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png \
             --logo-link https://pypi.org/project/hexdoc/ \
             --output-directory docs/
