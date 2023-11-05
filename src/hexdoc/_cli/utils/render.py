@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from typing import Any, TypedDict
 
-from favicons import Favicons
+from _hexdoc_favicons import Favicons
 from jinja2 import ChoiceLoader, PrefixLoader, StrictUndefined, Template
 from jinja2.sandbox import SandboxedEnvironment
 

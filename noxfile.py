@@ -3,8 +3,6 @@ import nox
 
 @nox.session
 def tests(session: nox.Session):
-    session.install("favicons")  # TODO: remove
-    session.install("pyright", "nox")
     session.install("-e", ".[test]", "-e", "./test/_submodules/HexMod")
 
     session.run("pyright", "--warnings")
