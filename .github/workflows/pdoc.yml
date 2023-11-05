@@ -1,0 +1,44 @@
+name: Deploy pdoc
+
+on:
+  push:
+    branches: main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - run: pip install -e .[pdoc] hatch
+      - run: |-
+          pdoc hexdoc
+            --edit-url hexdoc=https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/
+            --favicon https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png
+            --footer-text "hexdoc $(hatch version) ($(git rev-parse --short HEAD))"
+            --logo https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png
+            --logo-link https://pypi.org/project/hexdoc/
+            --output-directory docs/
+
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: docs/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v2
