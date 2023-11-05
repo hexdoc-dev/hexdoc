@@ -66,13 +66,13 @@ test = [
     "pytest-cookies~=0.7",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
+    "pre-commit",
 ]
 dev = [
     "hexdoc[pdoc,test]",
     "ruff==0.1.4",
     "hatch",
     "nox",
-    "pre-commit",
 ]
 
 [project.urls]

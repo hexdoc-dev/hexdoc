@@ -16,3 +16,4 @@ repos:
     rev: v1.1.334
     hooks:
       - id: pyright
+        args: ["--warnings"]
