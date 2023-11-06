@@ -246,7 +246,7 @@ class ItemWithGaslightingTexture(InlineItemModel):
         return True
 
 
-ItemWithTexture = ItemWithNormalTexture | ItemWithGaslightingTexture
+ItemWithTexture = ItemWithGaslightingTexture | ItemWithNormalTexture
 
 
 class TagWithTexture(InlineModel):
