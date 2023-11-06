@@ -8,7 +8,7 @@ from minecraft_render import ResourcePath, require
 
 from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
 
-from .utils.args import DEFAULT_PROPS_FILE, PropsOption, VerbosityOption
+from .utils.args import PropsOption, VerbosityOption
 from .utils.load import load_common_data
 
 
@@ -38,7 +38,7 @@ app = typer.Typer(name="render-block")
 def id_(
     block: str,
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     verbosity: VerbosityOption = 0,
 ):
     """Render a 3D image of a block."""
@@ -62,7 +62,7 @@ def id_(
 def model(
     model_path: Path,
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     verbosity: VerbosityOption = 0,
 ):
     """Render a 3D image of a block."""

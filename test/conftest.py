@@ -76,7 +76,7 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("test/_submodules/HexMod/doc/properties.toml")
+    return Path("test/_submodules/HexMod/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -87,7 +87,7 @@ def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
 
 @pytest.fixture(autouse=True, scope="session")
 def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("properties.toml"))
+    export(props_file=Path("hexdoc.toml"))
     export(props_file=hexcasting_props_file)
 
 

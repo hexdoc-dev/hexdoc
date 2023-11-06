@@ -121,7 +121,7 @@ def test_cookiecutter(
                 """
             ),
             # TODO: remove when textures are fully implemented
-            "doc/properties.toml": (
+            "doc/hexdoc.toml": (
                 "a",
                 """
                 [textures]
@@ -138,7 +138,10 @@ def test_cookiecutter(
 
     try:
         run_pip("install", ".", "--force-reinstall", "--no-deps")
-        render(output_dir=output_dir)
+        render(
+            output_dir=output_dir,
+            props_file=Path("doc/hexdoc.toml"),
+        )
     finally:
         run_pip("uninstall", "hexdoc-mod", "-y")
 

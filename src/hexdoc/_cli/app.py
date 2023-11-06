@@ -19,7 +19,6 @@ from . import render_block
 from .utils.args import (
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
-    DEFAULT_PROPS_FILE,
     PathArgument,
     PropsOption,
     ReleaseOption,
@@ -49,7 +48,7 @@ app.add_typer(render_block.app)
 @app.command()
 def list_langs(
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     verbosity: VerbosityOption = 0,
 ):
     """Get the available language codes as a JSON list."""
@@ -62,7 +61,7 @@ def list_langs(
 @app.command()
 def repl(
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     lang: Union[str, None] = None,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
@@ -103,7 +102,7 @@ def repl(
 @app.command()
 def export(
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     lang: Union[str, None] = None,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
@@ -117,7 +116,7 @@ def export(
 def render(
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     update_latest: UpdateLatestOption = True,
     release: ReleaseOption = False,
     clean: bool = False,
@@ -229,7 +228,7 @@ def merge(
 @app.command()
 def serve(
     *,
-    props_file: PropsOption = DEFAULT_PROPS_FILE,
+    props_file: PropsOption,
     port: int = 8000,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
