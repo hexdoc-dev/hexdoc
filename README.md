@@ -20,7 +20,7 @@ WIP.
 - Run these commands, then follow the prompts:
   ```sh
   pip3 install cruft
-  cruft create gh:object-Object/hexdoc --directory doc
+  cruft create https://github.com/object-Object/hexdoc
   ```
   - `--directory doc` tells Cookiecutter to look for a template in the `doc` directory of hexdoc, and cannot be omitted.
   - If you run this from within an existing mod repo, add the flag `-f`, and leave the `output_directory` option blank when prompted by Cookiecutter.
