@@ -94,7 +94,7 @@ jobs:
             props_path=${{ inputs.props-path }}
           fi
 
-          echo "PROPS_PATH=$props_path" >> "$GITHUB_ENV"
+          echo "HEXDOC_PROPS=$props_path" >> "$GITHUB_ENV"
 
           echo "branch=$branch"         >> "$GITHUB_OUTPUT"
           echo "props-path=$props_path" >> "$GITHUB_OUTPUT"
@@ -112,13 +112,13 @@ jobs:
       - name: List book languages
         id: list-langs
         run: |
-          echo "matrix=$(hexdoc list-langs $PROPS_PATH)" >> "$GITHUB_OUTPUT"
+          echo "matrix=$(hexdoc list-langs)" >> "$GITHUB_OUTPUT"
           if [[ $RUNNER_DEBUG ]]; then
             tree -I '__pycache__|Common|Fabric|Forge|venv'
           fi
 
-      - name: Export web book
-        run: hexdoc export $PROPS_PATH --allow-missing # FIXME: remove this flag after adding the Minecraft i18n
+      - name: Export hexdoc resources
+        run: hexdoc export
 
       - name: Bump version
         if: inputs.bump-version-segment
@@ -166,7 +166,8 @@ jobs:
 
     env:
       GITHUB_PAGES_URL: ${{ needs.build.outputs.pages-url }}
-      HEXDOC: hexdoc render ${{ needs.build.outputs.props-path }} _site --lang ${{ matrix.lang }} --clean
+      HEXDOC_PROPS: ${{ needs.build.outputs.props-path }}
+      HEXDOC: hexdoc render _site --lang ${{ matrix.lang }} --clean
 
     steps:
       - uses: actions/checkout@v3
