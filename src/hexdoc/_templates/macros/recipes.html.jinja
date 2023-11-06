@@ -1,3 +1,5 @@
+{% import "macros/textures.html.jinja" as texture_macros with context -%}
+
 {# show the names of all the recipe results in a list of recipes #}
 {% macro generic(recipes, result_attribute, description, separator) -%}
   <blockquote class="crafting-info">
@@ -10,59 +12,6 @@
   </blockquote>
 {%- endmacro %}
 
-{% macro render_texture(name, texture, class_names=[], lazy=true) -%}
-  {% if texture.meta is defined %}
-    <div
-      role="img"
-      title="{{ name }}"
-      aria-label="Animated image of {{ name }}"
-      class="{{ (class_names + ['texture', 'animated-sync', texture.class_name])|join(' ') }}"
-    ></div>
-  {% else %}
-    <img
-      title="{{ name }}"
-      alt="Image of {{ name }}"
-      src="{{ texture.url }}"
-      {{ 'loading="lazy"'|safe if lazy }}
-      class="{{ (class_names + ['texture'])|join(' ') }}"
-    >
-  {% endif %}
-{%- endmacro %}
-
-{# display a single item, with a badge if the count is greater than 1 #}
-{% macro render_item(item, is_first=true, count=1) -%}
-  {% if item.gaslighting %}
-    <div class="texture item-texture multi-textures gaslight-textures {{ 'multi-texture-active' if is_first }}">
-      {% for texture in item.textures %}
-        {{
-          render_texture(
-            name=item.name,
-            texture=texture,
-            class_names=[
-              "item-texture",
-              "multi-texture-active" if is_first,
-            ],
-          )
-        }}
-      {% endfor %}
-    </div>
-  {% else %}
-    {{
-      render_texture(
-        name=item.name,
-        texture=item.texture,
-        class_names=[
-          "item-texture",
-          "multi-texture-active" if is_first,
-        ],
-      )
-    }}
-  {% endif %}
-  {% if count > 1 %}
-    <div class="badge">{{ count }}</div>
-  {% endif %}
-{%- endmacro %}
-
 {# render a list of recipe ingredients #}
 {% macro render_ingredients(ingredients, is_recursive=false) -%}
   {% for ingredient in ingredients %}
@@ -71,7 +20,7 @@
       {{ render_ingredients(ingredient.default, true) }}
       {{ render_ingredients(ingredient.if_loaded, true) }}
     {% else %}
-      {{ render_item(ingredient.item, is_first=loop.first and not is_recursive) }}
+      {{ texture_macros.render_item(ingredient.item, is_first=loop.first and not is_recursive) }}
     {% endif %}
   {% endfor %}
 {%- endmacro %}
@@ -106,7 +55,7 @@
             </div>
 
             <div class="crafting-table-result">
-              {{ render_item(recipe.result.item, count=recipe.result.count) }}
+              {{ texture_macros.render_item(recipe.result.item, count=recipe.result.count) }}
             </div>
           </div>
         </div>

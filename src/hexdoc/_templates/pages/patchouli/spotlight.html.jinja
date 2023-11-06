@@ -1,5 +1,5 @@
 {% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/recipes.html.jinja" as recipe_macros with context %}
+{% import "macros/textures.html.jinja" as texture_macros with context -%}
 
 {% block inner_body %}
   <h4 class="spotlight-title page-header">{{ page.item.name }}</h4>
@@ -8,7 +8,7 @@
       alt="Spotlight inventory slot"
       src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
     >
-    {{ recipe_macros.render_item(page.item) }}
+    {{ texture_macros.render_item(page.item) }}
   </div>
   {{ super() }}
 {% endblock inner_body %}

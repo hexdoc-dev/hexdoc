@@ -1,0 +1,66 @@
+{% macro render_icon(item_or_texture, name="") -%}
+  {% if item_or_texture.gaslighting is defined %}
+      {{ render_item(item_or_texture) }}
+    {% else %}
+      {{
+      render_texture(
+        name=name,
+        texture=item_or_texture,
+        class_names=[],
+      )
+      }}
+    {% endif %}
+{%- endmacro %}
+
+{% macro render_texture(name, texture, class_names=[], lazy=true) -%}
+  {% if texture.meta is defined %}
+    <div
+      role="img"
+      title="{{ name }}"
+      aria-label="Animated image of {{ name }}"
+      class="{{ (class_names + ['texture', 'animated-sync', texture.class_name])|join(' ') }}"
+    ></div>
+  {% else %}
+    <img
+      title="{{ name }}"
+      alt="Image of {{ name }}"
+      src="{{ texture.url }}"
+      {{ 'loading="lazy"'|safe if lazy }}
+      class="{{ (class_names + ['texture'])|join(' ') }}"
+    >
+  {% endif %}
+{%- endmacro %}
+
+{# display a single item, with a badge if the count is greater than 1 #}
+{% macro render_item(item, is_first=true, count=1) -%}
+  {% if item.gaslighting %}
+    <div class="texture item-texture multi-textures gaslight-textures {{ 'multi-texture-active' if is_first }}">
+      {% for texture in item.textures %}
+        {{
+          render_texture(
+            name=item.name,
+            texture=texture,
+            class_names=[
+              "item-texture",
+              "multi-texture-active" if is_first,
+            ],
+          )
+        }}
+      {% endfor %}
+    </div>
+  {% else %}
+    {{
+      render_texture(
+        name=item.name,
+        texture=item.texture,
+        class_names=[
+          "item-texture",
+          "multi-texture-active" if is_first,
+        ],
+      )
+    }}
+  {% endif %}
+  {% if count > 1 %}
+    <div class="badge">{{ count }}</div>
+  {% endif %}
+{%- endmacro %}
