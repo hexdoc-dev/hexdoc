@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: pip install . build
 
+      - name: Get Pages url
+        run: |
+          url=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.html_url')
+          echo "GITHUB_PAGES_URL=$url" >> "$GITHUB_ENV"
+
       - name: Export hexdoc resources
         run: hexdoc export
 
