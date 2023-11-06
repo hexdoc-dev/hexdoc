@@ -49,6 +49,15 @@ summary {
 blockquote.crafting-info {
   font-size: inherit;
 }
+/* to account for the section icons */
+.entry-title, .category-title {
+  display: flex;
+  align-items: end;
+  .texture {
+    margin-right: 4px;
+    display: inline-block;
+  }
+}
 /* we do a bit of crafting (mostly stolen from https://computercraft.info/wiki) */
 .crafting-tables {
   display: flex;
@@ -111,15 +120,25 @@ blockquote.crafting-info {
 .multi-textures .texture {
   position: absolute;
 }
+.toc-elem > .texture {
+  margin-right: 2px;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+}
+.toc-elem .texture {
+  width: 16px;
+  height: 16px;
+}
 .multi-textures .texture:not(.multi-texture-active) {
-  z-index: -1;
+  visibility: hidden;
 }
 .spotlight {
   position: relative;
   width: min-content;
   margin: -6px 0 8px 0;
 }
-.spotlight .texture {
+.spotlight > .texture {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -236,6 +255,34 @@ p.todo-note {
     color: #ccc;
     background-color: #553455;
   }
+}
+.flay-recipe{
+  image-rendering: pixelated; /* put it up here so it's inherited */
+  position: relative;
+}
+.flay-recipe-background{
+  position: relative;
+  top:0;
+  left: 0;
+}
+.flay-recipe-block-ingredient{
+  position: absolute;
+  top: 70px;
+  left: 24px;
+}
+/* entity chamber starts at top: 38px & left: 74px. it is 52px wide & 96px tall  */
+.flay-recipe-entity{
+  position: absolute;
+  top: 86px;
+  left: 100px;
+  transform: translate(-50%, -50%);
+  max-height: 94px;
+  max-width: 50px;
+}
+.flay-recipe-result{
+  position: absolute;
+  top: 70px;
+  left: 176px;
 }
 canvas.spell-viz {
   --dot-color: #777f;

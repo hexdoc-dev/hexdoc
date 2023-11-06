@@ -29,7 +29,9 @@
 
 {# link to value.id, with spoiler blur if value is a spoiler #}
 {% macro maybe_spoilered_link(value) -%}
-  <a href="#{{ value.id.path }}" class="toc-elem {{ 'spoilered' if value.is_spoiler }}">{{ texture_macros.render_icon(value.icon) }} {{ value.name }}</a>
+  <a href="#{{ value.id.path }}" class="toc-elem {{ 'spoilered' if value.is_spoiler }}">
+    {{- texture_macros.render_icon(value.icon) }} {{ value.name -}}
+  </a>
 {%- endmacro %}
 
 {# macro block which spoiler blurs its content if value is a spoiler #}

@@ -129,16 +129,35 @@
   ><i class="bi bi-link-45deg"></i></a></span>
   </h2>
     <details class="toc-category">
-      <summary><a href="#foo" class="spoilered">Mod Book</a></summary>
+      <summary><a href="#foo" class="toc-elem spoilered"><img
+      title="Amethyst Shard"
+      alt="Image of Amethyst Shard"
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjklEQVQ4y2NgGBIg33/1f3RMkuZ/p5+h4BDLrv9Ea97c9xmu8f/fq//PL/hMnAEwm0EGgDBMc2/WGcIGgDSDFMMMALFBYiDNBA2AORtmAMxWmAFEaYYZAHI2TCOIJqgZ5kQQhjmfKJtBAKQAphikEUYTtBnZABhGNojoOEfWDKKJcjYuQ2CBRlG6p1tGAwDsrfXVRK6M0wAAAABJRU5ErkJggg=="
+      loading="lazy"
+      class="item-texture  texture"
+    > Mod Book</a></summary>
       <ul>
-          <li><a href="#bar" class="spoilered">This is the online version of the {} documentation.</a></li>
+          <li><a href="#bar" class="toc-elem spoilered"><img
+      title="item.minecraft.textures.mob_effect.nausea.png"
+      alt="Image of item.minecraft.textures.mob_effect.nausea.png"
+      src="DEBUG_GITHUBUSERCONTENT/test/_submodules/HexMod/doc/resources/assets/minecraft/textures/mob_effect/nausea.png"
+      loading="lazy"
+      class="item-texture  texture"
+    > This is the online version of the {} documentation.</a></li>
       </ul>
     </details>
 </nav>
   <main class="book-body">
 <section id="foo">
     <div class="spoilered">
-      <h2 class="category-title page-header">Mod Book<a
+      <h2 class="category-title page-header">
+    <img
+      title="Amethyst Shard"
+      alt="Image of Amethyst Shard"
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjklEQVQ4y2NgGBIg33/1f3RMkuZ/p5+h4BDLrv9Ea97c9xmu8f/fq//PL/hMnAEwm0EGgDBMc2/WGcIGgDSDFMMMALFBYiDNBA2AORtmAMxWmAFEaYYZAHI2TCOIJqgZ5kQQhjmfKJtBAKQAphikEUYTtBnZABhGNojoOEfWDKKJcjYuQ2CBRlG6p1tGAwDsrfXVRK6M0wAAAABJRU5ErkJggg=="
+      loading="lazy"
+      class="item-texture  texture"
+    >Mod Book<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"
@@ -149,9 +168,16 @@
   ><i class="bi bi-link-45deg"></i></a></h2>
     <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/0.11.1-7#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/0.11.1-7#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
     </div>
-<div id="bar">
+<div id="bar" class="entry">
     <div class="spoilered">
-      <h3 class="entry-title page-header">This is the online version of the {} documentation.<a
+      <h3 class="entry-title page-header">
+    <img
+      title="item.minecraft.textures.mob_effect.nausea.png"
+      alt="Image of item.minecraft.textures.mob_effect.nausea.png"
+      src="DEBUG_GITHUBUSERCONTENT/test/_submodules/HexMod/doc/resources/assets/minecraft/textures/mob_effect/nausea.png"
+      loading="lazy"
+      class="item-texture  texture"
+    >This is the online version of the {} documentation.<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"
