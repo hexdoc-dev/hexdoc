@@ -41,7 +41,7 @@ jobs:
           echo "GITHUB_PAGES_URL=$url" >> "$GITHUB_ENV"
 
       - name: Export hexdoc resources
-        run: hexdoc export
+        run: hexdoc export --props properties.toml
 
       - name: Build package
         run: python -m build
