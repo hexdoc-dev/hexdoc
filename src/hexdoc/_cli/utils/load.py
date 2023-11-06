@@ -24,8 +24,8 @@ def load_common_data(props_file: Path, verbosity: int):
     setup_logging(verbosity)
 
     props = Properties.load(props_file)
-
     pm = PluginManager()
+
     version = load_version(props, pm)
     MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
 

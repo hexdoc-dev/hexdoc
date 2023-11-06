@@ -33,4 +33,5 @@
     "python.analysis.packageIndexDepths": [
         {"name": "syrupy", "depth": 2},
     ],
+    "python.analysis.userFileIndexingLimit": 1500,
 }

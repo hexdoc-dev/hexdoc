@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 from dataclasses import dataclass
 from importlib.resources import Package
+from pathlib import Path
 from types import ModuleType
 from typing import (
     TYPE_CHECKING,
@@ -168,6 +169,15 @@ class PluginManager:
                 module = import_package(package)
                 loaders[modid] = PackageLoader(module.__name__, package_path)
         return loaders
+
+    def default_rendered_templates(self, modids: Iterable[str]) -> dict[Path, str]:
+        templates = dict[str | Path, str]()
+        for modid in modids:
+            self._hook_caller(
+                spec=PluginSpec.hexdoc_default_rendered_templates,
+                modid=modid,
+            ).try_call(templates=templates)
+        return {Path(path): template for path, template in templates.items()}
 
     def _import_from_hook(
         self,

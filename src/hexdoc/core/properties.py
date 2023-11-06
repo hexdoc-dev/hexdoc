@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any, Self, Sequence
 
-from pydantic import Field, model_validator
+from pydantic import Field, PrivateAttr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from hexdoc.model.strip_hidden import StripHiddenModel
@@ -60,29 +60,21 @@ class EnvironmentVariableProps(BaseSettings):
         return owner, repo_name
 
 
-class TemplateProps(StripHiddenModel):
+class TemplateProps(StripHiddenModel, validate_assignment=True):
     static_dir: RelativePath | None = None
     icon: RelativePath
     include: list[str]
 
-    render: dict[Path, str] = Field(
-        default_factory=lambda: {
-            "index.html": "index.html.jinja",
-            "index.css": "index.css.jinja",
-            "textures.css": "textures.jcss.jinja",
-            "index.js": "index.js.jinja",
-        },
-        validate_default=True,
-    )
-    extend_render: dict[Path, str] | None = None
+    render: dict[Path, str] = Field(default_factory=dict)
+    extend_render: dict[Path, str] = Field(default_factory=dict)
 
     args: dict[str, Any]
 
-    @model_validator(mode="after")
-    def _merge_extend_render(self):
-        if self.extend_render:
-            self.render |= self.extend_render
-        return self
+    _was_render_set: bool = PrivateAttr(False)
+
+    @property
+    def was_render_set(self):
+        return self._was_render_set
 
 
 class MinecraftAssetsProps(StripHiddenModel):
@@ -118,11 +110,14 @@ class BaseProperties(StripHiddenModel):
 
 
 class Properties(BaseProperties):
+    """Pydantic model for `hexdoc.toml` / `properties.toml`."""
+
     modid: str
-    book: ResourceLocation | None
+    book: ResourceLocation | None = None
     extra_books: list[ResourceLocation] = Field(default_factory=list)
     default_lang: str
-    is_0_black: bool = Field(default=False)
+
+    is_0_black: bool = False
     """If true, the style `$(0)` changes the text color to black; otherwise it resets
     the text color to the default."""
 
@@ -136,7 +131,7 @@ class Properties(BaseProperties):
     # FIXME: remove this and get the data from the actual model files
     textures: TexturesProps = Field(default_factory=TexturesProps)
 
-    template: TemplateProps | None
+    template: TemplateProps | None = None
 
     extra: dict[str, Any] = Field(default_factory=dict)
 

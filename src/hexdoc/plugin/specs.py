@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from importlib.resources import Package
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 import pluggy
@@ -73,6 +74,11 @@ class PluginSpec(Protocol):
     @staticmethod
     @hookspec
     def hexdoc_load_jinja_templates() -> HookReturns[tuple[Package, str]]:
+        ...
+
+    @staticmethod
+    @hookspec
+    def hexdoc_default_rendered_templates(templates: dict[str | Path, str]) -> None:
         ...
 
 
@@ -178,5 +184,16 @@ class LoadJinjaTemplatesImpl(PluginImpl, Protocol):
         def hexdoc_load_jinja_templates():
             return hexdoc, "_templates"
         ```
+        """
+        ...
+
+
+class DefaultRenderedTemplatesImpl(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_default_rendered_templates(templates: dict[str | Path, str]) -> None:
+        """Add extra templates to be rendered by default when your plugin is active.
+
+        This hook is not called if `props.template.render` is set, since that option
+        overrides all default templates.
         """
         ...

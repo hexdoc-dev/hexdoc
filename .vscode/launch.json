@@ -20,6 +20,8 @@
             "args": [
                 "render",
                 "_site/src/docs",
+                "--props",
+                "${workspaceFolder}/test/_submodules/HexMod/doc/hexdoc.toml",
                 "--lang",
                 "en_us",
                 "--allow-missing",

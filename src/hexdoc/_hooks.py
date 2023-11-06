@@ -1,7 +1,9 @@
 from importlib.resources import Package
+from pathlib import Path
 
 import hexdoc
 from hexdoc.plugin import (
+    DefaultRenderedTemplatesImpl,
     HookReturn,
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
@@ -16,6 +18,7 @@ class HexdocPlugin(
     ModVersionImpl,
     LoadResourceDirsImpl,
     LoadJinjaTemplatesImpl,
+    DefaultRenderedTemplatesImpl,
 ):
     @staticmethod
     @hookimpl
@@ -38,3 +41,15 @@ class HexdocPlugin(
     @hookimpl
     def hexdoc_load_jinja_templates() -> HookReturn[tuple[Package, str]]:
         return hexdoc, "_templates"
+
+    @staticmethod
+    @hookimpl
+    def hexdoc_default_rendered_templates(templates: dict[str | Path, str]) -> None:
+        templates.update(
+            {
+                "index.html": "index.html.jinja",
+                "index.css": "index.css.jinja",
+                "textures.css": "textures.jcss.jinja",
+                "index.js": "index.js.jinja",
+            }
+        )

@@ -153,9 +153,17 @@ def render(
     # set up Jinja
     env = create_jinja_env(pm, props.template.include)
 
+    default_rendered_templates = (
+        props.template.render
+        if props.template.was_render_set
+        else pm.default_rendered_templates(props.template.include)
+    )
+
     templates = {
         Path(path): env.get_template(template_name)
-        for path, template_name in props.template.render.items()
+        for path, template_name in (
+            default_rendered_templates | props.template.extend_render
+        ).items()
     }
 
     if clean:

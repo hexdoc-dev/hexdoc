@@ -1,4 +1,5 @@
 __all__ = [
+    "DefaultRenderedTemplatesImpl",
     "HEXDOC_PROJECT_NAME",
     "HookReturn",
     "LoadJinjaTemplatesImpl",
@@ -20,6 +21,7 @@ import pluggy
 from .manager import PluginManager, PluginNotFoundError
 from .specs import (
     HEXDOC_PROJECT_NAME,
+    DefaultRenderedTemplatesImpl,
     HookReturn,
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
