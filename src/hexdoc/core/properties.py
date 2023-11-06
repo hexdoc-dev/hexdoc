@@ -90,15 +90,9 @@ class MinecraftAssetsProps(StripHiddenModel):
     version: str
 
 
-class GaslightingProps(StripHiddenModel):
-    id: str
-    variants: int
-
-
 class TexturesProps(StripHiddenModel):
     missing: list[ResourceLocation] = Field(default_factory=list)
     override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
-    gaslighting: dict[ResourceLocation, GaslightingProps] = Field(default_factory=dict)
 
 
 class BaseProperties(StripHiddenModel):

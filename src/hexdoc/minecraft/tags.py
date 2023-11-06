@@ -62,6 +62,10 @@ class Tag(HexdocModel):
                 case OptionalTagValue(id=id):
                     yield id
 
+    @property
+    def value_ids_set(self):
+        return set(self.value_ids)
+
     def _export(self, current: Self | None):
         if self.replace or current is None:
             tag = self

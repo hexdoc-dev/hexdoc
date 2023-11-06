@@ -23,11 +23,10 @@ class BookContext(FormattingContext, MetadataContext):
 
     @model_validator(mode="after")
     def _post_root_load_tags(self) -> Self:
-        tag = Tag.load(
-            registry="hexdoc",
-            id=ResourceLocation("*", "spoilered_advancements"),
+        self.spoilered_advancements |= Tag.load(
+            id=ResourceLocation("hexdoc", "spoilered"),
+            registry="advancements",
             context=self,
-        )
-        self.spoilered_advancements.update(tag.value_ids)
+        ).value_ids_set
 
         return self

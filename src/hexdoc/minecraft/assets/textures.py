@@ -11,6 +11,7 @@ from hexdoc.core import ItemStack, ModResourceLoader, Properties, ResourceLocati
 from hexdoc.model import HexdocModel, InlineItemModel, InlineModel
 
 from ..i18n import I18nContext, LocalizedStr
+from ..tags import Tag
 from .external import fetch_minecraft_textures
 
 # 16x16 hashtag icon for tags
@@ -179,9 +180,11 @@ class AnimationMetaFrame(HexdocModel):
 
 class TextureContext(I18nContext):
     textures: dict[ResourceLocation, Texture] = Field(default_factory=dict)
+    gaslighting_textures: set[ResourceLocation] = Field(default_factory=set)
 
     @model_validator(mode="after")
-    def _add_minecraft_textures(self) -> Self:
+    def _post_root(self) -> Self:
+        # minecraft textures
         minecraft_textures = fetch_minecraft_textures(
             ref=self.props.minecraft_assets.ref,
             version=self.props.minecraft_assets.version,
@@ -192,6 +195,13 @@ class TextureContext(I18nContext):
             # prefer items, since they're added first
             if id not in self.textures:
                 self.textures[id] = Texture(file_id=id, url=item["texture"])
+
+        # gaslighting
+        self.gaslighting_textures |= Tag.load(
+            id=ResourceLocation("hexdoc", "gaslighting"),
+            registry="items",
+            context=self,
+        ).value_ids_set
 
         return self
 
@@ -224,20 +234,21 @@ class ItemWithGaslightingTexture(InlineItemModel):
     @classmethod
     def load_id(cls, item: ItemStack, context: TextureContext):
         """Implements InlineModel."""
-        gaslighting = context.props.textures.gaslighting.get(item.id)
-        if gaslighting is None:
+        if item.id not in context.gaslighting_textures:
             raise ValueError("Item does not have a gaslighting texture")
+
+        override_id = context.props.textures.override.get(item.id, item.id)
 
         return cls(
             id=item,
             name=context.i18n.localize_item(item),
             textures=[
                 Texture.find_item(
-                    id=ResourceLocation.from_str(gaslighting.id.format(index)),
+                    id=override_id + f"_{index}",
                     props=context.props,
                     textures=context.textures,
                 )
-                for index in range(gaslighting.variants)
+                for index in range(4)
             ],
         )
 
