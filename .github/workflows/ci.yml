@@ -89,8 +89,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # convert v1!0.1.0.dev0 to v0.1.0
+      - name: Parse version tag
+        id: parse
+        run: |
+          set +H
+          echo "version=v$(echo "$GITHUB_REF" | grep -Eo '![0-9]+\.[0-9]+\.[0-9]+' | sed 's/!//')" >> "$GITHUB_OUTPUT"
+
       - name: Update release tags
         uses: rickstaa/action-update-semver@v1
+        with:
+          tag: ${{ steps.parse.outputs.version }}
 
       - name: Download package artifact
         uses: actions/download-artifact@v3
