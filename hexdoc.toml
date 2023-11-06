@@ -2,10 +2,11 @@ modid = "hexdoc"
 book = { "!None"={} }
 default_lang = "en_us"
 
+_export_root = "src/hexdoc/_export"
 resource_dirs = [  # top takes priority
-    "resources",
+    { path="{^_export_root}/resources", reexport=false },
 ]
-export_dir = "src/hexdoc/_export/generated"
+export_dir = "{_export_root}/generated"
 
 template = { "!None"={} }
 

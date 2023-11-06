@@ -30,9 +30,9 @@ class HexdocPlugin(
     @staticmethod
     @hookimpl
     def hexdoc_load_resource_dirs() -> HookReturn[Package]:
-        from hexdoc._export import generated
+        from hexdoc._export import generated, resources
 
-        return generated
+        return [generated, resources]
 
     @staticmethod
     @hookimpl
