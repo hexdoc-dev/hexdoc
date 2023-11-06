@@ -1,6 +1,6 @@
 {% import "macros/formatting.html.jinja" as fmt -%}
 
-<div id="{{ entry.id.path }}">
+<div id="{{ entry.id.path }}" class="entry">
   {% call fmt.maybe_spoilered(entry) %}
     {{- fmt.section_header(entry, "h3", "entry-title") }}
 

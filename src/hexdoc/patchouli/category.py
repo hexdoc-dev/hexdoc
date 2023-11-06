@@ -2,8 +2,9 @@ from typing import Self
 
 from pydantic import Field
 
-from hexdoc.core import ItemStack, LoaderContext, ResourceLocation
+from hexdoc.core import LoaderContext, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
+from hexdoc.minecraft.assets import ItemWithTexture, Texture
 from hexdoc.model import IDModel
 from hexdoc.utils import Sortable, sorted_dict
 
@@ -22,7 +23,7 @@ class Category(IDModel, Sortable):
     # required
     name: LocalizedStr
     description: FormatTree
-    icon: ItemStack
+    icon: ItemWithTexture | Texture
 
     # optional
     parent_id: ResourceLocation | None = Field(default=None, alias="parent")

@@ -4,6 +4,7 @@ from pydantic import Field, ValidationInfo, model_validator
 
 from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
+from hexdoc.minecraft.assets import ItemWithTexture, Texture
 from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
 from hexdoc.utils import Sortable, cast_or_raise
@@ -24,7 +25,7 @@ class Entry(IDModel, Sortable):
     # required (entry.json)
     name: LocalizedStr
     category_id: ResourceLocation = Field(alias="category")
-    icon: ItemStack
+    icon: ItemWithTexture | Texture
     pages: list[Page]
 
     # optional (entry.json)

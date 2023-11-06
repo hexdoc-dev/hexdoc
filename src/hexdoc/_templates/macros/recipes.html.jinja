@@ -23,7 +23,7 @@
       title="{{ name }}"
       alt="Image of {{ name }}"
       src="{{ texture.url }}"
-      {{ 'loading="lazy"' if lazy }}
+      {{ 'loading="lazy"'|safe if lazy }}
       class="{{ (class_names + ['texture'])|join(' ') }}"
     >
   {% endif %}
@@ -32,7 +32,7 @@
 {# display a single item, with a badge if the count is greater than 1 #}
 {% macro render_item(item, is_first=true, count=1) -%}
   {% if item.gaslighting %}
-    <div class="multi-textures gaslight-textures {{ 'multi-texture-active' if is_first }}">
+    <div class="texture item-texture multi-textures gaslight-textures {{ 'multi-texture-active' if is_first }}">
       {% for texture in item.textures %}
         {{
           render_texture(
@@ -98,7 +98,7 @@
                 {% if cell_ingredients is none %}
                   <div></div> {#- empty slot / air #}
                 {% else %}
-                  <div class="multi-textures cycle-textures">
+                  <div class="texture item-texture multi-textures cycle-textures">
                     {{ render_ingredients(cell_ingredients) }}
                   </div>
                 {% endif %}
