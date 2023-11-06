@@ -97,7 +97,7 @@ jobs:
           echo "version=v$(echo "$GITHUB_REF" | grep -Eo '![0-9]+\.[0-9]+\.[0-9]+' | sed 's/!//')" >> "$GITHUB_OUTPUT"
 
       - name: Update release tags
-        uses: rickstaa/action-update-semver@v1
+        uses: haya14busa/action-update-semver@v1
         with:
           tag: ${{ steps.parse.outputs.version }}
 
