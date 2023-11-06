@@ -7,9 +7,9 @@ import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Union
+from typing import Annotated, Union
 
-import typer
+from typer import Option, Typer
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.minecraft import I18n
@@ -37,7 +37,7 @@ from .utils.sitemap import (
     load_sitemap,
 )
 
-app = typer.Typer(
+app = Typer(
     pretty_exceptions_enable=False,
     context_settings={
         "help_option_names": ["--help", "-h"],
@@ -233,6 +233,7 @@ def serve(
     port: int = 8000,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
+    do_merge: Annotated[bool, Option("--merge/--no-merge")] = False,
     update_latest: bool = True,
     release: bool = True,  # you'd generally want --release for development
     clean: bool = False,
@@ -240,7 +241,9 @@ def serve(
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
 ):
-    book_path = dst.resolve().relative_to(Path.cwd())
+    book_root = dst if do_merge else src
+
+    book_path = book_root.resolve().relative_to(Path.cwd())
 
     book_url = f"/{book_path.as_posix()}"
 
@@ -261,13 +264,14 @@ def serve(
         verbosity=verbosity,
     )
 
-    print("Merging...")
-    merge(
-        src=src,
-        dst=dst,
-        update_latest=update_latest,
-        release=release,
-    )
+    if do_merge:
+        print("Merging...")
+        merge(
+            src=src,
+            dst=dst,
+            update_latest=update_latest,
+            release=release,
+        )
 
     print(
         f"Serving web book at http://localhost:{port}{book_url} (press ctrl+c to exit)\n"
