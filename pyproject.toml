@@ -163,11 +163,7 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "test/_submodules/HexMod/Common",
-    "test/_submodules/HexMod/Fabric",
-    "test/_submodules/HexMod/Forge",
-    "test/_submodules/HexMod/gradle",
-    "test/_submodules/HexMod/venv",
+    "test/_submodules/HexMod",
     "{{cookiecutter.output_directory}}",
 ]
 
