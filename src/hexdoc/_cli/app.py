@@ -155,7 +155,7 @@ def render(
 
     template_names = (
         props.template.render
-        if props.template.was_render_set
+        if props.template.override_default_render
         else pm.default_rendered_templates(props.template.include)
     ) | props.template.extend_render
 

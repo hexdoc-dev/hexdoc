@@ -4,7 +4,7 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from _hexdoc_favicons import Favicons
 from jinja2 import (
@@ -20,6 +20,7 @@ from jinja2 import (
 from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.core import Properties, ResourceLocation
+from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
 from hexdoc.data import HexdocMetadata
 from hexdoc.jinja import (
     IncludeRawExtension,
@@ -37,10 +38,6 @@ from .sitemap import MARKER_NAME, SitemapMarker
 
 
 class HexdocTemplateLoader(BaseLoader):
-    NAMESPACE_ALIASES = {
-        "patchouli": "hexdoc",
-    }
-
     def __init__(
         self,
         included: dict[str, PackageLoader],
@@ -57,7 +54,7 @@ class HexdocTemplateLoader(BaseLoader):
         self.props_file = props_file
 
     def get_source(self, environment: Environment, template: str):
-        for alias, replacement in self.NAMESPACE_ALIASES.items():
+        for alias, replacement in JINJA_NAMESPACE_ALIASES.items():
             if template.startswith(f"{alias}:"):
                 logging.getLogger(__name__).info(
                     f"Replacing {alias} with {replacement} for template {template}"
@@ -80,7 +77,7 @@ class HexdocTemplateLoader(BaseLoader):
             raise
 
 
-def create_jinja_env(pm: PluginManager, include: list[str], props_file: Path):
+def create_jinja_env(pm: PluginManager, include: Sequence[str], props_file: Path):
     included, extra = pm.load_jinja_templates(include)
 
     env = SandboxedEnvironment(

@@ -103,8 +103,6 @@ hexdoc = "hexdoc._cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
-minecraft = "hexdoc.minecraft._hooks:MinecraftPlugin"
-patchouli = "hexdoc.patchouli._hooks:PatchouliPlugin"
 
 # Pytest
 
@@ -138,6 +136,9 @@ extend-exclude = [
     "**/__pycache__",
     "[{][{]cookiecutter.output_directory[}][}]",
 ]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
 
 # type checking
 

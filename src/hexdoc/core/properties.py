@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any, Self, Sequence
 
-from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from hexdoc.model.strip_hidden import StripHiddenModel
@@ -14,9 +14,14 @@ from hexdoc.utils import (
     load_toml_with_placeholders,
     relative_path_root,
 )
+from hexdoc.utils.types import PydanticOrderedSet
 
 from .resource import ResourceLocation
 from .resource_dir import ResourceDir
+
+JINJA_NAMESPACE_ALIASES = {
+    "patchouli": "hexdoc",
+}
 
 
 class EnvironmentVariableProps(BaseSettings):
@@ -63,7 +68,7 @@ class EnvironmentVariableProps(BaseSettings):
 class TemplateProps(StripHiddenModel, validate_assignment=True):
     static_dir: RelativePath | None = None
     icon: RelativePath
-    include: list[str]
+    include: PydanticOrderedSet[str]
 
     render: dict[Path, str] = Field(default_factory=dict)
     extend_render: dict[Path, str] = Field(default_factory=dict)
@@ -73,8 +78,17 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     _was_render_set: bool = PrivateAttr(False)
 
     @property
-    def was_render_set(self):
+    def override_default_render(self):
         return self._was_render_set
+
+    @field_validator("include", mode="after")
+    @classmethod
+    def _resolve_aliases(cls, values: PydanticOrderedSet[str]):
+        for alias, replacement in JINJA_NAMESPACE_ALIASES.items():
+            if alias in values:
+                values.remove(alias)
+                values.add(replacement)
+        return values
 
 
 class MinecraftAssetsProps(StripHiddenModel):

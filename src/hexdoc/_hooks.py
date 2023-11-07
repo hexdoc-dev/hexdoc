@@ -2,17 +2,24 @@ from importlib.resources import Package
 from pathlib import Path
 
 import hexdoc
+from hexdoc.minecraft.recipe import (
+    ingredients as minecraft_ingredients,
+    recipes as minecraft_recipes,
+)
+from hexdoc.patchouli.page import pages as patchouli_pages
 from hexdoc.plugin import (
     DefaultRenderedTemplatesImpl,
     HookReturn,
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
+    LoadTaggedUnionsImpl,
     ModVersionImpl,
     hookimpl,
 )
 
 
 class HexdocPlugin(
+    LoadTaggedUnionsImpl,
     ModVersionImpl,
     LoadResourceDirsImpl,
     LoadJinjaTemplatesImpl,
@@ -21,7 +28,8 @@ class HexdocPlugin(
     @staticmethod
     @hookimpl
     def hexdoc_mod_version():
-        return "(TODO: remove)"
+        # need to implement this to be able to use `hexdoc export`
+        return ""
 
     @staticmethod
     @hookimpl
@@ -29,6 +37,15 @@ class HexdocPlugin(
         from hexdoc._export import generated, resources
 
         return [generated, resources]
+
+    @staticmethod
+    @hookimpl
+    def hexdoc_load_tagged_unions() -> HookReturn[Package]:
+        return [
+            patchouli_pages,
+            minecraft_recipes,
+            minecraft_ingredients,
+        ]
 
     @staticmethod
     @hookimpl
