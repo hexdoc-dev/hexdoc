@@ -152,12 +152,12 @@ venv = "venv"
 include = [
     "src",
     "test",
-    "noxfile.py",
 ]
 extraPaths = [
     "vendor",
 ]
 exclude = [
+    "noxfile.py",
     "vendor",
     "venv",
     "**/.*",
