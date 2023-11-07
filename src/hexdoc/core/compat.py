@@ -31,11 +31,16 @@ class VersionSource(Protocol):
 
 
 class MinecraftVersion(VersionSource):
-    MINECRAFT_VERSION: ClassVar[str]
+    MINECRAFT_VERSION: ClassVar[str | None] = None
 
     @override
     @classmethod
-    def get(cls):
+    def get(cls) -> str:
+        if cls.MINECRAFT_VERSION is None:
+            raise RuntimeError(
+                "Tried to call MinecraftVersion.get() "
+                "before initializing MinecraftVersion.MINECRAFT_VERSION"
+            )
         return cls.MINECRAFT_VERSION
 
     @override
@@ -43,7 +48,7 @@ class MinecraftVersion(VersionSource):
     def matches(cls, specifier: str | SpecifierSet) -> bool:
         if isinstance(specifier, str):
             specifier = SpecifierSet(specifier)
-        return cls.MINECRAFT_VERSION in specifier
+        return cls.get() in specifier
 
 
 @dataclass(frozen=True)

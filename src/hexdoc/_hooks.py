@@ -7,14 +7,12 @@ from hexdoc.plugin import (
     HookReturn,
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
-    MinecraftVersionImpl,
     ModVersionImpl,
     hookimpl,
 )
 
 
 class HexdocPlugin(
-    MinecraftVersionImpl,
     ModVersionImpl,
     LoadResourceDirsImpl,
     LoadJinjaTemplatesImpl,
@@ -24,11 +22,6 @@ class HexdocPlugin(
     @hookimpl
     def hexdoc_mod_version():
         return "(TODO: remove)"
-
-    @staticmethod
-    @hookimpl
-    def hexdoc_minecraft_version() -> str:
-        return "1.20.1"  # TODO: remove
 
     @staticmethod
     @hookimpl

@@ -27,7 +27,12 @@ def load_common_data(props_file: Path, verbosity: int):
     pm = PluginManager()
 
     version = load_version(props, pm)
-    MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
+    minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
+    if minecraft_version is None:
+        logging.getLogger(__name__).warning(
+            "No plugins implement hexdoc_minecraft_version, "
+            "per-version validation will fail"
+        )
 
     return props, pm, version
 

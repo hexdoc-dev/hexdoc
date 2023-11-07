@@ -1,5 +1,13 @@
 import nox
 
+nox.options.sessions = ["tests"]
+
+
+@nox.session(reuse_venv=True)
+def hexdoc(session: nox.Session):
+    session.install(".")
+    session.run("hexdoc", *session.posargs)
+
 
 @nox.session(reuse_venv=True)
 def tests(session: nox.Session):

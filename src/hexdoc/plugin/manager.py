@@ -95,7 +95,7 @@ class PluginManager:
     def mod_version(self, modid: str):
         return self._hook_caller(PluginSpec.hexdoc_mod_version, modid)()
 
-    def minecraft_version(self) -> str:
+    def minecraft_version(self) -> str | None:
         versions = dict[str, str]()
 
         for modid, caller in self._all_callers(PluginSpec.hexdoc_minecraft_version):
@@ -113,7 +113,7 @@ class PluginManager:
 
         match len(set(versions.values())):
             case 0:
-                raise ValueError("No plugins implement hexdoc_minecraft_version")
+                return None
             case 1:
                 return versions.popitem()[1]
             case n:

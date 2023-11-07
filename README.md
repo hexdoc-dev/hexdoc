@@ -87,4 +87,8 @@ nox --no-install  # after the first Nox run, use this to skip reinstalling every
 
 # update test snapshots
 nox -- --snapshot-update
+
+# run hexdoc commands in an isolated environment to ensure it works on its own
+nox -s hexdoc -- export
+nox -s hexdoc -- repl
 ```
