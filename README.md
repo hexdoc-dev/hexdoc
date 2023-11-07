@@ -13,7 +13,9 @@ A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based documentation gener
 
 This is the library that powers [Hex Casting](https://github.com/gamma-delta/HexMod)'s web book.
 
-## Creating a plugin / addon
+## Plugins
+
+### Creating a plugin / addon
 
 WIP.
 
@@ -41,9 +43,13 @@ Run this command: `cruft update`
 
 See also: https://cruft.github.io/cruft/#updating-a-project
 
-## Setup
+## Contributing
+
+### Setup
 
 ```sh
+git submodule update --init
+
 python3.11 -m venv venv
 
 .\venv\Scripts\activate   # Windows
@@ -54,7 +60,7 @@ pip install -e .[dev]
 pre-commit install
 ```
 
-## Usage
+### Usage
 
 For local testing, create a file called `.env` in the repo root following this template:
 ```sh
@@ -63,15 +69,22 @@ GITHUB_REPOSITORY=object-Object/hexdoc
 GITHUB_PAGES_URL=https://object-object.github.io/hexdoc
 ```
 
-Then run these commands to generate the book:
+Useful commands:
 ```sh
-hexdoc render
-hexdoc merge
-```
+# show help
+hexdoc -h
 
-Or, run this command to render the book and start a local web server:
-```sh
-hexdoc serve --lang en_us
-```
+# Python interpreter with some extra local variables added
+hexdoc repl
 
-Nodemon is also configured.
+# render the Hex Casting book in watch mode (from test/_submodules/HexMod)
+nodemon
+
+# run tests
+pytest  # fast, skips Cookiecutter
+nox  # slow, full test suite in an isolated venv
+nox --no-install  # after the first Nox run, use this to skip reinstalling everything
+
+# update test snapshots
+nox -- --snapshot-update
+```
