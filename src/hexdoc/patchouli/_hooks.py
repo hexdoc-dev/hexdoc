@@ -2,7 +2,6 @@ from importlib.resources import Package
 
 import hexdoc
 from hexdoc.plugin import (
-    HookReturn,
     LoadJinjaTemplatesImpl,
     LoadTaggedUnionsImpl,
     hookimpl,
@@ -19,5 +18,5 @@ class PatchouliPlugin(LoadTaggedUnionsImpl, LoadJinjaTemplatesImpl):
 
     @staticmethod
     @hookimpl
-    def hexdoc_load_jinja_templates() -> HookReturn[tuple[Package, str]]:
+    def hexdoc_load_jinja_templates() -> tuple[Package, str]:
         return hexdoc, "_templates"

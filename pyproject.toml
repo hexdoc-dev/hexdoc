@@ -128,6 +128,7 @@ extend-select = [
 extend-ignore = [
     # covered by Pyright
     "F821", # undefined variable
+    "F401", # imported but unused
 ]
 extend-exclude = [
     "vendor",
@@ -147,6 +148,11 @@ pythonPlatform = "All"
 venvPath = "."
 venv = "venv"
 
+include = [
+    "src",
+    "test",
+    "noxfile.py",
+]
 extraPaths = [
     "vendor",
 ]
@@ -156,7 +162,11 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "test/_submodules",
+    "test/_submodules/HexMod/Common",
+    "test/_submodules/HexMod/Fabric",
+    "test/_submodules/HexMod/Forge",
+    "test/_submodules/HexMod/gradle",
+    "test/_submodules/HexMod/venv",
     "{{cookiecutter.output_directory}}",
 ]
 

@@ -73,7 +73,7 @@ class PluginSpec(Protocol):
 
     @staticmethod
     @hookspec
-    def hexdoc_load_jinja_templates() -> HookReturns[tuple[Package, str]]:
+    def hexdoc_load_jinja_templates() -> list[tuple[Package, str]]:
         ...
 
     @staticmethod
@@ -174,7 +174,7 @@ class LoadTaggedUnionsImpl(PluginImpl, Protocol):
 
 class LoadJinjaTemplatesImpl(PluginImpl, Protocol):
     @staticmethod
-    def hexdoc_load_jinja_templates() -> HookReturn[tuple[Package, str]]:
+    def hexdoc_load_jinja_templates() -> tuple[Package, str]:
         """Return the module that contains the folder with your plugin's Jinja
         templates, and the name of that folder.
 

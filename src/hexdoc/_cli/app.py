@@ -151,20 +151,24 @@ def render(
     logger.info(f"update_latest={update_latest}, release={release}")
 
     # set up Jinja
-    env = create_jinja_env(pm, props.template.include)
+    env = create_jinja_env(pm, props.template.include, props_file)
 
-    default_rendered_templates = (
+    template_names = (
         props.template.render
         if props.template.was_render_set
         else pm.default_rendered_templates(props.template.include)
-    )
+    ) | props.template.extend_render
 
     templates = {
         Path(path): env.get_template(template_name)
-        for path, template_name in (
-            default_rendered_templates | props.template.extend_render
-        ).items()
+        for path, template_name in template_names.items()
     }
+
+    if not templates:
+        raise RuntimeError(
+            "No templates to render, check your props.template configuration "
+            f"(in {props_file.as_posix()})"
+        )
 
     if clean:
         shutil.rmtree(output_dir, ignore_errors=True)

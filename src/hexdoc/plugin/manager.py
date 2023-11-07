@@ -14,6 +14,7 @@ from typing import (
     Iterator,
     Never,
     ParamSpec,
+    Sequence,
     TypeVar,
     overload,
 )
@@ -21,6 +22,8 @@ from typing import (
 import pluggy
 from jinja2 import PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
+
+from hexdoc.utils import PydanticOrderedSet
 
 if TYPE_CHECKING:
     from hexdoc.core import ResourceLocation
@@ -160,15 +163,31 @@ class PluginManager:
     def load_tagged_unions(self, modid: str | None = None) -> Iterator[ModuleType]:
         yield from self._import_from_hook(PluginSpec.hexdoc_load_tagged_unions, modid)
 
-    def load_jinja_templates(self, modids: Iterable[str]):
+    def load_jinja_templates(self, modids: Sequence[str]):
         """modid -> PackageLoader"""
-        loaders = dict[str, PackageLoader]()
-        for modid in modids:
-            caller = self._hook_caller(PluginSpec.hexdoc_load_jinja_templates, modid)
-            for package, package_path in flatten(caller()):
-                module = import_package(package)
-                loaders[modid] = PackageLoader(module.__name__, package_path)
-        return loaders
+        included = dict[str, PackageLoader]()
+        extra = dict[str, PackageLoader]()
+
+        modid_set = set(modids)
+        for modid, caller in self._all_callers(
+            PluginSpec.hexdoc_load_jinja_templates, modids
+        ):
+            try:
+                package, package_path = caller()[0]
+            except PluginNotFoundError:
+                if modid in modid_set:
+                    raise
+                continue
+
+            package_name = import_package(package).__name__
+            loader = PackageLoader(package_name, package_path)
+
+            if modid in modid_set:
+                included[modid] = loader
+            else:
+                extra[modid] = loader
+
+        return included, extra
 
     def default_rendered_templates(self, modids: Iterable[str]) -> dict[Path, str]:
         templates = dict[str | Path, str]()
@@ -193,10 +212,16 @@ class PluginManager:
     def _all_callers(
         self,
         spec: Callable[_P, _R | None],
+        preferred_modids: Sequence[str] = (),
     ) -> Iterator[tuple[str, TypedHookCaller[_P, _R]]]:
-        for modid, plugin in self.inner.list_name_plugin():
-            caller = self.inner.subset_hook_caller(spec.__name__, [plugin])
-            yield modid, TypedHookCaller(modid, caller)
+        # if provided, always return preferred callers first in the given order
+        preferred_modids = PydanticOrderedSet(preferred_modids)
+        for modid, _ in self.inner.list_name_plugin():
+            preferred_modids.add(modid)
+
+        for modid in preferred_modids:
+            caller = self._hook_caller(spec, modid)
+            yield modid, caller
 
     @overload
     def _hook_caller(
@@ -222,16 +247,18 @@ class PluginManager:
         """Returns a hook caller for the named method which only manages calls to a
         specific modid (aka plugin name)."""
 
-        caller = self.inner.subset_hook_caller(
-            spec.__name__,
-            remove_plugins=()
-            if modid is None
-            else (
+        if modid is None:
+            remove_plugins = []
+        else:
+            if not self.inner.has_plugin(modid):
+                raise PluginNotFoundError(f"Plugin {modid} does not exist")
+            remove_plugins = [
                 plugin
                 for name, plugin in self.inner.list_name_plugin()
                 if name != modid
-            ),
-        )
+            ]
+
+        caller = self.inner.subset_hook_caller(spec.__name__, remove_plugins)
 
         return TypedHookCaller(modid, caller)
 

@@ -4,10 +4,19 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any
 
 from _hexdoc_favicons import Favicons
-from jinja2 import ChoiceLoader, PrefixLoader, StrictUndefined, Template
+from jinja2 import (
+    BaseLoader,
+    ChoiceLoader,
+    Environment,
+    PackageLoader,
+    PrefixLoader,
+    StrictUndefined,
+    Template,
+    TemplateNotFound,
+)
 from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.core import Properties, ResourceLocation
@@ -27,15 +36,58 @@ from hexdoc.utils import write_to_path
 from .sitemap import MARKER_NAME, SitemapMarker
 
 
-def create_jinja_env(pm: PluginManager, include: list[str]):
-    prefix_loaders = pm.load_jinja_templates(include)
+class HexdocTemplateLoader(BaseLoader):
+    NAMESPACE_ALIASES = {
+        "patchouli": "hexdoc",
+    }
+
+    def __init__(
+        self,
+        included: dict[str, PackageLoader],
+        extra: dict[str, PackageLoader],
+        props_file: Path,
+    ):
+        self.inner = ChoiceLoader(
+            [
+                PrefixLoader(included, ":"),
+                *included.values(),
+            ]
+        )
+        self.extra = extra
+        self.props_file = props_file
+
+    def get_source(self, environment: Environment, template: str):
+        for alias, replacement in self.NAMESPACE_ALIASES.items():
+            if template.startswith(f"{alias}:"):
+                logging.getLogger(__name__).info(
+                    f"Replacing {alias} with {replacement} for template {template}"
+                )
+                template = replacement + template.removeprefix(alias)
+                break
+
+        try:
+            return self.inner.get_source(environment, template)
+        except TemplateNotFound as e:
+            for modid, loader in self.extra.items():
+                try:
+                    loader.get_source(environment, template)
+                except TemplateNotFound:
+                    continue
+                e.add_note(
+                    f'  note: try adding "{modid}" to props.template.include '
+                    f"in {self.props_file.as_posix()}"
+                )
+            raise
+
+
+def create_jinja_env(pm: PluginManager, include: list[str], props_file: Path):
+    included, extra = pm.load_jinja_templates(include)
 
     env = SandboxedEnvironment(
-        loader=ChoiceLoader(
-            [
-                PrefixLoader(prefix_loaders, ":"),
-                *prefix_loaders.values(),
-            ]
+        loader=HexdocTemplateLoader(
+            included=included,
+            extra=extra,
+            props_file=props_file,
         ),
         undefined=StrictUndefined,
         lstrip_blocks=True,
@@ -53,13 +105,6 @@ def create_jinja_env(pm: PluginManager, include: list[str]):
     }
 
     return pm.update_jinja_env(env)
-
-
-class FaviconDict(TypedDict):
-    image_format: str
-    dimensions: tuple[int, int]
-    prefix: str
-    rel: str | None
 
 
 def render_book(
@@ -103,9 +148,8 @@ def render_book(
 
     with Favicons(props.template.icon, output_dir, base_url="") as favicons:
         favicons.sgenerate()
-        # unfortunately this "strongly typed library" is full of unknown types
-        favicons_html: tuple[str, ...] = favicons.html()
-        favicons_formats: tuple[FaviconDict, ...] = favicons.formats()
+        favicons_html = favicons.html()
+        favicons_formats = favicons.formats()
 
     template_args: dict[str, Any] = {
         "book": book,

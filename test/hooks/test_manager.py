@@ -1,5 +1,6 @@
 # pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
 
+from pathlib import Path
 from typing import Any, Callable
 
 import pytest
@@ -26,7 +27,7 @@ def render_template(request: FixtureRequest, pm: PluginManager) -> RenderTemplat
             raise TypeError(f"Expected marker `template` with 1 string, got {marker}")
 
     def callback():
-        env = create_jinja_env(pm, [])
+        env = create_jinja_env(pm, [], Path())
         template = env.from_string(template_str)
         return template.render(pm.update_template_args(dict(template_args)))
 
