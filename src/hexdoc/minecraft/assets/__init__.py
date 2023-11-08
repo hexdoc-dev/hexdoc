@@ -7,6 +7,8 @@ __all__ = [
     "TagWithTexture",
     "Texture",
     "TextureContext",
+    "TextureLocation",
+    "TextureLocationAdapter",
 ]
 
 from .textures import (
@@ -18,4 +20,6 @@ from .textures import (
     TagWithTexture,
     Texture,
     TextureContext,
+    TextureLocation,
+    TextureLocationAdapter,
 )

@@ -2,14 +2,17 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 import subprocess
 from collections.abc import Iterator
 from contextlib import ExitStack
+from functools import cached_property
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
+from minecraft_render import ResourcePath, require
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
 
@@ -37,11 +40,42 @@ ExportFn = Callable[[_T, _T | None], str]
 BookFolder = Literal["categories", "entries", "templates"]
 
 
+@dataclass
+class HexdocPythonResourceLoader:
+    loader: ModResourceLoader
+
+    def __post_init__(self):
+        self._module = require()
+
+    def loadJSON(self, resource_path: ResourcePath) -> str:
+        path = self._convert_resource_path(resource_path)
+        _, json_str = self.loader.load_resource(path, decode=lambda v: v)
+        return json_str
+
+    def loadTexture(self, resource_path: ResourcePath) -> str:
+        path = self._convert_resource_path(resource_path)
+        _, resolved_path = self.loader.find_resource(path)
+
+        with open(resolved_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+
+    def close(self):
+        pass
+
+    def wrapped(self):
+        return self._module.PythonLoaderWrapper(self)
+
+    def _convert_resource_path(self, resource_path: ResourcePath):
+        string_path = self._module.resourcePathAsString(resource_path)
+        return Path("assets") / string_path
+
+
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
     props: Properties
     root_book_id: ResourceLocation | None
     export_dir: Path | None
+    texture_render_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
 
@@ -51,6 +85,7 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
+        texture_render_dir: Path | None,
         export: bool = True,
     ):
         # clear the export dir so we start with a clean slate
@@ -67,7 +102,12 @@ class ModResourceLoader:
                 ),
             )
 
-        return cls.load_all(props, pm, export=export)
+        return cls.load_all(
+            props,
+            pm,
+            texture_render_dir=texture_render_dir,
+            export=export,
+        )
 
     @classmethod
     def load_all(
@@ -75,14 +115,17 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
+        texture_render_dir: Path | None,
         export: bool = True,
     ) -> Self:
         export_dir = props.export_dir if export else None
         stack = ExitStack()
+
         return cls(
             props=props,
             root_book_id=props.book,
             export_dir=export_dir,
+            texture_render_dir=texture_render_dir,
             resource_dirs=[
                 path_resource_dir
                 for resource_dir in props.resource_dirs
@@ -111,6 +154,32 @@ class ModResourceLoader:
                 allow_missing=True,
             )
         }
+
+    @cached_property
+    def renderer(self):
+        if self.texture_render_dir is None:
+            raise TypeError("Unable to create renderer, texture_render_dir is None")
+        return require().RenderClass(
+            self.renderer_loader,
+            {
+                "outDir": self.texture_render_dir.as_posix(),
+                "imageSize": 300,
+            },
+        )
+
+    @cached_property
+    def renderer_loader(self):
+        return require().createMultiloader(
+            HexdocPythonResourceLoader(self).wrapped(),
+            self.minecraft_loader,
+        )
+
+    @cached_property
+    def minecraft_loader(self):
+        return require().MinecraftAssetsLoader.fetchAll(
+            self.props.minecraft_assets.ref,
+            self.props.minecraft_assets.version,
+        )
 
     def load_metadata(
         self,

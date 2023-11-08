@@ -53,11 +53,16 @@ def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceL
         ).stdout.strip()
     )
 
+    png_textures = {
+        texture.file_id: texture for texture in Texture.load_all(root, loader)
+    }
+
     # this mod's metadata
     metadata = HexdocMetadata(
         book_url=f"{props.url}/v/{version}",
         asset_url=props.env.asset_url,
-        textures=list(Texture.load_all(root, loader)),
+        png_textures=list(png_textures.values()),
+        item_textures={},  # TODO: implement
     )
 
     loader.export(
@@ -80,6 +85,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ) -> tuple[str, Book, I18n]:
     ...
 
@@ -92,6 +98,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ) -> tuple[str, None, I18n]:
     ...
 
@@ -103,6 +110,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ):
     """lang, book, i18n"""
     lang, book, i18n, loader, _ = load_book_and_loader(
@@ -112,6 +120,7 @@ def load_book(
         lang=lang,
         allow_missing=allow_missing,
         export=export,
+        texture_render_dir=texture_render_dir,
     )
     loader.close()
     return lang, book, i18n
@@ -125,6 +134,7 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ) -> tuple[str, Book, I18n, ModResourceLoader, BookContext]:
     ...
 
@@ -137,6 +147,7 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ) -> tuple[str, None, I18n, ModResourceLoader, None]:
     ...
 
@@ -148,12 +159,18 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
+    texture_render_dir: Path | None,
 ) -> tuple[str, Book | None, I18n, ModResourceLoader, BookContext | None]:
     """lang, book, i18n"""
     if lang is None:
         lang = props.default_lang
 
-    loader = ModResourceLoader.clean_and_load_all(props, pm, export=export)
+    loader = ModResourceLoader.clean_and_load_all(
+        props,
+        pm,
+        texture_render_dir=texture_render_dir,
+        export=export,
+    )
 
     all_metadata = load_all_metadata(props, pm, loader)
     i18n = _load_i18n(loader, None, allow_missing)[lang]
@@ -174,18 +191,22 @@ def load_books(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
+    texture_render_dir: Path | None,
 ):
     """books, all_metadata"""
-
-    with ModResourceLoader.clean_and_load_all(props, pm) as loader:
+    with ModResourceLoader.clean_and_load_all(
+        props,
+        pm,
+        texture_render_dir=texture_render_dir,
+    ) as loader:
         all_metadata = load_all_metadata(props, pm, loader)
 
         book_data = Book.load_book_json(loader, book_id)
-        books = dict[str, tuple[Book, I18n]]()
+        books = dict[str, tuple[Book, I18n, BookContext]]()
 
         for lang, i18n in _load_i18n(loader, lang, allow_missing).items():
-            book, _ = _load_book(book_data, pm, loader, i18n, all_metadata)
-            books[lang] = (book, i18n)
+            book, context = _load_book(book_data, pm, loader, i18n, all_metadata)
+            books[lang] = (book, i18n, context)
             loader.export_dir = None  # only export the first (default) book
 
         return books, all_metadata

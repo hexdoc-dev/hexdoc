@@ -11,9 +11,9 @@ from typing import Annotated, Union
 
 from typer import Option, Typer
 
-from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core import ModResourceLoader
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture, Texture
+from hexdoc.minecraft.assets import AnimatedTexture
 
 from . import render_block
 from .utils.args import (
@@ -53,7 +53,9 @@ def list_langs(
 ):
     """Get the available language codes as a JSON list."""
     props, pm, _ = load_common_data(props_file, verbosity)
-    with ModResourceLoader.load_all(props, pm, export=False) as loader:
+    with ModResourceLoader.load_all(
+        props, pm, texture_render_dir=None, export=False
+    ) as loader:
         langs = sorted(I18n.list_all(loader))
         print(json.dumps(langs))
 
@@ -76,6 +78,7 @@ def repl(
         lang,
         allow_missing,
         export=False,
+        texture_render_dir=Path("out/tmp/textures"),
     )
 
     repl_locals = dict(
@@ -109,7 +112,15 @@ def export(
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, _ = load_common_data(props_file, verbosity)
-    load_book(props.book, props, pm, lang, allow_missing, export=True)
+    load_book(
+        props.book,
+        props,
+        pm,
+        lang,
+        allow_missing,
+        export=True,
+        texture_render_dir=None,
+    )
 
 
 @app.command()
@@ -133,19 +144,14 @@ def render(
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
-    books, all_metadata = load_books(props.book, props, pm, lang, allow_missing)
-
-    textures = dict[ResourceLocation, Texture]()
-    animations = list[AnimatedTexture]()
-
-    for metadata in all_metadata.values():
-        for texture in metadata.textures:
-            textures[texture.file_id] = texture
-            if isinstance(texture, AnimatedTexture):
-                animations.append(texture)
-
-    # sort the animations to hopefully avoid flaky tests
-    animations.sort(key=lambda t: t.class_name)
+    books, all_metadata = load_books(
+        props.book,
+        props,
+        pm,
+        lang,
+        allow_missing,
+        texture_render_dir=output_dir / "textures",
+    )
 
     logger = logging.getLogger(__name__)
     logger.info(f"update_latest={update_latest}, release={release}")
@@ -175,7 +181,7 @@ def render(
 
     lang_names = {
         lang_: f"{i18n.localize('language.name')} ({i18n.localize('language.region')})"
-        for lang_, (_, i18n) in books.items()
+        for lang_, (_, i18n, _) in books.items()
     }
 
     for should_render, version_, is_root in [
@@ -185,7 +191,17 @@ def render(
     ]:
         if not should_render:
             continue
-        for lang_, (book, i18n) in books.items():
+        for lang_, (book, i18n, context) in books.items():
+            textures = context.png_textures
+            animations = sorted(
+                (
+                    texture
+                    for texture in textures.values()
+                    if isinstance(texture, AnimatedTexture)
+                ),
+                key=lambda t: t.class_name,
+            )
+
             render_book(
                 props=props,
                 pm=pm,

@@ -47,8 +47,9 @@ class BaseResourceLocation:
 
     _from_str_regex: ClassVar[re.Pattern[str]]
 
-    def __init_subclass__(cls, regex: re.Pattern[str]) -> None:
-        cls._from_str_regex = regex
+    def __init_subclass__(cls, regex: re.Pattern[str] | None) -> None:
+        if regex:
+            cls._from_str_regex = regex
 
     @classmethod
     def from_str(cls, raw: str) -> Self:
