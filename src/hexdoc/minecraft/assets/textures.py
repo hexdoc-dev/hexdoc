@@ -6,6 +6,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Annotated, Iterator, Literal, Self
 
+from minecraft_render import require
 from pydantic import AfterValidator, Field, TypeAdapter, model_validator
 
 from hexdoc.core import ItemStack, ModResourceLoader, Properties, ResourceLocation
@@ -244,6 +245,51 @@ class ItemWithNormalTexture(InlineItemModel):
         return False
 
 
+# TODO: move this logic into, idk, MinecraftTexture, so we can access effect icons etc
+class ItemWithMinecraftTexture(ItemWithNormalTexture):
+    @classmethod
+    def load_id(cls, item: ItemStack, context: TextureContext):
+        """Implements InlineModel."""
+        if item.id.namespace != "minecraft":
+            raise ValueError(f"Invalid namespace, expected minecraft: {item}")
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"Rendering block: {item}")
+
+        texture_id = "item" / TextureLocationAdapter.validate_python(item.id)
+
+        # TODO: update minecraft_render to inject this into require()
+        # this lazy import is *nasty*
+        from javascript.errors import JavaScriptError
+
+        try:
+            if context.loader.book_output_dir:
+                # TODO: try to extract item variants?
+                render_id = require().ResourceLocation(item.namespace, item.path)
+
+                path = context.loader.renderer.renderToFile(render_id)
+                logger.info(f"Rendered {item} to {path}")
+
+                url = path.removeprefix(f"{context.loader.book_output_dir}/")
+
+            else:
+                # TODO: update minecraft_render to pass this into renderToFile
+                url = f"assets/{texture_id.namespace}/textures/{texture_id.path}"
+                logger.info(f"book_output_dir is None, assuming url is {url}")
+
+        except JavaScriptError:
+            logger.info(f"Failed to render {item} as block, assuming item")
+            url = context.loader.minecraft_loader.buildURL(
+                f"{item.namespace}/items/{item.path}"
+            )
+
+        return cls(
+            id=item,
+            name=context.i18n.localize_item(item),
+            texture=Texture(file_id=texture_id, url=url),
+        )
+
+
 class ItemWithGaslightingTexture(InlineItemModel):
     id: ItemStack
     name: LocalizedStr
@@ -276,7 +322,11 @@ class ItemWithGaslightingTexture(InlineItemModel):
         return True
 
 
-ItemWithTexture = ItemWithGaslightingTexture | ItemWithNormalTexture
+# order is important here!
+# Minecraft should be last, since it renders a new image
+ItemWithTexture = (
+    ItemWithGaslightingTexture | ItemWithNormalTexture | ItemWithMinecraftTexture
+)
 
 
 class TagWithTexture(InlineModel):

@@ -54,7 +54,10 @@ def list_langs(
     """Get the available language codes as a JSON list."""
     props, pm, _ = load_common_data(props_file, verbosity)
     with ModResourceLoader.load_all(
-        props, pm, texture_render_dir=None, export=False
+        props,
+        pm,
+        book_output_dir=None,
+        export=False,
     ) as loader:
         langs = sorted(I18n.list_all(loader))
         print(json.dumps(langs))
@@ -77,8 +80,8 @@ def repl(
         pm,
         lang,
         allow_missing,
+        book_output_dir=Path("out/tmp/textures"),
         export=False,
-        texture_render_dir=Path("out/tmp/textures"),
     )
 
     repl_locals = dict(
@@ -119,7 +122,7 @@ def export(
         lang,
         allow_missing,
         export=True,
-        texture_render_dir=None,
+        book_output_dir=None,
     )
 
 
@@ -150,7 +153,7 @@ def render(
         pm,
         lang,
         allow_missing,
-        texture_render_dir=output_dir / "textures",
+        book_output_dir=output_dir,
     )
 
     logger = logging.getLogger(__name__)

@@ -85,7 +85,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ) -> tuple[str, Book, I18n]:
     ...
 
@@ -98,7 +98,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ) -> tuple[str, None, I18n]:
     ...
 
@@ -110,7 +110,7 @@ def load_book(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ):
     """lang, book, i18n"""
     lang, book, i18n, loader, _ = load_book_and_loader(
@@ -120,7 +120,7 @@ def load_book(
         lang=lang,
         allow_missing=allow_missing,
         export=export,
-        texture_render_dir=texture_render_dir,
+        book_output_dir=book_output_dir,
     )
     loader.close()
     return lang, book, i18n
@@ -134,7 +134,7 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ) -> tuple[str, Book, I18n, ModResourceLoader, BookContext]:
     ...
 
@@ -147,7 +147,7 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ) -> tuple[str, None, I18n, ModResourceLoader, None]:
     ...
 
@@ -159,7 +159,7 @@ def load_book_and_loader(
     lang: str | None,
     allow_missing: bool,
     export: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ) -> tuple[str, Book | None, I18n, ModResourceLoader, BookContext | None]:
     """lang, book, i18n"""
     if lang is None:
@@ -168,7 +168,7 @@ def load_book_and_loader(
     loader = ModResourceLoader.clean_and_load_all(
         props,
         pm,
-        texture_render_dir=texture_render_dir,
+        book_output_dir=book_output_dir,
         export=export,
     )
 
@@ -191,13 +191,13 @@ def load_books(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
-    texture_render_dir: Path | None,
+    book_output_dir: Path | None,
 ):
     """books, all_metadata"""
     with ModResourceLoader.clean_and_load_all(
         props,
         pm,
-        texture_render_dir=texture_render_dir,
+        book_output_dir=book_output_dir,
     ) as loader:
         all_metadata = load_all_metadata(props, pm, loader)
 

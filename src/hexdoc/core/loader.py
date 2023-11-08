@@ -75,7 +75,7 @@ class ModResourceLoader:
     props: Properties
     root_book_id: ResourceLocation | None
     export_dir: Path | None
-    texture_render_dir: Path | None
+    book_output_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
 
@@ -85,7 +85,7 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        texture_render_dir: Path | None,
+        book_output_dir: Path | None,
         export: bool = True,
     ):
         # clear the export dir so we start with a clean slate
@@ -105,7 +105,7 @@ class ModResourceLoader:
         return cls.load_all(
             props,
             pm,
-            texture_render_dir=texture_render_dir,
+            book_output_dir=book_output_dir,
             export=export,
         )
 
@@ -115,7 +115,7 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        texture_render_dir: Path | None,
+        book_output_dir: Path | None,
         export: bool = True,
     ) -> Self:
         export_dir = props.export_dir if export else None
@@ -125,7 +125,7 @@ class ModResourceLoader:
             props=props,
             root_book_id=props.book,
             export_dir=export_dir,
-            texture_render_dir=texture_render_dir,
+            book_output_dir=book_output_dir,
             resource_dirs=[
                 path_resource_dir
                 for resource_dir in props.resource_dirs
@@ -157,12 +157,12 @@ class ModResourceLoader:
 
     @cached_property
     def renderer(self):
-        if self.texture_render_dir is None:
-            raise TypeError("Unable to create renderer, texture_render_dir is None")
+        if self.book_output_dir is None:
+            raise TypeError("Unable to create renderer, book_output_dir is None")
         return require().RenderClass(
             self.renderer_loader,
             {
-                "outDir": self.texture_render_dir.as_posix(),
+                "outDir": self.book_output_dir.as_posix(),
                 "imageSize": 300,
             },
         )
