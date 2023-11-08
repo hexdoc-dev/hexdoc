@@ -84,7 +84,10 @@ class Texture(InlineModel):
     @classmethod
     def load_id(cls, id: ResourceLocation, context: TextureContext):
         id = TextureLocationAdapter.validate_python(id)
-        return cls.find(id, props=context.props, textures=context.png_textures)
+        try:
+            return cls.find(id, props=context.props, textures=context.png_textures)
+        except ValueError:
+            return MinecraftTexture.load_or_render(id, context)
 
     @classmethod
     def find(
@@ -113,6 +116,35 @@ class Texture(InlineModel):
                     return Texture(file_id=id, url=MISSING_TEXTURE)
 
         raise ValueError(message)
+
+
+class MinecraftTexture(Texture):
+    @classmethod
+    def load_or_render(cls, id: ResourceLocation, context: TextureContext) -> Self:
+        texture_id = TextureLocationAdapter.validate_python(id)
+        if id.namespace != "minecraft":
+            raise ValueError(f"Invalid namespace, expected minecraft: {id}")
+
+        logger = logging.getLogger(__name__)
+
+        if id.path.startswith("block/"):
+            if context.loader.book_output_dir:
+                # TODO: try to extract variants/overrides?
+                render_id = require().ResourceLocation(id.namespace, id.path)
+
+                path = context.loader.renderer.renderToFile(render_id)
+                logger.info(f"Rendered {id} to {path}")
+
+                url = path.removeprefix(f"{context.loader.book_output_dir}/")
+            else:
+                # TODO: update minecraft_render to pass this into renderToFile
+                url = f"assets/{texture_id.namespace}/textures/{texture_id.path.removeprefix('block/')}"
+                logger.info(f"book_output_dir is None, assuming url is {url}")
+        else:
+            url = context.loader.minecraft_loader.buildURL(f"{id.namespace}/{id.path}")
+
+        texture = context.png_textures[id] = MinecraftTexture(file_id=id, url=url)
+        return texture
 
 
 class AnimatedTexture(Texture):
@@ -245,48 +277,23 @@ class ItemWithNormalTexture(InlineItemModel):
         return False
 
 
-# TODO: move this logic into, idk, MinecraftTexture, so we can access effect icons etc
 class ItemWithMinecraftTexture(ItemWithNormalTexture):
     @classmethod
     def load_id(cls, item: ItemStack, context: TextureContext):
         """Implements InlineModel."""
-        if item.id.namespace != "minecraft":
-            raise ValueError(f"Invalid namespace, expected minecraft: {item}")
 
-        logger = logging.getLogger(__name__)
-        logger.info(f"Rendering block: {item}")
-
-        texture_id = "item" / TextureLocationAdapter.validate_python(item.id)
-
-        # TODO: update minecraft_render to inject this into require()
-        # this lazy import is *nasty*
+        # TODO: ew.
         from javascript.errors import JavaScriptError
 
         try:
-            if context.loader.book_output_dir:
-                # TODO: try to extract item variants?
-                render_id = require().ResourceLocation(item.namespace, item.path)
-
-                path = context.loader.renderer.renderToFile(render_id)
-                logger.info(f"Rendered {item} to {path}")
-
-                url = path.removeprefix(f"{context.loader.book_output_dir}/")
-
-            else:
-                # TODO: update minecraft_render to pass this into renderToFile
-                url = f"assets/{texture_id.namespace}/textures/{texture_id.path}"
-                logger.info(f"book_output_dir is None, assuming url is {url}")
-
+            texture = MinecraftTexture.load_or_render("block" / item.id, context)
         except JavaScriptError:
-            logger.info(f"Failed to render {item} as block, assuming item")
-            url = context.loader.minecraft_loader.buildURL(
-                f"{item.namespace}/items/{item.path}"
-            )
+            texture = MinecraftTexture.load_or_render("item" / item.id, context)
 
         return cls(
             id=item,
             name=context.i18n.localize_item(item),
-            texture=Texture(file_id=texture_id, url=url),
+            texture=texture,
         )
 
 
