@@ -1,12 +1,14 @@
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+    "hatch-version-commit",
+]
 build-backend = "hatchling.build"
 
 # project metadata
 
 [project]
 name = "hexdoc"
-version = "1!0.1.0.dev0"
 description = "Python web book docgen for Patchouli and Hex Casting."
 authors = [
     { name="object-Object" },
@@ -35,6 +37,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 requires-python = ">=3.11"
+dynamic = ["version"]
 dependencies = [
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
@@ -78,6 +81,9 @@ dev = [
 [project.urls]
 Homepage = "https://object-object.github.io/HexMod/" # TODO: replace?
 Source = "https://github.com/object-Object/hexdoc"
+
+[tool.hatch.version]
+path = "src/hexdoc/__version__.py"
 
 [tool.hatch.build]
 artifacts = [
