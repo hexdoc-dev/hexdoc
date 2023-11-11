@@ -7,19 +7,17 @@ __all__ = [
     "TagWithTexture",
     "Texture",
     "TextureContext",
-    "TextureLocation",
-    "TextureLocationAdapter",
 ]
 
-from .textures import (
+from .animated import (
     AnimatedTexture,
     AnimationMeta,
+)
+from .textures import (
     ItemWithGaslightingTexture,
     ItemWithNormalTexture,
     ItemWithTexture,
     TagWithTexture,
     Texture,
     TextureContext,
-    TextureLocation,
-    TextureLocationAdapter,
 )

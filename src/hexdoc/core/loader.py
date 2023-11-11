@@ -85,7 +85,7 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        book_output_dir: Path | None,
+        book_output_dir: str | Path | None,
         export: bool = True,
     ):
         # clear the export dir so we start with a clean slate
@@ -115,7 +115,7 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        book_output_dir: Path | None,
+        book_output_dir: str | Path | None,
         export: bool = True,
     ) -> Self:
         export_dir = props.export_dir if export else None
@@ -125,7 +125,7 @@ class ModResourceLoader:
             props=props,
             root_book_id=props.book,
             export_dir=export_dir,
-            book_output_dir=book_output_dir,
+            book_output_dir=Path(book_output_dir) if book_output_dir else None,
             resource_dirs=[
                 path_resource_dir
                 for resource_dir in props.resource_dirs
@@ -356,6 +356,7 @@ class ModResourceLoader:
         folder: str | Path,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
@@ -369,6 +370,7 @@ class ModResourceLoader:
         folder: str | Path,
         id: ResourceLocation,
         allow_missing: bool = False,
+        internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
@@ -401,6 +403,7 @@ class ModResourceLoader:
         folder: str | Path,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         ...
 
@@ -412,6 +415,7 @@ class ModResourceLoader:
         folder: str | Path,
         id: ResourceLocation,
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         ...
 
@@ -424,6 +428,7 @@ class ModResourceLoader:
         namespace: str | None = None,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         """Search for a glob under a given resource location in all of `resource_dirs`.
 
@@ -468,6 +473,9 @@ class ModResourceLoader:
         # find all files matching the resloc
         found_any = False
         for resource_dir in reversed(self.resource_dirs):
+            if internal_only and not resource_dir.internal:
+                continue
+
             # eg. .../resources/assets/*/lang/subdir
             for base_path in resource_dir.path.glob(base_path_stub.as_posix()):
                 for glob_ in globs:
@@ -563,6 +571,9 @@ class ModResourceLoader:
             out_data = export(value, old_value)
 
         write_to_path(out_path, out_data)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(...)"
 
 
 class LoaderContext(ValidationContext):

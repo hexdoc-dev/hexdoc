@@ -202,7 +202,7 @@ def render(
                     for texture in textures.values()
                     if isinstance(texture, AnimatedTexture)
                 ),
-                key=lambda t: t.class_name,
+                key=lambda t: t.css_class,
             )
 
             render_book(

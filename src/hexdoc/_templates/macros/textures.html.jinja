@@ -12,7 +12,7 @@
       role="img"
       title="{{ name }}"
       aria-label="Animated image of {{ name }}"
-      class="{{ (class_names + ['texture', 'animated-sync', texture.class_name])|join(' ') }}"
+      class="{{ (class_names + ['texture', 'animated-sync', texture.css_class])|join(' ') }}"
     ></div>
   {%- else -%}
     <img

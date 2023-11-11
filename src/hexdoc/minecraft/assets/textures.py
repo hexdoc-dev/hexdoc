@@ -4,90 +4,79 @@ import logging
 import re
 from functools import cached_property
 from pathlib import Path
-from typing import Annotated, Iterator, Literal, Self
+from typing import (
+    Annotated,
+    ClassVar,
+    Generic,
+    Iterator,
+    Literal,
+    Protocol,
+    Self,
+    TypeVar,
+)
 
 from minecraft_render import require
-from pydantic import AfterValidator, Field, TypeAdapter, model_validator
+from pydantic import (
+    AfterValidator,
+    Field,
+    TypeAdapter,
+    model_validator,
+)
 
 from hexdoc.core import ItemStack, ModResourceLoader, Properties, ResourceLocation
+from hexdoc.core.loader import LoaderContext
 from hexdoc.model import HexdocModel, InlineItemModel, InlineModel
-from hexdoc.model.base import DEFAULT_CONFIG
+from hexdoc.model.base import DEFAULT_CONFIG, ValidationContext
+from hexdoc.utils import isinstance_or_raise
 
 from ..i18n import I18nContext, LocalizedStr
 from ..tags import Tag
+from .constants import MISSING_TEXTURE, TAG_TEXTURE
 
-# 16x16 hashtag icon for tags
-TAG_TEXTURE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAC4jAAAuIwF4pT92AAAANUlEQVQ4y2NgGJRAXV39v7q6+n9cfGTARKllFBvAiOxMUjTevHmTkSouGPhAHA0DWnmBrgAANLIZgSXEQxIAAAAASUVORK5CYII="
-
-# purple and black square
-MISSING_TEXTURE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAACXBIWXMAAC4jAAAuIwF4pT92AAAAJElEQVQoz2NkwAF+MPzAKs7EQCIY1UAMYMQV3hwMHKOhRD8NAPogBA/DVsDEAAAAAElFTkSuQmCC"
-
-NUM_GASLIGHTING_TEXTURES = 4
-
-
-def normalize_texture_id(id: ResourceLocation) -> ResourceLocation:
-    path = id.path.removeprefix("textures/")
-
-    if not path.endswith(".png"):
-        path += ".png"
-
-    path = re.sub(r"^(item|block)s/", "\1/", path)
-
-    return id.with_path(path)
-
-
-TextureLocation = Annotated[ResourceLocation, AfterValidator(normalize_texture_id)]
-"""A normalized resource location of a texture image in resources/assets/*/textures.
-
-Path: `resources/assets/{namespace}/textures/{type}/{path}.png`
-
-Format: `{namespace}:{type}/{path}.png`
-"""
-
-TextureLocationAdapter = TypeAdapter(TextureLocation, config=DEFAULT_CONFIG)
+_T = TypeVar("_T", contravariant=True)
 
 
 class Texture(InlineModel):
-    file_id: TextureLocation
     url: str | None
 
+    # @classmethod
+    # def load_all(cls, root: Path, loader: ModResourceLoader):
+    #     """Load all textures from all internal resource dirs.
+
+    #     This is generally only called once.
+    #     """
+    #     for resource_dir, id, path in loader.find_resources(
+    #         "assets",
+    #         namespace="*",
+    #         folder="textures",
+    #         glob="**/*.png",
+    #         allow_missing=True,
+    #     ):
+    #         # don't reexport external textures, since they won't be in this repo
+    #         if resource_dir.external:
+    #             continue
+
+    #         relative_path = path.resolve().relative_to(root)
+    #         url = f"{loader.props.env.asset_url}/{relative_path.as_posix()}"
+
+    #         meta_path = path.with_suffix(".png.mcmeta")
+    #         if meta_path.is_file():
+    #             yield AnimatedTexture(
+    #                 file_id=id,
+    #                 url=url,
+    #                 meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
+    #             )
+    #         else:
+    #             yield Texture(file_id=id, url=url)
+
     @classmethod
-    def load_all(cls, root: Path, loader: ModResourceLoader):
-        """Load all textures from all internal resource dirs.
-
-        This is generally only called once.
-        """
-        for resource_dir, id, path in loader.find_resources(
-            "assets",
-            namespace="*",
-            folder="textures",
-            glob="**/*.png",
-            allow_missing=True,
-        ):
-            # don't reexport external textures, since they won't be in this repo
-            if resource_dir.external:
-                continue
-
-            relative_path = path.resolve().relative_to(root)
-            url = f"{loader.props.env.asset_url}/{relative_path.as_posix()}"
-
-            meta_path = path.with_suffix(".png.mcmeta")
-            if meta_path.is_file():
-                yield AnimatedTexture(
-                    file_id=id,
-                    url=url,
-                    meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
-                )
-            else:
-                yield Texture(file_id=id, url=url)
-
-    @classmethod
-    def load_id(cls, id: ResourceLocation, context: TextureContext):
+    def load_id(cls, id: ResourceLocation, context: ValidationContext):
+        assert isinstance_or_raise(context, TextureContext)
         id = TextureLocationAdapter.validate_python(id)
         try:
             return cls.find(id, props=context.props, textures=context.png_textures)
         except ValueError:
-            return MinecraftTexture.load_or_render(id, context)
+            return MinecraftTexture.load_or_render_unknown(id, context)
 
     @classmethod
     def find(
@@ -117,145 +106,69 @@ class Texture(InlineModel):
 
         raise ValueError(message)
 
+    @classmethod
+    def render_block(cls, id: ResourceLocation, loader: ModResourceLoader):
+        id = TextureLocationAdapter.validate_python(id)
+        render_id = require().ResourceLocation(id.namespace, id.path)
+
+        if loader.book_output_dir is not None:
+            # TODO: try to extract variants/overrides?
+            path = loader.renderer.renderToFile(render_id)
+            logging.getLogger(__name__).info(f"Rendered {id} to {path}")
+
+        # TODO: update minecraft_render to pass this into renderToFile
+        url = f"assets/{id.namespace}/textures/{id.path}.png"
+
+        return cls(file_id=id, url=url)
+
 
 class MinecraftTexture(Texture):
     @classmethod
     def load_or_render(cls, id: ResourceLocation, context: TextureContext) -> Self:
-        texture_id = TextureLocationAdapter.validate_python(id)
+        id = TextureLocationAdapter.validate_python(id)
         if id.namespace != "minecraft":
             raise ValueError(f"Invalid namespace, expected minecraft: {id}")
 
-        logger = logging.getLogger(__name__)
+        from javascript.errors import JavaScriptError
 
-        if id.path.startswith("block/"):
-            if context.loader.book_output_dir:
-                # TODO: try to extract variants/overrides?
-                render_id = require().ResourceLocation(id.namespace, id.path)
+        try:
+            return cls.render_block(id, context.loader)
+        except JavaScriptError:
+            pass
 
-                path = context.loader.renderer.renderToFile(render_id)
-                logger.info(f"Rendered {id} to {path}")
-
-                url = path.removeprefix(f"{context.loader.book_output_dir}/")
-            else:
-                # TODO: update minecraft_render to pass this into renderToFile
-                url = f"assets/{texture_id.namespace}/textures/{texture_id.path.removeprefix('block/')}"
-                logger.info(f"book_output_dir is None, assuming url is {url}")
-        else:
-            url = context.loader.minecraft_loader.buildURL(f"{id.namespace}/{id.path}")
-
+        url = context.loader.minecraft_loader.buildURL(f"{id.namespace}/{id.path}.png")
         texture = context.png_textures[id] = MinecraftTexture(file_id=id, url=url)
         return texture
 
+    @classmethod
+    def load_or_render_unknown(cls, id: ResourceLocation, context: TextureContext):
+        id = TextureLocationAdapter.validate_python(id)
+        stripped_id = id.with_path(id.path.removeprefix("block/").removeprefix("item/"))
 
-class AnimatedTexture(Texture):
-    meta: AnimationMeta
+        # TODO: ew.
+        from javascript.errors import JavaScriptError
 
-    @property
-    def class_name(self):
-        return self.file_id.class_name
+        for texture_id in [
+            id,
+            "block" / stripped_id,
+            "item" / stripped_id,
+        ]:
+            try:
+                print(texture_id)
+                return cls.load_or_render(texture_id, context)
+            except JavaScriptError:
+                pass
 
-    @property
-    def time_seconds(self):
-        return self.time / 20
-
-    @cached_property
-    def time(self):
-        return sum(time for _, time in self._normalized_frames)
-
-    @property
-    def frames(self):
-        start = 0
-        for index, time in self._normalized_frames:
-            yield AnimatedTextureFrame(
-                index=index,
-                start=start,
-                time=time,
-                animation_time=self.time,
-            )
-            start += time
-
-    @property
-    def _normalized_frames(self):
-        """index, time"""
-        animation = self.meta.animation
-
-        for i, frame in enumerate(animation.frames):
-            match frame:
-                case int(index):
-                    time = None
-                case AnimationMetaFrame(index=index, time=time):
-                    pass
-
-            if index is None:
-                index = i
-            if time is None:
-                time = animation.frametime
-
-            yield index, time
-
-
-class AnimatedTextureFrame(HexdocModel):
-    index: int
-    start: int
-    time: int
-    animation_time: int
-
-    @property
-    def start_percent(self):
-        return self._format_time(self.start)
-
-    @property
-    def end_percent(self):
-        return self._format_time(self.start + self.time, backoff=True)
-
-    def _format_time(self, time: int, *, backoff: bool = False) -> str:
-        percent = 100 * time / self.animation_time
-        if backoff and percent < 100:
-            percent -= 0.01
-        return f"{percent:.2f}".rstrip("0").rstrip(".")
-
-
-class AnimationMeta(HexdocModel):
-    animation: AnimationMetaTag
-
-
-class AnimationMetaTag(HexdocModel):
-    interpolate: Literal[False]  # TODO: handle interpolation
-    width: None = None  # TODO: handle non-square textures
-    height: None = None
-    frametime: int = 1
-    frames: list[int | AnimationMetaFrame]
-
-
-class AnimationMetaFrame(HexdocModel):
-    index: int | None = None
-    time: int | None = None
-
-
-class TextureContext(I18nContext):
-    png_textures: dict[TextureLocation, Texture] = Field(default_factory=dict)
-    item_textures: dict[ResourceLocation, Texture] = Field(default_factory=dict)
-    gaslighting_items: set[ResourceLocation] = Field(default_factory=set)
-
-    @model_validator(mode="after")
-    def _post_root(self) -> Self:
-        self.gaslighting_items |= Tag.load(
-            id=ResourceLocation("hexdoc", "gaslighting"),
-            registry="items",
-            context=self,
-        ).value_ids_set
-
-        return self
+        raise ValueError(f"Failed to load or render Minecraft texture: {id}")
 
 
 def get_item_texture(
     item: ResourceLocation | ItemStack,
     item_textures: dict[ResourceLocation, Texture],
 ) -> Texture:
-    texture_id = TextureLocationAdapter.validate_python("item" / item.id)
-    if texture_id not in item_textures:
+    if item.id not in item_textures:
         raise ValueError(f"No texture loaded for item: {item}")
-    return item_textures[texture_id]
+    return item_textures[item.id]
 
 
 class ItemWithNormalTexture(InlineItemModel):
@@ -264,8 +177,9 @@ class ItemWithNormalTexture(InlineItemModel):
     texture: Texture
 
     @classmethod
-    def load_id(cls, item: ItemStack, context: TextureContext):
+    def load_id(cls, item: ItemStack, context: ValidationContext):
         """Implements InlineModel."""
+        assert isinstance_or_raise(context, TextureI18nContext)
         return cls(
             id=item,
             name=context.i18n.localize_item(item),
@@ -279,21 +193,16 @@ class ItemWithNormalTexture(InlineItemModel):
 
 class ItemWithMinecraftTexture(ItemWithNormalTexture):
     @classmethod
-    def load_id(cls, item: ItemStack, context: TextureContext):
+    def load_id(cls, item: ItemStack, context: ValidationContext):
         """Implements InlineModel."""
+        assert isinstance_or_raise(context, TextureI18nContext)
 
-        # TODO: ew.
-        from javascript.errors import JavaScriptError
-
-        try:
-            texture = MinecraftTexture.load_or_render("block" / item.id, context)
-        except JavaScriptError:
-            texture = MinecraftTexture.load_or_render("item" / item.id, context)
+        texture_id = TextureLocationAdapter.validate_python(item.id)
 
         return cls(
             id=item,
             name=context.i18n.localize_item(item),
-            texture=texture,
+            texture=MinecraftTexture.load_or_render_unknown(texture_id, context),
         )
 
 
@@ -303,8 +212,9 @@ class ItemWithGaslightingTexture(InlineItemModel):
     textures: list[Texture]
 
     @classmethod
-    def load_id(cls, item: ItemStack, context: TextureContext):
+    def load_id(cls, item: ItemStack, context: ValidationContext):
         """Implements InlineModel."""
+        assert isinstance_or_raise(context, TextureI18nContext)
         if item.id not in context.gaslighting_items:
             raise ValueError("Item does not have a gaslighting texture")
         return cls(
@@ -342,7 +252,8 @@ class TagWithTexture(InlineModel):
     texture: Texture
 
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: TextureContext):
+    def load_id(cls, id: ResourceLocation, context: ValidationContext):
+        assert isinstance_or_raise(context, I18nContext)
         return cls(
             id=id,
             name=context.i18n.localize_item_tag(id),
@@ -352,3 +263,22 @@ class TagWithTexture(InlineModel):
     @property
     def gaslighting(self):
         return False
+
+
+class TextureContext(LoaderContext):
+    png_textures: dict[ResourceLocation, Texture] = Field(default_factory=dict)
+    item_textures: dict[ResourceLocation, Texture] = Field(default_factory=dict)
+    gaslighting_items: set[ResourceLocation] = Field(default_factory=set)
+    gaslighting_textures: dict[ResourceLocation, list[Texture]] = Field(
+        default_factory=dict
+    )
+
+    @model_validator(mode="after")
+    def _post_root(self) -> Self:
+        self.gaslighting_items |= Tag.GASLIGHTING_ITEMS.load(self.loader).value_ids_set
+
+        return self
+
+
+class TextureI18nContext(TextureContext, I18nContext):
+    pass

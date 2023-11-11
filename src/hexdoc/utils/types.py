@@ -107,3 +107,10 @@ NoTrailingSlashHttpUrl = Annotated[
     HttpUrl,
     AfterValidator(lambda u: str(u).rstrip("/")),
 ]
+
+
+def clamping_validator(lower: float, upper: float):
+    def validator(value: float):
+        return max(lower, min(upper, value))
+
+    return AfterValidator(validator)

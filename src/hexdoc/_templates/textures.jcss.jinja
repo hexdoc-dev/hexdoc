@@ -1,11 +1,11 @@
 {% for animation in animations %}
-  .{{ animation.class_name }} {
-    animation: {{ animation.class_name }} {{ animation.time_seconds }}s linear infinite;
+  .{{ animation.css_class }} {
+    animation: {{ animation.css_class }} {{ animation.time_seconds }}s linear infinite;
     background-size: 100%;
     background-image: url("{{ animation.url }}");
   }
 
-  @keyframes {{ animation.class_name }} {
+  @keyframes {{ animation.css_class }} {
     {% for frame in animation.frames %}
       {{ frame.start_percent }}%, {{ frame.end_percent }}% { background-position-y: {{ -100 * frame.index }}% }
     {% endfor %}

@@ -129,7 +129,7 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
         return f"#{self.path}"
 
     @property
-    def class_name(self):
+    def css_class(self):
         stripped_path = re.sub(r"[\*\/\.]", "-", self.path)
         return f"texture-{self.namespace}-{stripped_path}"
 
@@ -167,6 +167,9 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
         if assume_json and not path.suffix:
             return path.with_suffix(".json")
         return path
+
+    def removeprefix(self, prefix: str):
+        return ResourceLocation(self.namespace, self.path.removeprefix(prefix))
 
     def __truediv__(self, other: str) -> Self:
         return ResourceLocation(self.namespace, f"{self.path}/{other}")

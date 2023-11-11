@@ -58,7 +58,7 @@ def _items_in_tag(
     context: TextureContext,
 ) -> Iterator[ItemIngredient]:
     try:
-        tag = Tag.load("items", tag_id, context)
+        tag = Tag.load("items", tag_id, context.loader)
     except FileNotFoundError:
         return
 

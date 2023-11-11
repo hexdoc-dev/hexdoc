@@ -3,13 +3,13 @@ __all__ = [
     "DEFAULT_CONFIG",
     "HexdocModel",
     "IDModel",
-    "InlineIDModel",
     "InlineItemModel",
     "InlineModel",
     "InternallyTaggedUnion",
     "NoValue",
     "NoValueType",
     "PluginManagerContext",
+    "ResourceModel",
     "StripHiddenModel",
     "TagValue",
     "TypeTaggedUnion",
@@ -24,7 +24,7 @@ from .base import (
     ValidationContext,
     init_context,
 )
-from .id import IDModel, InlineIDModel
+from .id import IDModel, ResourceModel
 from .inline import InlineItemModel, InlineModel
 from .strip_hidden import StripHiddenModel
 from .tagged_union import (

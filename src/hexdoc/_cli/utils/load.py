@@ -11,7 +11,8 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import Texture
+from hexdoc.minecraft.assets.models import ModelItem
+from hexdoc.minecraft.assets.textures import Texture, TextureContext
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
@@ -62,7 +63,7 @@ def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceL
         book_url=f"{props.url}/v/{version}",
         asset_url=props.env.asset_url,
         png_textures=list(png_textures.values()),
-        item_textures={},  # TODO: implement
+        item_textures=item_textures,
     )
 
     loader.export(
@@ -71,6 +72,7 @@ def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceL
             by_alias=True,
             warnings=False,
             exclude_defaults=True,
+            round_trip=True,
         ),
     )
 
