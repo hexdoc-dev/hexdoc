@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "hatchling",
-    "hatch-version-commit",
+    "hatch-regex-commit",
 ]
 build-backend = "hatchling.build"
 
@@ -62,6 +62,7 @@ dependencies = [
 [project.optional-dependencies]
 pdoc = [
     "pdoc~=14.1",
+    "hatch",
 ]
 test = [
     "pyright",
@@ -74,7 +75,6 @@ dev = [
     "hexdoc[pdoc,test]",
     "ruff==0.1.4",
     "pre-commit",
-    "hatch",
     "nox",
 ]
 
