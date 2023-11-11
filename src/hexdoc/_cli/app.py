@@ -36,6 +36,8 @@ from .utils.sitemap import (
     load_sitemap,
 )
 
+logger = logging.getLogger(__name__)
+
 app = Typer(
     pretty_exceptions_enable=False,
     context_settings={
@@ -156,7 +158,6 @@ def render(
         book_output_dir=output_dir,
     )
 
-    logger = logging.getLogger(__name__)
     logger.info(f"update_latest={update_latest}, release={release}")
 
     # set up Jinja

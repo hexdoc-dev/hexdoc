@@ -33,6 +33,8 @@ from ..i18n import I18nContext, LocalizedStr
 from ..tags import Tag
 from .constants import MISSING_TEXTURE, TAG_TEXTURE
 
+logger = logging.getLogger(__name__)
+
 _T = TypeVar("_T", contravariant=True)
 
 
@@ -101,7 +103,7 @@ class Texture(InlineModel):
         for missing_id in props.textures.missing:
             for id in ids:
                 if id.match(missing_id):
-                    logging.getLogger(__name__).warning(message)
+                    logger.warning(message)
                     return Texture(file_id=id, url=MISSING_TEXTURE)
 
         raise ValueError(message)
@@ -114,7 +116,7 @@ class Texture(InlineModel):
         if loader.book_output_dir is not None:
             # TODO: try to extract variants/overrides?
             path = loader.renderer.renderToFile(render_id)
-            logging.getLogger(__name__).info(f"Rendered {id} to {path}")
+            logger.info(f"Rendered {id} to {path}")
 
         # TODO: update minecraft_render to pass this into renderToFile
         url = f"assets/{id.namespace}/textures/{id.path}.png"

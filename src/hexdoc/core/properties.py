@@ -19,6 +19,8 @@ from hexdoc.utils.types import PydanticOrderedSet
 from .resource import ResourceLocation
 from .resource_dir import ResourceDir
 
+logger = logging.getLogger(__name__)
+
 JINJA_NAMESPACE_ALIASES = {
     "patchouli": "hexdoc",
 }
@@ -119,7 +121,7 @@ class BaseProperties(StripHiddenModel):
                 },
             )
 
-        logging.getLogger(__name__).debug(props)
+        logger.debug(props)
         return props
 
 

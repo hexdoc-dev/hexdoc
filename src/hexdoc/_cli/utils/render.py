@@ -36,6 +36,8 @@ from hexdoc.utils import write_to_path
 
 from .sitemap import MARKER_NAME, SitemapMarker
 
+logger = logging.getLogger(__name__)
+
 
 class HexdocTemplateLoader(BaseLoader):
     def __init__(
@@ -56,7 +58,7 @@ class HexdocTemplateLoader(BaseLoader):
     def get_source(self, environment: Environment, template: str):
         for alias, replacement in JINJA_NAMESPACE_ALIASES.items():
             if template.startswith(f"{alias}:"):
-                logging.getLogger(__name__).info(
+                logger.info(
                     f"Replacing {alias} with {replacement} for template {template}"
                 )
                 template = replacement + template.removeprefix(alias)
@@ -138,7 +140,7 @@ def render_book(
     output_dir /= path
     page_url = "/".join([props.url, *path.parts])
 
-    logging.getLogger(__name__).info(f"Rendering {output_dir}")
+    logger.info(f"Rendering {output_dir}")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy(props.template.icon, output_dir)

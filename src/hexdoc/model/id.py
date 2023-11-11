@@ -12,6 +12,8 @@ from hexdoc.utils import JSONDict, isinstance_or_raise
 from .base import HexdocModel, ValidationContext
 from .inline import InlineModel
 
+logger = logging.getLogger(__name__)
+
 # TODO: i'm pretty sure there's redundancy between id.py and inline.py
 
 
@@ -27,7 +29,7 @@ class IDModel(HexdocModel):
         data: JSONDict,
         context: ValidationContext,
     ) -> Self:
-        logging.getLogger(__name__).debug(f"Load {cls} at {id}")
+        logger.debug(f"Load {cls} at {id}")
         return cls.model_validate(
             data | {"id": id, "resource_dir": resource_dir},
             context=context,

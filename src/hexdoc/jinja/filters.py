@@ -6,7 +6,7 @@ from markupsafe import Markup
 
 from hexdoc.core import Properties, ResourceLocation
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import Texture, TextureLocationAdapter
+from hexdoc.minecraft.assets import Texture
 from hexdoc.patchouli import Book, FormatTree
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import cast_or_raise
@@ -56,7 +56,7 @@ def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
         props = cast_or_raise(context["props"], Properties)
         textures = cast_or_raise(context["textures"], dict[Any, Any])
 
-        id = TextureLocationAdapter.validate_python(id)
+        id = ResourceLocation.model_validate(id)
         texture = Texture.find(id, props=props, textures=textures)
 
         assert texture.url is not None

@@ -30,6 +30,8 @@ from .properties import Properties
 from .resource import ResourceLocation, ResourceType
 from .resource_dir import PathResourceDir
 
+logger = logging.getLogger(__name__)
+
 METADATA_SUFFIX = ".hexdoc.json"
 
 _T = TypeVar("_T")
@@ -513,7 +515,7 @@ class ModResourceLoader:
         if not path.is_file():
             raise FileNotFoundError(path)
 
-        logging.getLogger(__name__).info(f"Loading {path}")
+        logger.info(f"Loading {path}")
 
         data = path.read_text("utf-8")
         value = decode(data)
@@ -559,7 +561,7 @@ class ModResourceLoader:
             return
         out_path = self.export_dir / path
 
-        logging.getLogger(__name__).debug(f"Exporting {path} to {out_path}")
+        logger.debug(f"Exporting {path} to {out_path}")
         if export is None:
             out_data = data
         else:

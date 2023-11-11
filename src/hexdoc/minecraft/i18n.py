@@ -19,6 +19,8 @@ from hexdoc.core import (
 from hexdoc.model import HexdocModel
 from hexdoc.utils import cast_or_raise, decode_and_flatten_json_dict
 
+logger = logging.getLogger(__name__)
+
 
 @total_ordering
 class LocalizedStr(HexdocModel, frozen=True):
@@ -204,7 +206,7 @@ class I18n(HexdocModel):
         if allow_missing is False:
             raise KeyError(message)
 
-        logging.getLogger(__name__).error(message)
+        logger.error(message)
         return LocalizedStr.skip_i18n(keys[0])
 
     def localize_pattern(self, op_id: ResourceLocation) -> LocalizedStr:

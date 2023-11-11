@@ -1,6 +1,8 @@
 import logging
 import sys
 
+logger = logging.getLogger(__name__)
+
 
 def setup_logging(verbosity: int):
     logging.basicConfig(
@@ -8,7 +10,7 @@ def setup_logging(verbosity: int):
         format="\033[1m[{relativeCreated:.02f} | {levelname} | {name}]\033[0m {message}",
         level=log_level(verbosity),
     )
-    logging.getLogger(__name__).info("Starting.")
+    logger.info("Starting.")
 
 
 def log_level(verbosity: int) -> int:

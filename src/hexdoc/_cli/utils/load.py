@@ -11,14 +11,15 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.models import ModelItem
-from hexdoc.minecraft.assets.textures import Texture, TextureContext
+from hexdoc.minecraft.assets.textures import Texture
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import cast_or_raise
 
 from .logging import setup_logging
+
+logger = logging.getLogger(__name__)
 
 
 def load_common_data(props_file: Path, verbosity: int):
@@ -30,7 +31,7 @@ def load_common_data(props_file: Path, verbosity: int):
     version = load_version(props, pm)
     minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
     if minecraft_version is None:
-        logging.getLogger(__name__).warning(
+        logger.warning(
             "No plugins implement hexdoc_minecraft_version, "
             "per-version validation will fail"
         )
@@ -40,7 +41,7 @@ def load_common_data(props_file: Path, verbosity: int):
 
 def load_version(props: Properties, pm: PluginManager):
     version = pm.mod_version(props.modid)
-    logging.getLogger(__name__).info(f"Loading hexdoc for {props.modid} {version}")
+    logger.info(f"Loading hexdoc for {props.modid} {version}")
     return version
 
 
