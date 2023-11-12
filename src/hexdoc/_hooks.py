@@ -13,24 +13,16 @@ from hexdoc.plugin import (
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
     LoadTaggedUnionsImpl,
-    ModVersionImpl,
     hookimpl,
 )
 
 
 class HexdocPlugin(
     LoadTaggedUnionsImpl,
-    ModVersionImpl,
     LoadResourceDirsImpl,
     LoadJinjaTemplatesImpl,
     DefaultRenderedTemplatesImpl,
 ):
-    @staticmethod
-    @hookimpl
-    def hexdoc_mod_version():
-        # need to implement this to be able to use `hexdoc export`
-        return ""
-
     @staticmethod
     @hookimpl
     def hexdoc_load_resource_dirs() -> HookReturn[Package]:

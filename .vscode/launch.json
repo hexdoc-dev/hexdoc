@@ -20,7 +20,7 @@
             "args": [
                 "export",
                 "--props",
-                "${workspaceFolder}/test/_submodules/HexMod/doc/hexdoc.toml",
+                "./test/_submodules/HexMod/doc/hexdoc.toml",
                 // "--lang",
                 // "en_us",
                 // "--allow-missing",

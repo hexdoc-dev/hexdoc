@@ -5,10 +5,10 @@ from typing import Literal
 
 from hexdoc.model import HexdocModel
 
-from .textures import Texture
+from .textures import PNGTexture
 
 
-class AnimatedTexture(Texture):
+class AnimatedTexture(PNGTexture):
     css_class: str
     meta: AnimationMeta
 

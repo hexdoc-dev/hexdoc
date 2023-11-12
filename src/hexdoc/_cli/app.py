@@ -14,6 +14,7 @@ from typer import Option, Typer
 from hexdoc.core import ModResourceLoader
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import AnimatedTexture
+from hexdoc.minecraft.assets.textures import PNGTexture
 
 from . import render_block
 from .utils.args import (
@@ -25,7 +26,12 @@ from .utils.args import (
     UpdateLatestOption,
     VerbosityOption,
 )
-from .utils.load import load_book, load_book_and_loader, load_books, load_common_data
+from .utils.load import (
+    export_metadata,
+    load_book,
+    load_books,
+    load_common_data,
+)
 from .utils.logging import repl_readfunc
 from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
@@ -58,7 +64,7 @@ def list_langs(
     with ModResourceLoader.load_all(
         props,
         pm,
-        book_output_dir=None,
+        render_dir=None,
         export=False,
     ) as loader:
         langs = sorted(I18n.list_all(loader))
@@ -76,14 +82,20 @@ def repl(
     """Start a Python shell with some helpful extra locals added from hexdoc."""
     props, pm, _ = load_common_data(props_file, verbosity)
 
-    _, book, i18n, loader, context = load_book_and_loader(
+    loader = ModResourceLoader.load_all(
+        props,
+        pm,
+        render_dir="out/tmp/textures",
+        export=False,
+    )
+
+    _, book, i18n, context = load_book(
         props.book,
         props,
         pm,
+        loader,
         lang,
         allow_missing,
-        book_output_dir=Path("out/tmp/textures"),
-        export=False,
     )
 
     repl_locals = dict(
@@ -117,14 +129,28 @@ def export(
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, _ = load_common_data(props_file, verbosity)
+
+    loader = ModResourceLoader.clean_and_load_all(
+        props,
+        pm,
+        export=True,
+        render_dir="_site/src/docs",
+    )
+
+    export_metadata(
+        props,
+        pm,
+        loader,
+        book_version_url="_site/src/docs",
+    )
+
     load_book(
         props.book,
         props,
         pm,
+        loader,
         lang,
         allow_missing,
-        export=True,
-        book_output_dir=None,
     )
 
 
@@ -148,6 +174,10 @@ def render(
         raise ValueError("Expected a value for props.book, got None")
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
+    if not version:
+        raise ValueError(
+            "Expected a version, got None (try implementing hexdoc_mod_version)"
+        )
 
     books, all_metadata = load_books(
         props.book,
@@ -155,7 +185,7 @@ def render(
         pm,
         lang,
         allow_missing,
-        book_output_dir=output_dir,
+        render_dir=output_dir,
     )
 
     logger.info(f"update_latest={update_latest}, release={release}")
@@ -196,15 +226,8 @@ def render(
         if not should_render:
             continue
         for lang_, (book, i18n, context) in books.items():
-            textures = context.png_textures
-            animations = sorted(
-                (
-                    texture
-                    for texture in textures.values()
-                    if isinstance(texture, AnimatedTexture)
-                ),
-                key=lambda t: t.css_class,
-            )
+            png_textures = PNGTexture.get_textures(context.textures)
+            animations = list(AnimatedTexture.get_textures(context.textures).values())
 
             render_book(
                 props=props,
@@ -216,7 +239,7 @@ def render(
                 templates=templates,
                 output_dir=output_dir,
                 all_metadata=all_metadata,
-                textures=textures,
+                png_textures=png_textures,
                 animations=animations,
                 allow_missing=allow_missing,
                 version=version_,

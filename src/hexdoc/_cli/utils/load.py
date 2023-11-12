@@ -1,5 +1,5 @@
 import logging
-import subprocess
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping, overload
 
@@ -11,7 +11,8 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.textures import Texture
+from hexdoc.minecraft.assets.load import load_and_render_internal_items
+from hexdoc.minecraft.assets.textures import TextureLookups
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def load_common_data(props_file: Path, verbosity: int):
+    """props, pm, version"""
     setup_logging(verbosity)
 
     props = Properties.load(props_file)
@@ -45,26 +47,28 @@ def load_version(props: Properties, pm: PluginManager):
     return version
 
 
-def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceLoader):
-    version = pm.mod_version(props.modid)
-    root = Path(
-        subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            capture_output=True,
-            encoding="utf-8",
-        ).stdout.strip()
-    )
-
-    png_textures = {
-        texture.file_id: texture for texture in Texture.load_all(root, loader)
-    }
+def export_metadata(
+    props: Properties,
+    pm: PluginManager,
+    loader: ModResourceLoader,
+    *,
+    book_version_url: str,
+):
+    textures = TextureLookups(dict)
+    for texture_id, texture in load_and_render_internal_items(
+        loader,
+        asset_url=props.env.asset_url,
+        book_version_url=book_version_url,
+    ):
+        texture.get_textures(textures)[texture_id] = texture
 
     # this mod's metadata
+    version = pm.mod_version(props.modid)
+
     metadata = HexdocMetadata(
-        book_url=f"{props.url}/v/{version}",
+        book_url=f"{props.url}/v/{version}" if version else None,
         asset_url=props.env.asset_url,
-        png_textures=list(png_textures.values()),
-        item_textures=item_textures,
+        textures=textures,
     )
 
     loader.export(
@@ -75,9 +79,10 @@ def load_all_metadata(props: Properties, pm: PluginManager, loader: ModResourceL
             exclude_defaults=True,
             round_trip=True,
         ),
+        cache=True,
     )
 
-    return loader.load_metadata(model_type=HexdocMetadata) | {props.modid: metadata}
+    return metadata
 
 
 @overload
@@ -85,11 +90,10 @@ def load_book(
     book_id: ResourceLocation,
     props: Properties,
     pm: PluginManager,
+    loader: ModResourceLoader,
     lang: str | None,
     allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-) -> tuple[str, Book, I18n]:
+) -> tuple[str, Book, I18n, BookContext]:
     ...
 
 
@@ -98,11 +102,10 @@ def load_book(
     book_id: None,
     props: Properties,
     pm: PluginManager,
+    loader: ModResourceLoader,
     lang: str | None,
     allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-) -> tuple[str, None, I18n]:
+) -> tuple[str, None, I18n, None]:
     ...
 
 
@@ -110,72 +113,15 @@ def load_book(
     book_id: ResourceLocation | None,
     props: Properties,
     pm: PluginManager,
+    loader: ModResourceLoader,
     lang: str | None,
     allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-):
-    """lang, book, i18n"""
-    lang, book, i18n, loader, _ = load_book_and_loader(
-        book_id=book_id,
-        props=props,
-        pm=pm,
-        lang=lang,
-        allow_missing=allow_missing,
-        export=export,
-        book_output_dir=book_output_dir,
-    )
-    loader.close()
-    return lang, book, i18n
-
-
-@overload
-def load_book_and_loader(
-    book_id: ResourceLocation,
-    props: Properties,
-    pm: PluginManager,
-    lang: str | None,
-    allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-) -> tuple[str, Book, I18n, ModResourceLoader, BookContext]:
-    ...
-
-
-@overload
-def load_book_and_loader(
-    book_id: None,
-    props: Properties,
-    pm: PluginManager,
-    lang: str | None,
-    allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-) -> tuple[str, None, I18n, ModResourceLoader, None]:
-    ...
-
-
-def load_book_and_loader(
-    book_id: ResourceLocation | None,
-    props: Properties,
-    pm: PluginManager,
-    lang: str | None,
-    allow_missing: bool,
-    export: bool,
-    book_output_dir: Path | None,
-) -> tuple[str, Book | None, I18n, ModResourceLoader, BookContext | None]:
+) -> tuple[str, Book | None, I18n, BookContext | None]:
     """lang, book, i18n"""
     if lang is None:
         lang = props.default_lang
 
-    loader = ModResourceLoader.clean_and_load_all(
-        props,
-        pm,
-        book_output_dir=book_output_dir,
-        export=export,
-    )
-
-    all_metadata = load_all_metadata(props, pm, loader)
+    all_metadata = loader.load_metadata(model_type=HexdocMetadata)
     i18n = _load_i18n(loader, None, allow_missing)[lang]
 
     if book_id:
@@ -185,7 +131,7 @@ def load_book_and_loader(
         book = None
         context = None
 
-    return lang, book, i18n, loader, context
+    return lang, book, i18n, context
 
 
 def load_books(
@@ -194,15 +140,15 @@ def load_books(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
-    book_output_dir: Path | None,
+    render_dir: Path | None,
 ):
     """books, all_metadata"""
     with ModResourceLoader.clean_and_load_all(
         props,
         pm,
-        book_output_dir=book_output_dir,
+        render_dir=render_dir,
     ) as loader:
-        all_metadata = load_all_metadata(props, pm, loader)
+        all_metadata = loader.load_metadata(model_type=HexdocMetadata)
 
         book_data = Book.load_book_json(loader, book_id)
         books = dict[str, tuple[Book, I18n, BookContext]]()
@@ -230,6 +176,8 @@ def _load_book(
             # this SHOULD be set (as a ResourceLocation) by Book.get_book_json
             book_id=cast_or_raise(data["id"], ResourceLocation),
             all_metadata=all_metadata,
+            textures=defaultdict(dict),
+            allowed_missing_textures=loader.props.textures.missing,
         )
         pm.update_context(context)
     return Book.load_all_from_data(data, context), context

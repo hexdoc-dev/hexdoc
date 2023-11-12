@@ -19,7 +19,7 @@ from jinja2 import (
 )
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.core import Properties, ResourceLocation
+from hexdoc.core import Properties
 from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
 from hexdoc.data import HexdocMetadata
 from hexdoc.jinja import (
@@ -29,7 +29,8 @@ from hexdoc.jinja import (
     hexdoc_wrap,
 )
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture, Texture
+from hexdoc.minecraft.assets import AnimatedTexture
+from hexdoc.minecraft.assets.textures import PNGTexture, TextureLookup
 from hexdoc.patchouli import Book
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import write_to_path
@@ -117,7 +118,7 @@ def render_book(
     templates: dict[Path, Template],
     output_dir: Path,
     all_metadata: dict[str, HexdocMetadata],
-    textures: dict[ResourceLocation, Texture],
+    png_textures: TextureLookup[PNGTexture],
     animations: list[AnimatedTexture],
     allow_missing: bool,
     version: str,
@@ -159,7 +160,7 @@ def render_book(
         "lang": lang,
         "lang_names": lang_names,
         "all_metadata": all_metadata,
-        "textures": textures,
+        "png_textures": png_textures,
         "animations": animations,
         "is_bleeding_edge": version == "latest",
         "link_bases": book.link_bases,

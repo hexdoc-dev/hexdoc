@@ -99,7 +99,7 @@ class MinecraftAssetsProps(StripHiddenModel):
 
 
 class TexturesProps(StripHiddenModel):
-    missing: list[ResourceLocation] = Field(default_factory=list)
+    missing: set[ResourceLocation] = Field(default_factory=set)
     override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
 
 
@@ -109,6 +109,7 @@ class BaseProperties(StripHiddenModel):
 
     @classmethod
     def load(cls, path: Path) -> Self:
+        path = path.resolve()
         props_dir = path.parent
 
         with relative_path_root(props_dir):

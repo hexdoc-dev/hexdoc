@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Iterator, Self
+from typing import Any, ClassVar, Iterator, Self
 
 from pydantic import Field
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.model import HexdocModel
 from hexdoc.utils import PydanticOrderedSet, decode_json_dict
 
@@ -96,6 +97,16 @@ class Tag(HexdocModel):
     @property
     def value_ids_set(self):
         return set(self.value_ids)
+
+    def __ror__(self, other: set[ResourceLocation]):
+        new = set(other)
+        new |= self.value_ids_set
+        return new
+
+    def __contains__(self, x: Any) -> bool:
+        if isinstance(x, BaseResourceLocation):
+            return x.id in self.value_ids_set
+        return NotImplemented
 
     def _export(self, current: Self | None):
         if self.replace or current is None:

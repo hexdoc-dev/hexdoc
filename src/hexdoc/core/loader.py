@@ -34,6 +34,8 @@ logger = logging.getLogger(__name__)
 
 METADATA_SUFFIX = ".hexdoc.json"
 
+HEXDOC_CACHE_DIR = ".hexdoc"
+
 _T = TypeVar("_T")
 _T_Model = TypeVar("_T_Model", bound=HexdocModel)
 
@@ -77,7 +79,7 @@ class ModResourceLoader:
     props: Properties
     root_book_id: ResourceLocation | None
     export_dir: Path | None
-    book_output_dir: Path | None
+    render_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
 
@@ -87,8 +89,8 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        book_output_dir: str | Path | None,
-        export: bool = True,
+        render_dir: str | Path | None = None,
+        export: bool = False,
     ):
         # clear the export dir so we start with a clean slate
         if props.export_dir and export:
@@ -107,7 +109,7 @@ class ModResourceLoader:
         return cls.load_all(
             props,
             pm,
-            book_output_dir=book_output_dir,
+            render_dir=render_dir,
             export=export,
         )
 
@@ -117,8 +119,8 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        book_output_dir: str | Path | None,
-        export: bool = True,
+        render_dir: str | Path | None = None,
+        export: bool = False,
     ) -> Self:
         export_dir = props.export_dir if export else None
         stack = ExitStack()
@@ -127,7 +129,7 @@ class ModResourceLoader:
             props=props,
             root_book_id=props.book,
             export_dir=export_dir,
-            book_output_dir=Path(book_output_dir) if book_output_dir else None,
+            render_dir=Path(render_dir) if render_dir else None,
             resource_dirs=[
                 path_resource_dir
                 for resource_dir in props.resource_dirs
@@ -158,13 +160,24 @@ class ModResourceLoader:
         }
 
     @cached_property
+    def repo_root(self):
+        return Path(
+            subprocess.run(
+                ["git", "rev-parse", "--show-toplevel"],
+                capture_output=True,
+                encoding="utf-8",
+                check=True,
+            ).stdout.strip()
+        )
+
+    @cached_property
     def renderer(self):
-        if self.book_output_dir is None:
-            raise TypeError("Unable to create renderer, book_output_dir is None")
+        if self.render_dir is None:
+            raise TypeError("Unable to create renderer, render_dir is None")
         return require().RenderClass(
             self.renderer_loader,
             {
-                "outDir": self.book_output_dir.as_posix(),
+                "outDir": self.render_dir.as_posix(),
                 "imageSize": 300,
             },
         )
@@ -193,8 +206,18 @@ class ModResourceLoader:
         """eg. `"{modid}.patterns"`"""
         metadata = dict[str, _T_Model]()
 
+        # TODO: refactor
+        cached_metadata = Path(HEXDOC_CACHE_DIR) / (
+            name_pattern.format(modid=self.props.modid) + METADATA_SUFFIX
+        )
+        if cached_metadata.is_file():
+            metadata[self.props.modid] = model_type.model_validate_json(
+                cached_metadata.read_bytes()
+            )
+
         for resource_dir in self.resource_dirs:
-            # skip if we've already loaded this mod's metadata
+            # skip if the resource dir has no metadata set, because we're only loading
+            # this for external mods (TODO: this feels flawed)
             modid = resource_dir.modid
             if modid is None or modid in metadata:
                 continue
@@ -208,8 +231,7 @@ class ModResourceLoader:
             except FileNotFoundError:
                 if allow_missing:
                     continue
-                else:
-                    raise
+                raise
 
         return metadata
 
@@ -532,7 +554,7 @@ class ModResourceLoader:
         return value
 
     @overload
-    def export(self, /, path: Path, data: str) -> None:
+    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None:
         ...
 
     @overload
@@ -545,6 +567,7 @@ class ModResourceLoader:
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | None = None,
+        cache: bool = False,
     ) -> None:
         ...
 
@@ -556,6 +579,7 @@ class ModResourceLoader:
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | None = None,
+        cache: bool = False,
     ) -> None:
         if not self.export_dir:
             return
@@ -573,6 +597,9 @@ class ModResourceLoader:
             out_data = export(value, old_value)
 
         write_to_path(out_path, out_data)
+
+        if cache:
+            write_to_path(HEXDOC_CACHE_DIR / path, out_data)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(...)"

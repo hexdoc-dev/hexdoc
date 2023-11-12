@@ -93,7 +93,7 @@ class PluginManager:
         self.inner.check_pending()
 
     def mod_version(self, modid: str):
-        return self._hook_caller(PluginSpec.hexdoc_mod_version, modid)()
+        return self._hook_caller(PluginSpec.hexdoc_mod_version, modid).try_call()
 
     def minecraft_version(self) -> str | None:
         versions = dict[str, str]()

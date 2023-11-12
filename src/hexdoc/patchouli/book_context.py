@@ -19,7 +19,12 @@ class BookContext(FormattingContext, MetadataContext):
         modid = resource_dir.modid
         if modid is None or modid == self.props.modid:
             return ""
-        return self.all_metadata[modid].book_url
+
+        book_url = self.all_metadata[modid].book_url
+        if book_url is None:
+            raise ValueError(f"Mod {modid} does not export a book url")
+
+        return book_url
 
     @model_validator(mode="after")
     def _post_root_load_tags(self) -> Self:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from collections.abc import Set
 from typing import Annotated, Any, Literal
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
@@ -92,7 +93,7 @@ class ModelItem(HexdocModel):
     def find_texture(
         self,
         loader: ModResourceLoader,
-        gaslighting_items: set[ResourceLocation],
+        gaslighting_items: Set[ResourceLocation],
         checked_overrides: defaultdict[ResourceLocation, set[int]] | None = None,
     ) -> FoundTexture | None:
         """May return a texture **or** a model. Texture ids will start with `textures/`."""
@@ -155,7 +156,7 @@ class ModelItem(HexdocModel):
         index: int,
         override: ModelOverride,
         loader: ModResourceLoader,
-        gaslighting_items: set[ResourceLocation],
+        gaslighting_items: Set[ResourceLocation],
         checked_overrides: defaultdict[ResourceLocation, set[int]],
     ) -> FoundTexture | None:
         if override.model.path.startswith("block/"):

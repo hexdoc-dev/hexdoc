@@ -27,7 +27,7 @@ def id_(
         props,
         pm,
         export=False,
-        book_output_dir=Path("out/tmp/textures"),
+        render_dir=Path("out/tmp/textures"),
     ) as loader:
         output_path = loader.renderer.renderToFile(
             require().ResourceLocation.parse(block)
@@ -48,7 +48,7 @@ def model(
         props,
         pm,
         export=False,
-        book_output_dir=Path("out/tmp/textures"),
+        render_dir=Path("out/tmp/textures"),
     ) as loader:
         if model_path.suffix == ".json":
             blocks = [ResourceLocation.from_model_path(model_path)]
