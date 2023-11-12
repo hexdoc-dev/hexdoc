@@ -79,7 +79,7 @@ class PNGTexture(Texture):
 
 
 class ItemTexture(Texture):
-    inner: PNGTexture
+    inner: SerializeAsAny[PNGTexture]
 
     @classmethod
     def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
@@ -87,7 +87,7 @@ class ItemTexture(Texture):
 
 
 class MultiItemTexture(Texture):
-    inner: list[PNGTexture]
+    inner: list[SerializeAsAny[PNGTexture]]
     gaslighting: bool
 
     @classmethod
