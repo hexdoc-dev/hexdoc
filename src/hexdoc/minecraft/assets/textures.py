@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import (
     Annotated,
     Any,
+    Generic,
     Iterable,
     Self,
     TypeVar,
@@ -36,13 +37,17 @@ class BaseTexture(InlineModel, ABC):
     @classmethod
     def load_id(cls, id: ResourceLocation, context: ValidationContext):
         assert isinstance_or_raise(context, TextureContext)
-        return cls.lookup(id, context.textures, context.allowed_missing_textures)
+        return cls.lookup(
+            id,
+            lookups=context.textures,  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+            allowed_missing=context.allowed_missing_textures,
+        )
 
     @classmethod
     def lookup(
         cls,
         id: ResourceLocation,
-        lookups: TextureLookups,
+        lookups: TextureLookups[Any],
         allowed_missing: Iterable[ResourceLocation],
     ) -> Self:
         """Returns the texture from the lookup table if it exists, or the "missing
@@ -50,7 +55,7 @@ class BaseTexture(InlineModel, ABC):
 
         This is called frequently and does not load any files.
         """
-        textures = cls.get_textures(lookups)
+        textures = cls.get_lookup(lookups)
         if id in textures:
             return textures[id]
 
@@ -61,11 +66,11 @@ class BaseTexture(InlineModel, ABC):
         raise ValueError(f"No {cls.__name__} for {id}")
 
     @classmethod
-    def get_textures(cls, lookups: TextureLookups) -> TextureLookup[Self]:
+    def get_lookup(cls, lookups: TextureLookups[Any]) -> TextureLookup[Self]:
         return lookups[cls.__name__]
 
-    def insert_texture(self, lookups: TextureLookups, id: ResourceLocation):
-        textures = self.get_textures(lookups)
+    def insert_texture(self, lookups: TextureLookups[Any], id: ResourceLocation):
+        textures = self.get_lookup(lookups)
         textures[id] = self
 
 
@@ -77,18 +82,18 @@ class PNGTexture(BaseTexture):
         return cls(url=url)
 
 
-AnyTexture = TypeVar("AnyTexture", bound=BaseTexture)
+_T_BaseTexture = TypeVar("_T_BaseTexture", bound=BaseTexture)
 
-TextureLookup = dict[ResourceLocation, SerializeAsAny[AnyTexture]]
+TextureLookup = dict[ResourceLocation, SerializeAsAny[_T_BaseTexture]]
 """dict[id, texture]"""
 
 TextureLookups = defaultdict[
     str,
-    Annotated[TextureLookup[Any], Field(default_factory=dict)],
+    Annotated[TextureLookup[_T_BaseTexture], Field(default_factory=dict)],
 ]
 """dict[type(texture).__name__, TextureLookup]"""
 
 
-class TextureContext(ValidationContext):
-    textures: TextureLookups
+class TextureContext(ValidationContext, Generic[_T_BaseTexture]):
+    textures: TextureLookups[_T_BaseTexture]
     allowed_missing_textures: set[ResourceLocation]

@@ -1,11 +1,47 @@
-from __future__ import annotations
-
 from functools import cached_property
 from typing import Literal, Self
 
 from hexdoc.model import HexdocModel
 
 from .textures import BaseTexture
+
+
+class AnimationMetaFrame(HexdocModel):
+    index: int | None = None
+    time: int | None = None
+
+
+class AnimationMetaTag(HexdocModel):
+    interpolate: Literal[False]  # TODO: handle interpolation
+    width: None = None  # TODO: handle non-square textures
+    height: None = None
+    frametime: int = 1
+    frames: list[int | AnimationMetaFrame]
+
+
+class AnimationMeta(HexdocModel):
+    animation: AnimationMetaTag
+
+
+class AnimatedTextureFrame(HexdocModel):
+    index: int
+    start: int
+    time: int
+    animation_time: int
+
+    @property
+    def start_percent(self):
+        return self._format_time(self.start)
+
+    @property
+    def end_percent(self):
+        return self._format_time(self.start + self.time, backoff=True)
+
+    def _format_time(self, time: int, *, backoff: bool = False) -> str:
+        percent = 100 * time / self.animation_time
+        if backoff and percent < 100:
+            percent -= 0.01
+        return f"{percent:.2f}".rstrip("0").rstrip(".")
 
 
 class AnimatedTexture(BaseTexture):
@@ -55,41 +91,3 @@ class AnimatedTexture(BaseTexture):
                 time = animation.frametime
 
             yield index, time
-
-
-class AnimatedTextureFrame(HexdocModel):
-    index: int
-    start: int
-    time: int
-    animation_time: int
-
-    @property
-    def start_percent(self):
-        return self._format_time(self.start)
-
-    @property
-    def end_percent(self):
-        return self._format_time(self.start + self.time, backoff=True)
-
-    def _format_time(self, time: int, *, backoff: bool = False) -> str:
-        percent = 100 * time / self.animation_time
-        if backoff and percent < 100:
-            percent -= 0.01
-        return f"{percent:.2f}".rstrip("0").rstrip(".")
-
-
-class AnimationMeta(HexdocModel):
-    animation: AnimationMetaTag
-
-
-class AnimationMetaTag(HexdocModel):
-    interpolate: Literal[False]  # TODO: handle interpolation
-    width: None = None  # TODO: handle non-square textures
-    height: None = None
-    frametime: int = 1
-    frames: list[int | AnimationMetaFrame]
-
-
-class AnimationMetaFrame(HexdocModel):
-    index: int | None = None
-    time: int | None = None

@@ -11,6 +11,8 @@ from .textures import BaseTexture, PNGTexture
 ImageTexture = PNGTexture | AnimatedTexture
 
 
+# this needs to be a separate class, rather than just using ImageTexture directly,
+# because the key in the lookup for SingleItemTexture is the item id, not the texture id
 class SingleItemTexture(BaseTexture):
     inner: ImageTexture
 
@@ -21,6 +23,10 @@ class SingleItemTexture(BaseTexture):
     @classmethod
     def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
         return super().load_id(id.id, context)
+
+    @property
+    def url(self):
+        return self.inner.url
 
 
 class MultiItemTexture(BaseTexture):

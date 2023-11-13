@@ -1,10 +1,12 @@
+from typing import Any
+
 from jinja2 import pass_context
 from jinja2.runtime import Context
 from markupsafe import Markup
 
 from hexdoc.core import Properties, ResourceLocation
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.textures import PNGTexture, TextureLookup
+from hexdoc.minecraft.assets.textures import PNGTexture, TextureLookup, TextureLookups
 from hexdoc.patchouli import Book, FormatTree
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import cast_or_raise
@@ -52,9 +54,17 @@ def hexdoc_localize(
 @pass_context
 def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
     try:
+        props = cast_or_raise(context["props"], Properties)
         textures = cast_or_raise(context["png_textures"], TextureLookup[PNGTexture])
-        id = ResourceLocation.model_validate(id)
-        return textures[id].url
+
+        return PNGTexture.lookup(
+            id=ResourceLocation.model_validate(id),
+            lookups=TextureLookups[Any](
+                dict,
+                PNGTexture=textures,
+            ),
+            allowed_missing=props.textures.missing,
+        ).url
     except Exception as e:
-        e.add_note(f"id:\n    {id}")
+        e.add_note(f"id: {id}")
         raise

@@ -3,7 +3,7 @@ from typing import Self
 
 from pydantic import model_validator
 
-from hexdoc.minecraft.assets import TextureI18nContext, TextureLookups
+from hexdoc.minecraft.assets import Texture, TextureI18nContext, TextureLookups
 from hexdoc.model import HexdocModel
 from hexdoc.utils import NoTrailingSlashHttpUrl
 
@@ -15,7 +15,7 @@ class HexdocMetadata(HexdocModel):
     """Github Pages base url."""
     asset_url: NoTrailingSlashHttpUrl
     """raw.githubusercontent.com base url."""
-    textures: TextureLookups
+    textures: TextureLookups[Texture]
 
     @classmethod
     def path(cls, modid: str) -> Path:

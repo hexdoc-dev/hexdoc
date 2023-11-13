@@ -11,8 +11,11 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.load_assets import load_and_render_internal_textures
-from hexdoc.minecraft.assets.textures import TextureLookups
+from hexdoc.minecraft.assets import (
+    Texture,
+    TextureLookups,
+    load_and_render_internal_textures,
+)
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import PluginManager
@@ -54,7 +57,7 @@ def export_metadata(
     *,
     book_version_url: str,
 ):
-    lookups = TextureLookups(dict)
+    lookups = TextureLookups[Texture](dict)
 
     for texture_id, texture in load_and_render_internal_textures(
         loader,

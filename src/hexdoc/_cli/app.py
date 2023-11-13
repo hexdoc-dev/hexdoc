@@ -226,8 +226,8 @@ def render(
         if not should_render:
             continue
         for lang_, (book, i18n, context) in books.items():
-            png_textures = PNGTexture.get_textures(context.textures)
-            animations = list(AnimatedTexture.get_textures(context.textures).values())
+            png_textures = PNGTexture.get_lookup(context.textures)
+            animations = list(AnimatedTexture.get_lookup(context.textures).values())
 
             render_book(
                 props=props,
@@ -305,6 +305,14 @@ def serve(
         "DEBUG_GITHUBUSERCONTENT": "",
         "GITHUB_PAGES_URL": book_url,
     }
+
+    print("Exporting...")
+    export(
+        props_file=props_file,
+        lang=lang,
+        allow_missing=allow_missing,
+        verbosity=verbosity,
+    )
 
     print("Rendering...")
     render(
