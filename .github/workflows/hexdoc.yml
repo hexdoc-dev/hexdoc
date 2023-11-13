@@ -75,7 +75,9 @@ jobs:
           cache: pip
 
       - name: Install display server
-        run: sudo apt install xvfb -y
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: xvfb
 
       - name: Get Pages url
         id: get-url
@@ -114,7 +116,7 @@ jobs:
       - name: List book languages
         id: list-langs
         run: |
-          echo "matrix=$(hexdoc list-langs)" >> "$GITHUB_OUTPUT"
+          echo "matrix='$(hexdoc list-langs)'" >> "$GITHUB_OUTPUT"
           if [[ $RUNNER_DEBUG ]]; then
             tree -I '__pycache__|Common|Fabric|Forge|venv'
           fi
