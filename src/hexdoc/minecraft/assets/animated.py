@@ -1,16 +1,21 @@
 from __future__ import annotations
 
 from functools import cached_property
-from typing import Literal
+from typing import Literal, Self
 
 from hexdoc.model import HexdocModel
 
-from .textures import PNGTexture
+from .textures import BaseTexture
 
 
-class AnimatedTexture(PNGTexture):
+class AnimatedTexture(BaseTexture):
+    url: str
     css_class: str
     meta: AnimationMeta
+
+    @classmethod
+    def from_url(cls, url: str) -> Self:
+        raise NotImplementedError("AnimatedTexture does not support from_url()")
 
     @property
     def time_seconds(self):

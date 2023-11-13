@@ -14,8 +14,10 @@ from hexdoc.model import (
 from hexdoc.utils import isinstance_or_raise
 
 from ..i18n import I18nContext, LocalizedStr
+from .constants import TAG_TEXTURE
+from .items import ItemTexture
 from .load_assets import Texture
-from .textures import TAG_TEXTURE, ItemTexture, TextureContext
+from .textures import PNGTexture, TextureContext
 
 logger = logging.getLogger(__name__)
 
@@ -27,17 +29,17 @@ class TextureI18nContext(TextureContext, I18nContext):
 class ItemWithTexture(InlineItemModel):
     id: ItemStack
     name: LocalizedStr
-    texture: Texture | list[Texture]
+    texture: ItemTexture
 
     @classmethod
     def load_id(cls, item: ItemStack, context: ValidationContext):
         """Implements InlineModel."""
         assert isinstance_or_raise(context, TextureI18nContext)
-        return cls(
-            id=item,
-            name=context.i18n.localize_item(item),
-            texture=ItemTexture.load_id(item, context),
-        )
+        return {
+            "id": item,
+            "name": context.i18n.localize_item(item),
+            "texture": item.id,  # TODO: fix InlineModel (ItemTexture), then remove .id
+        }
 
     @property
     def gaslighting(self):
@@ -61,7 +63,7 @@ class TagWithTexture(InlineModel):
         return cls(
             id=id,
             name=context.i18n.localize_item_tag(id),
-            texture=TAG_TEXTURE,
+            texture=PNGTexture.from_url(TAG_TEXTURE),
         )
 
     @property

@@ -9,12 +9,21 @@ from hexdoc.core import ModResourceLoader, ResourceLocation
 
 from ..tags import Tag
 from .animated import AnimatedTexture, AnimationMeta
+from .items import (
+    ImageTexture,
+    ItemTexture,
+    MultiItemTexture,
+    SingleItemTexture,
+)
 from .models import FoundNormalTexture, ModelItem
-from .textures import MISSING_TEXTURE, ItemTexture, MultiItemTexture, PNGTexture
+from .textures import (
+    MISSING_TEXTURE,
+    PNGTexture,
+)
 
 logger = logging.getLogger(__name__)
 
-Texture = PNGTexture | AnimatedTexture | ItemTexture | MultiItemTexture
+Texture = ImageTexture | ItemTexture
 
 
 class TextureNotFoundError(FileNotFoundError):
@@ -33,7 +42,7 @@ def load_and_render_internal_textures(
     (eg. `hexcasting:focus`) and some kind of texture that we can use in the book."""
 
     # images
-    png_textures = dict[ResourceLocation, PNGTexture]()
+    image_textures = dict[ResourceLocation, ImageTexture]()
     for _, texture_id, path in loader.find_resources(
         "assets",
         namespace="*",
@@ -43,7 +52,7 @@ def load_and_render_internal_textures(
         allow_missing=True,
     ):
         texture_id = "textures" / texture_id
-        texture = png_textures[texture_id] = load_texture(
+        texture = image_textures[texture_id] = load_texture(
             texture_id,
             path=path,
             repo_root=loader.repo_root,
@@ -70,13 +79,13 @@ def load_and_render_internal_textures(
             model,
             loader,
             gaslighting_items,
-            png_textures,
+            image_textures,
             book_version_url,
         ):
             found_items_from_models.add(item_id)
             yield item_id, result
         elif item_id in loader.props.textures.missing:
-            yield item_id, MISSING_TEXTURE
+            yield item_id, SingleItemTexture.from_url(MISSING_TEXTURE)
         else:
             missing_items.add(item_id)
 
@@ -95,7 +104,7 @@ def load_and_render_internal_textures(
             yield block_id, render_block(block_id, loader, book_version_url)
         except TextureNotFoundError:
             if block_id in loader.props.textures.missing:
-                yield block_id, MISSING_TEXTURE
+                yield block_id, SingleItemTexture.from_url(MISSING_TEXTURE)
             else:
                 missing_items.add(block_id)
         else:
@@ -110,13 +119,33 @@ def load_and_render_internal_textures(
         )
 
 
+def load_texture(
+    id: ResourceLocation,
+    *,
+    path: Path,
+    repo_root: Path,
+    asset_url: str,
+) -> ImageTexture:
+    url = f"{asset_url}/{path.relative_to(repo_root).as_posix()}"
+    meta_path = path.with_suffix(".png.mcmeta")
+
+    if meta_path.is_file():
+        return AnimatedTexture(
+            url=url,
+            css_class=id.css_class,
+            meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
+        )
+
+    return PNGTexture(url=url)
+
+
 def load_and_render_item(
     model: ModelItem,
     loader: ModResourceLoader,
     gaslighting_items: Set[ResourceLocation],
-    png_textures: dict[ResourceLocation, PNGTexture],
+    image_textures: dict[ResourceLocation, ImageTexture],
     book_version_url: str,
-) -> ItemTexture | MultiItemTexture | None:
+) -> ItemTexture | None:
     try:
         match model.find_texture(loader, gaslighting_items):
             case None:
@@ -124,41 +153,41 @@ def load_and_render_item(
 
             case "gaslighting", found_textures:
                 textures = list(
-                    lookup_item_or_render_block(
+                    lookup_or_render_single_item(
                         found_texture,
                         loader,
-                        png_textures,
+                        image_textures,
                         book_version_url,
-                    )
+                    ).inner
                     for found_texture in found_textures
                 )
                 return MultiItemTexture(inner=textures, gaslighting=True)
 
             case found_texture:
-                texture = lookup_item_or_render_block(
+                texture = lookup_or_render_single_item(
                     found_texture,
                     loader,
-                    png_textures,
+                    image_textures,
                     book_version_url,
                 )
-                return ItemTexture(inner=texture)
+                return texture
     except TextureNotFoundError as e:
         logger.warning(e.message)
         return None
 
 
 # TODO: move to methods on a class returned by find_texture?
-def lookup_item_or_render_block(
+def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
     loader: ModResourceLoader,
-    png_textures: dict[ResourceLocation, PNGTexture],
+    image_textures: dict[ResourceLocation, ImageTexture],
     book_version_url: str,
-):
+) -> SingleItemTexture:
     match found_texture:
         case "texture", texture_id:
-            if texture_id in png_textures:
-                return png_textures[texture_id]
-            raise TextureNotFoundError(texture_id)
+            if texture_id not in image_textures:
+                raise TextureNotFoundError(texture_id)
+            return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
             return render_block(model_id, loader, book_version_url)
@@ -168,7 +197,7 @@ def render_block(
     id: ResourceLocation,
     loader: ModResourceLoader,
     book_version_url: str,
-):
+) -> SingleItemTexture:
     render_id = js.ResourceLocation(id.namespace, id.path)
     file_id = id + ".png"
 
@@ -188,18 +217,4 @@ def render_block(
     print(f"Rendered {id} to {out_path} (in {out_root})")
 
     url = f"{book_version_url}/{out_path}"
-    return PNGTexture(url=url)
-
-
-def load_texture(id: ResourceLocation, *, path: Path, repo_root: Path, asset_url: str):
-    url = f"{asset_url}/{path.relative_to(repo_root).as_posix()}"
-    meta_path = path.with_suffix(".png.mcmeta")
-
-    if meta_path.is_file():
-        return AnimatedTexture(
-            url=url,
-            css_class=id.css_class,
-            meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
-        )
-
-    return PNGTexture(url=url)
+    return SingleItemTexture.from_url(url)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import (
     Annotated,
@@ -14,22 +14,24 @@ from typing import (
 from pydantic import Field, SerializeAsAny
 from typing_extensions import override
 
-from hexdoc.core import (
-    ItemStack,
-    ResourceLocation,
-)
+from hexdoc.core import ResourceLocation
 from hexdoc.model import (
     InlineModel,
     ValidationContext,
 )
 from hexdoc.utils import isinstance_or_raise
 
-from .constants import MISSING_TEXTURE_URL, TAG_TEXTURE_URL
+from .constants import MISSING_TEXTURE
 
 logger = logging.getLogger(__name__)
 
 
 class BaseTexture(InlineModel, ABC):
+    @classmethod
+    @abstractmethod
+    def from_url(cls, url: str) -> Self:
+        ...
+
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: ValidationContext):
@@ -42,7 +44,7 @@ class BaseTexture(InlineModel, ABC):
         id: ResourceLocation,
         lookups: TextureLookups,
         allowed_missing: Iterable[ResourceLocation],
-    ):
+    ) -> Self:
         """Returns the texture from the lookup table if it exists, or the "missing
         texture" texture if it's in `props.texture.missing`, or raises `KeyError`.
 
@@ -54,7 +56,7 @@ class BaseTexture(InlineModel, ABC):
 
         if any(id.match(pattern) for pattern in allowed_missing):
             logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
-            return MISSING_TEXTURE
+            return cls.from_url(MISSING_TEXTURE)
 
         raise ValueError(f"No {cls.__name__} for {id}")
 
@@ -70,27 +72,9 @@ class BaseTexture(InlineModel, ABC):
 class PNGTexture(BaseTexture):
     url: str
 
-
-MISSING_TEXTURE = PNGTexture(url=MISSING_TEXTURE_URL)
-
-TAG_TEXTURE = PNGTexture(url=TAG_TEXTURE_URL)
-
-
-class ItemTexture(BaseTexture):
-    inner: SerializeAsAny[PNGTexture]
-
     @classmethod
-    def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
-        return super().load_id(id.id, context)
-
-
-class MultiItemTexture(BaseTexture):
-    inner: list[SerializeAsAny[PNGTexture]]
-    gaslighting: bool
-
-    @classmethod
-    def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
-        return super().load_id(id.id, context)
+    def from_url(cls, url: str) -> Self:
+        return cls(url=url)
 
 
 AnyTexture = TypeVar("AnyTexture", bound=BaseTexture)
