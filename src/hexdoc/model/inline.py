@@ -16,7 +16,7 @@ from .base import HexdocModel, ValidationContext
 class InlineModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, id: ResourceLocation, context: Any) -> Self:
+    def load_id(cls, id: ResourceLocation, context: Any) -> Any:
         ...
 
     @model_validator(mode="wrap")
@@ -42,14 +42,14 @@ class InlineModel(HexdocModel, ABC):
 
         # load the data
         context = cast_or_raise(info.context, ValidationContext)
-        return cls.load_id(id, context)
+        return handler(cls.load_id(id, context))
 
 
 @dataclass_transform()
 class InlineItemModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, item: ItemStack, context: Any) -> Self:
+    def load_id(cls, item: ItemStack, context: Any) -> Any:
         ...
 
     @model_validator(mode="wrap")
@@ -77,4 +77,4 @@ class InlineItemModel(HexdocModel, ABC):
 
         # load the data
         context = cast_or_raise(info.context, ValidationContext)
-        return cls.load_id(item, context)
+        return handler(cls.load_id(item, context))
