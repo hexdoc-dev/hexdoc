@@ -147,7 +147,6 @@ class Properties(BaseProperties):
 
     minecraft_assets: MinecraftAssetsProps
 
-    # FIXME: remove this and get the data from the actual model files
     textures: TexturesProps = Field(default_factory=TexturesProps)
 
     template: TemplateProps | None = None
