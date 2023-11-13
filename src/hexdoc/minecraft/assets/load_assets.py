@@ -36,7 +36,6 @@ def load_and_render_internal_textures(
     loader: ModResourceLoader,
     *,
     asset_url: str,
-    book_version_url: str,
 ) -> Iterator[tuple[ResourceLocation, Texture]]:
     """For all item/block models in all internal resource dirs, yields the item id
     (eg. `hexcasting:focus`) and some kind of texture that we can use in the book."""
@@ -55,7 +54,7 @@ def load_and_render_internal_textures(
         texture = image_textures[texture_id] = load_texture(
             texture_id,
             path=path,
-            repo_root=loader.repo_root,
+            repo_root=loader.props.repo_root,
             asset_url=asset_url,
         )
         yield texture_id, texture
@@ -80,12 +79,11 @@ def load_and_render_internal_textures(
             loader,
             gaslighting_items,
             image_textures,
-            book_version_url,
         ):
             found_items_from_models.add(item_id)
             yield item_id, result
         elif item_id in loader.props.textures.missing:
-            yield item_id, SingleItemTexture.from_url(MISSING_TEXTURE)
+            yield item_id, SingleItemTexture.from_url(MISSING_TEXTURE, pixelated=True)
         else:
             missing_items.add(item_id)
 
@@ -101,10 +99,13 @@ def load_and_render_internal_textures(
             continue
 
         try:
-            yield block_id, render_block(block_id, loader, book_version_url)
+            yield block_id, render_block(block_id, loader)
         except TextureNotFoundError:
             if block_id in loader.props.textures.missing:
-                yield block_id, SingleItemTexture.from_url(MISSING_TEXTURE)
+                yield (
+                    block_id,
+                    SingleItemTexture.from_url(MISSING_TEXTURE, pixelated=True),
+                )
             else:
                 missing_items.add(block_id)
         else:
@@ -132,11 +133,12 @@ def load_texture(
     if meta_path.is_file():
         return AnimatedTexture(
             url=url,
+            pixelated=True,
             css_class=id.css_class,
             meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
         )
 
-    return PNGTexture(url=url)
+    return PNGTexture(url=url, pixelated=True)
 
 
 def load_and_render_item(
@@ -144,7 +146,6 @@ def load_and_render_item(
     loader: ModResourceLoader,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
-    book_version_url: str,
 ) -> ItemTexture | None:
     try:
         match model.find_texture(loader, gaslighting_items):
@@ -157,7 +158,6 @@ def load_and_render_item(
                         found_texture,
                         loader,
                         image_textures,
-                        book_version_url,
                     ).inner
                     for found_texture in found_textures
                 )
@@ -168,7 +168,6 @@ def load_and_render_item(
                     found_texture,
                     loader,
                     image_textures,
-                    book_version_url,
                 )
                 return texture
     except TextureNotFoundError as e:
@@ -181,7 +180,6 @@ def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
     loader: ModResourceLoader,
     image_textures: dict[ResourceLocation, ImageTexture],
-    book_version_url: str,
 ) -> SingleItemTexture:
     match found_texture:
         case "texture", texture_id:
@@ -190,14 +188,10 @@ def lookup_or_render_single_item(
             return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
-            return render_block(model_id, loader, book_version_url)
+            return render_block(model_id, loader)
 
 
-def render_block(
-    id: ResourceLocation,
-    loader: ModResourceLoader,
-    book_version_url: str,
-) -> SingleItemTexture:
+def render_block(id: ResourceLocation, loader: ModResourceLoader) -> SingleItemTexture:
     render_id = js.ResourceLocation(id.namespace, id.path)
     file_id = id + ".png"
 
@@ -212,9 +206,8 @@ def render_block(
     if not result:
         raise TextureNotFoundError(id)
 
-    # TODO: use logger after fixing the log levels
     out_root, out_path = result
-    print(f"Rendered {id} to {out_path} (in {out_root})")
 
-    url = f"{book_version_url}/{out_path}"
-    return SingleItemTexture.from_url(url)
+    # blocks look better if antialiased
+    logger.info(f"Rendered {id} to {out_path} (in {out_root})")
+    return SingleItemTexture.from_url(out_path, pixelated=False)

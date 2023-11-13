@@ -15,6 +15,7 @@ from hexdoc.core import ModResourceLoader
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import AnimatedTexture
 from hexdoc.minecraft.assets.textures import PNGTexture
+from hexdoc.utils.git import git_root
 
 from . import render_block
 from .utils.args import (
@@ -64,7 +65,6 @@ def list_langs(
     with ModResourceLoader.load_all(
         props,
         pm,
-        render_dir=None,
         export=False,
     ) as loader:
         langs = sorted(I18n.list_all(loader))
@@ -85,7 +85,6 @@ def repl(
     loader = ModResourceLoader.load_all(
         props,
         pm,
-        render_dir="out/tmp/textures",
         export=False,
     )
 
@@ -134,15 +133,9 @@ def export(
         props,
         pm,
         export=True,
-        render_dir="_site/src/docs",
     )
 
-    export_metadata(
-        props,
-        pm,
-        loader,
-        book_version_url="_site/src/docs",
-    )
+    export_metadata(props, pm, loader)
 
     load_book(
         props.book,
@@ -185,7 +178,6 @@ def render(
         pm,
         lang,
         allow_missing,
-        render_dir=output_dir,
     )
 
     logger.info(f"update_latest={update_latest}, release={release}")
@@ -296,13 +288,17 @@ def serve(
     verbosity: VerbosityOption = 0,
 ):
     book_root = dst if do_merge else src
-
     book_path = book_root.resolve().relative_to(Path.cwd())
-
     book_url = f"/{book_path.as_posix()}"
 
+    repo_root = git_root(props_file.parent)
+    asset_root = repo_root.relative_to(Path.cwd())
+
     os.environ |= {
-        "DEBUG_GITHUBUSERCONTENT": "",
+        # prepend a slash to the path so it can find the texture in the local repo
+        # eg. http://localhost:8000/_site/src/docs/Common/...
+        # vs. http://localhost:8000/Common/...
+        "DEBUG_GITHUBUSERCONTENT": f"/{asset_root.as_posix()}",
         "GITHUB_PAGES_URL": book_url,
     }
 

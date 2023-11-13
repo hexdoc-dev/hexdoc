@@ -27,7 +27,6 @@ def id_(
         props,
         pm,
         export=False,
-        render_dir=Path("out/tmp/textures"),
     ) as loader:
         output_path = loader.renderer.renderToFile(js.ResourceLocation.parse(block))
         print(f"Rendered: {output_path}")
@@ -46,7 +45,6 @@ def model(
         props,
         pm,
         export=False,
-        render_dir=Path("out/tmp/textures"),
     ) as loader:
         if model_path.suffix == ".json":
             blocks = [ResourceLocation.from_model_path(model_path)]

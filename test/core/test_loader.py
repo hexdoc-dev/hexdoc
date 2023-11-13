@@ -81,7 +81,6 @@ def test_multi_book(tmp_path: Path):
             root_book_id=hexcasting_id,
             export_dir=None,
             resource_dirs=resource_dirs,
-            render_dir=None,
             _stack=stack,
         )
 

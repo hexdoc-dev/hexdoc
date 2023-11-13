@@ -17,8 +17,10 @@ class SingleItemTexture(BaseTexture):
     inner: ImageTexture
 
     @classmethod
-    def from_url(cls, url: str) -> Self:
-        return cls(inner=PNGTexture(url=url))
+    def from_url(cls, url: str, pixelated: bool) -> Self:
+        return cls(
+            inner=PNGTexture(url=url, pixelated=pixelated),
+        )
 
     @classmethod
     def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
@@ -34,9 +36,9 @@ class MultiItemTexture(BaseTexture):
     gaslighting: bool
 
     @classmethod
-    def from_url(cls, url: str) -> Self:
+    def from_url(cls, url: str, pixelated: bool) -> Self:
         return cls(
-            inner=[PNGTexture(url=url)],
+            inner=[PNGTexture(url=url, pixelated=pixelated)],
             gaslighting=False,
         )
 

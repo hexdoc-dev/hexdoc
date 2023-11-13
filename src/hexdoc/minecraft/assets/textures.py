@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class BaseTexture(InlineModel, ABC):
     @classmethod
     @abstractmethod
-    def from_url(cls, url: str) -> Self:
+    def from_url(cls, url: str, pixelated: bool) -> Self:
         ...
 
     @override
@@ -61,7 +61,7 @@ class BaseTexture(InlineModel, ABC):
 
         if any(id.match(pattern) for pattern in allowed_missing):
             logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
-            return cls.from_url(MISSING_TEXTURE)
+            return cls.from_url(MISSING_TEXTURE, pixelated=True)
 
         raise ValueError(f"No {cls.__name__} for {id}")
 
@@ -76,10 +76,11 @@ class BaseTexture(InlineModel, ABC):
 
 class PNGTexture(BaseTexture):
     url: str
+    pixelated: bool
 
     @classmethod
-    def from_url(cls, url: str) -> Self:
-        return cls(url=url)
+    def from_url(cls, url: str, pixelated: bool) -> Self:
+        return cls(url=url, pixelated=pixelated)
 
 
 _T_BaseTexture = TypeVar("_T_BaseTexture", bound=BaseTexture)

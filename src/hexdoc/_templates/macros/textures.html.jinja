@@ -12,7 +12,14 @@
       role="img"
       title="{{ name }}"
       aria-label="Animated image of {{ name }}"
-      class="{{ (class_names + ['texture', 'animated-sync', texture.css_class])|join(' ') }}"
+      class="{{
+        (class_names + [
+          'texture',
+          'animated-sync',
+          texture.css_class,
+          'pixelated' if texture.pixelated,
+        ])|join(' ')
+      }}"
     ></div>
   {%- else -%}
     <img
@@ -20,7 +27,12 @@
       alt="Image of {{ name }}"
       src="{{ texture.url }}"
       {{ 'loading="lazy"'|safe if lazy }}
-      class="{{ (class_names + ['texture'])|join(' ') }}"
+      class="{{
+        (class_names + [
+          'texture',
+          'pixelated' if texture.pixelated,
+        ])|join(' ')
+      }}"
     >
   {%- endif %}
 {%- endmacro %}

@@ -85,5 +85,5 @@ class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
         return cls(
             id=id,
             name=context.i18n.localize_item_tag(id),
-            texture=PNGTexture.from_url(TAG_TEXTURE),
+            texture=PNGTexture.from_url(TAG_TEXTURE, pixelated=True),
         )

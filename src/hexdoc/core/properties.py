@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from functools import cached_property
 from pathlib import Path
 from typing import Any, Self, Sequence
 
@@ -10,11 +11,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils import (
     NoTrailingSlashHttpUrl,
+    PydanticOrderedSet,
     RelativePath,
+    git_root,
     load_toml_with_placeholders,
     relative_path_root,
 )
-from hexdoc.utils.types import PydanticOrderedSet
 
 from .resource import ResourceLocation
 from .resource_dir import ResourceDir
@@ -159,3 +161,15 @@ class Properties(BaseProperties):
     @property
     def url(self):
         return self.env.github_pages_url
+
+    @property
+    def prerender_dir(self):
+        return self.cache_dir / "prerender"
+
+    @property
+    def cache_dir(self):
+        return self.repo_root / ".hexdoc"
+
+    @cached_property
+    def repo_root(self):
+        return git_root(self.props_dir)

@@ -1,5 +1,5 @@
 from functools import cached_property
-from typing import Literal, Self
+from typing import Any, Literal, Self
 
 from hexdoc.model import HexdocModel
 
@@ -46,11 +46,12 @@ class AnimatedTextureFrame(HexdocModel):
 
 class AnimatedTexture(BaseTexture):
     url: str
+    pixelated: bool
     css_class: str
     meta: AnimationMeta
 
     @classmethod
-    def from_url(cls, url: str) -> Self:
+    def from_url(cls, *args: Any, **kwargs: Any) -> Self:
         raise NotImplementedError("AnimatedTexture does not support from_url()")
 
     @property

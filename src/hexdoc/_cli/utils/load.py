@@ -54,15 +54,12 @@ def export_metadata(
     props: Properties,
     pm: PluginManager,
     loader: ModResourceLoader,
-    *,
-    book_version_url: str,
 ):
     lookups = TextureLookups[Texture](dict)
 
     for texture_id, texture in load_and_render_internal_textures(
         loader,
         asset_url=props.env.asset_url,
-        book_version_url=book_version_url,
     ):
         texture.insert_texture(lookups, texture_id)
 
@@ -144,14 +141,9 @@ def load_books(
     pm: PluginManager,
     lang: str | None,
     allow_missing: bool,
-    render_dir: Path | None,
 ):
     """books, all_metadata"""
-    with ModResourceLoader.clean_and_load_all(
-        props,
-        pm,
-        render_dir=render_dir,
-    ) as loader:
+    with ModResourceLoader.load_all(props, pm) as loader:
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
 
         book_data = Book.load_book_json(loader, book_id)

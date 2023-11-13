@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 
 METADATA_SUFFIX = ".hexdoc.json"
 
-HEXDOC_CACHE_DIR = ".hexdoc"
 
 _T = TypeVar("_T")
 _T_Model = TypeVar("_T_Model", bound=HexdocModel)
@@ -76,7 +75,6 @@ class ModResourceLoader:
     props: Properties
     root_book_id: ResourceLocation | None
     export_dir: Path | None
-    render_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
 
@@ -86,12 +84,14 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        render_dir: str | Path | None = None,
         export: bool = False,
     ):
         # clear the export dir so we start with a clean slate
         if props.export_dir and export:
-            subprocess.run(["git", "clean", "-fdX", props.export_dir])
+            subprocess.run(
+                ["git", "clean", "-fdX", props.export_dir],
+                cwd=props.props_dir,
+            )
 
             write_to_path(
                 props.export_dir / "__init__.py",
@@ -106,7 +106,6 @@ class ModResourceLoader:
         return cls.load_all(
             props,
             pm,
-            render_dir=render_dir,
             export=export,
         )
 
@@ -116,7 +115,6 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        render_dir: str | Path | None = None,
         export: bool = False,
     ) -> Self:
         export_dir = props.export_dir if export else None
@@ -126,7 +124,6 @@ class ModResourceLoader:
             props=props,
             root_book_id=props.book,
             export_dir=export_dir,
-            render_dir=Path(render_dir) if render_dir else None,
             resource_dirs=[
                 path_resource_dir
                 for resource_dir in props.resource_dirs
@@ -156,25 +153,19 @@ class ModResourceLoader:
             )
         }
 
-    @cached_property
-    def repo_root(self):
-        return Path(
-            subprocess.run(
-                ["git", "rev-parse", "--show-toplevel"],
-                capture_output=True,
-                encoding="utf-8",
-                check=True,
-            ).stdout.strip()
-        )
+    @property
+    def should_export(self):
+        return self.export_dir is not None
 
     @cached_property
     def renderer(self):
-        if self.render_dir is None:
-            raise TypeError("Unable to create renderer, render_dir is None")
+        if not self.should_export:
+            raise TypeError("Unable to create renderer because exporting is disabled")
+
         return js.RenderClass(
             self.renderer_loader,
             {
-                "outDir": self.render_dir.as_posix(),
+                "outDir": self.props.prerender_dir.as_posix(),
                 "imageSize": 300,
             },
         )
@@ -204,7 +195,7 @@ class ModResourceLoader:
         metadata = dict[str, _T_Model]()
 
         # TODO: refactor
-        cached_metadata = Path(HEXDOC_CACHE_DIR) / (
+        cached_metadata = self.props.cache_dir / (
             name_pattern.format(modid=self.props.modid) + METADATA_SUFFIX
         )
         if cached_metadata.is_file():
@@ -596,7 +587,7 @@ class ModResourceLoader:
         write_to_path(out_path, out_data)
 
         if cache:
-            write_to_path(HEXDOC_CACHE_DIR / path, out_data)
+            write_to_path(self.props.cache_dir / path, out_data)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(...)"
