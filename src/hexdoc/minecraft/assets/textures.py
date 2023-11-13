@@ -9,7 +9,6 @@ from typing import (
     Iterable,
     Self,
     TypeVar,
-    cast,
 )
 
 from pydantic import Field, SerializeAsAny
@@ -20,32 +19,22 @@ from hexdoc.core import (
     ResourceLocation,
 )
 from hexdoc.model import (
-    InlineItemModel,
     InlineModel,
     ValidationContext,
 )
 from hexdoc.utils import isinstance_or_raise
 
-from ..i18n import I18nContext, LocalizedStr
-from .constants import MISSING_TEXTURE, TAG_TEXTURE
+from .constants import MISSING_TEXTURE_URL, TAG_TEXTURE_URL
 
 logger = logging.getLogger(__name__)
 
 
-class Texture(InlineModel, ABC):
+class BaseTexture(InlineModel, ABC):
     @override
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext) -> Texture:
+    def load_id(cls, id: ResourceLocation, context: ValidationContext):
         assert isinstance_or_raise(context, TextureContext)
-
-        if cls is not Texture:  # handle subclasses
-            return cls.lookup(id, context.textures, context.allowed_missing_textures)
-
-        # i don't really feel like fixing the circular imports right now :)
-        # but long-term this should use something like TypeTaggedUnion probably
-        from .load import TextureAdapter
-
-        return TextureAdapter().validate_python(id, context=cast(Any, context))
+        return cls.lookup(id, context.textures, context.allowed_missing_textures)
 
     @classmethod
     def lookup(
@@ -53,7 +42,7 @@ class Texture(InlineModel, ABC):
         id: ResourceLocation,
         lookups: TextureLookups,
         allowed_missing: Iterable[ResourceLocation],
-    ) -> Texture:
+    ):
         """Returns the texture from the lookup table if it exists, or the "missing
         texture" texture if it's in `props.texture.missing`, or raises `KeyError`.
 
@@ -65,7 +54,7 @@ class Texture(InlineModel, ABC):
 
         if any(id.match(pattern) for pattern in allowed_missing):
             logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
-            return PNGTexture(url=MISSING_TEXTURE)
+            return MISSING_TEXTURE
 
         raise ValueError(f"No {cls.__name__} for {id}")
 
@@ -73,12 +62,21 @@ class Texture(InlineModel, ABC):
     def get_textures(cls, lookups: TextureLookups) -> TextureLookup[Self]:
         return lookups[cls.__name__]
 
+    def insert_texture(self, lookups: TextureLookups, id: ResourceLocation):
+        textures = self.get_textures(lookups)
+        textures[id] = self
 
-class PNGTexture(Texture):
+
+class PNGTexture(BaseTexture):
     url: str
 
 
-class ItemTexture(Texture):
+MISSING_TEXTURE = PNGTexture(url=MISSING_TEXTURE_URL)
+
+TAG_TEXTURE = PNGTexture(url=TAG_TEXTURE_URL)
+
+
+class ItemTexture(BaseTexture):
     inner: SerializeAsAny[PNGTexture]
 
     @classmethod
@@ -86,7 +84,7 @@ class ItemTexture(Texture):
         return super().load_id(id.id, context)
 
 
-class MultiItemTexture(Texture):
+class MultiItemTexture(BaseTexture):
     inner: list[SerializeAsAny[PNGTexture]]
     gaslighting: bool
 
@@ -95,53 +93,7 @@ class MultiItemTexture(Texture):
         return super().load_id(id.id, context)
 
 
-AnyTexture = TypeVar("AnyTexture", bound=Texture)
-
-
-class ItemWithTexture(InlineItemModel):
-    id: ItemStack
-    name: LocalizedStr
-    texture: Texture | list[Texture]
-
-    @classmethod
-    def load_id(cls, item: ItemStack, context: ValidationContext):
-        """Implements InlineModel."""
-        assert isinstance_or_raise(context, TextureI18nContext)
-        return cls(
-            id=item,
-            name=context.i18n.localize_item(item),
-            texture=ItemTexture.load_id(item, context),
-        )
-
-    @property
-    def gaslighting(self):
-        return isinstance(self.texture, list)
-
-    @property
-    def textures(self):
-        if not self.gaslighting:
-            raise TypeError(f"Item {self.id} only has one texture")
-        return self.texture
-
-
-class TagWithTexture(InlineModel):
-    id: ResourceLocation
-    name: LocalizedStr
-    texture: Texture
-
-    @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext):
-        assert isinstance_or_raise(context, I18nContext)
-        return cls(
-            id=id,
-            name=context.i18n.localize_item_tag(id),
-            texture=PNGTexture(url=TAG_TEXTURE),
-        )
-
-    @property
-    def gaslighting(self):
-        return False
-
+AnyTexture = TypeVar("AnyTexture", bound=BaseTexture)
 
 TextureLookup = dict[ResourceLocation, SerializeAsAny[AnyTexture]]
 """dict[id, texture]"""
@@ -156,7 +108,3 @@ TextureLookups = defaultdict[
 class TextureContext(ValidationContext):
     textures: TextureLookups
     allowed_missing_textures: set[ResourceLocation]
-
-
-class TextureI18nContext(TextureContext, I18nContext):
-    pass

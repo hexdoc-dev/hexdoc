@@ -2,7 +2,7 @@ import time
 from pathlib import Path
 
 import typer
-from minecraft_render import require
+from minecraft_render import js
 
 from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
 
@@ -29,9 +29,7 @@ def id_(
         export=False,
         render_dir=Path("out/tmp/textures"),
     ) as loader:
-        output_path = loader.renderer.renderToFile(
-            require().ResourceLocation.parse(block)
-        )
+        output_path = loader.renderer.renderToFile(js.ResourceLocation.parse(block))
         print(f"Rendered: {output_path}")
 
 
@@ -71,7 +69,7 @@ def model(
                 continue
             try:
                 output_path = loader.renderer.renderToFile(
-                    require().ResourceLocation(block.namespace, block.path)
+                    js.ResourceLocation(block.namespace, block.path)
                 )
                 print(f"Rendered: {output_path}")
             except Exception as e:

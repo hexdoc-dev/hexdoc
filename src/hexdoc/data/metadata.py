@@ -3,7 +3,7 @@ from typing import Self
 
 from pydantic import model_validator
 
-from hexdoc.minecraft.assets.textures import TextureI18nContext, TextureLookups
+from hexdoc.minecraft.assets import TextureI18nContext, TextureLookups
 from hexdoc.model import HexdocModel
 from hexdoc.utils import NoTrailingSlashHttpUrl
 

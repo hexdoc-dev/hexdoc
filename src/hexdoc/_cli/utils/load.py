@@ -11,7 +11,7 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.load import load_and_render_internal_items
+from hexdoc.minecraft.assets.load_assets import load_and_render_internal_textures
 from hexdoc.minecraft.assets.textures import TextureLookups
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
@@ -54,13 +54,14 @@ def export_metadata(
     *,
     book_version_url: str,
 ):
-    textures = TextureLookups(dict)
-    for texture_id, texture in load_and_render_internal_items(
+    lookups = TextureLookups(dict)
+
+    for texture_id, texture in load_and_render_internal_textures(
         loader,
         asset_url=props.env.asset_url,
         book_version_url=book_version_url,
     ):
-        texture.get_textures(textures)[texture_id] = texture
+        texture.insert_texture(lookups, texture_id)
 
     # this mod's metadata
     version = pm.mod_version(props.modid)
@@ -68,7 +69,7 @@ def export_metadata(
     metadata = HexdocMetadata(
         book_url=f"{props.url}/v/{version}" if version else None,
         asset_url=props.env.asset_url,
-        textures=textures,
+        textures=lookups,
     )
 
     loader.export(

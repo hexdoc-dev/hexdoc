@@ -12,7 +12,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
-from minecraft_render import ResourcePath, require
+from minecraft_render import ResourcePath, js
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
 
@@ -48,9 +48,6 @@ BookFolder = Literal["categories", "entries", "templates"]
 class HexdocPythonResourceLoader:
     loader: ModResourceLoader
 
-    def __post_init__(self):
-        self._module = require()
-
     def loadJSON(self, resource_path: ResourcePath) -> str:
         path = self._convert_resource_path(resource_path)
         _, json_str = self.loader.load_resource(path, decode=lambda v: v)
@@ -67,10 +64,10 @@ class HexdocPythonResourceLoader:
         pass
 
     def wrapped(self):
-        return self._module.PythonLoaderWrapper(self)
+        return js.PythonLoaderWrapper(self)
 
     def _convert_resource_path(self, resource_path: ResourcePath):
-        string_path = self._module.resourcePathAsString(resource_path)
+        string_path = js.resourcePathAsString(resource_path)
         return Path("assets") / string_path
 
 
@@ -174,7 +171,7 @@ class ModResourceLoader:
     def renderer(self):
         if self.render_dir is None:
             raise TypeError("Unable to create renderer, render_dir is None")
-        return require().RenderClass(
+        return js.RenderClass(
             self.renderer_loader,
             {
                 "outDir": self.render_dir.as_posix(),
@@ -184,14 +181,14 @@ class ModResourceLoader:
 
     @cached_property
     def renderer_loader(self):
-        return require().createMultiloader(
+        return js.createMultiloader(
             HexdocPythonResourceLoader(self).wrapped(),
             self.minecraft_loader,
         )
 
     @cached_property
     def minecraft_loader(self):
-        return require().MinecraftAssetsLoader.fetchAll(
+        return js.MinecraftAssetsLoader.fetchAll(
             self.props.minecraft_assets.ref,
             self.props.minecraft_assets.version,
         )
