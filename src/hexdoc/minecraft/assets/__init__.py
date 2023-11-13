@@ -2,6 +2,7 @@ __all__ = [
     "AnimatedTexture",
     "AnimationMeta",
     "ItemWithTexture",
+    "NamedTexture",
     "TagWithTexture",
     "Texture",
     "TextureContext",
@@ -26,6 +27,7 @@ from .textures import (
 )
 from .with_texture import (
     ItemWithTexture,
+    NamedTexture,
     TagWithTexture,
     TextureI18nContext,
 )

@@ -87,3 +87,14 @@ class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
             name=context.i18n.localize_item_tag(id),
             texture=PNGTexture.from_url(TAG_TEXTURE, pixelated=True),
         )
+
+
+class NamedTexture(InlineModel, BaseWithTexture[ResourceLocation, ImageTexture]):
+    @classmethod
+    def load_id(cls, id: ResourceLocation, context: ValidationContext):
+        assert isinstance_or_raise(context, I18nContext)
+        return {
+            "id": id,
+            "name": context.i18n.localize_texture(id),
+            "texture": id,
+        }

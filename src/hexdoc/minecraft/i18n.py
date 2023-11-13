@@ -254,6 +254,16 @@ class I18n(HexdocModel):
         )
         return LocalizedStr(key=localized.key, value=f"Tag: {localized.value}")
 
+    def localize_texture(self, texture_id: ResourceLocation):
+        path = texture_id.path.removeprefix("textures/").removesuffix(".png")
+        root, rest = path.split("/", 1)
+
+        # TODO: refactor / extensibilify
+        if root == "mob_effect":
+            root = "effect"
+
+        return self.localize(f"{root}.{texture_id.namespace}.{rest}")
+
 
 class I18nContext(LoaderContext):
     i18n: I18n
