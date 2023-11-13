@@ -1,7 +1,10 @@
+import logging
 from pathlib import Path
 from typing import Annotated
 
 from typer import Argument, Option
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_MERGE_SRC = Path("_site/src/docs")
 DEFAULT_MERGE_DST = Path("_site/dst/docs")
@@ -18,7 +21,7 @@ def get_default_props() -> Path:
     for path in DEFAULT_PROPS_FILES:
         path = Path(path)
         if path.is_file():
-            print(f"Loading props from default path: {path}")
+            logger.info(f"Loading props from default path: {path}")
             return path
 
     raise FileNotFoundError(
