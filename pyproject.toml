@@ -60,6 +60,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+minecraft = [ # TODO: move to its own package
+    "pygithub~=2.1",
+]
 pdoc = [
     "pdoc~=14.1",
     "hatch",

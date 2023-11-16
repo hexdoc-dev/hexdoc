@@ -1,13 +1,13 @@
 import logging
 from collections.abc import Set
 from pathlib import Path
-from typing import Iterator
+from typing import Iterable, Iterator
 
 from minecraft_render import js
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.model import HexdocModel
 
-from ..tags import Tag
 from .animated import AnimatedTexture, AnimationMeta
 from .items import (
     ImageTexture,
@@ -17,7 +17,7 @@ from .items import (
 )
 from .models import FoundNormalTexture, ModelItem
 from .textures import (
-    MISSING_TEXTURE,
+    MISSING_TEXTURE_URL,
     PNGTexture,
 )
 
@@ -32,92 +32,116 @@ class TextureNotFoundError(FileNotFoundError):
         super().__init__(self.message)
 
 
-def load_and_render_internal_textures(
-    loader: ModResourceLoader,
-    *,
-    asset_url: str,
-) -> Iterator[tuple[ResourceLocation, Texture]]:
-    """For all item/block models in all internal resource dirs, yields the item id
-    (eg. `hexcasting:focus`) and some kind of texture that we can use in the book."""
+class HexdocAssetLoader(HexdocModel):
+    loader: ModResourceLoader
+    asset_url: str
+    gaslighting_items: set[ResourceLocation]
 
-    # images
-    image_textures = dict[ResourceLocation, ImageTexture]()
-    for _, texture_id, path in loader.find_resources(
-        "assets",
-        namespace="*",
-        folder="textures",
-        glob="**/*.png",
-        internal_only=True,
-        allow_missing=True,
-    ):
-        texture_id = "textures" / texture_id
-        texture = image_textures[texture_id] = load_texture(
-            texture_id,
-            path=path,
-            repo_root=loader.props.repo_root,
-            asset_url=asset_url,
-        )
-        yield texture_id, texture
-
-    gaslighting_items = Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set
-
-    found_items_from_models = set[ResourceLocation]()
-    missing_items = set[ResourceLocation]()
-
-    # items
-    for _, item_id, data in loader.load_resources(
-        "assets",
-        namespace="*",
-        folder="models/item",
-        internal_only=True,
-        allow_missing=True,
-        export=False,  # we're exporting the urls as metadata, so we can skip this
-    ):
-        model = ModelItem.load_data("item" / item_id, data)
-        if result := load_and_render_item(
-            model,
-            loader,
-            gaslighting_items,
-            image_textures,
+    def find_image_textures(
+        self,
+    ) -> Iterable[tuple[ResourceLocation, Path | ImageTexture]]:
+        for _, texture_id, path in self.loader.find_resources(
+            "assets",
+            namespace="*",
+            folder="textures",
+            glob="**/*.png",
+            internal_only=True,
+            allow_missing=True,
         ):
-            found_items_from_models.add(item_id)
-            yield item_id, result
-        elif item_id in loader.props.textures.missing:
-            yield item_id, SingleItemTexture.from_url(MISSING_TEXTURE, pixelated=True)
-        else:
-            missing_items.add(item_id)
+            yield texture_id, path
 
-    # blocks that didn't get covered by the items
-    for _, block_id, _ in loader.find_resources(
-        "assets",
-        namespace="*",
-        folder="blockstates",
-        internal_only=True,
-        allow_missing=True,
-    ):
-        if block_id in found_items_from_models:
-            continue
+    def load_item_models(self) -> Iterable[tuple[ResourceLocation, ModelItem]]:
+        for _, item_id, data in self.loader.load_resources(
+            "assets",
+            namespace="*",
+            folder="models/item",
+            internal_only=True,
+            allow_missing=True,
+            export=False,  # we're exporting the urls as metadata, so we can skip this
+        ):
+            model = ModelItem.load_data("item" / item_id, data)
+            yield item_id, model
 
-        try:
-            yield block_id, render_block(block_id, loader)
-        except TextureNotFoundError:
-            if block_id in loader.props.textures.missing:
-                yield (
-                    block_id,
-                    SingleItemTexture.from_url(MISSING_TEXTURE, pixelated=True),
-                )
-            else:
-                missing_items.add(block_id)
-        else:
-            if block_id in missing_items:
-                missing_items.remove(block_id)
+    def find_blockstates(self) -> Iterable[ResourceLocation]:
+        for _, block_id, _ in self.loader.find_resources(
+            "assets",
+            namespace="*",
+            folder="blockstates",
+            internal_only=True,
+            allow_missing=True,
+        ):
+            yield block_id
 
-    # oopsies
-    if missing_items:
-        raise FileNotFoundError(
-            "Failed to find a texture for some items: "
-            + ", ".join(str(item) for item in missing_items)
+    def load_and_render_internal_textures(
+        self,
+    ) -> Iterator[tuple[ResourceLocation, Texture]]:
+        """For all item/block models in all internal resource dirs, yields the item id
+        (eg. `hexcasting:focus`) and some kind of texture that we can use in the book."""
+
+        # images
+        image_textures = dict[ResourceLocation, ImageTexture]()
+
+        for texture_id, value in self.find_image_textures():
+            texture_id = "textures" / texture_id
+
+            match value:
+                case Path() as path:
+                    texture = load_texture(
+                        texture_id,
+                        path=path,
+                        repo_root=self.loader.props.repo_root,
+                        asset_url=self.asset_url,
+                    )
+                case PNGTexture() | AnimatedTexture() as texture:
+                    pass
+
+            image_textures[texture_id] = texture
+            yield texture_id, texture
+
+        found_items_from_models = set[ResourceLocation]()
+        missing_items = set[ResourceLocation]()
+
+        missing_item_texture = SingleItemTexture.from_url(
+            MISSING_TEXTURE_URL, pixelated=True
         )
+
+        # items
+        for item_id, model in self.load_item_models():
+            if result := load_and_render_item(
+                model,
+                self.loader,
+                self.gaslighting_items,
+                image_textures,
+            ):
+                found_items_from_models.add(item_id)
+                yield item_id, result
+            elif item_id in self.loader.props.textures.missing:
+                yield item_id, missing_item_texture
+            else:
+                missing_items.add(item_id)
+
+        # blocks that didn't get covered by the items
+        for block_id in self.find_blockstates():
+            if block_id in found_items_from_models:
+                continue
+
+            try:
+                yield block_id, render_block(block_id, self.loader)
+            except TextureNotFoundError:
+                if block_id in self.loader.props.textures.missing:
+                    yield block_id, missing_item_texture
+                else:
+                    missing_items.add(block_id)
+            else:
+                if block_id in missing_items:
+                    missing_items.remove(block_id)
+
+        # oopsies
+        if missing_items:
+            raise FileNotFoundError(
+                "Failed to find a texture for some items: "
+                + ", ".join(str(item) for item in missing_items)
+            )
 
 
 def load_texture(
@@ -131,12 +155,17 @@ def load_texture(
     meta_path = path.with_suffix(".png.mcmeta")
 
     if meta_path.is_file():
-        return AnimatedTexture(
-            url=url,
-            pixelated=True,
-            css_class=id.css_class,
-            meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
-        )
+        try:
+            meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
+        except ValueError as e:
+            logger.info(f"Failed to parse AnimationMeta for {id}\n{e}")
+        else:
+            return AnimatedTexture(
+                url=url,
+                pixelated=True,
+                css_class=id.css_class,
+                meta=meta,
+            )
 
     return PNGTexture(url=url, pixelated=True)
 

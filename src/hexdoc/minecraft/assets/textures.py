@@ -22,7 +22,7 @@ from hexdoc.model import (
 )
 from hexdoc.utils import isinstance_or_raise
 
-from .constants import MISSING_TEXTURE
+from .constants import MISSING_TEXTURE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +61,7 @@ class BaseTexture(InlineModel, ABC):
 
         if any(id.match(pattern) for pattern in allowed_missing):
             logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
-            return cls.from_url(MISSING_TEXTURE, pixelated=True)
+            return cls.from_url(MISSING_TEXTURE_URL, pixelated=True)
 
         raise ValueError(f"No {cls.__name__} for {id}")
 

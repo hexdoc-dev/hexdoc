@@ -167,6 +167,7 @@ class ModResourceLoader:
             {
                 "outDir": self.props.prerender_dir.as_posix(),
                 "imageSize": 300,
+                # "animation": False, # TODO: ??
             },
         )
 

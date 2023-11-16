@@ -18,7 +18,7 @@ from hexdoc.utils import isinstance_or_raise
 
 from ..i18n import I18nContext, LocalizedStr
 from .animated import AnimatedTexture
-from .constants import TAG_TEXTURE
+from .constants import TAG_TEXTURE_URL
 from .items import ImageTexture, ItemTexture, MultiItemTexture, SingleItemTexture
 from .load_assets import Texture
 from .textures import PNGTexture, TextureContext
@@ -85,7 +85,7 @@ class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
         return cls(
             id=id,
             name=context.i18n.localize_item_tag(id),
-            texture=PNGTexture.from_url(TAG_TEXTURE, pixelated=True),
+            texture=PNGTexture.from_url(TAG_TEXTURE_URL, pixelated=True),
         )
 
 
