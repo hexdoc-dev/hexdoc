@@ -5,6 +5,8 @@ import typer
 from minecraft_render import js
 
 from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
+from hexdoc.minecraft import Tag
+from hexdoc.minecraft.assets.load_assets import HexdocAssetLoader
 
 from .utils.args import PropsOption, VerbosityOption
 from .utils.load import load_common_data
@@ -28,7 +30,14 @@ def id_(
         pm,
         export=False,
     ) as loader:
-        output_path = loader.renderer.renderToFile(js.ResourceLocation.parse(block))
+        asset_loader = HexdocAssetLoader(
+            loader=loader,
+            asset_url="",
+            gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+        )
+        output_path = asset_loader.renderer.renderToFile(
+            js.ResourceLocation.parse(block)
+        )
         print(f"Rendered: {output_path}")
 
 
@@ -46,6 +55,12 @@ def model(
         pm,
         export=False,
     ) as loader:
+        asset_loader = HexdocAssetLoader(
+            loader=loader,
+            asset_url="",
+            gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+        )
+
         if model_path.suffix == ".json":
             blocks = [ResourceLocation.from_model_path(model_path)]
         else:
@@ -66,7 +81,7 @@ def model(
                 print(f"Skipped: {block}")
                 continue
             try:
-                output_path = loader.renderer.renderToFile(
+                output_path = asset_loader.renderer.renderToFile(
                     js.ResourceLocation(block.namespace, block.path)
                 )
                 print(f"Rendered: {output_path}")

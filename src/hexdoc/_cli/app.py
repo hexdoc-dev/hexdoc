@@ -12,9 +12,12 @@ from typing import Annotated, Union
 from typer import Option, Typer
 
 from hexdoc.core import ModResourceLoader
-from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture
-from hexdoc.minecraft.assets.textures import PNGTexture
+from hexdoc.minecraft import I18n, Tag
+from hexdoc.minecraft.assets import (
+    AnimatedTexture,
+    HexdocAssetLoader,
+    PNGTexture,
+)
 from hexdoc.utils.git import git_root
 
 from . import render_block
@@ -135,7 +138,13 @@ def export(
         export=True,
     )
 
-    export_metadata(props, pm, loader)
+    asset_loader = HexdocAssetLoader(
+        loader=loader,
+        asset_url=props.env.asset_url,
+        gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+    )
+
+    export_metadata(props, pm, loader, asset_loader)
 
     load_book(
         props.book,

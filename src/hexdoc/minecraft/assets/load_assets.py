@@ -1,9 +1,12 @@
+import base64
 import logging
 from collections.abc import Set
+from functools import cached_property
 from pathlib import Path
 from typing import Iterable, Iterator
 
-from minecraft_render import js
+from minecraft_render import ResourcePath, js
+from minecraft_render.types.dataset.RenderClass import IRenderClass
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.model import HexdocModel
@@ -30,6 +33,32 @@ class TextureNotFoundError(FileNotFoundError):
     def __init__(self, id: ResourceLocation):
         self.message = f"No texture found for id: {id}"
         super().__init__(self.message)
+
+
+class HexdocPythonResourceLoader(HexdocModel):
+    loader: ModResourceLoader
+
+    def loadJSON(self, resource_path: ResourcePath) -> str:
+        path = self._convert_resource_path(resource_path)
+        _, json_str = self.loader.load_resource(path, decode=lambda v: v)
+        return json_str
+
+    def loadTexture(self, resource_path: ResourcePath) -> str:
+        path = self._convert_resource_path(resource_path)
+        _, resolved_path = self.loader.find_resource(path)
+
+        with open(resolved_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+
+    def close(self):
+        pass
+
+    def wrapped(self):
+        return js.PythonLoaderWrapper(self)
+
+    def _convert_resource_path(self, resource_path: ResourcePath):
+        string_path = js.resourcePathAsString(resource_path)
+        return Path("assets") / string_path
 
 
 class HexdocAssetLoader(HexdocModel):
@@ -72,6 +101,30 @@ class HexdocAssetLoader(HexdocModel):
         ):
             yield block_id
 
+    @cached_property
+    def renderer(self):
+        return js.RenderClass(
+            self.renderer_loader,
+            {
+                "outDir": self.loader.props.prerender_dir.as_posix(),
+                "imageSize": 300,
+            },
+        )
+
+    @cached_property
+    def renderer_loader(self):
+        return js.createMultiloader(
+            HexdocPythonResourceLoader(loader=self.loader).wrapped(),
+            self.minecraft_loader,
+        )
+
+    @cached_property
+    def minecraft_loader(self):
+        return js.MinecraftAssetsLoader.fetchAll(
+            self.loader.props.minecraft_assets.ref,
+            self.loader.props.minecraft_assets.version,
+        )
+
     def load_and_render_internal_textures(
         self,
     ) -> Iterator[tuple[ResourceLocation, Texture]]:
@@ -110,6 +163,7 @@ class HexdocAssetLoader(HexdocModel):
             if result := load_and_render_item(
                 model,
                 self.loader,
+                self.renderer,
                 self.gaslighting_items,
                 image_textures,
             ):
@@ -126,7 +180,7 @@ class HexdocAssetLoader(HexdocModel):
                 continue
 
             try:
-                yield block_id, render_block(block_id, self.loader)
+                yield block_id, render_block(block_id, self.renderer)
             except TextureNotFoundError:
                 if block_id in self.loader.props.textures.missing:
                     yield block_id, missing_item_texture
@@ -173,6 +227,7 @@ def load_texture(
 def load_and_render_item(
     model: ModelItem,
     loader: ModResourceLoader,
+    renderer: IRenderClass,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
 ) -> ItemTexture | None:
@@ -185,7 +240,7 @@ def load_and_render_item(
                 textures = list(
                     lookup_or_render_single_item(
                         found_texture,
-                        loader,
+                        renderer,
                         image_textures,
                     ).inner
                     for found_texture in found_textures
@@ -195,7 +250,7 @@ def load_and_render_item(
             case found_texture:
                 texture = lookup_or_render_single_item(
                     found_texture,
-                    loader,
+                    renderer,
                     image_textures,
                 )
                 return texture
@@ -207,7 +262,7 @@ def load_and_render_item(
 # TODO: move to methods on a class returned by find_texture?
 def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
-    loader: ModResourceLoader,
+    renderer: IRenderClass,
     image_textures: dict[ResourceLocation, ImageTexture],
 ) -> SingleItemTexture:
     match found_texture:
@@ -217,20 +272,20 @@ def lookup_or_render_single_item(
             return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
-            return render_block(model_id, loader)
+            return render_block(model_id, renderer)
 
 
-def render_block(id: ResourceLocation, loader: ModResourceLoader) -> SingleItemTexture:
+def render_block(id: ResourceLocation, renderer: IRenderClass) -> SingleItemTexture:
     render_id = js.ResourceLocation(id.namespace, id.path)
     file_id = id + ".png"
 
     if file_id.path.startswith("block/"):
         # model
-        result = loader.renderer.renderToFile(render_id)
+        result = renderer.renderToFile(render_id)
     else:
         # blockstate
         file_id = "block" / file_id
-        result = loader.renderer.renderToFile(render_id, file_id.path)
+        result = renderer.renderToFile(render_id, file_id.path)
 
     if not result:
         raise TextureNotFoundError(id)

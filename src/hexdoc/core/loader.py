@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-import base64
 import logging
 import subprocess
 from collections.abc import Iterator
 from contextlib import ExitStack
-from functools import cached_property
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
-from minecraft_render import ResourcePath, js
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
 
@@ -41,33 +38,6 @@ _T_Model = TypeVar("_T_Model", bound=HexdocModel)
 ExportFn = Callable[[_T, _T | None], str]
 
 BookFolder = Literal["categories", "entries", "templates"]
-
-
-@dataclass
-class HexdocPythonResourceLoader:
-    loader: ModResourceLoader
-
-    def loadJSON(self, resource_path: ResourcePath) -> str:
-        path = self._convert_resource_path(resource_path)
-        _, json_str = self.loader.load_resource(path, decode=lambda v: v)
-        return json_str
-
-    def loadTexture(self, resource_path: ResourcePath) -> str:
-        path = self._convert_resource_path(resource_path)
-        _, resolved_path = self.loader.find_resource(path)
-
-        with open(resolved_path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-
-    def close(self):
-        pass
-
-    def wrapped(self):
-        return js.PythonLoaderWrapper(self)
-
-    def _convert_resource_path(self, resource_path: ResourcePath):
-        string_path = js.resourcePathAsString(resource_path)
-        return Path("assets") / string_path
 
 
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
@@ -156,34 +126,6 @@ class ModResourceLoader:
     @property
     def should_export(self):
         return self.export_dir is not None
-
-    @cached_property
-    def renderer(self):
-        if not self.should_export:
-            raise TypeError("Unable to create renderer because exporting is disabled")
-
-        return js.RenderClass(
-            self.renderer_loader,
-            {
-                "outDir": self.props.prerender_dir.as_posix(),
-                "imageSize": 300,
-                # "animation": False, # TODO: ??
-            },
-        )
-
-    @cached_property
-    def renderer_loader(self):
-        return js.createMultiloader(
-            HexdocPythonResourceLoader(self).wrapped(),
-            self.minecraft_loader,
-        )
-
-    @cached_property
-    def minecraft_loader(self):
-        return js.MinecraftAssetsLoader.fetchAll(
-            self.props.minecraft_assets.ref,
-            self.props.minecraft_assets.version,
-        )
 
     def load_metadata(
         self,

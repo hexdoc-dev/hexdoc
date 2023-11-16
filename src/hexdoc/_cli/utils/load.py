@@ -10,7 +10,7 @@ from hexdoc.core import (
     ResourceLocation,
 )
 from hexdoc.data import HexdocMetadata
-from hexdoc.minecraft import I18n, Tag
+from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     HexdocAssetLoader,
     Texture,
@@ -54,14 +54,10 @@ def export_metadata(
     props: Properties,
     pm: PluginManager,
     loader: ModResourceLoader,
+    asset_loader: HexdocAssetLoader,
 ):
     lookups = TextureLookups[Texture](dict)
 
-    asset_loader = HexdocAssetLoader(
-        loader=loader,
-        asset_url=props.env.asset_url,
-        gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
-    )
     for texture_id, texture in asset_loader.load_and_render_internal_textures():
         texture.insert_texture(lookups, texture_id)
 
