@@ -1,4 +1,4 @@
-modid = "hexdoc"
+modid = "minecraft"
 default_lang = "en_us"
 
 resource_dirs = [  # top takes priority
@@ -11,3 +11,13 @@ export_dir = "src/hexdoc_minecraft/_export/generated"
 # https://github.com/PrismarineJS/minecraft-assets/tree/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2
 ref = "a14c64362abe4a12c2dfd87f8d1673af9d1b09f4"
 version = "1.20.2"
+
+[textures]
+missing = [
+    "minecraft:air",
+    "minecraft:amethyst_bud",
+    "minecraft:handheld_rod",
+    "minecraft:handheld",
+    "minecraft:spyglass_in_hand",
+    "minecraft:template_music_disc",
+]

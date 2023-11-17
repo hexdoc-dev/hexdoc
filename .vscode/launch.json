@@ -62,8 +62,10 @@
             "request": "launch",
             "module": "src.hexdoc_minecraft.app",
             "args": [
-                "fetch",
+                "export",
                 "1.20.2",
+                "--props",
+                "hexdoc_minecraft.toml",
             ],
             "console": "integratedTerminal",
             "justMyCode": false

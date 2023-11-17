@@ -112,6 +112,7 @@ hexdoc = "hexdoc._cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
+minecraft = "hexdoc_minecraft._hooks:MinecraftPlugin" # TODO: move
 
 # Pytest
 

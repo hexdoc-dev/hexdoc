@@ -2,6 +2,7 @@ __all__ = [
     "AnimatedTexture",
     "AnimationMeta",
     "HexdocAssetLoader",
+    "HexdocPythonResourceLoader",
     "ImageTexture",
     "ItemTexture",
     "ItemWithTexture",
@@ -30,6 +31,7 @@ from .items import (
 )
 from .load_assets import (
     HexdocAssetLoader,
+    HexdocPythonResourceLoader,
     Texture,
 )
 from .models import ModelItem

@@ -1,25 +1,24 @@
+import logging
 import re
 from functools import cached_property
 from typing import Iterator
 
-import requests
 from github import Github
+from github.ContentFile import ContentFile
 from hexdoc.core import ResourceLocation
 from hexdoc.minecraft.assets import PNGTexture
 from hexdoc.model import HexdocModel
-from hexdoc.utils import JSONValue, isinstance_or_raise
+from hexdoc.model.base import HexdocTypeAdapter
+from hexdoc.utils import isinstance_or_raise
+
+from hexdoc_minecraft.piston_meta import fetch_model
+
+logger = logging.getLogger(__name__)
 
 
-# TODO: remove
-def fetch_minecraft_assets_json(*, ref: str, version: str, filename: str) -> JSONValue:
-    url = (
-        "https://raw.githubusercontent.com/PrismarineJS/minecraft-assets"
-        f"/{ref}/data/{version}/{filename}"
-    )
-
-    resp = requests.get(url)
-    resp.raise_for_status()
-    return resp.json()
+class TextureContent(HexdocModel):
+    name: ResourceLocation
+    texture: str | None
 
 
 class MinecraftAssetsRepo(HexdocModel, arbitrary_types_allowed=True):
@@ -30,6 +29,15 @@ class MinecraftAssetsRepo(HexdocModel, arbitrary_types_allowed=True):
     @cached_property
     def repo(self):
         return self.github.get_repo("PrismarineJS/minecraft-assets")
+
+    def texture_content(self):
+        contents = self.repo.get_contents(
+            f"data/{self.version}/texture_content.json", self.ref
+        )
+        assert isinstance_or_raise(contents, ContentFile)
+
+        ta = HexdocTypeAdapter(list[TextureContent])
+        return fetch_model(ta, contents.download_url)
 
     def raw_file_url(self, path: str):
         return (
@@ -66,4 +74,5 @@ class MinecraftAssetsRepo(HexdocModel, arbitrary_types_allowed=True):
                 )
 
                 # TODO: support AnimatedTexture?
+                logger.info(f"Scraped texture {texture_id}: {url}")
                 yield texture_id, PNGTexture(url=url, pixelated=True)

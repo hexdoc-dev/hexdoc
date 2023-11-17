@@ -5,10 +5,11 @@ Mappings/utils for Mojang's API.
 import logging
 import shutil
 from pathlib import Path
-from typing import Literal, TypeVar
+from typing import Literal, TypeVar, overload
 
 import requests
 from hexdoc.model import HexdocModel
+from pydantic import TypeAdapter
 
 logger = logging.getLogger(__name__)
 
@@ -84,10 +85,34 @@ class VersionManifestV2(HexdocModel, extra="allow"):
         raise FileNotFoundError(f"Version id not found: {version_id}")
 
 
+_T = TypeVar("_T")
 _T_HexdocModel = TypeVar("_T_HexdocModel", bound=HexdocModel)
 
 
-def fetch_model(model_type: type[_T_HexdocModel], url: str) -> _T_HexdocModel:
+@overload
+def fetch_model(
+    model_type: type[_T_HexdocModel],
+    url: str,
+) -> _T_HexdocModel:
+    ...
+
+
+@overload
+def fetch_model(
+    model_type: TypeAdapter[_T],
+    url: str,
+) -> _T:
+    ...
+
+
+def fetch_model(
+    model_type: TypeAdapter[_T] | type[_T_HexdocModel],
+    url: str,
+) -> _T | _T_HexdocModel:
     response = requests.get(url)
     response.raise_for_status()
+
+    if isinstance(model_type, TypeAdapter):
+        return model_type.validate_json(response.content)
+
     return model_type.model_validate_json(response.content)

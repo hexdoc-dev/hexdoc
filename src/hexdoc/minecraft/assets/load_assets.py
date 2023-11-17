@@ -7,6 +7,7 @@ from typing import Iterable, Iterator
 
 from minecraft_render import ResourcePath, js
 from minecraft_render.types.dataset.RenderClass import IRenderClass
+from minecraft_render.types.dataset.types import IResourceLoader
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.model import HexdocModel
@@ -86,13 +87,12 @@ class HexdocAssetLoader(HexdocModel):
             folder="models/item",
             internal_only=True,
             allow_missing=True,
-            export=False,  # we're exporting the urls as metadata, so we can skip this
         ):
             model = ModelItem.load_data("item" / item_id, data)
             yield item_id, model
 
-    def find_blockstates(self) -> Iterable[ResourceLocation]:
-        for _, block_id, _ in self.loader.find_resources(
+    def load_blockstates(self) -> Iterable[ResourceLocation]:
+        for _, block_id, _ in self.loader.load_resources(
             "assets",
             namespace="*",
             folder="blockstates",
@@ -104,18 +104,11 @@ class HexdocAssetLoader(HexdocModel):
     @cached_property
     def renderer(self):
         return js.RenderClass(
-            self.renderer_loader,
+            self.renderer_loader(),
             {
                 "outDir": self.loader.props.prerender_dir.as_posix(),
                 "imageSize": 300,
             },
-        )
-
-    @cached_property
-    def renderer_loader(self):
-        return js.createMultiloader(
-            HexdocPythonResourceLoader(loader=self.loader).wrapped(),
-            self.minecraft_loader,
         )
 
     @cached_property
@@ -124,6 +117,15 @@ class HexdocAssetLoader(HexdocModel):
             self.loader.props.minecraft_assets.ref,
             self.loader.props.minecraft_assets.version,
         )
+
+    def renderer_loader(self) -> IResourceLoader:
+        return js.createMultiloader(
+            HexdocPythonResourceLoader(loader=self.loader).wrapped(),
+            self.minecraft_loader,
+        )
+
+    def fallback_texture(self, item_id: ResourceLocation) -> Texture | None:
+        return None
 
     def load_and_render_internal_textures(
         self,
@@ -135,7 +137,8 @@ class HexdocAssetLoader(HexdocModel):
         image_textures = dict[ResourceLocation, ImageTexture]()
 
         for texture_id, value in self.find_image_textures():
-            texture_id = "textures" / texture_id
+            if not texture_id.path.startswith("textures"):
+                texture_id = "textures" / texture_id
 
             match value:
                 case Path() as path:
@@ -175,8 +178,8 @@ class HexdocAssetLoader(HexdocModel):
                 missing_items.add(item_id)
 
         # blocks that didn't get covered by the items
-        for block_id in self.find_blockstates():
-            if block_id in found_items_from_models:
+        for block_id in self.load_blockstates():
+            if block_id not in missing_items:
                 continue
 
             try:
@@ -184,11 +187,13 @@ class HexdocAssetLoader(HexdocModel):
             except TextureNotFoundError:
                 if block_id in self.loader.props.textures.missing:
                     yield block_id, missing_item_texture
-                else:
-                    missing_items.add(block_id)
             else:
-                if block_id in missing_items:
-                    missing_items.remove(block_id)
+                missing_items.remove(block_id)
+
+        for item_id in list(missing_items):
+            if result := self.fallback_texture(item_id):
+                missing_items.remove(item_id)
+                yield item_id, result
 
         # oopsies
         if missing_items:

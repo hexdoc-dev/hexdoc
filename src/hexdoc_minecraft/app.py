@@ -4,9 +4,13 @@ from zipfile import ZipFile
 
 from github import Github
 from hexdoc._cli.utils.args import PropsOption, VerbosityOption
+from hexdoc._cli.utils.load import export_metadata, load_common_data
 from hexdoc._cli.utils.logging import setup_logging
+from hexdoc.core.loader import ModResourceLoader
+from hexdoc.minecraft import Tag
 from typer import Typer
 
+from .asset_loader import MinecraftAssetLoader
 from .minecraft_assets import MinecraftAssetsRepo
 from .piston_meta import VersionManifestV2
 
@@ -41,7 +45,7 @@ def fetch(
 
 
 @app.command()
-def extract(
+def unzip(
     version_id: str,
     *,
     verbosity: VerbosityOption = 1,
@@ -67,26 +71,34 @@ def extract(
 
 
 @app.command()
-def repo(
-    version: str,
+def export(
+    version_id: str,
     *,
     ref: str = "master",
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
 ):
-    # props, pm, _ = load_common_data(props_file, verbosity)
+    """Export all textures."""
+    props, pm, _ = load_common_data(props_file, verbosity)
 
-    # with ModResourceLoader.load_all(props, pm, render_dir=output_dir) as loader:
-    #     pass
-
-    repo = MinecraftAssetsRepo(
-        github=Github(),
-        ref=ref,
-        version=version,
+    loader = ModResourceLoader.clean_and_load_all(
+        props,
+        pm,
+        export=True,
     )
 
-    for texture_id, texture in repo.scrape_image_textures():
-        print(f"{texture_id},{texture}")
+    asset_loader = MinecraftAssetLoader(
+        loader=loader,
+        asset_url=props.env.asset_url,
+        gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+        repo=MinecraftAssetsRepo(
+            github=Github(),
+            ref=ref,
+            version=version_id,
+        ),
+    )
+
+    export_metadata(props, pm, loader, asset_loader)
 
 
 if __name__ == "__main__":
