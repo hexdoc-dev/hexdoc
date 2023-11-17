@@ -6,9 +6,9 @@ from hexdoc.minecraft.assets import (
     HexdocAssetLoader,
     HexdocPythonResourceLoader,
     ImageTexture,
+    ModelItem,
+    PNGTexture,
 )
-from hexdoc.minecraft.assets.models import ModelItem
-from hexdoc.minecraft.assets.textures import PNGTexture
 
 from .minecraft_assets import MinecraftAssetsRepo
 

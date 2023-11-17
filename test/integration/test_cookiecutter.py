@@ -7,7 +7,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Callable, Literal
 
-from hexdoc._cli.app import render
+from hexdoc.cli.app import render
 from hexdoc.utils import JSONValue
 from pytest import MonkeyPatch
 from pytest_cookies.plugin import Cookies

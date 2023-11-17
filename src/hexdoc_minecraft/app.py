@@ -3,9 +3,9 @@ from pathlib import Path
 from zipfile import ZipFile
 
 from github import Github
-from hexdoc._cli.utils.args import PropsOption, VerbosityOption
-from hexdoc._cli.utils.load import export_metadata, load_common_data
-from hexdoc._cli.utils.logging import setup_logging
+from hexdoc.cli.utils.args import PropsOption, VerbosityOption
+from hexdoc.cli.utils.load import export_metadata, load_common_data
+from hexdoc.cli.utils.logging import setup_logging
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.minecraft import Tag
 from typer import Typer

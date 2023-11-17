@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from hexdoc._cli.app import export
+from hexdoc.cli.app import export
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch, Parser
 from syrupy.assertion import SnapshotAssertion

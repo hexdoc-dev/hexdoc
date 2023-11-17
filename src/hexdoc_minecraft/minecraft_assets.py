@@ -7,8 +7,7 @@ from github import Github
 from github.ContentFile import ContentFile
 from hexdoc.core import ResourceLocation
 from hexdoc.minecraft.assets import PNGTexture
-from hexdoc.model import HexdocModel
-from hexdoc.model.base import HexdocTypeAdapter
+from hexdoc.model import HexdocModel, HexdocTypeAdapter
 from hexdoc.utils import isinstance_or_raise
 
 from hexdoc_minecraft.piston_meta import fetch_model
