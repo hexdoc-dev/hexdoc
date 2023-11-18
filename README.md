@@ -66,7 +66,7 @@ For local testing, create a file called `.env` in the repo root following this t
 ```sh
 GITHUB_SHA=main
 GITHUB_REPOSITORY=object-Object/hexdoc
-GITHUB_PAGES_URL=https://object-object.github.io/hexdoc
+GITHUB_PAGES_URL=https://hexdoc.hexxy.media
 ```
 
 Useful commands:

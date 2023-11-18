@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Mapping, overload
+from typing import Any, Literal, Mapping, overload
 
 from hexdoc.core import (
     MinecraftVersion,
@@ -18,7 +18,7 @@ from hexdoc.minecraft.assets import (
 )
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
-from hexdoc.plugin import PluginManager
+from hexdoc.plugin import ModPlugin, ModPluginWithBook, PluginManager
 from hexdoc.utils import cast_or_raise
 
 from .logging import setup_logging
@@ -26,35 +26,55 @@ from .logging import setup_logging
 logger = logging.getLogger(__name__)
 
 
-def load_common_data(props_file: Path, verbosity: int):
-    """props, pm, version"""
+@overload
+def load_common_data(
+    props_file: Path,
+    verbosity: int,
+    branch: str,
+    book: Literal[True],
+) -> tuple[Properties, PluginManager, ModPluginWithBook]:
+    ...
+
+
+@overload
+def load_common_data(
+    props_file: Path,
+    verbosity: int,
+    branch: str,
+    book: bool = False,
+) -> tuple[Properties, PluginManager, ModPlugin]:
+    ...
+
+
+def load_common_data(
+    props_file: Path,
+    verbosity: int,
+    branch: str,
+    book: bool = False,
+) -> tuple[Properties, PluginManager, ModPlugin]:
     setup_logging(verbosity)
 
     props = Properties.load(props_file)
-    pm = PluginManager()
+    pm = PluginManager(branch)
 
-    version = load_version(props, pm)
+    plugin = pm.mod_plugin(props.modid, book=book)
+    logging.getLogger(__name__).info(
+        f"Loading hexdoc for {props.modid} {plugin.full_version}"
+    )
+
     minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
     if minecraft_version is None:
-        logger.warning(
-            "No plugins implement hexdoc_minecraft_version, "
-            "per-version validation will fail"
+        logging.getLogger(__name__).warning(
+            "No plugins implement minecraft_version. All versions may be used."
         )
 
-    return props, pm, version
-
-
-def load_version(props: Properties, pm: PluginManager):
-    version = pm.mod_version(props.modid)
-    logger.info(f"Loading hexdoc for {props.modid} {version}")
-    return version
+    return props, pm, plugin
 
 
 def export_metadata(
-    props: Properties,
-    pm: PluginManager,
     loader: ModResourceLoader,
     asset_loader: HexdocAssetLoader,
+    site_path: Path,
 ):
     lookups = TextureLookups[Texture](dict)
 
@@ -62,16 +82,15 @@ def export_metadata(
         texture.insert_texture(lookups, texture_id)
 
     # this mod's metadata
-    version = pm.mod_version(props.modid)
-
     metadata = HexdocMetadata(
-        book_url=f"{props.url}/v/{version}" if version else None,
-        asset_url=props.env.asset_url,
+        # TODO: urlencode
+        book_url=f"{loader.props.url}/{site_path.as_posix()}",
+        asset_url=loader.props.env.asset_url,
         textures=lookups,
     )
 
     loader.export(
-        metadata.path(props.modid),
+        metadata.path(loader.props.modid),
         metadata.model_dump_json(
             by_alias=True,
             warnings=False,

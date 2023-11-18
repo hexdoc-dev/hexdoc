@@ -264,6 +264,11 @@ class I18n(HexdocModel):
 
         return self.localize(f"{root}.{texture_id.namespace}.{rest}")
 
+    def localize_lang(self):
+        name = self.localize("language.name")
+        region = self.localize("language.region")
+        return f"{name} ({region})"
+
 
 class I18nContext(LoaderContext):
     i18n: I18n

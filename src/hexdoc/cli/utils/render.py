@@ -29,8 +29,7 @@ from hexdoc.jinja import (
     hexdoc_wrap,
 )
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture
-from hexdoc.minecraft.assets.textures import PNGTexture, TextureLookup
+from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureLookup
 from hexdoc.patchouli import Book
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import write_to_path
@@ -117,29 +116,18 @@ def render_book(
     i18n: I18n,
     templates: dict[Path, Template],
     output_dir: Path,
+    site_path: Path,
     all_metadata: dict[str, HexdocMetadata],
     png_textures: TextureLookup[PNGTexture],
     animations: list[AnimatedTexture],
     allow_missing: bool,
     version: str,
-    is_root: bool,
 ):
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
-    # /index.html
-    # /lang/index.html
-    # /v/version/index.html
-    # /v/version/lang/index.html
-    path = Path()
-    if not is_root:
-        path /= "v"
-        path /= version
-    if lang != props.default_lang:
-        path /= lang
-
-    output_dir /= path
-    page_url = "/".join([props.url, *path.parts])
+    output_dir /= site_path
+    page_url = "/".join([props.url, *site_path.parts])
 
     logger.info(f"Rendering {output_dir}")
 
@@ -205,15 +193,14 @@ def render_book(
     # marker file for updating the sitemap later
     # we use this because matrix doesn't have outputs
     # this feels scuffed but it does work
-    if not is_root:
-        marker = SitemapMarker(
-            version=version,
-            lang=lang,
-            lang_name=lang_names[lang],
-            path="/" + "/".join(path.parts),
-            is_default_lang=lang == props.default_lang,
-        )
-        (output_dir / MARKER_NAME).write_text(marker.model_dump_json(), "utf-8")
+    marker = SitemapMarker(
+        version=version,
+        lang=lang,
+        lang_name=lang_names[lang],
+        path="/" + "/".join(site_path.parts),
+        is_default_lang=lang == props.default_lang,
+    )
+    (output_dir / MARKER_NAME).write_text(marker.model_dump_json(), "utf-8")
 
 
 def strip_empty_lines(text: str) -> str:

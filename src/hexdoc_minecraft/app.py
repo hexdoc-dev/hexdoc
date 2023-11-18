@@ -3,7 +3,12 @@ from pathlib import Path
 from zipfile import ZipFile
 
 from github import Github
-from hexdoc.cli.utils.args import PropsOption, VerbosityOption
+from hexdoc.cli.utils.args import (
+    DEFAULT_BRANCH,
+    PropsOption,
+    ReleaseOption,
+    VerbosityOption,
+)
 from hexdoc.cli.utils.load import export_metadata, load_common_data
 from hexdoc.cli.utils.logging import setup_logging
 from hexdoc.core.loader import ModResourceLoader
@@ -72,14 +77,16 @@ def unzip(
 
 @app.command()
 def export(
-    version_id: str,
+    version_id: str,  # TODO: props.extra this
     *,
-    ref: str = "master",
+    assets_ref: str = "master",  # TODO: props.extra this
+    branch: str = DEFAULT_BRANCH,
+    release: ReleaseOption = False,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
 ):
     """Export all textures."""
-    props, pm, _ = load_common_data(props_file, verbosity)
+    props, pm, plugin = load_common_data(props_file, verbosity, branch)
 
     loader = ModResourceLoader.clean_and_load_all(
         props,
@@ -93,12 +100,16 @@ def export(
         gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
         repo=MinecraftAssetsRepo(
             github=Github(),
-            ref=ref,
+            ref=assets_ref,
             version=version_id,
         ),
     )
 
-    export_metadata(props, pm, loader, asset_loader)
+    export_metadata(
+        loader,
+        asset_loader,
+        site_path=plugin.site_path(versioned=release),
+    )
 
 
 if __name__ == "__main__":

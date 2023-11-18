@@ -55,7 +55,7 @@ def path_snapshot(snapshot: SnapshotAssertion):
 
 @pytest.fixture
 def pm():
-    return PluginManager()
+    return PluginManager(branch="main")
 
 
 @pytest.fixture(scope="session")

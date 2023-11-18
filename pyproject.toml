@@ -106,7 +106,7 @@ packages = [
 ]
 
 [project.scripts]
-hexdoc = "hexdoc._cli.app:app"
+hexdoc = "hexdoc.cli.app:app"
 
 # hexdoc
 

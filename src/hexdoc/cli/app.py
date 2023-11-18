@@ -22,12 +22,12 @@ from hexdoc.utils.git import git_root
 
 from . import render_block
 from .utils.args import (
+    DEFAULT_BRANCH,
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
     PathArgument,
     PropsOption,
     ReleaseOption,
-    UpdateLatestOption,
     VerbosityOption,
 )
 from .utils.load import (
@@ -38,13 +38,14 @@ from .utils.load import (
 )
 from .utils.logging import repl_readfunc
 from .utils.render import create_jinja_env, render_book
-from .utils.sitemap import (
-    assert_version_exists,
-    delete_root_book,
-    delete_updated_books,
-    dump_sitemap,
-    load_sitemap,
-)
+
+# from .utils.sitemap import (
+#     assert_version_exists,
+#     delete_root_book,
+#     delete_updated_books,
+#     dump_sitemap,
+#     load_sitemap,
+# )
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,7 @@ def list_langs(
     verbosity: VerbosityOption = 0,
 ):
     """Get the available language codes as a JSON list."""
-    props, pm, _ = load_common_data(props_file, verbosity)
+    props, pm, _ = load_common_data(props_file, verbosity, "")
     with ModResourceLoader.load_all(
         props,
         pm,
@@ -83,7 +84,7 @@ def repl(
     verbosity: VerbosityOption = 0,
 ):
     """Start a Python shell with some helpful extra locals added from hexdoc."""
-    props, pm, _ = load_common_data(props_file, verbosity)
+    props, pm, _ = load_common_data(props_file, verbosity, "")
 
     loader = ModResourceLoader.load_all(
         props,
@@ -124,13 +125,14 @@ def repl(
 @app.command()
 def export(
     *,
+    branch: str = DEFAULT_BRANCH,
+    release: ReleaseOption = False,
     props_file: PropsOption,
-    lang: Union[str, None] = None,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
-    props, pm, _ = load_common_data(props_file, verbosity)
+    props, pm, plugin = load_common_data(props_file, verbosity, branch)
 
     loader = ModResourceLoader.clean_and_load_all(
         props,
@@ -144,15 +146,19 @@ def export(
         gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
     )
 
-    export_metadata(props, pm, loader, asset_loader)
+    export_metadata(
+        loader,
+        asset_loader,
+        site_path=plugin.site_path(versioned=release),
+    )
 
     load_book(
-        props.book,
-        props,
-        pm,
-        loader,
-        lang,
-        allow_missing,
+        book_id=props.book,
+        props=props,
+        pm=pm,
+        loader=loader,
+        lang=None,
+        allow_missing=allow_missing,
     )
 
 
@@ -160,26 +166,24 @@ def export(
 def render(
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
     *,
-    props_file: PropsOption,
-    update_latest: UpdateLatestOption = True,
+    branch: str = DEFAULT_BRANCH,
     release: ReleaseOption = False,
     clean: bool = False,
     lang: Union[str, None] = None,
+    props_file: PropsOption,
     allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
 ):
     """Export resources and render the web book."""
 
     # load data
-    props, pm, version = load_common_data(props_file, verbosity)
+    props, pm, plugin = load_common_data(props_file, verbosity, branch, book=True)
     if not props.book:
         raise ValueError("Expected a value for props.book, got None")
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
-    if not version:
-        raise ValueError(
-            "Expected a version, got None (try implementing hexdoc_mod_version)"
-        )
+
+    site_path = plugin.site_path(versioned=release)
 
     books, all_metadata = load_books(
         props.book,
@@ -188,8 +192,6 @@ def render(
         lang,
         allow_missing,
     )
-
-    logger.info(f"update_latest={update_latest}, release={release}")
 
     # set up Jinja
     env = create_jinja_env(pm, props.template.include, props_file)
@@ -215,37 +217,29 @@ def render(
         shutil.rmtree(output_dir, ignore_errors=True)
 
     lang_names = {
-        lang_: f"{i18n.localize('language.name')} ({i18n.localize('language.region')})"
-        for lang_, (_, i18n, _) in books.items()
+        book_lang: i18n.localize_lang() for book_lang, (_, i18n, _) in books.items()
     }
 
-    for should_render, version_, is_root in [
-        (update_latest, "latest", False),
-        (release, version, False),
-        (update_latest and release, version, True),
-    ]:
-        if not should_render:
-            continue
-        for lang_, (book, i18n, context) in books.items():
-            png_textures = PNGTexture.get_lookup(context.textures)
-            animations = list(AnimatedTexture.get_lookup(context.textures).values())
+    for book_lang, (book, i18n, context) in books.items():
+        png_textures = PNGTexture.get_lookup(context.textures)
+        animations = list(AnimatedTexture.get_lookup(context.textures).values())
 
-            render_book(
-                props=props,
-                pm=pm,
-                lang=lang_,
-                lang_names=lang_names,
-                book=book,
-                i18n=i18n,
-                templates=templates,
-                output_dir=output_dir,
-                all_metadata=all_metadata,
-                png_textures=png_textures,
-                animations=animations,
-                allow_missing=allow_missing,
-                version=version_,
-                is_root=is_root,
-            )
+        render_book(
+            props=props,
+            pm=pm,
+            lang=book_lang,
+            lang_names=lang_names,
+            book=book,
+            i18n=i18n,
+            templates=templates,
+            output_dir=output_dir,
+            site_path=site_path,
+            all_metadata=all_metadata,
+            png_textures=png_textures,
+            animations=animations,
+            allow_missing=allow_missing,
+            version=plugin.mod_version,
+        )
 
     logger.info("Done.")
 
@@ -255,30 +249,32 @@ def merge(
     *,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
-    update_latest: UpdateLatestOption = True,
     release: ReleaseOption = False,
 ):
-    # ensure at least the default language was built successfully
-    if update_latest:
-        assert_version_exists(root=src, version="latest")
+    # TODO: rewrite
+    pass
 
-    # TODO: figure out how to do this with pluggy (we don't have the props file here)
-    # if is_release:
-    #     assert_version_exists(src, GRADLE_VERSION)
+    # # ensure at least the default language was built successfully
+    # if update_latest:
+    #     assert_version_exists(root=src, version="latest")
 
-    dst.mkdir(parents=True, exist_ok=True)
+    # # TODO: figure out how to do this with pluggy (we don't have the props file here)
+    # # if is_release:
+    # #     assert_version_exists(src, GRADLE_VERSION)
 
-    # remove any stale data that we're about to replace
-    delete_updated_books(src=src, dst=dst)
-    if update_latest and release:
-        delete_root_book(root=dst)
+    # dst.mkdir(parents=True, exist_ok=True)
 
-    # do the merge
-    shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)
+    # # remove any stale data that we're about to replace
+    # delete_updated_books(src=src, dst=dst)
+    # if update_latest and release:
+    #     delete_root_book(root=dst)
 
-    # rebuild the sitemap
-    sitemap = load_sitemap(dst)
-    dump_sitemap(dst, sitemap)
+    # # do the merge
+    # shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)
+
+    # # rebuild the sitemap
+    # sitemap = load_sitemap(dst)
+    # dump_sitemap(dst, sitemap)
 
 
 @app.command()
@@ -289,7 +285,7 @@ def serve(
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
     do_merge: Annotated[bool, Option("--merge/--no-merge")] = False,
-    update_latest: bool = True,
+    branch: str = DEFAULT_BRANCH,
     release: bool = True,  # you'd generally want --release for development
     clean: bool = False,
     lang: Union[str, None] = None,
@@ -297,8 +293,10 @@ def serve(
     verbosity: VerbosityOption = 0,
 ):
     book_root = dst if do_merge else src
-    book_path = book_root.resolve().relative_to(Path.cwd())
-    book_url = f"/{book_path.as_posix()}"
+    relative_root = book_root.resolve().relative_to(Path.cwd())
+
+    base_url = f"http://localhost:{port}"
+    book_url = f"{base_url}/{relative_root.as_posix()}"
 
     repo_root = git_root(props_file.parent)
     asset_root = repo_root.relative_to(Path.cwd())
@@ -307,23 +305,24 @@ def serve(
         # prepend a slash to the path so it can find the texture in the local repo
         # eg. http://localhost:8000/_site/src/docs/Common/...
         # vs. http://localhost:8000/Common/...
-        "DEBUG_GITHUBUSERCONTENT": f"/{asset_root.as_posix()}",
+        "DEBUG_GITHUBUSERCONTENT": f"{base_url}/{asset_root.as_posix()}",
         "GITHUB_PAGES_URL": book_url,
     }
 
     print("Exporting...")
     export(
+        branch=branch,
+        release=release,
         props_file=props_file,
-        lang=lang,
         allow_missing=allow_missing,
         verbosity=verbosity,
     )
 
     print("Rendering...")
     render(
+        branch=branch,
         props_file=props_file,
         output_dir=src,
-        update_latest=update_latest,
         release=release,
         clean=clean,
         lang=lang,
@@ -336,13 +335,10 @@ def serve(
         merge(
             src=src,
             dst=dst,
-            update_latest=update_latest,
             release=release,
         )
 
-    print(
-        f"Serving web book at http://localhost:{port}{book_url} (press ctrl+c to exit)\n"
-    )
+    print(f"Serving web book at {book_url} (press ctrl+c to exit)\n")
     with HTTPServer(("", port), SimpleHTTPRequestHandler) as httpd:
         # ignore KeyboardInterrupt to stop Typer from printing "Aborted."
         # because it keeps printing after nodemon exits and breaking the output

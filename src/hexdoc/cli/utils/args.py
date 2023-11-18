@@ -6,6 +6,9 @@ from typer import Argument, Option
 
 logger = logging.getLogger(__name__)
 
+# TODO: use current commit as default instead?
+DEFAULT_BRANCH = "main"
+
 DEFAULT_MERGE_SRC = Path("_site/src/docs")
 DEFAULT_MERGE_DST = Path("_site/dst/docs")
 
@@ -37,7 +40,5 @@ PropsOption = Annotated[
 ]
 
 ReleaseOption = Annotated[bool, Option(envvar="HEXDOC_RELEASE")]
-
-UpdateLatestOption = Annotated[bool, Option(envvar="HEXDOC_UPDATE_LATEST")]
 
 VerbosityOption = Annotated[int, Option("--verbose", "-v", count=True)]
