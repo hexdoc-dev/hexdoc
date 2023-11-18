@@ -41,7 +41,7 @@ dynamic = ["version"]
 dependencies = [
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
-    "minecraft-render~=2.0.0a5",
+    "minecraft-render==2.0.0a5",
     "more_itertools~=10.1",
     "ordered-set~=4.1",
     "packaging~=23.2",
