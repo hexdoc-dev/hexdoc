@@ -33,6 +33,7 @@ def id_(
         asset_loader = HexdocAssetLoader(
             loader=loader,
             asset_url="",
+            site_url="",
             gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
         )
         output_path = asset_loader.renderer.renderToFile(
@@ -58,6 +59,7 @@ def model(
         asset_loader = HexdocAssetLoader(
             loader=loader,
             asset_url="",
+            site_url="",
             gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
         )
 

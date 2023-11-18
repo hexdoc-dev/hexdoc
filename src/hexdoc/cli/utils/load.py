@@ -74,7 +74,7 @@ def load_common_data(
 def export_metadata(
     loader: ModResourceLoader,
     asset_loader: HexdocAssetLoader,
-    site_path: Path,
+    site_url: str,
 ):
     lookups = TextureLookups[Texture](dict)
 
@@ -83,8 +83,7 @@ def export_metadata(
 
     # this mod's metadata
     metadata = HexdocMetadata(
-        # TODO: urlencode
-        book_url=f"{loader.props.url}/{site_path.as_posix()}",
+        book_url=site_url,
         asset_url=loader.props.env.asset_url,
         textures=lookups,
     )

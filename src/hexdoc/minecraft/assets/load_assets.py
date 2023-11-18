@@ -65,6 +65,7 @@ class HexdocPythonResourceLoader(HexdocModel):
 class HexdocAssetLoader(HexdocModel):
     loader: ModResourceLoader
     asset_url: str
+    site_url: str
     gaslighting_items: set[ResourceLocation]
 
     def find_image_textures(
@@ -124,7 +125,7 @@ class HexdocAssetLoader(HexdocModel):
             self.minecraft_loader,
         )
 
-    def fallback_texture(self, item_id: ResourceLocation) -> Texture | None:
+    def fallback_texture(self, item_id: ResourceLocation) -> ItemTexture | None:
         return None
 
     def load_and_render_internal_textures(
@@ -169,6 +170,7 @@ class HexdocAssetLoader(HexdocModel):
                 self.renderer,
                 self.gaslighting_items,
                 image_textures,
+                self.site_url,
             ):
                 found_items_from_models.add(item_id)
                 yield item_id, result
@@ -183,7 +185,7 @@ class HexdocAssetLoader(HexdocModel):
                 continue
 
             try:
-                yield block_id, render_block(block_id, self.renderer)
+                yield block_id, render_block(block_id, self.renderer, self.site_url)
             except TextureNotFoundError:
                 if block_id in self.loader.props.textures.missing:
                     yield block_id, missing_item_texture
@@ -235,6 +237,7 @@ def load_and_render_item(
     renderer: IRenderClass,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
+    site_url: str,
 ) -> ItemTexture | None:
     try:
         match model.find_texture(loader, gaslighting_items):
@@ -247,6 +250,7 @@ def load_and_render_item(
                         found_texture,
                         renderer,
                         image_textures,
+                        site_url,
                     ).inner
                     for found_texture in found_textures
                 )
@@ -257,6 +261,7 @@ def load_and_render_item(
                     found_texture,
                     renderer,
                     image_textures,
+                    site_url,
                 )
                 return texture
     except TextureNotFoundError as e:
@@ -269,6 +274,7 @@ def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
     renderer: IRenderClass,
     image_textures: dict[ResourceLocation, ImageTexture],
+    site_url: str,
 ) -> SingleItemTexture:
     match found_texture:
         case "texture", texture_id:
@@ -277,10 +283,14 @@ def lookup_or_render_single_item(
             return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
-            return render_block(model_id, renderer)
+            return render_block(model_id, renderer, site_url)
 
 
-def render_block(id: ResourceLocation, renderer: IRenderClass) -> SingleItemTexture:
+def render_block(
+    id: ResourceLocation,
+    renderer: IRenderClass,
+    site_url: str,
+) -> SingleItemTexture:
     render_id = js.ResourceLocation(id.namespace, id.path)
     file_id = id + ".png"
 
@@ -299,4 +309,4 @@ def render_block(id: ResourceLocation, renderer: IRenderClass) -> SingleItemText
 
     # blocks look better if antialiased
     logger.info(f"Rendered {id} to {out_path} (in {out_root})")
-    return SingleItemTexture.from_url(out_path, pixelated=False)
+    return SingleItemTexture.from_url(f"{site_url}/{out_path}", pixelated=False)

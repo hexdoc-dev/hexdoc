@@ -140,16 +140,21 @@ def export(
         export=True,
     )
 
+    # TODO: urlencode
+    site_path = plugin.site_path(versioned=release)
+    site_url = f"{loader.props.url}/{site_path.as_posix()}"
+
     asset_loader = HexdocAssetLoader(
         loader=loader,
         asset_url=props.env.asset_url,
         gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+        site_url=site_url,
     )
 
     export_metadata(
         loader,
         asset_loader,
-        site_path=plugin.site_path(versioned=release),
+        site_url,
     )
 
     load_book(

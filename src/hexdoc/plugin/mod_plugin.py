@@ -96,6 +96,8 @@ class ModPlugin(ABC):
     def default_rendered_templates(self) -> dict[str | Path, str]:
         """Extra templates to be rendered by default when your plugin is active.
 
+        The key is the output path, and the value is the template to import and render.
+
         This hook is not called if `props.template.render` is set, since that option
         overrides all default templates.
         """

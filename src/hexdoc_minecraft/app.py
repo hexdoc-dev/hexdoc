@@ -86,6 +86,8 @@ def export(
     verbosity: VerbosityOption = 0,
 ):
     """Export all textures."""
+    # TODO: refactor so this isn't just duplicated from hexdoc export
+
     props, pm, plugin = load_common_data(props_file, verbosity, branch)
 
     loader = ModResourceLoader.clean_and_load_all(
@@ -94,9 +96,13 @@ def export(
         export=True,
     )
 
+    site_path = plugin.site_path(versioned=release)
+    site_url = f"{loader.props.url}/{site_path.as_posix()}"
+
     asset_loader = MinecraftAssetLoader(
         loader=loader,
         asset_url=props.env.asset_url,
+        site_url=site_url,
         gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
         repo=MinecraftAssetsRepo(
             github=Github(),
@@ -108,7 +114,7 @@ def export(
     export_metadata(
         loader,
         asset_loader,
-        site_path=plugin.site_path(versioned=release),
+        site_url,
     )
 
 

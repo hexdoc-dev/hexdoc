@@ -6,9 +6,11 @@ from hexdoc.minecraft.assets import (
     HexdocAssetLoader,
     HexdocPythonResourceLoader,
     ImageTexture,
+    ItemTexture,
     ModelItem,
     PNGTexture,
 )
+from hexdoc.minecraft.assets.items import SingleItemTexture
 
 from .minecraft_assets import MinecraftAssetsRepo
 
@@ -17,10 +19,12 @@ class MinecraftAssetLoader(HexdocAssetLoader):
     repo: MinecraftAssetsRepo
 
     @cached_property
-    def fallbacks(self) -> Mapping[ResourceLocation, ImageTexture]:
+    def fallbacks(self) -> Mapping[ResourceLocation, ItemTexture]:
         texture_content = self.repo.texture_content()
         return {
-            value.name: PNGTexture(url=value.texture, pixelated=True)
+            value.name: SingleItemTexture(
+                inner=PNGTexture(url=value.texture, pixelated=True)
+            )
             for value in texture_content
             if value.texture
         }
@@ -34,7 +38,7 @@ class MinecraftAssetLoader(HexdocAssetLoader):
                 continue
             yield item_id, model
 
-    def fallback_texture(self, item_id: ResourceLocation) -> ImageTexture | None:
+    def fallback_texture(self, item_id: ResourceLocation) -> ItemTexture | None:
         return self.fallbacks.get(item_id)
 
     def renderer_loader(self):
