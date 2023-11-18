@@ -1,3 +1,9 @@
+# hexdoc
+_site/
+_checkout/
+__gradle_version__.py
+.hexdoc*/
+
 # eclipse
 bin
 *.launch
@@ -26,12 +32,6 @@ forge*changelog.txt
 
 Session.vim
 plot/
-
-# hexdoc
-_site/
-_checkout/
-__gradle_version__.py
-.hexdoc/
 
 # Python
 

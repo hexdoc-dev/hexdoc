@@ -9,12 +9,12 @@ from hexdoc.plugin import (
     hookimpl,
 )
 
-import {{ cookiecutter.__project_slug }}
+import {{ package_slug }}
 
 from .__gradle_version__ import GRADLE_VERSION, MINECRAFT_VERSION
 
 
-class {{ cookiecutter.plugin_classname }}(
+class {{ hexdoc_plugin_classname }}(
     LoadJinjaTemplatesImpl,
     LoadResourceDirsImpl,
     ModVersionImpl,
@@ -42,4 +42,4 @@ class {{ cookiecutter.plugin_classname }}(
     @staticmethod
     @hookimpl
     def hexdoc_load_jinja_templates() -> HookReturn[tuple[Package, str]]:
-        return {{ cookiecutter.__project_slug }}, "_templates"
+        return {{ package_slug }}, "_templates"

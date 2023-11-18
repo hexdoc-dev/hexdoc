@@ -144,7 +144,6 @@ extend-exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "[{][{]cookiecutter.output_directory[}][}]",
 ]
 
 [tool.ruff.lint.isort]
@@ -174,7 +173,7 @@ exclude = [
     "**/node_modules",
     "**/__pycache__",
     "test/_submodules/HexMod",
-    "{{cookiecutter.output_directory}}",
+    "template",
 ]
 
 typeCheckingMode = "basic"

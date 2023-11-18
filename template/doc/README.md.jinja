@@ -1,6 +1,6 @@
-# {{ cookiecutter.__project_name }}
+# {{ package_name }}
 
-Python web book docgen and [hexdoc](https://pypi.org/project/hexdoc) plugin for {{ cookiecutter.mod_display_name }}.
+Python web book docgen and [hexdoc](https://pypi.org/project/hexdoc) plugin for {{ mod_display_name }}.
 
 ## Version scheme
 
@@ -30,9 +30,9 @@ pip install -e .[dev]
 
 For local testing, create a file called `.env` in the repo root following this template:
 ```sh
-GITHUB_REPOSITORY={{ cookiecutter.author }}/{{ cookiecutter.github_repo }}
-GITHUB_SHA={{ cookiecutter.main_branch }}
-GITHUB_PAGES_URL={{ cookiecutter.pages_url }}
+GITHUB_REPOSITORY={{ author }}/{{ github_repo }}
+GITHUB_SHA={{ main_branch }}
+GITHUB_PAGES_URL={{ pages_url }}
 ```
 
 Then run these commands to generate the book:

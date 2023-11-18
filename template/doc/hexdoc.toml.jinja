@@ -1,0 +1,62 @@
+modid = "{{ modid }}"
+book = "{{ book_id }}"
+default_lang = "en_us"
+
+resource_dirs = [  # top takes priority
+    "resources",
+    "{_common.src}/main/resources",
+    "{_common.src}/generated/resources",
+    {% if multiloader -%}
+    "{_fabric.src}/main/resources",
+    "{_fabric.src}/generated/resources",
+    "{_forge.src}/main/resources",
+    "{_forge.src}/generated/resources",
+    {%- endif %}
+    { modid="hexcasting" },
+    { modid="hexdoc" },
+]
+export_dir = "{{ package_export_root }}/generated"
+
+[extra.hexcasting]
+# regexes for parsing pattern registry files - try running copier update and picking a different regex if your patterns aren't loading
+# NOTE: "!Raw" means "don't apply variable interpolation to this value"
+_pattern_regex = { "!Raw"='{{ pattern_regex }}' }
+
+[[extra.hexcasting.pattern_stubs]]
+path = "{^^^_common.package}/{{ pattern_registry }}"
+regex = "{^_pattern_regex}"
+
+[minecraft_assets]
+# https://github.com/PrismarineJS/minecraft-assets/tree/83e2169afbbce40990d69fc53e5962e4a793d467/data/1.19.1
+ref = "83e2169afbbce40990d69fc53e5962e4a793d467"
+version = "1.19.1"
+
+[template]
+icon = "icon.png"
+include = [
+    "{{ modid }}",
+    "hexcasting",
+    "patchouli",
+    "hexdoc",
+]
+
+[template.args]
+mod_name = "{{ mod_display_name }}"
+author = "{{ author }}"
+show_landing_text = false
+
+# platforms
+
+[_common]
+src = "../{{ 'common/src' if multiloader else 'src' }}"
+package = "{src}/main/{{ java_lang.src }}/{{ java_package }}"
+
+{% if multiloader -%}
+[_fabric]
+src = "../fabric/src"
+package = "{src}/main/{{ java_lang.src }}/{{ java_package }}/fabric"
+
+[_forge]
+src = "../forge/src"
+package = "{src}/main/{{ java_lang.src }}/{{ java_package }}/forge"
+{%- endif %}

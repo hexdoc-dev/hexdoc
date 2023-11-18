@@ -5,33 +5,31 @@ build-backend = "hatchling.build"
 # project metadata
 
 [project]
-name = "{{ cookiecutter.__project_name }}"
-description = "Python web book docgen and hexdoc plugin for {{ cookiecutter.mod_display_name }}."
+name = "{{ package_name }}"
+description = "Python web book docgen and hexdoc plugin for {{ mod_display_name }}."
 readme = "doc/README.md"
 authors = [
-    { name="{{ cookiecutter.author }}" },
+    { name="{{ author }}" },
 ]
 keywords = ["hexdoc"]
 requires-python = ">=3.11"
 dynamic = ["version", "dependencies", "optional-dependencies"]
 
 [project.urls]
-Homepage = "{{ cookiecutter.pages_url }}"
-Source = "https://github.com/{{ cookiecutter.author }}/{{ cookiecutter.github_repo }}/tree/{{ cookiecutter.main_branch }}/doc"
+Homepage = "{{ pages_url }}"
+Source = "https://github.com/{{ author }}/{{ github_repo }}/tree/{{ main_branch }}/doc"
 
 # Gradle version/deps
 
 [tool.hatch.version]
 scheme = "gradle"
 source = "gradle-properties"
-py-path = "doc/{{ cookiecutter.__src }}/__version__.py"
-{% if cookiecutter.gradle_mod_version_key != "modVersion" -%}
-key = "{{ cookiecutter.gradle_mod_version_key }}"
-{%- endif %}
+py-path = "{{ package_src }}/__version__.py"
+key = "{{ gradle_mod_version_key }}"
 
 [tool.hatch.metadata.hooks.gradle-properties]
 dependencies = [
-    { package="hexdoc-hexcasting", op="~=", py-version="{{ cookiecutter._hexdoc_hexcasting_version }}", key="hexcastingVersion" },
+    { package="hexdoc-hexcasting", op="~=", py-version="1.0.dev20", key="hexcastingVersion" },
 ]
 
 [tool.hatch.metadata.hooks.gradle-properties.optional-dependencies]
@@ -44,12 +42,12 @@ dev = [
 
 [tool.hatch.build]
 only-include = [
-    "doc/{{ cookiecutter.__src }}",
+    "{{ package_src }}",
     "gradle.properties",
 ]
 artifacts = [
-    "/doc/{{ cookiecutter.__export_root }}/generated",
-    "/doc/{{ cookiecutter.__src }}/__gradle_version__.py",
+    "/{{ package_export_root }}/generated",
+    "/{{ package_src }}/__gradle_version__.py",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -58,7 +56,7 @@ sources = ["doc/src"]
 # hexdoc entry points
 
 [project.entry-points.hexdoc]
-{{ cookiecutter.modid }} = "{{ cookiecutter.__project_slug }}._hooks:{{ cookiecutter.plugin_classname }}"
+{{ modid }} = "{{ package_slug }}._hooks:{{ hexdoc_plugin_classname }}"
 
 # linting
 

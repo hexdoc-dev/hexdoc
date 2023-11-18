@@ -4,7 +4,7 @@ name: Build the web book
 on:
   push:
     branches:
-      - {% endraw %}{{ cookiecutter.main_branch }}{% raw %}
+      - {% endraw %}{{ main_branch }}{%- raw %}
     tags: "*"
   workflow_dispatch:
     inputs:
@@ -34,7 +34,7 @@ on:
         required: false
 
 env:
-  PYPI_PACKAGE: {% endraw %}{{ cookiecutter.__project_name }}{% raw %}
+  PYPI_PACKAGE: {% endraw %}{{ package_name }}{%- raw %}
 
 permissions:
   contents: read
@@ -46,7 +46,7 @@ concurrency:
 jobs:
   hexdoc:
     uses: object-Object/hexdoc/.github/workflows/hexdoc.yml@v0
-    permissions: 
+    permissions:
       contents: write
       pages: read
     with:
