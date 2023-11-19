@@ -87,8 +87,8 @@ def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
 
 @pytest.fixture(autouse=True, scope="session")
 def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("hexdoc.toml"))
-    export(props_file=hexcasting_props_file)
+    export(props_file=Path("hexdoc.toml"), branch="main")
+    export(props_file=hexcasting_props_file, branch="main")
 
 
 # helpers

@@ -5,7 +5,6 @@ import typer
 from minecraft_render import js
 
 from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
-from hexdoc.minecraft import Tag
 from hexdoc.minecraft.assets.load_assets import HexdocAssetLoader
 
 from .utils.args import PropsOption, VerbosityOption
@@ -34,7 +33,7 @@ def id_(
             loader=loader,
             asset_url="",
             site_url="",
-            gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+            render_dir=Path("out"),
         )
         output_path = asset_loader.renderer.renderToFile(
             js.ResourceLocation.parse(block)
@@ -60,7 +59,7 @@ def model(
             loader=loader,
             asset_url="",
             site_url="",
-            gaslighting_items=Tag.GASLIGHTING_ITEMS.load(loader).value_ids_set,
+            render_dir=Path("out"),
         )
 
         if model_path.suffix == ".json":

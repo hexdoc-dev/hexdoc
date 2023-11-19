@@ -1,13 +1,11 @@
 import logging
+import subprocess
 from pathlib import Path
 from typing import Annotated
 
 from typer import Argument, Option
 
 logger = logging.getLogger(__name__)
-
-# TODO: use current commit as default instead?
-DEFAULT_BRANCH = "main"
 
 DEFAULT_MERGE_SRC = Path("_site/src/docs")
 DEFAULT_MERGE_DST = Path("_site/dst/docs")
@@ -32,13 +30,36 @@ def get_default_props() -> Path:
     )
 
 
-PathArgument = Annotated[Path, Argument()]
+def get_current_commit() -> str:
+    return subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"],
+        check=True,
+        capture_output=True,
+        encoding="utf-8",
+    ).stdout.strip()
 
-PropsOption = Annotated[
-    Path,
-    Option("--props", "-p", envvar="HEXDOC_PROPS", default_factory=get_default_props),
-]
+
+PathArgument = Annotated[Path, Argument()]
 
 ReleaseOption = Annotated[bool, Option(envvar="HEXDOC_RELEASE")]
 
 VerbosityOption = Annotated[int, Option("--verbose", "-v", count=True)]
+
+PropsOption = Annotated[
+    Path,
+    Option(
+        "--props",
+        "-p",
+        envvar="HEXDOC_PROPS",
+        default_factory=get_default_props,
+    ),
+]
+
+BranchOption = Annotated[
+    str,
+    Option(
+        "--branch",
+        envvar="HEXDOC_BRANCH",
+        default_factory=get_current_commit,
+    ),
+]

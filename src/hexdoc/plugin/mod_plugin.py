@@ -1,11 +1,18 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from importlib.resources import Package
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from typing_extensions import override
 
 from .types import HookReturn
+
+if TYPE_CHECKING:
+    from hexdoc.core import ModResourceLoader
+    from hexdoc.minecraft.assets import HexdocAssetLoader
 
 
 @dataclass(kw_only=True)
@@ -140,6 +147,24 @@ class ModPlugin(ABC):
         """
         return self.site_root / "latest" / self.branch
 
+    def asset_loader(
+        self,
+        loader: ModResourceLoader,
+        *,
+        site_url: str,
+        asset_url: str,
+        render_dir: Path,
+    ) -> HexdocAssetLoader:
+        # unfortunately, this is necessary to avoid some *real* ugly circular imports
+        from hexdoc.minecraft.assets import HexdocAssetLoader
+
+        return HexdocAssetLoader(
+            loader=loader,
+            site_url=site_url,
+            asset_url=asset_url,
+            render_dir=render_dir,
+        )
+
 
 class VersionedModPlugin(ModPlugin):
     """Like `ModPlugin`, but the versioned site path uses the plugin and mod version."""
@@ -169,6 +194,11 @@ class ModPluginWithBook(VersionedModPlugin):
     @override
     def resource_dirs(self) -> HookReturn[Package]:
         ...
+
+    def site_book_path(self, lang: str, versioned: bool) -> Path:
+        if versioned:
+            return self.versioned_site_book_path(lang)
+        return self.latest_site_book_path(lang)
 
     def versioned_site_book_path(self, lang: str) -> Path:
         """Base path for the rendered web book for the current version.

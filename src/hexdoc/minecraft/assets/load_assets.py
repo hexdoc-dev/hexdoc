@@ -10,6 +10,7 @@ from minecraft_render.types.dataset.RenderClass import IRenderClass
 from minecraft_render.types.dataset.types import IResourceLoader
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.minecraft.tags import Tag
 from hexdoc.model import HexdocModel
 
 from .animated import AnimatedTexture, AnimationMeta
@@ -64,9 +65,13 @@ class HexdocPythonResourceLoader(HexdocModel):
 
 class HexdocAssetLoader(HexdocModel):
     loader: ModResourceLoader
-    asset_url: str
     site_url: str
-    gaslighting_items: set[ResourceLocation]
+    asset_url: str
+    render_dir: Path
+
+    @cached_property
+    def gaslighting_items(self):
+        return Tag.GASLIGHTING_ITEMS.load(self.loader).value_ids_set
 
     def find_image_textures(
         self,
@@ -109,10 +114,11 @@ class HexdocAssetLoader(HexdocModel):
 
     @cached_property
     def renderer(self):
+        self.render_dir.mkdir(parents=True, exist_ok=True)
         return js.RenderClass(
             self.renderer_loader(),
             {
-                "outDir": self.loader.props.prerender_dir.as_posix(),
+                "outDir": self.render_dir.as_posix(),
                 "imageSize": 300,
             },
         )

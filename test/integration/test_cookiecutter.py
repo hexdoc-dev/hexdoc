@@ -141,6 +141,7 @@ def test_cookiecutter(
         render(
             output_dir=output_dir,
             props_file=Path("doc/hexdoc.toml"),
+            branch="main",
         )
     finally:
         run_pip("uninstall", "hexdoc-mod", "-y")

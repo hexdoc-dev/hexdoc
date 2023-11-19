@@ -46,6 +46,7 @@ def test_render_app_release(
         props_file=hexcasting_props_file,
         lang="en_us",
         release=True,
+        branch="main",
     )
 
     assert list_directory(app_output_dir) == snapshot
@@ -58,6 +59,7 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
         output_dir=app_output_dir,
         props_file=hexcasting_props_file,
         lang="en_us",
+        branch="main",
     )
 
 
