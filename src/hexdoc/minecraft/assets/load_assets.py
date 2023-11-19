@@ -31,8 +31,8 @@ Texture = ImageTexture | ItemTexture
 
 
 class TextureNotFoundError(FileNotFoundError):
-    def __init__(self, id: ResourceLocation):
-        self.message = f"No texture found for id: {id}"
+    def __init__(self, id_type: str, id: ResourceLocation):
+        self.message = f"No texture found for {id_type} id: {id}"
         super().__init__(self.message)
 
 
@@ -71,7 +71,7 @@ class HexdocAssetLoader(HexdocModel):
     def find_image_textures(
         self,
     ) -> Iterable[tuple[ResourceLocation, Path | ImageTexture]]:
-        for _, texture_id, path in self.loader.find_resources(
+        for resource_dir, texture_id, path in self.loader.find_resources(
             "assets",
             namespace="*",
             folder="textures",
@@ -79,6 +79,11 @@ class HexdocAssetLoader(HexdocModel):
             internal_only=True,
             allow_missing=True,
         ):
+            if resource_dir:
+                self.loader.export_raw(
+                    path=path.relative_to(resource_dir.path),
+                    data=path.read_bytes(),
+                )
             yield texture_id, path
 
     def load_item_models(self) -> Iterable[tuple[ResourceLocation, ModelItem]]:
@@ -120,13 +125,12 @@ class HexdocAssetLoader(HexdocModel):
 
     def load_and_render_internal_textures(
         self,
+        image_textures: dict[ResourceLocation, ImageTexture],
     ) -> Iterator[tuple[ResourceLocation, Texture]]:
         """For all item/block models in all internal resource dirs, yields the item id
         (eg. `hexcasting:focus`) and some kind of texture that we can use in the book."""
 
         # images
-        image_textures = dict[ResourceLocation, ImageTexture]()
-
         for texture_id, value in self.find_image_textures():
             if not texture_id.path.startswith("textures"):
                 texture_id = "textures" / texture_id
@@ -139,6 +143,7 @@ class HexdocAssetLoader(HexdocModel):
                         repo_root=self.loader.props.repo_root,
                         asset_url=self.asset_url,
                     )
+
                 case PNGTexture() | AnimatedTexture() as texture:
                     pass
 
@@ -184,6 +189,7 @@ class HexdocAssetLoader(HexdocModel):
 
         for item_id in list(missing_items):
             if result := self.fallback_texture(item_id):
+                logger.warning(f"Using fallback texture for item: {item_id}")
                 missing_items.remove(item_id)
                 yield item_id, result
 
@@ -269,7 +275,7 @@ def lookup_or_render_single_item(
     match found_texture:
         case "texture", texture_id:
             if texture_id not in image_textures:
-                raise TextureNotFoundError(texture_id)
+                raise TextureNotFoundError("item", texture_id)
             return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
@@ -293,7 +299,7 @@ def render_block(
         result = renderer.renderToFile(render_id, file_id.path)
 
     if not result:
-        raise TextureNotFoundError(id)
+        raise TextureNotFoundError("block", id)
 
     out_root, out_path = result
 

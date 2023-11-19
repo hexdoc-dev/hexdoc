@@ -27,7 +27,15 @@ class MetadataContext(TextureI18nContext):
 
     @model_validator(mode="after")
     def _add_metadata_textures(self) -> Self:
-        for metadata in self.all_metadata.values():
-            for classname, lookup in metadata.textures.items():
-                self.textures[classname] |= lookup
+        self.textures |= load_metadata_textures(self.all_metadata)
         return self
+
+
+def load_metadata_textures(all_metadata: dict[str, HexdocMetadata]):
+    lookups = TextureLookups[Texture](dict)
+
+    for metadata in all_metadata.values():
+        for classname, lookup in metadata.textures.items():
+            lookups[classname] |= lookup
+
+    return lookups

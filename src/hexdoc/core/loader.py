@@ -532,6 +532,14 @@ class ModResourceLoader:
         if cache:
             write_to_path(self.props.cache_dir / path, out_data)
 
+    def export_raw(self, path: Path, data: bytes):
+        if not self.export_dir:
+            return
+        out_path = self.export_dir / path
+
+        logger.debug(f"Exporting {path} to {out_path}")
+        write_to_path(out_path, data)
+
     def __repr__(self):
         return f"{self.__class__.__name__}(...)"
 

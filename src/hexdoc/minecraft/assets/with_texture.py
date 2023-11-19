@@ -71,9 +71,15 @@ class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
     def load_id(cls, item: ItemStack, context: ValidationContext):
         """Implements InlineModel."""
         assert isinstance_or_raise(context, TextureI18nContext)
+
+        if item.path.startswith("texture"):
+            name = context.i18n.localize_texture(item.id)
+        else:
+            name = context.i18n.localize_item(item)
+
         return {
             "id": item,
-            "name": context.i18n.localize_item(item),
+            "name": name,
             "texture": item.id,  # TODO: fix InlineModel (ItemTexture), then remove .id
         }
 
