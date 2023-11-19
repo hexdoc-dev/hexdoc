@@ -95,11 +95,6 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
         return values
 
 
-class MinecraftAssetsProps(StripHiddenModel):
-    ref: str
-    version: str
-
-
 class TexturesProps(StripHiddenModel):
     missing: set[ResourceLocation] = Field(default_factory=set)
     override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
@@ -144,8 +139,6 @@ class Properties(BaseProperties):
     export_dir: RelativePath | None = None
 
     entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
-
-    minecraft_assets: MinecraftAssetsProps
 
     textures: TexturesProps = Field(default_factory=TexturesProps)
 

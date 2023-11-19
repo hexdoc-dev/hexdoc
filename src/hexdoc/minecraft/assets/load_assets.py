@@ -112,18 +112,8 @@ class HexdocAssetLoader(HexdocModel):
             },
         )
 
-    @cached_property
-    def minecraft_loader(self):
-        return js.MinecraftAssetsLoader.fetchAll(
-            self.loader.props.minecraft_assets.ref,
-            self.loader.props.minecraft_assets.version,
-        )
-
     def renderer_loader(self) -> IResourceLoader:
-        return js.createMultiloader(
-            HexdocPythonResourceLoader(loader=self.loader).wrapped(),
-            self.minecraft_loader,
-        )
+        return HexdocPythonResourceLoader(loader=self.loader).wrapped()
 
     def fallback_texture(self, item_id: ResourceLocation) -> ItemTexture | None:
         return None

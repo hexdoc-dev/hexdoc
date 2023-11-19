@@ -56,19 +56,5 @@
             "console": "integratedTerminal",
             "justMyCode": false
         },
-        {
-            "name": "Python: hexdoc_minecraft",
-            "type": "python",
-            "request": "launch",
-            "module": "src.hexdoc_minecraft.app",
-            "args": [
-                "export",
-                "1.20.2",
-                "--props",
-                "hexdoc_minecraft.toml",
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
     ]
 }

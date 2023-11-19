@@ -165,12 +165,6 @@ class VersionedModPlugin(ModPlugin):
 class ModPluginWithBook(VersionedModPlugin):
     """Like `ModPlugin`, but with extra hooks to support rendering a web book."""
 
-    @property
-    @abstractmethod
-    @override
-    def compat_minecraft_version(self) -> str:
-        ...
-
     @abstractmethod
     @override
     def resource_dirs(self) -> HookReturn[Package]:

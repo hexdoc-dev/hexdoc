@@ -60,9 +60,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-minecraft = [ # TODO: move to its own package
-    "pygithub~=2.1",
-]
 pdoc = [
     "pdoc~=14.1",
     "hatch",
@@ -112,7 +109,6 @@ hexdoc = "hexdoc.cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
-minecraft = "hexdoc_minecraft._hooks:MinecraftPlugin" # TODO: move
 
 # Pytest
 
