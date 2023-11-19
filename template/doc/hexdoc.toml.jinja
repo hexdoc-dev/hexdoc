@@ -6,13 +6,14 @@ resource_dirs = [  # top takes priority
     "resources",
     "{_common.src}/main/resources",
     "{_common.src}/generated/resources",
-    {% if multiloader -%}
+    {%- if multiloader %}
     "{_fabric.src}/main/resources",
     "{_fabric.src}/generated/resources",
     "{_forge.src}/main/resources",
     "{_forge.src}/generated/resources",
     {%- endif %}
     { modid="hexcasting" },
+    { modid="minecraft" },
     { modid="hexdoc" },
 ]
 export_dir = "{{ package_export_root }}/generated"
@@ -26,17 +27,11 @@ _pattern_regex = { "!Raw"='{{ pattern_regex }}' }
 path = "{^^^_common.package}/{{ pattern_registry }}"
 regex = "{^_pattern_regex}"
 
-[minecraft_assets]
-# https://github.com/PrismarineJS/minecraft-assets/tree/83e2169afbbce40990d69fc53e5962e4a793d467/data/1.19.1
-ref = "83e2169afbbce40990d69fc53e5962e4a793d467"
-version = "1.19.1"
-
 [template]
 icon = "icon.png"
 include = [
     "{{ modid }}",
     "hexcasting",
-    "patchouli",
     "hexdoc",
 ]
 
@@ -50,8 +45,8 @@ show_landing_text = false
 [_common]
 src = "../{{ 'common/src' if multiloader else 'src' }}"
 package = "{src}/main/{{ java_lang.src }}/{{ java_package }}"
+{%- if multiloader %}
 
-{% if multiloader -%}
 [_fabric]
 src = "../fabric/src"
 package = "{src}/main/{{ java_lang.src }}/{{ java_package }}/fabric"
@@ -59,4 +54,4 @@ package = "{src}/main/{{ java_lang.src }}/{{ java_package }}/fabric"
 [_forge]
 src = "../forge/src"
 package = "{src}/main/{{ java_lang.src }}/{{ java_package }}/forge"
-{%- endif %}
+{%- endif -%}

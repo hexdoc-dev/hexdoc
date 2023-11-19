@@ -69,4 +69,4 @@ author: TODO
 
 main_branch: main
 
-pages_url: "https://{{ author|lower }}.github.io/{{ github_repo }}/"
+pages_url: "https://{{ author|lower }}.github.io/{{ github_repo }}"

@@ -74,11 +74,19 @@ Useful commands:
 # show help
 hexdoc -h
 
-# Python interpreter with some extra local variables added
-hexdoc repl
-
-# render the Hex Casting book in watch mode (from test/_submodules/HexMod)
+# render and serve the web book in watch mode
 nodemon
+
+# render and serve the web book
+hexdoc serve
+
+# export, render, and merge the web book
+hexdoc export
+hexdoc render
+hexdoc merge
+
+# start the Python interpreter with some extra local variables
+hexdoc repl
 
 # run tests
 pytest  # fast, skips Cookiecutter

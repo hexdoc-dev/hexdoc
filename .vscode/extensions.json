@@ -5,6 +5,5 @@
 		"charliermarsh.ruff",
 		"samuelcolvin.jinjahtml",
 		"noxiz.jinja-snippets",
-		"redhat.vscode-yaml",
 	],
 }

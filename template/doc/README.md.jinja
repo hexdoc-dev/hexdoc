@@ -35,14 +35,22 @@ GITHUB_SHA={{ main_branch }}
 GITHUB_PAGES_URL={{ pages_url }}
 ```
 
-Then run these commands to generate the book:
+Useful commands:
 ```sh
-# run from the repo root, not doc/
+# show help
+hexdoc -h
+
+# render and serve the web book in watch mode
+nodemon
+
+# render and serve the web book
+hexdoc serve
+
+# export, render, and merge the web book
+hexdoc export
 hexdoc render
 hexdoc merge
-```
 
-Or, run this command to render the book and start a local web server:
-```sh
-hexdoc serve --lang en_us
+# start the Python interpreter with some extra local variables
+hexdoc repl
 ```
