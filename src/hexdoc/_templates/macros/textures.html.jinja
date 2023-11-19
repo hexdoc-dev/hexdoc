@@ -11,7 +11,7 @@
     <div
       role="img"
       title="{{ name }}"
-      aria-label="Animated image of {{ name }}"
+      aria-label="{{ name }} (animated)"
       class="{{
         (class_names + [
           'texture',
@@ -24,7 +24,7 @@
   {%- else -%}
     <img
       title="{{ name }}"
-      alt="Image of {{ name }}"
+      alt="{{ name }}"
       src="{{ texture.url }}"
       {{ 'loading="lazy"'|safe if lazy }}
       class="{{
