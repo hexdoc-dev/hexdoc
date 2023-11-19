@@ -1,5 +1,6 @@
 modid = "hexdoc"
 default_lang = "en_us"
+default_branch = "main"
 
 _export_root = "src/hexdoc/_export"
 resource_dirs = [  # top takes priority

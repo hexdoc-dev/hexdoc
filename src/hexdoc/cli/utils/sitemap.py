@@ -38,6 +38,14 @@ class SitemapItem(HexdocModel):
 Sitemap = dict[str, SitemapItem]
 
 
+def delete_updated_books(*, src: Path, dst: Path):
+    src_markers = src.rglob(MARKER_NAME)
+    for marker in src_markers:
+        src_dir = marker.parent
+        dst_dir = dst / src_dir.relative_to(src)
+        shutil.rmtree(dst_dir, ignore_errors=True)
+
+
 def load_sitemap(root: Path) -> Sitemap:
     sitemap: Sitemap = defaultdict(SitemapItem)
 
@@ -57,30 +65,3 @@ def dump_sitemap(root: Path, sitemap: Sitemap):
         root / "meta" / "sitemap.json",
         ta.dump_json(sitemap, by_alias=True),
     )
-
-
-def assert_version_exists(*, root: Path, version: str):
-    # ensure the directory was written and it contains files (not just directories)
-    path = root / "v" / version
-    if not path.exists() or not any(path.rglob("*.*")):
-        raise FileNotFoundError(f"Missing default language for {version}: {path}")
-
-
-def delete_root_book(*, root: Path):
-    """Remove the book from the site root."""
-    for path in root.iterdir():
-        if path.name in ["v", "meta", "CNAME"]:
-            continue
-
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            path.unlink()
-
-
-def delete_updated_books(*, src: Path, dst: Path):
-    src_markers = src.rglob(MARKER_NAME)
-    for marker in src_markers:
-        src_dir = marker.parent
-        dst_dir = dst / src_dir.relative_to(src)
-        shutil.rmtree(dst_dir, ignore_errors=True)

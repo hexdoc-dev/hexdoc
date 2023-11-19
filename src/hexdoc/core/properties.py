@@ -77,6 +77,8 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     render: dict[Path, str] = Field(default_factory=dict)
     extend_render: dict[Path, str] = Field(default_factory=dict)
 
+    redirect: tuple[Path, str] = (Path("index.html"), "redirect.html.jinja")
+
     args: dict[str, Any]
 
     _was_render_set: bool = PrivateAttr(False)
@@ -130,6 +132,7 @@ class Properties(BaseProperties):
     book: ResourceLocation | None = None
     extra_books: list[ResourceLocation] = Field(default_factory=list)
     default_lang: str
+    default_branch: str
 
     is_0_black: bool = False
     """If true, the style `$(0)` changes the text color to black; otherwise it resets

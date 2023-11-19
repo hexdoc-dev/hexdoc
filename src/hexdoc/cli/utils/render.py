@@ -151,7 +151,7 @@ def render_book(
         "all_metadata": all_metadata,
         "png_textures": png_textures,
         "animations": animations,
-        "is_bleeding_edge": version == "latest",
+        "is_bleeding_edge": version.startswith("latest"),
         "link_bases": book.link_bases,
         "favicons_html": favicons_html,
         "favicons_formats": favicons_formats,

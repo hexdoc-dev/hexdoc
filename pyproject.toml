@@ -133,6 +133,7 @@ extend-ignore = [
     # covered by Pyright
     "F821", # undefined variable
     "F401", # imported but unused
+    "F841", # unused variable
 ]
 extend-exclude = [
     "vendor",

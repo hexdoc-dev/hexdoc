@@ -7,19 +7,19 @@ import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Annotated, Union
+from typing import Any, Union
 
-from typer import Option, Typer
+from typer import Typer
 
 from hexdoc.core import ModResourceLoader
 from hexdoc.data.metadata import HexdocMetadata
-from hexdoc.minecraft import I18n, Tag
+from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
-    HexdocAssetLoader,
     PNGTexture,
 )
 from hexdoc.utils.git import git_root
+from hexdoc.utils.path import write_to_path
 
 from . import render_block
 from .utils.args import (
@@ -37,10 +37,8 @@ from .utils.load import (
     render_textures_and_export_metadata,
 )
 from .utils.logging import repl_readfunc
-from .utils.render import create_jinja_env, render_book
+from .utils.render import create_jinja_env, render_book, strip_empty_lines
 from .utils.sitemap import (
-    assert_version_exists,
-    delete_root_book,
     delete_updated_books,
     dump_sitemap,
     load_sitemap,
@@ -78,9 +76,8 @@ def list_langs(
 def repl(
     *,
     props_file: PropsOption,
-    lang: Union[str, None] = None,
-    allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
+    allow_missing: bool = False,
 ):
     """Start a Python shell with some helpful extra locals added from hexdoc."""
     props, pm, _ = load_common_data(props_file, verbosity, "")
@@ -91,23 +88,29 @@ def repl(
         export=False,
     )
 
-    _, book, i18n, context = load_book(
-        props.book,
-        props,
-        pm,
-        loader,
-        lang,
-        allow_missing,
-    )
+    all_metadata = loader.load_metadata(model_type=HexdocMetadata)
+
+    i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
 
     repl_locals = dict(
         props=props,
         pm=pm,
-        book=book,
         i18n=i18n,
         loader=loader,
-        context=context,
     )
+
+    if props.book:
+        book, context = load_book(
+            book_id=props.book,
+            pm=pm,
+            loader=loader,
+            i18n=i18n,
+            all_metadata=all_metadata,
+        )
+        repl_locals |= dict(
+            book=book,
+            context=context,
+        )
 
     code.interact(
         banner=dedent(
@@ -128,8 +131,8 @@ def export(
     branch: BranchOption,
     release: ReleaseOption = False,
     props_file: PropsOption,
-    allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
+    allow_missing: bool = False,
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, plugin = load_common_data(props_file, verbosity, branch)
@@ -140,6 +143,7 @@ def export(
         export=True,
     ) as loader:
         site_path = plugin.site_path(versioned=release)
+
         asset_loader = plugin.asset_loader(
             loader=loader,
             site_url=f"{loader.props.url}/{site_path.as_posix()}",  # TODO: urlencode
@@ -170,8 +174,8 @@ def render(
     clean: bool = False,
     lang: Union[str, None] = None,
     props_file: PropsOption,
-    allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
+    allow_missing: bool = False,
 ):
     """Export resources and render the web book."""
 
@@ -184,6 +188,11 @@ def render(
 
     if not lang:
         lang = props.default_lang
+
+    if release:
+        version = plugin.mod_version
+    else:
+        version = f"latest/{branch}"
 
     with ModResourceLoader.load_all(
         props,
@@ -235,7 +244,7 @@ def render(
         templates=templates,
         output_dir=output_dir,
         all_metadata=all_metadata,
-        version=plugin.mod_version,
+        version=version,
         site_path=plugin.site_book_path(lang, versioned=release),
         png_textures=PNGTexture.get_lookup(context.textures),
         animations=list(AnimatedTexture.get_lookup(context.textures).values()),
@@ -247,24 +256,19 @@ def render(
 @app.command()
 def merge(
     *,
+    props_file: PropsOption,
+    verbosity: VerbosityOption = 0,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
-    release: ReleaseOption = False,
 ):
-    # ensure at least the default language was built successfully
-    if update_latest:
-        assert_version_exists(root=src, version="latest")
-
-    # TODO: figure out how to do this with pluggy (we don't have the props file here)
-    # if is_release:
-    #     assert_version_exists(src, GRADLE_VERSION)
+    props, pm, plugin = load_common_data(props_file, verbosity, "", book=True)
+    if not props.template:
+        raise ValueError("Expected a value for props.template, got None")
 
     dst.mkdir(parents=True, exist_ok=True)
 
     # remove any stale data that we're about to replace
     delete_updated_books(src=src, dst=dst)
-    if update_latest and release:
-        delete_root_book(root=dst)
 
     # do the merge
     shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)
@@ -272,6 +276,24 @@ def merge(
     # rebuild the sitemap
     sitemap = load_sitemap(dst)
     dump_sitemap(dst, sitemap)
+
+    # render redirect pages
+    redirect_paths = plugin.site_book_redirects(sitemap)
+
+    env = create_jinja_env(pm, props.template.include, props_file)
+
+    filename, template_name = props.template.redirect
+    template = env.get_template(template_name)
+
+    for redirect_path, target_site_path in redirect_paths.items():
+        template_args: dict[str, Any] = {
+            "target_url": f"{props.url}/{target_site_path.as_posix()}",
+        }
+        pm.update_template_args(template_args)
+
+        file = template.render(template_args)
+        stripped_file = strip_empty_lines(file)
+        write_to_path(dst / redirect_path / filename, stripped_file)
 
 
 @app.command()
@@ -330,7 +352,8 @@ def serve(
     merge(
         src=src,
         dst=dst,
-        release=release,
+        props_file=props_file,
+        verbosity=verbosity,
     )
 
     print(f"Serving web book at {book_url} (press ctrl+c to exit)\n")

@@ -67,6 +67,6 @@ github_repo: "{{ modid|capitalize }}"
 
 author: TODO
 
-main_branch: main
+default_branch: main
 
 pages_url: "https://{{ author|lower }}.github.io/{{ github_repo }}"

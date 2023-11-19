@@ -11,6 +11,7 @@ from typing_extensions import override
 from .types import HookReturn
 
 if TYPE_CHECKING:
+    from hexdoc.cli.utils.sitemap import Sitemap
     from hexdoc.core import ModResourceLoader
     from hexdoc.minecraft.assets import HexdocAssetLoader
 
@@ -217,3 +218,11 @@ class ModPluginWithBook(VersionedModPlugin):
         * value: `v/latest/main/en_us`
         """
         return self.latest_site_path / lang
+
+    def site_book_redirects(self, sitemap: Sitemap) -> dict[Path, Path]:
+        """Dict of redirects to create, where the key is the site path of the redirect,
+        and the value is the target site path."""
+
+        redirects = dict[Path, Path]()
+
+        return redirects
