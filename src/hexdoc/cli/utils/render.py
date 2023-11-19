@@ -111,7 +111,6 @@ def render_book(
     props: Properties,
     pm: PluginManager,
     lang: str,
-    lang_names: dict[str, str],
     book: Book,
     i18n: I18n,
     templates: dict[Path, Template],
@@ -139,6 +138,8 @@ def render_book(
         favicons_html = favicons.html()
         favicons_formats = favicons.formats()
 
+    lang_name = i18n.localize_lang()
+
     template_args: dict[str, Any] = {
         "book": book,
         "props": props,
@@ -146,7 +147,7 @@ def render_book(
         "page_url": page_url,
         "version": version,
         "lang": lang,
-        "lang_names": lang_names,
+        "lang_name": lang_name,
         "all_metadata": all_metadata,
         "png_textures": png_textures,
         "animations": animations,
@@ -196,7 +197,7 @@ def render_book(
     marker = SitemapMarker(
         version=version,
         lang=lang,
-        lang_name=lang_names[lang],
+        lang_name=lang_name,
         path="/" + "/".join(site_path.parts),
         is_default_lang=lang == props.default_lang,
     )

@@ -12,6 +12,7 @@ from typing import Annotated, Union
 from typer import Option, Typer
 
 from hexdoc.core import ModResourceLoader
+from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.minecraft import I18n, Tag
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
@@ -133,35 +134,31 @@ def export(
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, plugin = load_common_data(props_file, verbosity, branch)
 
-    loader = ModResourceLoader.clean_and_load_all(
+    with ModResourceLoader.clean_and_load_all(
         props,
         pm,
         export=True,
-    )
-
-    site_path = plugin.site_path(versioned=release)
-    asset_loader = plugin.asset_loader(
-        loader=loader,
-        site_url=f"{loader.props.url}/{site_path.as_posix()}",  # TODO: urlencode
-        asset_url=props.env.asset_url,
-        render_dir=output_dir / site_path,
-    )
-
-    all_metadata = render_textures_and_export_metadata(loader, asset_loader)
-
-    i18n = I18n.load_all(
-        loader,
-        allow_missing=allow_missing,
-    )[props.default_lang]
-
-    if props.book:
-        load_book(
-            book_id=props.book,
-            pm=pm,
+    ) as loader:
+        site_path = plugin.site_path(versioned=release)
+        asset_loader = plugin.asset_loader(
             loader=loader,
-            i18n=i18n,
-            all_metadata=all_metadata,
+            site_url=f"{loader.props.url}/{site_path.as_posix()}",  # TODO: urlencode
+            asset_url=props.env.asset_url,
+            render_dir=output_dir / site_path,
         )
+
+        all_metadata = render_textures_and_export_metadata(loader, asset_loader)
+
+        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+
+        if props.book:
+            load_book(
+                book_id=props.book,
+                pm=pm,
+                loader=loader,
+                i18n=i18n,
+                all_metadata=all_metadata,
+            )
 
 
 @app.command()
@@ -180,24 +177,30 @@ def render(
 
     # load data
     props, pm, plugin = load_common_data(props_file, verbosity, branch, book=True)
-
     if not props.book:
         raise ValueError("Expected a value for props.book, got None")
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
-    site_path = plugin.site_book_path(
-        lang=lang or props.default_lang,
-        versioned=release,
-    )
+    if not lang:
+        lang = props.default_lang
 
-    books, all_metadata = load_books(
-        props.book,
+    with ModResourceLoader.load_all(
         props,
         pm,
-        lang,
-        allow_missing,
-    )
+        export=True,
+    ) as loader:
+        all_metadata = loader.load_metadata(model_type=HexdocMetadata)
+
+        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+
+        book, context = load_book(
+            book_id=props.book,
+            pm=pm,
+            loader=loader,
+            i18n=i18n,
+            all_metadata=all_metadata,
+        )
 
     # set up Jinja
     env = create_jinja_env(pm, props.template.include, props_file)
@@ -222,30 +225,21 @@ def render(
     if clean:
         shutil.rmtree(output_dir, ignore_errors=True)
 
-    lang_names = {
-        book_lang: i18n.localize_lang() for book_lang, (_, i18n, _) in books.items()
-    }
-
-    for book_lang, (book, i18n, context) in books.items():
-        png_textures = PNGTexture.get_lookup(context.textures)
-        animations = list(AnimatedTexture.get_lookup(context.textures).values())
-
-        render_book(
-            props=props,
-            pm=pm,
-            lang=book_lang,
-            lang_names=lang_names,
-            book=book,
-            i18n=i18n,
-            templates=templates,
-            output_dir=output_dir,
-            site_path=site_path,
-            all_metadata=all_metadata,
-            png_textures=png_textures,
-            animations=animations,
-            allow_missing=allow_missing,
-            version=plugin.mod_version,
-        )
+    render_book(
+        props=props,
+        pm=pm,
+        lang=lang,
+        book=book,
+        i18n=i18n,
+        allow_missing=allow_missing,
+        templates=templates,
+        output_dir=output_dir,
+        all_metadata=all_metadata,
+        version=plugin.mod_version,
+        site_path=plugin.site_book_path(lang, versioned=release),
+        png_textures=PNGTexture.get_lookup(context.textures),
+        animations=list(AnimatedTexture.get_lookup(context.textures).values()),
+    )
 
     logger.info("Done.")
 

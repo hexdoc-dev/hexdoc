@@ -110,7 +110,7 @@ class I18n(HexdocModel):
         )
 
     @classmethod
-    def load_all(cls, loader: ModResourceLoader, *, allow_missing: bool):
+    def load_all(cls, loader: ModResourceLoader, allow_missing: bool):
         # lang -> (key -> value)
         lookups = defaultdict[str, dict[str, LocalizedStr]](dict)
         internal_langs = set[str]()
@@ -131,7 +131,7 @@ class I18n(HexdocModel):
         }
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, *, lang: str, allow_missing: bool):
+    def load(cls, loader: ModResourceLoader, lang: str, allow_missing: bool):
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
