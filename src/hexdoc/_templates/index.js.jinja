@@ -241,9 +241,9 @@ function addDropdowns(sitemap) {
 
   // versions
   document.getElementById("version-dropdown").append(
-    ...versionDropdownItems(sitemap, branches),
-    dropdownSeparator(),
     ...versionDropdownItems(sitemap, versions),
+    dropdownSeparator(),
+    ...versionDropdownItems(sitemap, branches),
   );
 
   // languages for the current version
