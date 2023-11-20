@@ -85,10 +85,7 @@ def render(
     try:
         _render(allow_missing=False)
     except Exception as e:
-        add_error(
-            title="First render failed, retrying with --allow-missing.",
-            message=str(e),
-        )
+        add_warning(f"Render failed. Retrying with --allow-missing. Exception: {e}")
         _render(allow_missing=True)
         add_warning(f"Language {lang} is missing some i18n keys.")
 
