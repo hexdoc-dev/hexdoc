@@ -154,7 +154,12 @@ class CIEnvironment(HexdocSettings):
 
 
 def get_pages_url(repo: Repository) -> str:
-    _, data = repo._requester.requestJsonAndCheck("GET", f"{repo.url}/pages")
+    endpoint = f"{repo.url}/pages"
+    try:
+        _, data = repo._requester.requestJsonAndCheck("GET", endpoint)
+    except Exception as e:
+        e.add_note(f"  Endpoint: {endpoint}")
+        raise
     return str(data["html_url"])
 
 
