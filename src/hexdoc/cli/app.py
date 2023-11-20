@@ -8,6 +8,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Union
 
+from packaging.version import Version
 from typer import Typer
 
 from hexdoc.core import ModResourceLoader
@@ -17,8 +18,7 @@ from hexdoc.minecraft.assets import (
     AnimatedTexture,
     PNGTexture,
 )
-from hexdoc.utils.git import git_root
-from hexdoc.utils.path import write_to_path
+from hexdoc.utils import git_root, write_to_path
 
 from . import ci, render_block
 from .utils.args import (
@@ -263,9 +263,34 @@ def merge(
     sitemap = load_sitemap(dst)
     dump_sitemap(dst, sitemap)
 
-    # render redirect pages
-    redirect_paths = plugin.site_book_redirects(sitemap)
+    # find paths for redirect pages
+    redirect_paths = dict[Path, str]()
 
+    root_version: Version | None = None
+    root_redirect_path: str | None = None
+
+    for version, item in sitemap.items():
+        if version.startswith("latest"):  # TODO: check type of item instead
+            continue
+
+        redirect_paths[plugin.site_root / version] = item.default_path
+        for lang, lang_path in item.lang_paths.items():
+            redirect_paths[plugin.site_root / version / lang] = lang_path
+
+        item_version = Version(version)
+        if not root_version or item_version > root_version:
+            root_version = item_version
+            root_redirect_path = item.default_path
+
+    if root_redirect_path is None:
+        # TODO: use plugin somehow???
+        if item := sitemap.get(f"latest/{props.default_branch}"):
+            root_redirect_path = item.default_path
+
+    if root_redirect_path is not None:
+        redirect_paths[Path()] = root_redirect_path
+
+    # render redirect pages
     env = create_jinja_env(pm, props.template.include, props_file)
 
     filename, template_name = props.template.redirect
@@ -273,7 +298,7 @@ def merge(
 
     for redirect_path, target_site_path in redirect_paths.items():
         template_args: dict[str, Any] = {
-            "target_url": f"{props.env.github_pages_url}/{target_site_path.as_posix()}",
+            "target_url": props.env.github_pages_url + target_site_path,
         }
         pm.update_template_args(template_args)
 

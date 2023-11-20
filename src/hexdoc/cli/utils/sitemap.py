@@ -2,7 +2,9 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 
+from packaging.version import Version
 from pydantic import Field, TypeAdapter
+from pydantic.alias_generators import to_camel
 
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel
 from hexdoc.utils import write_to_path
@@ -27,22 +29,48 @@ class VersionedSitemapMarker(BaseSitemapMarker):
     mod_version: str
     plugin_version: str
 
+    def __gt__(self, other: BaseSitemapMarker) -> bool:
+        match other:
+            case VersionedSitemapMarker():
+                return Version(self.plugin_version) > Version(other.plugin_version)
+            case LatestSitemapMarker():
+                return True
+            case _:
+                return NotImplemented
+
 
 class LatestSitemapMarker(BaseSitemapMarker):
     branch: str
+    is_default_branch: bool
+
+    def __gt__(self, other: BaseSitemapMarker) -> bool:
+        match other:
+            case VersionedSitemapMarker():
+                return False
+            case LatestSitemapMarker():
+                return self.is_default_branch and not other.is_default_branch
+            case _:
+                return NotImplemented
 
 
 SitemapMarker = VersionedSitemapMarker | LatestSitemapMarker
 
 
-class SitemapItem(HexdocModel):
-    default_path: str = Field(alias="defaultPath", default="")
-    lang_names: dict[str, str] = Field(alias="langNames", default_factory=dict)
-    lang_paths: dict[str, str] = Field(alias="langPaths", default_factory=dict)
+# TODO: there should be a VersionedSitemapItem and a LatestSitemapItem
+class SitemapItem(HexdocModel, alias_generator=to_camel):
+    default_path: str = ""
+    markers: dict[str, SitemapMarker] = Field(default_factory=dict)
+    lang_names: dict[str, str] = Field(default_factory=dict)
+    lang_paths: dict[str, str] = Field(default_factory=dict)
 
     def add_marker(self, marker: SitemapMarker):
+        if (old_marker := self.markers.get(marker.lang)) and old_marker > marker:
+            return
+
+        self.markers[marker.lang] = marker
         self.lang_paths[marker.lang] = marker.path
         self.lang_names[marker.lang] = marker.lang_name or marker.lang
+
         if marker.is_default_lang:
             self.default_path = marker.path
 

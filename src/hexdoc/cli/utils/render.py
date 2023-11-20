@@ -212,6 +212,7 @@ def render_book(
             path=marker_path,
             is_default_lang=is_default_lang,
             branch=plugin.branch,
+            is_default_branch=plugin.branch == props.default_branch,
         )
 
     (output_dir / MARKER_NAME).write_text(marker.model_dump_json(), "utf-8")
