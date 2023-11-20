@@ -180,9 +180,6 @@ def render_book(
     }
     pm.update_template_args(template_args)
 
-    if props.prerender_dir.is_dir():
-        shutil.copytree(props.prerender_dir, output_dir, dirs_exist_ok=True)
-
     for filename, template in templates.items():
         file = template.render(template_args)
         stripped_file = strip_empty_lines(file)

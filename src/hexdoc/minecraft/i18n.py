@@ -98,6 +98,7 @@ class I18n(HexdocModel):
     lookup: dict[str, LocalizedStr] | None
     lang: str
     allow_missing: bool
+    is_default: bool
 
     @classmethod
     def list_all(cls, loader: ModResourceLoader):
@@ -125,7 +126,12 @@ class I18n(HexdocModel):
                 internal_langs.add(lang)
 
         return {
-            lang: cls(lookup=lookup, lang=lang, allow_missing=allow_missing)
+            lang: cls(
+                lookup=lookup,
+                lang=lang,
+                allow_missing=allow_missing,
+                is_default=lang == loader.props.default_lang,
+            )
             for lang, lookup in lookups.items()
             if lang in internal_langs
         }
@@ -148,7 +154,12 @@ class I18n(HexdocModel):
                 f"Lang {lang} exists, but {loader.props.modid} does not support it"
             )
 
-        return cls(lookup=lookup, lang=lang, allow_missing=allow_missing)
+        return cls(
+            lookup=lookup,
+            lang=lang,
+            allow_missing=allow_missing,
+            is_default=lang == loader.props.default_lang,
+        )
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):

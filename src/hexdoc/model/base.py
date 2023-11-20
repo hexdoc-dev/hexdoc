@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Self, TypeVar, dataclass_transf
 from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelBeforeValidator
 from pydantic_core import Some
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import set_contextvar
@@ -100,6 +101,17 @@ class HexdocModel(HexdocBaseModel):
             context: ValidationContext | None = None,
         ) -> Self:
             ...
+
+
+class HexdocSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="allow",
+    )
+
+    @classmethod
+    def model_getenv(cls, defaults: Any = None):
+        return cls.model_validate(defaults or {})
 
 
 _T = TypeVar("_T")

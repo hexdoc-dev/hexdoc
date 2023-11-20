@@ -1,5 +1,4 @@
 import code
-import json
 import logging
 import os
 import shutil
@@ -21,7 +20,7 @@ from hexdoc.minecraft.assets import (
 from hexdoc.utils.git import git_root
 from hexdoc.utils.path import write_to_path
 
-from . import render_block
+from . import ci, render_block
 from .utils.args import (
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
@@ -52,24 +51,9 @@ app = Typer(
         "help_option_names": ["--help", "-h"],
     },
 )
+
 app.add_typer(render_block.app)
-
-
-@app.command()
-def list_langs(
-    *,
-    props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
-):
-    """Get the available language codes as a JSON list."""
-    props, pm, _ = load_common_data(props_file, verbosity, "")
-    with ModResourceLoader.load_all(
-        props,
-        pm,
-        export=False,
-    ) as loader:
-        langs = sorted(I18n.list_all(loader))
-        print(json.dumps(langs))
+app.add_typer(ci.app)
 
 
 @app.command()
@@ -153,7 +137,8 @@ def export(
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
 
-        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+        all_i18n = I18n.load_all(loader, allow_missing)
+        i18n = all_i18n[props.default_lang]
 
         if props.book:
             load_book(
@@ -163,6 +148,9 @@ def export(
                 i18n=i18n,
                 all_metadata=all_metadata,
             )
+
+    # for CI
+    return props, all_i18n
 
 
 @app.command()
@@ -201,7 +189,7 @@ def render(
     ) as loader:
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
 
-        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+        i18n = I18n.load_all(loader, allow_missing)[lang]
 
         book, context = load_book(
             book_id=props.book,
@@ -231,8 +219,9 @@ def render(
             f"(in {props_file.as_posix()})"
         )
 
+    site_path = plugin.site_book_path(lang, versioned=release)
     if clean:
-        shutil.rmtree(output_dir, ignore_errors=True)
+        shutil.rmtree(output_dir / site_path, ignore_errors=True)
 
     render_book(
         props=props,
@@ -245,7 +234,7 @@ def render(
         output_dir=output_dir,
         all_metadata=all_metadata,
         version=version,
-        site_path=plugin.site_book_path(lang, versioned=release),
+        site_path=site_path,
         png_textures=PNGTexture.get_lookup(context.textures),
         animations=list(AnimatedTexture.get_lookup(context.textures).values()),
     )

@@ -21,12 +21,11 @@
                 "export",
                 "--props",
                 "./test/_submodules/HexMod/doc/hexdoc.toml",
-                // "--lang",
-                // "en_us",
-                // "--allow-missing",
+                "--release",
             ],
             "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": false,
+            "python": "${workspaceFolder}/.nox/mock_ci/Scripts/python.exe",
         },
         {
             "name": "Python: hexdoc render",

@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Any, Self, Sequence
 
 from pydantic import Field, PrivateAttr, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from hexdoc.model.base import HexdocSettings
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils import (
     NoTrailingSlashHttpUrl,
@@ -28,9 +28,7 @@ JINJA_NAMESPACE_ALIASES = {
 }
 
 
-class EnvironmentVariableProps(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="allow")
-
+class EnvironmentVariableProps(HexdocSettings):
     # default Actions environment variables
     github_repository: str
     github_sha: str
@@ -40,10 +38,6 @@ class EnvironmentVariableProps(BaseSettings):
 
     # optional for debugging
     debug_githubusercontent: str | None = None
-
-    @classmethod
-    def model_validate_env(cls):
-        return cls.model_validate({})
 
     @property
     def asset_url(self):
@@ -112,7 +106,7 @@ class BaseProperties(StripHiddenModel):
         props_dir = path.parent
 
         with relative_path_root(props_dir):
-            env = EnvironmentVariableProps.model_validate_env()
+            env = EnvironmentVariableProps.model_getenv()
             props = cls.model_validate(
                 load_toml_with_placeholders(path)
                 | {

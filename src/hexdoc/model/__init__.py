@@ -2,6 +2,7 @@ __all__ = [
     "Color",
     "DEFAULT_CONFIG",
     "HexdocModel",
+    "HexdocSettings",
     "HexdocTypeAdapter",
     "IDModel",
     "InlineItemModel",
@@ -21,6 +22,7 @@ __all__ = [
 from .base import (
     DEFAULT_CONFIG,
     HexdocModel,
+    HexdocSettings,
     HexdocTypeAdapter,
     PluginManagerContext,
     ValidationContext,
