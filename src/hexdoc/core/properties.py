@@ -72,6 +72,7 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     extend_render: dict[Path, str] = Field(default_factory=dict)
 
     redirect: tuple[Path, str] = (Path("index.html"), "redirect.html.jinja")
+    """filename, template"""
 
     args: dict[str, Any]
 

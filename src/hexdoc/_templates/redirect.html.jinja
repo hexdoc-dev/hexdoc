@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; url={{ target_url }}">
+    <meta http-equiv="refresh" content="0; url={{ page_url }}">
+
+    {% block opengraph %}
+      {% include "components/opengraph.html.jinja" %}
+    {% endblock opengraph %}
+
     {% block styles %}
-      <link rel="stylesheet" href="{{ target_url }}/index.css">
+      <link rel="stylesheet" href="{{ page_url }}/index.css">
     {% endblock styles %}
   </head>
   <body>
-    <a href="{{ target_url }}">{{ target_url }}</a>
+    <a href="{{ page_url }}">{{ page_url }}</a>
   </body>
 </html>

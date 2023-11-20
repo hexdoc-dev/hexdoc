@@ -19,7 +19,7 @@ from jinja2 import (
 )
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.core import Properties
+from hexdoc.core import MinecraftVersion, Properties
 from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
 from hexdoc.data import HexdocMetadata
 from hexdoc.jinja import (
@@ -114,6 +114,7 @@ def render_book(
     lang: str,
     book: Book,
     i18n: I18n,
+    env: Environment,
     templates: dict[Path, Template],
     output_dir: Path,
     site_path: Path,
@@ -188,11 +189,17 @@ def render_book(
     if props.template.static_dir:
         shutil.copytree(props.template.static_dir, output_dir, dirs_exist_ok=True)
 
+    # redirect file for this book
+    _, redirect_template_name = props.template.redirect
+    redirect_template = env.get_template(redirect_template_name)
+    redirect_contents = strip_empty_lines(redirect_template.render(template_args))
+
     # marker file for updating the sitemap later
     # we use this because matrix doesn't have outputs
     # this feels scuffed but it does work
     marker_path = "/" + "/".join(site_path.parts)
     is_default_lang = lang == props.default_lang
+    minecraft_version = MinecraftVersion.get()
 
     if versioned:
         marker = VersionedSitemapMarker(
@@ -201,6 +208,9 @@ def render_book(
             lang_name=lang_name,
             path=marker_path,
             is_default_lang=is_default_lang,
+            full_version=plugin.full_version,
+            minecraft_version=minecraft_version,
+            redirect_contents=redirect_contents,
             mod_version=plugin.mod_version,
             plugin_version=plugin.plugin_version,
         )
@@ -211,6 +221,9 @@ def render_book(
             lang_name=lang_name,
             path=marker_path,
             is_default_lang=is_default_lang,
+            full_version=plugin.full_version,
+            minecraft_version=minecraft_version,
+            redirect_contents=redirect_contents,
             branch=plugin.branch,
             is_default_branch=plugin.branch == props.default_branch,
         )

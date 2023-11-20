@@ -6,7 +6,7 @@ import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Union
+from typing import Union
 
 from packaging.version import Version
 from typer import Typer
@@ -36,7 +36,7 @@ from .utils.load import (
     render_textures_and_export_metadata,
 )
 from .utils.logging import repl_readfunc
-from .utils.render import create_jinja_env, render_book, strip_empty_lines
+from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
     delete_updated_books,
     dump_sitemap,
@@ -226,6 +226,7 @@ def render(
         lang=lang,
         book=book,
         i18n=i18n,
+        env=env,
         templates=templates,
         output_dir=output_dir,
         all_metadata=all_metadata,
@@ -247,7 +248,7 @@ def merge(
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
 ):
-    props, pm, plugin = load_common_data(props_file, verbosity, "", book=True)
+    props, _, plugin = load_common_data(props_file, verbosity, "", book=True)
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
@@ -264,47 +265,36 @@ def merge(
     dump_sitemap(dst, sitemap)
 
     # find paths for redirect pages
-    redirect_paths = dict[Path, str]()
+    redirects = dict[Path, str]()
 
     root_version: Version | None = None
-    root_redirect_path: str | None = None
+    root_redirect: str | None = None
 
     for version, item in sitemap.items():
         if version.startswith("latest"):  # TODO: check type of item instead
             continue
 
-        redirect_paths[plugin.site_root / version] = item.default_path
-        for lang, lang_path in item.lang_paths.items():
-            redirect_paths[plugin.site_root / version / lang] = lang_path
+        redirects[plugin.site_root / version] = item.default_marker.redirect_contents
+        for lang, marker in item.markers.items():
+            redirects[plugin.site_root / version / lang] = marker.redirect_contents
 
         item_version = Version(version)
         if not root_version or item_version > root_version:
             root_version = item_version
-            root_redirect_path = item.default_path
+            root_redirect = item.default_marker.redirect_contents
 
-    if root_redirect_path is None:
-        # TODO: use plugin somehow???
+    if root_redirect is None:
+        # TODO: use plugin to build this path
         if item := sitemap.get(f"latest/{props.default_branch}"):
-            root_redirect_path = item.default_path
+            root_redirect = item.default_marker.redirect_contents
 
-    if root_redirect_path is not None:
-        redirect_paths[Path()] = root_redirect_path
+    if root_redirect is not None:
+        redirects[Path()] = root_redirect
 
-    # render redirect pages
-    env = create_jinja_env(pm, props.template.include, props_file)
-
-    filename, template_name = props.template.redirect
-    template = env.get_template(template_name)
-
-    for redirect_path, target_site_path in redirect_paths.items():
-        template_args: dict[str, Any] = {
-            "target_url": props.env.github_pages_url + target_site_path,
-        }
-        pm.update_template_args(template_args)
-
-        file = template.render(template_args)
-        stripped_file = strip_empty_lines(file)
-        write_to_path(dst / redirect_path / filename, stripped_file)
+    # write redirect pages
+    filename, _ = props.template.redirect
+    for path, redirect_contents in redirects.items():
+        write_to_path(dst / path / filename, redirect_contents)
 
 
 @app.command()
