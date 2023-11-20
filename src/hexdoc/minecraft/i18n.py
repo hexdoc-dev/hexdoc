@@ -46,7 +46,7 @@ class LocalizedStr(HexdocModel, frozen=True):
         value: str | Any,
         handler: ModelWrapValidatorHandler[Self],
         info: ValidationInfo,
-    ):
+    ) -> Self:
         # NOTE: if we need LocalizedStr to work as a dict key, add another check which
         # returns cls.skip_i18n(value) if info.context is falsy
         if not isinstance(value, str):
@@ -57,7 +57,7 @@ class LocalizedStr(HexdocModel, frozen=True):
 
     @classmethod
     def _localize(cls, i18n: I18n, key: str) -> Self:
-        return i18n.localize(key)
+        return cls.model_validate(i18n.localize(key))
 
     def map(self, fn: Callable[[str], str]) -> Self:
         """Returns a copy of this object with `new.value = fn(old.value)`."""
@@ -89,7 +89,7 @@ class LocalizedStr(HexdocModel, frozen=True):
 class LocalizedItem(LocalizedStr, frozen=True):
     @classmethod
     def _localize(cls, i18n: I18n, key: str) -> Self:
-        return i18n.localize_item(key)
+        return cls.model_validate(i18n.localize_item(key))
 
 
 class I18n(HexdocModel):

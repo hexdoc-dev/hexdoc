@@ -122,13 +122,9 @@ After_1_20 = Annotated[_T, IsVersion(">1.20")]
 @dataclass(frozen=True)
 class ValueIfVersion(Versioned, Generic[_If, _Else]):
     value_if: _If
-    value_else: ValueIfVersion[_If | _Else, _If | _Else] | _Else
+    value_else: _Else
 
     def __call__(self) -> _If | _Else:
         if self.is_current:
             return self.value_if
-
-        if isinstance(self.value_else, ValueIfVersion):
-            return self.value_else()  # pyright: ignore[reportUnknownVariableType]
-
         return self.value_else

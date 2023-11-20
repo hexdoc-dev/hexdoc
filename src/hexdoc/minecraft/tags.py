@@ -71,14 +71,15 @@ class Tag(HexdocModel):
                 registry=registry,
                 raw_data=raw_data,
             ),
-            export=cls._export,
+            # TODO: i have no idea why pyright doesn't like this.
+            export=cls._export,  # pyright: ignore[reportGeneralTypeIssues]
         ):
             if tag.replace:
                 values.clear()
             for value in tag._load_values(loader):
                 values.add(value)
 
-        return Tag(registry=registry, values=values, replace=replace)
+        return cls(registry=registry, values=values, replace=replace)
 
     @classmethod
     def _convert(cls, *, registry: str, raw_data: str) -> Self:

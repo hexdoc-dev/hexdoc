@@ -117,33 +117,33 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
     @classmethod
     def from_file(cls, modid: str, base_dir: Path, path: Path) -> Self:
         resource_path = path.relative_to(base_dir).with_suffix("").as_posix()
-        return ResourceLocation(modid, resource_path)
+        return cls(modid, resource_path)
 
     @classmethod
     def from_model_path(cls, model_path: str | Path) -> Self:
         match = MODEL_PATH_REGEX.search(Path(model_path).as_posix())
         if not match:
             raise ValueError(f"Failed to match model path: {model_path}")
-        return ResourceLocation(match["namespace"], match["path"])
+        return cls(match["namespace"], match["path"])
 
     @property
     def href(self) -> str:
         return f"#{self.path}"
 
     @property
-    def css_class(self):
+    def css_class(self) -> str:
         stripped_path = re.sub(r"[\*\/\.]", "-", self.path)
         return f"texture-{self.namespace}-{stripped_path}"
 
-    def with_namespace(self, namespace: str):
+    def with_namespace(self, namespace: str) -> Self:
         """Returns a copy of this ResourceLocation with the given namespace."""
-        return ResourceLocation(namespace, self.path)
+        return self.__class__(namespace, self.path)
 
-    def with_path(self, path: str | Path):
+    def with_path(self, path: str | Path) -> Self:
         """Returns a copy of this ResourceLocation with the given path."""
         if isinstance(path, Path):
             path = path.as_posix()
-        return ResourceLocation(self.namespace, path)
+        return self.__class__(self.namespace, path)
 
     def match(self, pattern: Self) -> bool:
         return fnmatch(str(self), str(pattern))
@@ -170,14 +170,14 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
             return path.with_suffix(".json")
         return path
 
-    def removeprefix(self, prefix: str):
-        return ResourceLocation(self.namespace, self.path.removeprefix(prefix))
+    def removeprefix(self, prefix: str) -> Self:
+        return self.with_path(self.path.removeprefix(prefix))
 
     def __truediv__(self, other: str) -> Self:
-        return ResourceLocation(self.namespace, f"{self.path}/{other}")
+        return self.with_path(f"{self.path}/{other}")
 
     def __rtruediv__(self, other: str) -> Self:
-        return ResourceLocation(self.namespace, f"{other}/{self.path}")
+        return self.with_path(f"{other}/{self.path}")
 
     def __add__(self, other: str) -> Self:
         return self.with_path(self.path + other)
