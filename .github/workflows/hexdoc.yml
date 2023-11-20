@@ -144,6 +144,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GITHUB_PAGES_URL: ${{ needs.build.outputs.pages-url }}
 
     steps:
       - uses: actions/checkout@v3
