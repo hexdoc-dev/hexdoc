@@ -185,7 +185,6 @@ class I18n(HexdocModel):
         self,
         *keys: str,
         default: str | None = None,
-        allow_missing: bool | None = None,
     ) -> LocalizedStr:
         """Looks up the given string in the lang table if i18n is enabled. Otherwise,
         returns the original key.
@@ -193,7 +192,7 @@ class I18n(HexdocModel):
         If multiple keys are provided, returns the value of the first key which exists.
         That is, subsequent keys are treated as fallbacks for the first.
 
-        Raises KeyError if i18n is enabled and default is None but the key has no
+        Raises ValueError if i18n is enabled and default is None but the key has no
         corresponding localized value.
         """
 
@@ -214,8 +213,8 @@ class I18n(HexdocModel):
         else:
             message += f"keys {keys}"
 
-        if allow_missing is False:
-            raise KeyError(message)
+        if not self.allow_missing:
+            raise ValueError(message)
 
         logger.error(message)
         return LocalizedStr.skip_i18n(keys[0])
@@ -223,7 +222,7 @@ class I18n(HexdocModel):
     def localize_pattern(self, op_id: ResourceLocation) -> LocalizedStr:
         """Localizes the given pattern id (internal name, eg. brainsweep).
 
-        Raises KeyError if i18n is enabled and skip_errors is False but the key has no localization.
+        Raises ValueError if i18n is enabled but the key has no localization.
         """
         key_group = ValueIfVersion(">=1.20", "action", "spell")()
 
@@ -236,7 +235,7 @@ class I18n(HexdocModel):
     def localize_item(self, item: str | ResourceLocation | ItemStack) -> LocalizedItem:
         """Localizes the given item resource name.
 
-        Raises KeyError if i18n is enabled and skip_errors is False but the key has no localization.
+        Raises ValueError if i18n is enabled but the key has no localization.
         """
         match item:
             case str():

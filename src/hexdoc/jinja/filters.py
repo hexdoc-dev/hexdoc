@@ -29,11 +29,10 @@ def hexdoc_localize(
     props: Properties,
     book: Book,
     i18n: I18n,
-    allow_missing: bool,
     pm: PluginManager,
 ):
     # get the localized value from i18n
-    localized = i18n.localize(key, allow_missing=allow_missing)
+    localized = i18n.localize(key)
 
     if not do_format:
         return Markup(localized.value)

@@ -164,7 +164,6 @@ def render_book(
             props=props,
             book=book,
             i18n=i18n,
-            allow_missing=allow_missing,
             pm=pm,
         ),
         "_f": lambda key: hexdoc_localize(  # i18n helper with patchi formatting
@@ -173,7 +172,6 @@ def render_book(
             props=props,
             book=book,
             i18n=i18n,
-            allow_missing=allow_missing,
             pm=pm,
         ),
         **props.template.args,

@@ -51,7 +51,7 @@ class BaseTexture(InlineModel, ABC):
         allowed_missing: Iterable[ResourceLocation],
     ) -> Self:
         """Returns the texture from the lookup table if it exists, or the "missing
-        texture" texture if it's in `props.texture.missing`, or raises `KeyError`.
+        texture" texture if it's in `props.texture.missing`, or raises `ValueError`.
 
         This is called frequently and does not load any files.
         """
