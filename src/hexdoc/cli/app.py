@@ -189,7 +189,7 @@ def render(
     ) as loader:
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
 
-        i18n = I18n.load_all(loader, allow_missing)[lang]
+        i18n = I18n.load(loader, lang, allow_missing)
 
         book, context = load_book(
             book_id=props.book,

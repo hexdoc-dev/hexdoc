@@ -98,7 +98,7 @@ class I18n(HexdocModel):
     lookup: dict[str, LocalizedStr] | None
     lang: str
     allow_missing: bool
-    is_default: bool
+    default_i18n: I18n | None
 
     @classmethod
     def list_all(cls, loader: ModResourceLoader):
@@ -125,19 +125,28 @@ class I18n(HexdocModel):
             if not resource_dir.external:
                 internal_langs.add(lang)
 
-        return {
+        default_lang = loader.props.default_lang
+        default_lookup = lookups[default_lang]
+        default_i18n = cls(
+            lookup=default_lookup,
+            lang=default_lang,
+            allow_missing=allow_missing,
+            default_i18n=None,
+        )
+
+        return {default_lang: default_i18n} | {
             lang: cls(
                 lookup=lookup,
                 lang=lang,
                 allow_missing=allow_missing,
-                is_default=lang == loader.props.default_lang,
+                default_i18n=default_i18n,
             )
             for lang, lookup in lookups.items()
-            if lang in internal_langs
+            if lang in internal_langs and lang != default_lang
         }
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, lang: str, allow_missing: bool):
+    def load(cls, loader: ModResourceLoader, lang: str, allow_missing: bool) -> Self:
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -154,11 +163,16 @@ class I18n(HexdocModel):
                 f"Lang {lang} exists, but {loader.props.modid} does not support it"
             )
 
+        default_lang = loader.props.default_lang
+        default_i18n = None
+        if lang != default_lang:
+            default_i18n = cls.load(loader, default_lang, allow_missing)
+
         return cls(
             lookup=lookup,
             lang=lang,
             allow_missing=allow_missing,
-            is_default=lang == loader.props.default_lang,
+            default_i18n=default_i18n,
         )
 
     @classmethod
@@ -180,6 +194,10 @@ class I18n(HexdocModel):
     @classmethod
     def _export(cls, new: dict[str, str], current: dict[str, str] | None):
         return json.dumps((current or {}) | new)
+
+    @property
+    def is_default(self):
+        return self.default_i18n is None
 
     def localize(
         self,
@@ -217,6 +235,10 @@ class I18n(HexdocModel):
             raise ValueError(message)
 
         logger.error(message)
+
+        if self.default_i18n:
+            return self.default_i18n.localize(*keys, default=default)
+
         return LocalizedStr.skip_i18n(keys[0])
 
     def localize_pattern(self, op_id: ResourceLocation) -> LocalizedStr:
