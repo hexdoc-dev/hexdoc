@@ -130,7 +130,8 @@ def export(
 
         asset_loader = plugin.asset_loader(
             loader=loader,
-            site_url=f"{loader.props.url}/{site_path.as_posix()}",  # TODO: urlencode
+            # TODO: urlencode
+            site_url=f"{props.env.github_pages_url}/{site_path.as_posix()}",
             asset_url=props.env.asset_url,
             render_dir=output_dir / site_path,
         )
@@ -177,11 +178,6 @@ def render(
     if not lang:
         lang = props.default_lang
 
-    if release:
-        version = plugin.mod_version
-    else:
-        version = f"latest/{branch}"
-
     with ModResourceLoader.load_all(
         props,
         pm,
@@ -226,17 +222,18 @@ def render(
     render_book(
         props=props,
         pm=pm,
+        plugin=plugin,
         lang=lang,
         book=book,
         i18n=i18n,
-        allow_missing=allow_missing,
         templates=templates,
         output_dir=output_dir,
         all_metadata=all_metadata,
-        version=version,
+        version=plugin.mod_version if release else f"latest/{branch}",
         site_path=site_path,
         png_textures=PNGTexture.get_lookup(context.textures),
         animations=list(AnimatedTexture.get_lookup(context.textures).values()),
+        versioned=release,
     )
 
     logger.info("Done.")
@@ -276,7 +273,7 @@ def merge(
 
     for redirect_path, target_site_path in redirect_paths.items():
         template_args: dict[str, Any] = {
-            "target_url": f"{props.url}/{target_site_path.as_posix()}",
+            "target_url": f"{props.env.github_pages_url}/{target_site_path.as_posix()}",
         }
         pm.update_template_args(template_args)
 

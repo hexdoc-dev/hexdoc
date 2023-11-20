@@ -10,7 +10,7 @@ from hexdoc.utils import write_to_path
 MARKER_NAME = ".sitemap-marker.json"
 
 
-class SitemapMarker(HexdocModel):
+class BaseSitemapMarker(HexdocModel):
     version: str
     lang: str
     lang_name: str | None = None
@@ -21,6 +21,18 @@ class SitemapMarker(HexdocModel):
     @classmethod
     def load(cls, path: Path):
         return cls.model_validate_json(path.read_text("utf-8"))
+
+
+class VersionedSitemapMarker(BaseSitemapMarker):
+    mod_version: str
+    plugin_version: str
+
+
+class LatestSitemapMarker(BaseSitemapMarker):
+    branch: str
+
+
+SitemapMarker = VersionedSitemapMarker | LatestSitemapMarker
 
 
 class SitemapItem(HexdocModel):
@@ -51,7 +63,10 @@ def load_sitemap(root: Path) -> Sitemap:
 
     # crawl the new tree to rebuild the sitemap
     for marker_path in root.rglob(MARKER_NAME):
-        marker = SitemapMarker.load(marker_path)
+        try:
+            marker = VersionedSitemapMarker.load(marker_path)
+        except ValueError:
+            marker = LatestSitemapMarker.load(marker_path)
         sitemap[marker.version].add_marker(marker)
 
     return sitemap

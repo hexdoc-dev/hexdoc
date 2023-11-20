@@ -31,10 +31,10 @@ from hexdoc.jinja import (
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureLookup
 from hexdoc.patchouli import Book
-from hexdoc.plugin import PluginManager
+from hexdoc.plugin import ModPluginWithBook, PluginManager
 from hexdoc.utils import write_to_path
 
-from .sitemap import MARKER_NAME, SitemapMarker
+from .sitemap import MARKER_NAME, LatestSitemapMarker, VersionedSitemapMarker
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +110,7 @@ def render_book(
     *,
     props: Properties,
     pm: PluginManager,
+    plugin: ModPluginWithBook,
     lang: str,
     book: Book,
     i18n: I18n,
@@ -119,14 +120,14 @@ def render_book(
     all_metadata: dict[str, HexdocMetadata],
     png_textures: TextureLookup[PNGTexture],
     animations: list[AnimatedTexture],
-    allow_missing: bool,
     version: str,
+    versioned: bool,
 ):
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
     output_dir /= site_path
-    page_url = "/".join([props.url, *site_path.parts])
+    page_url = "/".join([props.env.github_pages_url, *site_path.parts])
 
     logger.info(f"Rendering {output_dir}")
 
@@ -144,6 +145,7 @@ def render_book(
         "book": book,
         "props": props,
         "i18n": i18n,
+        "site_url": props.env.github_pages_url,
         "page_url": page_url,
         "version": version,
         "lang": lang,
@@ -189,13 +191,29 @@ def render_book(
     # marker file for updating the sitemap later
     # we use this because matrix doesn't have outputs
     # this feels scuffed but it does work
-    marker = SitemapMarker(
-        version=version,
-        lang=lang,
-        lang_name=lang_name,
-        path="/" + "/".join(site_path.parts),
-        is_default_lang=lang == props.default_lang,
-    )
+    marker_path = "/" + "/".join(site_path.parts)
+    is_default_lang = lang == props.default_lang
+
+    if versioned:
+        marker = VersionedSitemapMarker(
+            version=version,
+            lang=lang,
+            lang_name=lang_name,
+            path=marker_path,
+            is_default_lang=is_default_lang,
+            mod_version=plugin.mod_version,
+            plugin_version=plugin.plugin_version,
+        )
+    else:
+        marker = LatestSitemapMarker(
+            version=version,
+            lang=lang,
+            lang_name=lang_name,
+            path=marker_path,
+            is_default_lang=is_default_lang,
+            branch=plugin.branch,
+        )
+
     (output_dir / MARKER_NAME).write_text(marker.model_dump_json(), "utf-8")
 
 

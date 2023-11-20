@@ -148,10 +148,6 @@ class Properties(BaseProperties):
         return ResourceLocation(self.modid, path)
 
     @property
-    def url(self):
-        return self.env.github_pages_url
-
-    @property
     def prerender_dir(self):
         return self.cache_dir / "prerender"
 
