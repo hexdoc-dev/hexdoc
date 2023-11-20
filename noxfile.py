@@ -81,6 +81,7 @@ def mock_ci(session: nox.Session):
         GITHUB_REF_NAME="main",
         GITHUB_REPOSITORY="object-Object/HexMod",
         GITHUB_SHA=github_sha,
+        GITHUB_STEP_SUMMARY=str(github_path / "step_summary.md"),
         GITHUB_TOKEN=run_silent_external(session, "gh", "auth", "token"),
         HEXDOC_PROPS="test/_submodules/HexMod/doc/hexdoc.toml",
         HEXDOC_RELEASE="true",
