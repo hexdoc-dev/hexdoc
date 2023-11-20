@@ -151,7 +151,7 @@ def export(
             )
 
     # for CI
-    return props, all_i18n
+    return props, all_i18n, output_dir / site_path
 
 
 @app.command()

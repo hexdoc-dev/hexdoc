@@ -5,6 +5,8 @@ Commands designed to run in a GitHub Actions workflow.
 # pyright: reportPrivateUsage=false
 
 import os
+import shutil
+import subprocess
 from functools import cached_property
 from pathlib import Path
 from typing import Literal, TypedDict, TypeVar, Unpack
@@ -36,13 +38,16 @@ def export(
         GITHUB_PAGES_URL=pages_url,
     )
 
-    props, all_i18n = hexdoc_app.export(
+    props, all_i18n, path = hexdoc_app.export(
         Path("_site"),
         branch=env.branch,
         verbosity=env.verbosity,
         props_file=props_file,
         release=release,
     )
+
+    subprocess.run(["hatch", "build", "--clean"], check=True)
+    shutil.copytree("dist", path / "dist")
 
     matrix = [
         CIMatrixItem(
@@ -93,7 +98,12 @@ def merge(
     *,
     props_file: PropsOption,
 ):
-    pass
+    env = CIEnvironment.model_getenv()
+
+    hexdoc_app.merge(
+        props_file=props_file,
+        verbosity=env.verbosity,
+    )
 
 
 # utils
