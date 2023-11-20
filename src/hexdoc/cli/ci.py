@@ -57,7 +57,7 @@ def export(
         for lang in all_i18n.keys()
     ]
 
-    env.set_output("pages_url", pages_url)
+    env.set_output("pages-url", pages_url)
     env.set_output("matrix", (list[CIMatrixItem], matrix))
 
 
