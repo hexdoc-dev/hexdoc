@@ -25,8 +25,11 @@ on:
         required: false
     outputs:
       pages-url:
-        description: Current GitHub Pages url for this repo.
+        description: Current GitHub Pages url for this repo
         value: ${{ jobs.build.outputs.pages-url }}
+      release:
+        description: Value of inputs.release for convenienc
+        value: ${{ inputs.release }}
 
 permissions:
   contents: read
