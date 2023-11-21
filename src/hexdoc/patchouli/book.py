@@ -82,7 +82,7 @@ class Book(HexdocModel):
     def load_book_json(cls, loader: ModResourceLoader, id: ResourceLocation):
         data = cls._load_book_resource(loader, id)
 
-        if IsVersion("<=1.19") and "extend" in data:
+        if IsVersion("<1.20") and "extend" in data:
             id = loader.root_book_id = ResourceLocation.model_validate(data["extend"])
             return cls._load_book_resource(loader, id)
 
