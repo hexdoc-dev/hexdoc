@@ -66,9 +66,9 @@ pdoc = [
     "hatch",
 ]
 test = [
-    "pyright",
+    "pyright!=1.1.335,!=1.1.336",
     "pytest~=7.4",
-    "pytest-cookies~=0.7",
+    "pytest-copie~=0.1",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
 ]
@@ -80,7 +80,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://object-object.github.io/HexMod/" # TODO: replace?
+Homepage = "https://book.hexxy.media"
+Documentation = "https://hexdoc.hexxy.media"
 Source = "https://github.com/object-Object/hexdoc"
 
 [tool.hatch.version]

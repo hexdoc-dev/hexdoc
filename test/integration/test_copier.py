@@ -10,7 +10,7 @@ from typing import Callable, Literal
 from hexdoc.cli.app import render
 from hexdoc.utils import JSONValue
 from pytest import MonkeyPatch
-from pytest_cookies.plugin import Cookies
+from pytest_copie.plugin import Copie
 from syrupy.assertion import SnapshotAssertion
 
 from ..conftest import list_directory, nox_only
@@ -59,33 +59,36 @@ def run_pip(*args: str):
 
 
 @nox_only
-def test_cookiecutter(
-    cookies: Cookies,
+def test_copier(
+    copie: Copie,
     monkeypatch: MonkeyPatch,
     snapshot: SnapshotAssertion,
     path_snapshot: SnapshotAssertion,
     env_overrides: dict[str, str],
 ):
-    result = cookies.bake(
-        {
-            "output_directory": "output",
-            "modid": "mod",
-            "pattern_regex": "hex_latest",
-            "multiloader": False,
-            "java_package": "com/package",
-            "pattern_registry": "Patterns.java",
-        }
-    )
+    git_tag = "v9999!9999"
+    subprocess.run(["git", "tag", git_tag])
+    try:
+        result = copie.copy(
+            {
+                "modid": "mod",
+                "multiloader": False,
+                "java_package": "com/package",
+                "pattern_registry": "Patterns.java",
+            }
+        )
+    finally:
+        subprocess.run(["git", "tag", "-d", git_tag])
 
     assert result.exception is None
-    assert result.project_path is not None
+    assert result.project_dir is not None
 
-    monkeypatch.chdir(result.project_path)
+    monkeypatch.chdir(result.project_dir)
 
     subprocess.run(["git", "init"], check=True)
 
     write_file_tree(
-        result.project_path,
+        result.project_dir,
         {
             "src/generated/resources": {},
             "src/main/java/com/package/Patterns.java": "",
