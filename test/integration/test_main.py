@@ -12,11 +12,11 @@ from syrupy.assertion import SnapshotAssertion
 from ..conftest import list_directory, longrun
 
 CHECK_RENDERED_FILENAMES = [
-    "v/latest/index.html",
-    "v/latest/index.css",
-    "v/latest/textures.css",
-    "v/latest/index.js",
-    "v/latest/hexcasting.js",
+    "v/latest/main/index.html",
+    "v/latest/main/index.css",
+    "v/latest/main/textures.css",
+    "v/latest/main/index.js",
+    "v/latest/main/hexcasting.js",
 ]
 
 

@@ -146,7 +146,7 @@ def test_cookiecutter(
     finally:
         run_pip("uninstall", "hexdoc-mod", "-y")
 
-    path_snapshot._custom_index = "vlatestindex.html"  # pyright: ignore[reportPrivateUsage]
-    assert output_dir / "v" / "latest" / "index.html" == path_snapshot
+    path_snapshot._custom_index = "vlatestmainindex.html"  # pyright: ignore[reportPrivateUsage]
+    assert output_dir / "v" / "latest" / "main" / "index.html" == path_snapshot
 
     assert list_directory(output_dir) == snapshot
