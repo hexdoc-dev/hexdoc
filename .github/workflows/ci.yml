@@ -98,7 +98,7 @@ jobs:
         run: nox --session tag
 
       - name: Push new tags
-        run: git push --tags --force-with-lease
+        run: git push --tags --force
 
   publish-pypi:
     runs-on: ubuntu-latest
