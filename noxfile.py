@@ -22,12 +22,7 @@ nox.options.sessions = ["tests"]
 @nox.session
 def tests(session: nox.Session):
     session.run("pip", "uninstall", "hexdoc-mod", "-y")
-    session.install("-e", ".[test]")
-    session.install("-e", "./submodules/HexMod", "--no-deps")
-    session.install(
-        "hexdoc-minecraft @ https://github.com/object-Object/hexdoc-minecraft/raw/gh-pages/docs/v/latest/main/dist/hexdoc_minecraft-1.20.1.1.0.dev0-py3-none-any.whl",
-        "--no-deps",
-    )
+    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
     # this apparently CANNOT run from pre-commit in GitHub Actions (venv issues)
     session.run("pyright", "src", "--warnings")
@@ -95,9 +90,7 @@ def hexdoc(session: nox.Session):
 
 @nox.session
 def mock_ci(session: nox.Session):
-    session.install(".", "hatch")
-    session.install("./submodules/HexMod", "--no-deps")
-    session.install("../hexdoc-minecraft", "--no-deps")  # TODO: remove
+    session.install(".", "./submodules/HexMod", "hatch")
 
     github_path = Path("out/github")
 
