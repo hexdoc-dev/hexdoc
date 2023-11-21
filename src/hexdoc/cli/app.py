@@ -233,7 +233,10 @@ def render(
         version=plugin.mod_version if release else f"latest/{branch}",
         site_path=site_path,
         png_textures=PNGTexture.get_lookup(context.textures),
-        animations=list(AnimatedTexture.get_lookup(context.textures).values()),
+        animations=sorted(  # this MUST be sorted to avoid flaky tests
+            AnimatedTexture.get_lookup(context.textures).values(),
+            key=lambda t: t.css_class,
+        ),
         versioned=release,
     )
 
