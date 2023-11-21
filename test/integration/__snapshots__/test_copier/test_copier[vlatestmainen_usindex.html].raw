@@ -28,12 +28,12 @@
         <link rel="None" type="image/png" href="mstile-310x150.png" />
         <link rel="shortcut icon" type="image/png" href="favicon-196x196.png" />
       <link rel="mask-icon" href="https://raw.githubusercontent.com/object-Object/hexdoc/main/media/safari-pinned-tab.svg" color="#332233">
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content="Mod Book" />
-      <meta property="og:image" content="GITHUB_PAGES_URL/v/latest/icon.png" />
-      <meta property="og:url" content="GITHUB_PAGES_URL/v/latest" />
-      <meta property="og:description" content="The Mod Book, all in one place." />
-      <meta property="og:site_name" content="Mod" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Mod Book" />
+<meta property="og:image" content="GITHUB_PAGES_URL/v/latest/main/en_us/icon.png" />
+<meta property="og:url" content="GITHUB_PAGES_URL/v/latest/main/en_us" />
+<meta property="og:description" content="The Mod Book, all in one place." />
+<meta property="og:site_name" content="Mod (latest/main)" />
       <script src="https://code.jquery.com/jquery-1.12.4.min.js"
       integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css"
@@ -84,7 +84,7 @@
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
-          >latest <span class="caret"></span></a>
+          >latest/main <span class="caret"></span></a>
           <ul class="dropdown-menu" id="version-dropdown"></ul>
         </li>
         <li class="dropdown">
@@ -131,18 +131,18 @@
     <details class="toc-category">
       <summary><a href="#foo" class="toc-elem spoilered"><img
       title="Amethyst Shard"
-      alt="Image of Amethyst Shard"
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjklEQVQ4y2NgGBIg33/1f3RMkuZ/p5+h4BDLrv9Ea97c9xmu8f/fq//PL/hMnAEwm0EGgDBMc2/WGcIGgDSDFMMMALFBYiDNBA2AORtmAMxWmAFEaYYZAHI2TCOIJqgZ5kQQhjmfKJtBAKQAphikEUYTtBnZABhGNojoOEfWDKKJcjYuQ2CBRlG6p1tGAwDsrfXVRK6M0wAAAABJRU5ErkJggg=="
+      alt="Amethyst Shard"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
       loading="lazy"
-      class="item-texture  texture"
+      class="item-texture  texture pixelated"
     > Mod Book</a></summary>
       <ul>
           <li><a href="#bar" class="toc-elem spoilered"><img
-      title="item.minecraft.textures.mob_effect.nausea.png"
-      alt="Image of item.minecraft.textures.mob_effect.nausea.png"
-      src="DEBUG_GITHUBUSERCONTENT/test/_submodules/HexMod/doc/resources/assets/minecraft/textures/mob_effect/nausea.png"
+      title="Nausea"
+      alt="Nausea"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
       loading="lazy"
-      class="item-texture  texture"
+      class="item-texture  texture pixelated"
     > This is the online version of the {} documentation.</a></li>
       </ul>
     </details>
@@ -153,10 +153,10 @@
       <h2 class="category-title page-header">
     <img
       title="Amethyst Shard"
-      alt="Image of Amethyst Shard"
-      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAjklEQVQ4y2NgGBIg33/1f3RMkuZ/p5+h4BDLrv9Ea97c9xmu8f/fq//PL/hMnAEwm0EGgDBMc2/WGcIGgDSDFMMMALFBYiDNBA2AORtmAMxWmAFEaYYZAHI2TCOIJqgZ5kQQhjmfKJtBAKQAphikEUYTtBnZABhGNojoOEfWDKKJcjYuQ2CBRlG6p1tGAwDsrfXVRK6M0wAAAABJRU5ErkJggg=="
+      alt="Amethyst Shard"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
       loading="lazy"
-      class="item-texture  texture"
+      class="item-texture  texture pixelated"
     >Mod Book<a
     href="#table-of-contents"
     class="permalink small"
@@ -166,17 +166,17 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h2>
-    <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/0.11.1-7#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/0.11.1-7#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
+    <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/latest/main#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/latest/main#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
     </div>
 <div id="bar" class="entry">
     <div class="spoilered">
       <h3 class="entry-title page-header">
     <img
-      title="item.minecraft.textures.mob_effect.nausea.png"
-      alt="Image of item.minecraft.textures.mob_effect.nausea.png"
-      src="DEBUG_GITHUBUSERCONTENT/test/_submodules/HexMod/doc/resources/assets/minecraft/textures/mob_effect/nausea.png"
+      title="Nausea"
+      alt="Nausea"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
       loading="lazy"
-      class="item-texture  texture"
+      class="item-texture  texture pixelated"
     >This is the online version of the {} documentation.<a
     href="#table-of-contents"
     class="permalink small"

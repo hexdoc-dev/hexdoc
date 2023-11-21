@@ -123,17 +123,6 @@ def test_copier(
                 minecraftVersion=1.20.1
                 """
             ),
-            # TODO: remove when textures are fully implemented
-            "doc/hexdoc.toml": (
-                "a",
-                """
-                [textures]
-                missing = [
-                    "minecraft:*",
-                    "hexcasting:*",
-                ]
-                """,
-            ),
         },
     )
 

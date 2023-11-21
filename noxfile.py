@@ -23,7 +23,7 @@ def tests(session: nox.Session):
     session.install("-e", ".[test]")
     session.install("-e", "./submodules/HexMod", "--no-deps")
     session.install(
-        "hexdoc-minecraft @ https://github.com/object-Object/hexdoc-minecraft/raw/3f123fac2c4114726144721b5af6a00a8d2ebb9a/docs/v/latest/main/dist/hexdoc_minecraft-1.20.1.1.0.dev0-py3-none-any.whl",
+        "hexdoc-minecraft @ https://github.com/object-Object/hexdoc-minecraft/raw/gh-pages/docs/v/latest/main/dist/hexdoc_minecraft-1.20.1.1.0.dev0-py3-none-any.whl",
         "--no-deps",
     )
 
