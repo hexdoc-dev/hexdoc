@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from hexdoc._cli.app import export
+from hexdoc.cli.app import export
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch, Parser
 from syrupy.assertion import SnapshotAssertion
@@ -55,7 +55,7 @@ def path_snapshot(snapshot: SnapshotAssertion):
 
 @pytest.fixture
 def pm():
-    return PluginManager()
+    return PluginManager(branch="main")
 
 
 @pytest.fixture(scope="session")
@@ -76,7 +76,7 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("test/_submodules/HexMod/doc/hexdoc.toml")
+    return Path("submodules/HexMod/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -87,8 +87,8 @@ def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
 
 @pytest.fixture(autouse=True, scope="session")
 def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("hexdoc.toml"))
-    export(props_file=hexcasting_props_file)
+    export(props_file=Path("hexdoc.toml"), branch="main")
+    export(props_file=hexcasting_props_file, branch="main")
 
 
 # helpers

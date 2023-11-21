@@ -6,7 +6,7 @@ from hexdoc.core import ResourceLocation
 from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
 from hexdoc.utils import cast_or_raise, listify
 
-from ..assets import ItemWithTexture, TagWithTexture, TextureContext
+from ..assets import ItemWithTexture, TagWithTexture, TextureI18nContext
 from ..tags import Tag
 
 
@@ -44,7 +44,7 @@ def _validate_flatten_nested_tags(
     ingredients: list[ItemIngredient],
     info: ValidationInfo,
 ) -> Iterator[ItemIngredient]:
-    context = cast_or_raise(info.context, TextureContext)
+    context = cast_or_raise(info.context, TextureI18nContext)
 
     for ingredient in ingredients:
         yield ingredient
@@ -55,10 +55,10 @@ def _validate_flatten_nested_tags(
 
 def _items_in_tag(
     tag_id: ResourceLocation,
-    context: TextureContext,
+    context: TextureI18nContext,
 ) -> Iterator[ItemIngredient]:
     try:
-        tag = Tag.load("items", tag_id, context)
+        tag = Tag.load("items", tag_id, context.loader)
     except FileNotFoundError:
         return
 

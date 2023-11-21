@@ -14,9 +14,11 @@ __all__ = [
     "TOMLValue",
     "TryGetEnum",
     "cast_or_raise",
+    "clamping_validator",
     "classproperty",
     "decode_and_flatten_json_dict",
     "decode_json_dict",
+    "git_root",
     "isinstance_or_raise",
     "listify",
     "load_toml_with_placeholders",
@@ -43,6 +45,7 @@ from .deserialize import (
     isinstance_or_raise,
     load_toml_with_placeholders,
 )
+from .git import git_root
 from .iterators import listify, must_yield_something
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
@@ -52,5 +55,6 @@ from .types import (
     PydanticOrderedSet,
     Sortable,
     TryGetEnum,
+    clamping_validator,
     sorted_dict,
 )

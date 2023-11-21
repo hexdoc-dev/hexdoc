@@ -1,3 +1,3 @@
-from hexdoc._cli.app import app
+from hexdoc.cli.app import app
 
 app()

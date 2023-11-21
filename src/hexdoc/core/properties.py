@@ -1,32 +1,34 @@
 from __future__ import annotations
 
 import logging
+from functools import cached_property
 from pathlib import Path
 from typing import Any, Self, Sequence
 
 from pydantic import Field, PrivateAttr, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from hexdoc.model.base import HexdocSettings
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils import (
     NoTrailingSlashHttpUrl,
+    PydanticOrderedSet,
     RelativePath,
+    git_root,
     load_toml_with_placeholders,
     relative_path_root,
 )
-from hexdoc.utils.types import PydanticOrderedSet
 
 from .resource import ResourceLocation
 from .resource_dir import ResourceDir
+
+logger = logging.getLogger(__name__)
 
 JINJA_NAMESPACE_ALIASES = {
     "patchouli": "hexdoc",
 }
 
 
-class EnvironmentVariableProps(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="allow")
-
+class EnvironmentVariableProps(HexdocSettings):
     # default Actions environment variables
     github_repository: str
     github_sha: str
@@ -36,10 +38,6 @@ class EnvironmentVariableProps(BaseSettings):
 
     # optional for debugging
     debug_githubusercontent: str | None = None
-
-    @classmethod
-    def model_validate_env(cls):
-        return cls.model_validate({})
 
     @property
     def asset_url(self):
@@ -73,6 +71,9 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     render: dict[Path, str] = Field(default_factory=dict)
     extend_render: dict[Path, str] = Field(default_factory=dict)
 
+    redirect: tuple[Path, str] = (Path("index.html"), "redirect.html.jinja")
+    """filename, template"""
+
     args: dict[str, Any]
 
     _was_render_set: bool = PrivateAttr(False)
@@ -91,13 +92,8 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
         return values
 
 
-class MinecraftAssetsProps(StripHiddenModel):
-    ref: str
-    version: str
-
-
 class TexturesProps(StripHiddenModel):
-    missing: list[ResourceLocation] = Field(default_factory=list)
+    missing: set[ResourceLocation] = Field(default_factory=set)
     override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
 
 
@@ -107,10 +103,11 @@ class BaseProperties(StripHiddenModel):
 
     @classmethod
     def load(cls, path: Path) -> Self:
+        path = path.resolve()
         props_dir = path.parent
 
         with relative_path_root(props_dir):
-            env = EnvironmentVariableProps.model_validate_env()
+            env = EnvironmentVariableProps.model_getenv()
             props = cls.model_validate(
                 load_toml_with_placeholders(path)
                 | {
@@ -119,7 +116,7 @@ class BaseProperties(StripHiddenModel):
                 },
             )
 
-        logging.getLogger(__name__).debug(props)
+        logger.debug(props)
         return props
 
 
@@ -130,6 +127,7 @@ class Properties(BaseProperties):
     book: ResourceLocation | None = None
     extra_books: list[ResourceLocation] = Field(default_factory=list)
     default_lang: str
+    default_branch: str
 
     is_0_black: bool = False
     """If true, the style `$(0)` changes the text color to black; otherwise it resets
@@ -140,9 +138,6 @@ class Properties(BaseProperties):
 
     entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
 
-    minecraft_assets: MinecraftAssetsProps
-
-    # FIXME: remove this and get the data from the actual model files
     textures: TexturesProps = Field(default_factory=TexturesProps)
 
     template: TemplateProps | None = None
@@ -154,5 +149,13 @@ class Properties(BaseProperties):
         return ResourceLocation(self.modid, path)
 
     @property
-    def url(self):
-        return self.env.github_pages_url
+    def prerender_dir(self):
+        return self.cache_dir / "prerender"
+
+    @property
+    def cache_dir(self):
+        return self.repo_root / ".hexdoc"
+
+    @cached_property
+    def repo_root(self):
+        return git_root(self.props_dir)

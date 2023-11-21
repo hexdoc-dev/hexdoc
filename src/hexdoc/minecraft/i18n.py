@@ -19,6 +19,8 @@ from hexdoc.core import (
 from hexdoc.model import HexdocModel
 from hexdoc.utils import cast_or_raise, decode_and_flatten_json_dict
 
+logger = logging.getLogger(__name__)
+
 
 @total_ordering
 class LocalizedStr(HexdocModel, frozen=True):
@@ -44,7 +46,7 @@ class LocalizedStr(HexdocModel, frozen=True):
         value: str | Any,
         handler: ModelWrapValidatorHandler[Self],
         info: ValidationInfo,
-    ):
+    ) -> Self:
         # NOTE: if we need LocalizedStr to work as a dict key, add another check which
         # returns cls.skip_i18n(value) if info.context is falsy
         if not isinstance(value, str):
@@ -55,7 +57,7 @@ class LocalizedStr(HexdocModel, frozen=True):
 
     @classmethod
     def _localize(cls, i18n: I18n, key: str) -> Self:
-        return i18n.localize(key)
+        return cls.model_validate(i18n.localize(key))
 
     def map(self, fn: Callable[[str], str]) -> Self:
         """Returns a copy of this object with `new.value = fn(old.value)`."""
@@ -87,7 +89,7 @@ class LocalizedStr(HexdocModel, frozen=True):
 class LocalizedItem(LocalizedStr, frozen=True):
     @classmethod
     def _localize(cls, i18n: I18n, key: str) -> Self:
-        return i18n.localize_item(key)
+        return cls.model_validate(i18n.localize_item(key))
 
 
 class I18n(HexdocModel):
@@ -96,6 +98,7 @@ class I18n(HexdocModel):
     lookup: dict[str, LocalizedStr] | None
     lang: str
     allow_missing: bool
+    default_i18n: I18n | None
 
     @classmethod
     def list_all(cls, loader: ModResourceLoader):
@@ -108,7 +111,7 @@ class I18n(HexdocModel):
         )
 
     @classmethod
-    def load_all(cls, loader: ModResourceLoader, *, allow_missing: bool):
+    def load_all(cls, loader: ModResourceLoader, allow_missing: bool):
         # lang -> (key -> value)
         lookups = defaultdict[str, dict[str, LocalizedStr]](dict)
         internal_langs = set[str]()
@@ -122,14 +125,28 @@ class I18n(HexdocModel):
             if not resource_dir.external:
                 internal_langs.add(lang)
 
-        return {
-            lang: cls(lookup=lookup, lang=lang, allow_missing=allow_missing)
+        default_lang = loader.props.default_lang
+        default_lookup = lookups[default_lang]
+        default_i18n = cls(
+            lookup=default_lookup,
+            lang=default_lang,
+            allow_missing=allow_missing,
+            default_i18n=None,
+        )
+
+        return {default_lang: default_i18n} | {
+            lang: cls(
+                lookup=lookup,
+                lang=lang,
+                allow_missing=allow_missing,
+                default_i18n=default_i18n,
+            )
             for lang, lookup in lookups.items()
-            if lang in internal_langs
+            if lang in internal_langs and lang != default_lang
         }
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, *, lang: str, allow_missing: bool):
+    def load(cls, loader: ModResourceLoader, lang: str, allow_missing: bool) -> Self:
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -146,7 +163,17 @@ class I18n(HexdocModel):
                 f"Lang {lang} exists, but {loader.props.modid} does not support it"
             )
 
-        return cls(lookup=lookup, lang=lang, allow_missing=allow_missing)
+        default_lang = loader.props.default_lang
+        default_i18n = None
+        if lang != default_lang:
+            default_i18n = cls.load(loader, default_lang, allow_missing)
+
+        return cls(
+            lookup=lookup,
+            lang=lang,
+            allow_missing=allow_missing,
+            default_i18n=default_i18n,
+        )
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):
@@ -168,11 +195,14 @@ class I18n(HexdocModel):
     def _export(cls, new: dict[str, str], current: dict[str, str] | None):
         return json.dumps((current or {}) | new)
 
+    @property
+    def is_default(self):
+        return self.default_i18n is None
+
     def localize(
         self,
         *keys: str,
         default: str | None = None,
-        allow_missing: bool | None = None,
     ) -> LocalizedStr:
         """Looks up the given string in the lang table if i18n is enabled. Otherwise,
         returns the original key.
@@ -180,7 +210,7 @@ class I18n(HexdocModel):
         If multiple keys are provided, returns the value of the first key which exists.
         That is, subsequent keys are treated as fallbacks for the first.
 
-        Raises KeyError if i18n is enabled and default is None but the key has no
+        Raises ValueError if i18n is enabled and default is None but the key has no
         corresponding localized value.
         """
 
@@ -201,16 +231,20 @@ class I18n(HexdocModel):
         else:
             message += f"keys {keys}"
 
-        if allow_missing is False:
-            raise KeyError(message)
+        if not self.allow_missing:
+            raise ValueError(message)
 
-        logging.getLogger(__name__).error(message)
+        logger.error(message)
+
+        if self.default_i18n:
+            return self.default_i18n.localize(*keys, default=default)
+
         return LocalizedStr.skip_i18n(keys[0])
 
     def localize_pattern(self, op_id: ResourceLocation) -> LocalizedStr:
         """Localizes the given pattern id (internal name, eg. brainsweep).
 
-        Raises KeyError if i18n is enabled and skip_errors is False but the key has no localization.
+        Raises ValueError if i18n is enabled but the key has no localization.
         """
         key_group = ValueIfVersion(">=1.20", "action", "spell")()
 
@@ -223,7 +257,7 @@ class I18n(HexdocModel):
     def localize_item(self, item: str | ResourceLocation | ItemStack) -> LocalizedItem:
         """Localizes the given item resource name.
 
-        Raises KeyError if i18n is enabled and skip_errors is False but the key has no localization.
+        Raises ValueError if i18n is enabled but the key has no localization.
         """
         match item:
             case str():
@@ -251,6 +285,21 @@ class I18n(HexdocModel):
             f"tag.block.{tag.namespace}.{tag.path}",
         )
         return LocalizedStr(key=localized.key, value=f"Tag: {localized.value}")
+
+    def localize_texture(self, texture_id: ResourceLocation):
+        path = texture_id.path.removeprefix("textures/").removesuffix(".png")
+        root, rest = path.split("/", 1)
+
+        # TODO: refactor / extensibilify
+        if root == "mob_effect":
+            root = "effect"
+
+        return self.localize(f"{root}.{texture_id.namespace}.{rest}")
+
+    def localize_lang(self):
+        name = self.localize("language.name")
+        region = self.localize("language.region")
+        return f"{name} ({region})"
 
 
 class I18nContext(LoaderContext):

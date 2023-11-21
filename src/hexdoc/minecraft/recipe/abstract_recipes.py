@@ -1,10 +1,10 @@
 from hexdoc.core import ModResourceLoader, ResourceLocation
-from hexdoc.model import InlineIDModel, TypeTaggedUnion
+from hexdoc.model import ResourceModel, TypeTaggedUnion
 
 from .ingredients import ItemResult
 
 
-class Recipe(TypeTaggedUnion, InlineIDModel, type=None):
+class Recipe(TypeTaggedUnion, ResourceModel, type=None):
     group: str | None = None
     category: str | None = None
 

@@ -1,5 +1,5 @@
 {% macro render_icon(item_or_texture, name="") -%}
-  {% if item_or_texture.gaslighting is defined %}
+  {% if item_or_texture.texture is defined %}
     {{- render_item(item_or_texture) -}}
   {% else %}
     {{- render_texture(name, item_or_texture) -}}
@@ -11,25 +11,43 @@
     <div
       role="img"
       title="{{ name }}"
-      aria-label="Animated image of {{ name }}"
-      class="{{ (class_names + ['texture', 'animated-sync', texture.class_name])|join(' ') }}"
+      aria-label="{{ name }} (animated)"
+      class="{{
+        (class_names + [
+          'texture',
+          'animated-sync',
+          texture.css_class,
+          'pixelated' if texture.pixelated,
+        ])|join(' ')
+      }}"
     ></div>
   {%- else -%}
     <img
       title="{{ name }}"
-      alt="Image of {{ name }}"
+      alt="{{ name }}"
       src="{{ texture.url }}"
       {{ 'loading="lazy"'|safe if lazy }}
-      class="{{ (class_names + ['texture'])|join(' ') }}"
+      class="{{
+        (class_names + [
+          'texture',
+          'pixelated' if texture.pixelated,
+        ])|join(' ')
+      }}"
     >
   {%- endif %}
 {%- endmacro %}
 
 {# display a single item, with a badge if the count is greater than 1 #}
 {% macro render_item(item, is_first=none, count=1) -%}
-  {% if item.gaslighting -%}
-    <div class="texture item-texture multi-textures gaslight-textures {{ 'multi-texture-active' if is_first is true }}">
-      {% for texture in item.textures %}
+  {% if item.image_textures is sequence -%}
+    <div
+      class="texture item-texture multi-textures {{
+        'gaslight-textures' if item.gaslighting
+      }} {{
+        'multi-texture-active' if is_first is true
+      }}"
+    >
+      {% for texture in item.image_textures %}
         {{
           render_texture(
             name=item.name,
@@ -45,7 +63,7 @@
   {%- else -%}
     {{ render_texture(
       name=item.name,
-      texture=item.texture,
+      texture=item.image_texture,
       class_names=[
         "item-texture",
         "multi-texture-active" if is_first is true,

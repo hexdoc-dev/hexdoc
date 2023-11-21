@@ -1,6 +1,8 @@
 import logging
 from typing import Any, TypeGuard, TypeVar, get_origin
 
+logger = logging.getLogger(__name__)
+
 _T = TypeVar("_T")
 
 _DEFAULT_MESSAGE_SHORT = "Expected any of {expected}, got {actual}"
@@ -30,7 +32,7 @@ def isinstance_or_raise(
             "value": val,
         }
 
-        if logging.getLogger(__name__).getEffectiveLevel() >= logging.WARNING:
+        if logger.getEffectiveLevel() >= logging.WARNING:
             default_message = _DEFAULT_MESSAGE_SHORT
         else:
             default_message = _DEFAULT_MESSAGE_LONG

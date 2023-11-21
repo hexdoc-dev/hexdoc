@@ -20,7 +20,7 @@ _Else = TypeVar("_Else")
 
 class VersionSource(Protocol):
     @classmethod
-    def get(cls) -> str:
+    def get(cls) -> str | None:
         """Returns the current version."""
         ...
 
@@ -35,12 +35,7 @@ class MinecraftVersion(VersionSource):
 
     @override
     @classmethod
-    def get(cls) -> str:
-        if cls.MINECRAFT_VERSION is None:
-            raise RuntimeError(
-                "Tried to call MinecraftVersion.get() "
-                "before initializing MinecraftVersion.MINECRAFT_VERSION"
-            )
+    def get(cls) -> str | None:
         return cls.MINECRAFT_VERSION
 
     @override
@@ -48,7 +43,9 @@ class MinecraftVersion(VersionSource):
     def matches(cls, specifier: str | SpecifierSet) -> bool:
         if isinstance(specifier, str):
             specifier = SpecifierSet(specifier)
-        return cls.get() in specifier
+        if (version := cls.get()) is None:
+            return True
+        return version in specifier
 
 
 @dataclass(frozen=True)
@@ -125,13 +122,9 @@ After_1_20 = Annotated[_T, IsVersion(">1.20")]
 @dataclass(frozen=True)
 class ValueIfVersion(Versioned, Generic[_If, _Else]):
     value_if: _If
-    value_else: ValueIfVersion[_If | _Else, _If | _Else] | _Else
+    value_else: _Else
 
     def __call__(self) -> _If | _Else:
         if self.is_current:
             return self.value_if
-
-        if isinstance(self.value_else, ValueIfVersion):
-            return self.value_else()  # pyright: ignore[reportUnknownVariableType]
-
         return self.value_else

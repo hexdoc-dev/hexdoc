@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, Any, ClassVar, Self, dataclass_transform
+from typing import TYPE_CHECKING, Any, ClassVar, Self, TypeVar, dataclass_transform
 
-from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
+from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelBeforeValidator
+from pydantic_core import Some
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import set_contextvar
@@ -98,4 +100,63 @@ class HexdocModel(HexdocBaseModel):
             strict: bool | None = None,
             context: ValidationContext | None = None,
         ) -> Self:
+            ...
+
+
+class HexdocSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="allow",
+    )
+
+    @classmethod
+    def model_getenv(cls, defaults: Any = None):
+        return cls.model_validate(defaults or {})
+
+
+_T = TypeVar("_T")
+
+
+class HexdocTypeAdapter(TypeAdapter[_T]):
+    def __init__(self, type: _T, *, config: ConfigDict | None = None):
+        if config is None and not isinstance(type, BaseModel):
+            config = DEFAULT_CONFIG
+        return super().__init__(type, config=config)
+
+    if TYPE_CHECKING:
+
+        def validate_python(  # pyright: ignore[reportIncompatibleMethodOverride]
+            self,
+            __object: Any,
+            *,
+            strict: bool | None = None,
+            from_attributes: bool | None = None,
+            context: ValidationContext | None = None,
+        ) -> _T:
+            ...
+
+        def validate_json(  # pyright: ignore[reportIncompatibleMethodOverride]
+            self,
+            __data: str | bytes,
+            *,
+            strict: bool | None = None,
+            context: ValidationContext | None = None,
+        ) -> _T:
+            ...
+
+        def validate_strings(  # pyright: ignore[reportIncompatibleMethodOverride]
+            self,
+            __obj: Any,
+            *,
+            strict: bool | None = None,
+            context: ValidationContext | None = None,
+        ) -> _T:
+            ...
+
+        def get_default_value(  # pyright: ignore[reportIncompatibleMethodOverride]
+            self,
+            *,
+            strict: bool | None = None,
+            context: ValidationContext | None = None,
+        ) -> Some[_T] | None:
             ...
