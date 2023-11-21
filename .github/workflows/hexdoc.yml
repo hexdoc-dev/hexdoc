@@ -44,6 +44,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency:
+      group: hexdoc-build-${{ github.sha }}
+      cancel-in-progress: false
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     permissions:
@@ -142,6 +145,9 @@ jobs:
   deploy-pages:
     needs: [build, render]
     runs-on: ubuntu-latest
+    concurrency:
+      group: hexdoc-deploy-pages
+      cancel-in-progress: false
     permissions:
       contents: write
     env:
