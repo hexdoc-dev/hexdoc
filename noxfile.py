@@ -170,7 +170,7 @@ def update_git_tag(session: nox.Session, *, tag: str, message: str):
         tag,
         external=True,
         env=dict(
-            GIT_COMMITTER_NAME="github-actions",
-            GIT_COMMITTER_EMAIL="github-actions@github.com",
+            GIT_COMMITTER_NAME="GitHub Actions",
+            GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com",
         ),
     )
