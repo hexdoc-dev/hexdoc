@@ -151,7 +151,7 @@
           <li><a href="#basics/geodes" class="toc-elem "><img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture  texture "
     > Geodes</a></li>
@@ -204,7 +204,7 @@
           <li><a href="#casting/stack" class="toc-elem "><img
       title="Piston"
       alt="Piston"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/piston_inventory.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/piston_inventory.png"
       loading="lazy"
       class="item-texture  texture "
     > The Stack</a></li>
@@ -372,7 +372,7 @@
           <li><a href="#greatwork/spellcircles" class="toc-elem spoilered"><img
       title="Lodestone"
       alt="Lodestone"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/lodestone.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/lodestone.png"
       loading="lazy"
       class="item-texture  texture "
     > Spell Circles</a></li>
@@ -534,7 +534,7 @@
       <summary><a href="#patterns" class="toc-elem "><img
       title="Bookshelf"
       alt="Bookshelf"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bookshelf.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bookshelf.png"
       loading="lazy"
       class="item-texture  texture "
     > Patterns</a></summary>
@@ -570,14 +570,14 @@
           <li><a href="#patterns/consts" class="toc-elem "><img
       title="Bedrock"
       alt="Bedrock"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bedrock.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bedrock.png"
       loading="lazy"
       class="item-texture  texture "
     > Constants</a></li>
           <li><a href="#patterns/stackmanip" class="toc-elem "><img
       title="Piston"
       alt="Piston"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/piston_inventory.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/piston_inventory.png"
       loading="lazy"
       class="item-texture  texture "
     > Stack Manipulation</a></li>
@@ -672,14 +672,14 @@
           <li><a href="#patterns/spells/basic" class="toc-elem "><img
       title="Bookshelf"
       alt="Bookshelf"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bookshelf.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bookshelf.png"
       loading="lazy"
       class="item-texture  texture "
     > Basic Spells</a></li>
           <li><a href="#patterns/spells/blockworks" class="toc-elem "><img
       title="Cobblestone"
       alt="Cobblestone"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/cobblestone.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/cobblestone.png"
       loading="lazy"
       class="item-texture  texture "
     > Block Manipulation</a></li>
@@ -766,7 +766,7 @@
           <li><a href="#patterns/great_spells/greater_sentinel" class="toc-elem "><img
       title="Beacon"
       alt="Beacon"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/beacon.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/beacon.png"
       loading="lazy"
       class="item-texture  texture "
     > Summon Greater Sentinel</a></li>
@@ -835,7 +835,7 @@
     <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture  texture "
     >Geodes<a
@@ -1101,7 +1101,7 @@
     <img
       title="Piston"
       alt="Piston"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/piston_inventory.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/piston_inventory.png"
       loading="lazy"
       class="item-texture  texture "
     >The Stack<a
@@ -1350,7 +1350,7 @@
                           <img
       title="Oak Planks"
       alt="Oak Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/oak_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/oak_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1415,7 +1415,7 @@
                           <img
       title="Spruce Planks"
       alt="Spruce Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/spruce_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/spruce_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1480,7 +1480,7 @@
                           <img
       title="Birch Planks"
       alt="Birch Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/birch_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/birch_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1545,7 +1545,7 @@
                           <img
       title="Jungle Planks"
       alt="Jungle Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/jungle_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/jungle_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1610,7 +1610,7 @@
                           <img
       title="Acacia Planks"
       alt="Acacia Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/acacia_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/acacia_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1675,7 +1675,7 @@
                           <img
       title="Dark Oak Planks"
       alt="Dark Oak Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/dark_oak_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/dark_oak_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1740,7 +1740,7 @@
                           <img
       title="Crimson Planks"
       alt="Crimson Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/crimson_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/crimson_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1805,7 +1805,7 @@
                           <img
       title="Warped Planks"
       alt="Warped Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/warped_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/warped_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -1870,7 +1870,7 @@
                           <img
       title="Mangrove Planks"
       alt="Mangrove Planks"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/mangrove_planks.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/mangrove_planks.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2014,7 +2014,7 @@
                           <img
       title="Glass"
       alt="Glass"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/glass.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/glass.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2023,7 +2023,7 @@
                           <img
       title="Glass"
       alt="Glass"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/glass.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/glass.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2041,7 +2041,7 @@
                           <img
       title="Glass"
       alt="Glass"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/glass.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/glass.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2050,7 +2050,7 @@
                           <img
       title="Glass"
       alt="Glass"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/glass.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/glass.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2962,7 +2962,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2971,7 +2971,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -2980,7 +2980,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -4394,7 +4394,7 @@
                           <img
       title="Glass"
       alt="Glass"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/glass.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/glass.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -4842,7 +4842,7 @@
                           <img
       title="Stone Brick Wall"
       alt="Stone Brick Wall"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/stone_brick_wall_inventory.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/stone_brick_wall_inventory.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -5034,7 +5034,7 @@
                           <img
       title="Azalea"
       alt="Azalea"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/azalea.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/azalea.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -5162,7 +5162,7 @@
                           <img
       title="Moss Block"
       alt="Moss Block"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/moss_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/moss_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7188,7 +7188,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7197,7 +7197,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7206,7 +7206,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7215,7 +7215,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7233,7 +7233,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7242,7 +7242,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7251,7 +7251,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7260,7 +7260,7 @@
                           <img
       title="Deepslate"
       alt="Deepslate"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/deepslate.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/deepslate.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7744,7 +7744,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7753,7 +7753,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7762,7 +7762,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7771,7 +7771,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7789,7 +7789,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7798,7 +7798,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7807,7 +7807,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -7816,7 +7816,7 @@
                           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -8078,7 +8078,7 @@
           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture  texture "
     >
@@ -8087,7 +8087,7 @@
           <img
       title="Budding Amethyst"
       alt="Budding Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/budding_amethyst.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/budding_amethyst.png"
       loading="lazy"
       class="item-texture  texture "
     >
@@ -8105,7 +8105,7 @@
     <img
       title="Lodestone"
       alt="Lodestone"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/lodestone.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/lodestone.png"
       loading="lazy"
       class="item-texture  texture "
     >Spell Circles<a
@@ -8187,7 +8187,7 @@
                           <img
       title="Purpur Block"
       alt="Purpur Block"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/purpur_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/purpur_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -8259,7 +8259,7 @@
                           <img
       title="Purpur Block"
       alt="Purpur Block"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/purpur_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/purpur_block.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -8501,7 +8501,7 @@
                           <img
       title="Observer"
       alt="Observer"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/observer.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/observer.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -8519,7 +8519,7 @@
                           <img
       title="Observer"
       alt="Observer"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/observer.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/observer.png"
       loading="lazy"
       class="item-texture multi-texture-active texture "
     >
@@ -9507,7 +9507,7 @@
           <img
       title="Block of Amethyst"
       alt="Block of Amethyst"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/amethyst_block.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/amethyst_block.png"
       loading="lazy"
       class="item-texture  texture "
     >
@@ -10468,7 +10468,7 @@
     <img
       title="Bookshelf"
       alt="Bookshelf"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bookshelf.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bookshelf.png"
       loading="lazy"
       class="item-texture  texture "
     >Patterns<a
@@ -11133,7 +11133,7 @@
     <img
       title="Bedrock"
       alt="Bedrock"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bedrock.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bedrock.png"
       loading="lazy"
       class="item-texture  texture "
     >Constants<a
@@ -11375,7 +11375,7 @@
     <img
       title="Piston"
       alt="Piston"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/piston_inventory.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/piston_inventory.png"
       loading="lazy"
       class="item-texture  texture "
     >Stack Manipulation<a
@@ -13623,7 +13623,7 @@
     <img
       title="Bookshelf"
       alt="Bookshelf"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/bookshelf.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/bookshelf.png"
       loading="lazy"
       class="item-texture  texture "
     >Basic Spells<a
@@ -13747,7 +13747,7 @@
     <img
       title="Cobblestone"
       alt="Cobblestone"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/cobblestone.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/cobblestone.png"
       loading="lazy"
       class="item-texture  texture "
     >Block Manipulation<a
@@ -14753,7 +14753,7 @@
     <img
       title="Beacon"
       alt="Beacon"
-      src="https://object-object.github.io/hexdoc-minecraft/v/latest/main/assets/minecraft/textures/block/beacon.png"
+      src="https://object-object.github.io/hexdoc-minecraft/v/1.20.1/1.0.dev0/assets/minecraft/textures/block/beacon.png"
       loading="lazy"
       class="item-texture  texture "
     >Summon Greater Sentinel<a
