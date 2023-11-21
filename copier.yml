@@ -37,13 +37,14 @@ java_lang:
   type: yaml
   choices:
     Java:
-      value:
+      value: &java_lang_java
         src: java
         ext: java
     Kotlin:
       value:
         src: kotlin
         ext: kt
+  default: *java_lang_java
 
 java_package: "com/example/{{ modid }}"
 
@@ -53,13 +54,14 @@ pattern_regex:
   type: str
   choices:
     Hex Casting (1.20):
-      value: 'make\(\s*"(?P<name>[a-zA-Z0-9_\/]+)",\s*(?:new )?(?:ActionRegistryEntry|OperationAction)\(\s*HexPattern\.fromAngles\(\s*"(?P<signature>[aqweds]+)",\s*HexDir.(?P<startdir>\w+)\)'
+      value: &pattern_regex_hex_1_20 'make\(\s*"(?P<name>[a-zA-Z0-9_\/]+)",\s*(?:new )?(?:ActionRegistryEntry|OperationAction)\(\s*HexPattern\.fromAngles\(\s*"(?P<signature>[aqweds]+)",\s*HexDir.(?P<startdir>\w+)\)'
     Hex Casting (1.19):
       value: 'HexPattern\.fromAngles\("(?P<signature>[qweasd]+)", HexDir\.(?P<startdir>\w+)\),\s*modLoc\("(?P<name>[^"]+)"\)[^;]+?(?:makeConstantOp|Op\w+|Widget\.\w+)(?:[^;]*(?P<is_per_world>true)\);)?'
     Hexal (1.20):
       value: 'make\(\s*"(?P<name>[a-zA-Z0-9_\/]+)",\s*HexPattern\.fromAngles\(\s*"(?P<signature>[aqweds]+)",\s*HexDir.(?P<startdir>\w+)\)'
     Hexal (1.19):
       value: (?s-m:HexPattern\.fromAngles\("(?P<signature>[qweasd]+)", HexDir\.(?P<startdir>\w+)\),\s*modLoc\("(?P<name>[^"]+)"\),[^,]+?(?:makeConstantOp|Op\w+).*?(?P<is_per_world>\btrue)?\)(?:[^\)]+?\bval\b|(?:(?!\bval\b)(?:.))+$))
+  default: *pattern_regex_hex_1_20
 
 # GitHub
 
