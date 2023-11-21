@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import shutil
 from pathlib import Path
 from typing import Mapping
@@ -55,6 +57,34 @@ def pdoc(session: nox.Session):
         f"Version: {version} ({commit})",
         *session.posargs,
     )
+
+
+@nox.session
+def tag(session: nox.Session):
+    session.install("hatch", "packaging")
+
+    from packaging.version import Version
+
+    message = "Automatic PEP 440 release tag"
+
+    # validate some assumptions to make this simpler
+    version = Version(run_silent(session, "hatch", "version"))
+    assert version.epoch != 0
+    assert len(version.release) == 3
+
+    major, minor, _ = version.release
+    tag = f"v{version.epoch}!{major}"
+
+    # always update the prerelease tag, and also update the release tag if needed
+    update_git_tag(session, tag=tag + ".dev", message=message)
+    if version.dev is None:
+        update_git_tag(session, tag=tag, message=message)
+
+    tag += f".{minor}"
+
+    update_git_tag(session, tag=tag + ".dev", message=message)
+    if version.dev is None:
+        update_git_tag(session, tag=tag, message=message)
 
 
 @nox.session
@@ -129,3 +159,18 @@ def run_silent(
     )
     assert output
     return output.strip()
+
+
+def update_git_tag(session: nox.Session, *, tag: str, message: str):
+    return session.run(
+        "git",
+        "tag",
+        "-fam",
+        message,
+        tag,
+        external=True,
+        env=dict(
+            GIT_COMMITTER_NAME="github-actions",
+            GIT_COMMITTER_EMAIL="github-actions@github.com",
+        ),
+    )
