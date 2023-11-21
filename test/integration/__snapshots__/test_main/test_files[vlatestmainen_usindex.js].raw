@@ -132,7 +132,7 @@ function doCycleTexturesForever() {
 }
 // these are filled by Jinja
 const BOOK_URL = "GITHUB_PAGES_URL";
-const VERSION = "latest";
+const VERSION = "latest/main";
 const LANG = "en_us";
 // Creates an element in the form `<li><a href=${href}>${text}</a></li>`
 function dropdownItem(text, href) {
@@ -196,9 +196,9 @@ function addDropdowns(sitemap) {
   }
   // versions
   document.getElementById("version-dropdown").append(
-    ...versionDropdownItems(sitemap, branches),
-    dropdownSeparator(),
     ...versionDropdownItems(sitemap, versions),
+    dropdownSeparator(),
+    ...versionDropdownItems(sitemap, branches),
   );
   // languages for the current version
   const langNames = sitemap[VERSION].langNames;

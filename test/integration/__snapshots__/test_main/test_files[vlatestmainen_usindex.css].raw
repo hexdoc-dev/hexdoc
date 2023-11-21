@@ -113,9 +113,11 @@ blockquote.crafting-info {
   right: -4px;
 }
 .item-texture {
-  image-rendering: pixelated;
   width: 32px;
   height: 32px;
+}
+.pixelated {
+  image-rendering: pixelated;
 }
 .multi-textures .texture {
   position: absolute;

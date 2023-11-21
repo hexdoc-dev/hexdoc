@@ -12,11 +12,11 @@ from syrupy.assertion import SnapshotAssertion
 from ..conftest import list_directory, longrun
 
 CHECK_RENDERED_FILENAMES = [
-    "v/latest/main/index.html",
-    "v/latest/main/index.css",
-    "v/latest/main/textures.css",
-    "v/latest/main/index.js",
-    "v/latest/main/hexcasting.js",
+    "v/latest/main/en_us/index.html",
+    "v/latest/main/en_us/index.css",
+    "v/latest/main/en_us/textures.css",
+    "v/latest/main/en_us/index.js",
+    "v/latest/main/en_us/hexcasting.js",
 ]
 
 
@@ -38,7 +38,8 @@ def test_render_app_release(
     snapshot: SnapshotAssertion,
     hexcasting_props_file: Path,
 ):
-    monkeypatch.setattr(_hooks, "GRADLE_VERSION", "VERSION")
+    monkeypatch.setattr(_hooks, "GRADLE_VERSION", "MOD_VERSION")
+    monkeypatch.setattr(_hooks, "PY_VERSION", "PLUGIN_VERSION")
     app_output_dir = tmp_path_factory.mktemp("app")
 
     render(
@@ -72,6 +73,7 @@ def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: P
         subprocess_output_dir.as_posix(),
         f"--props={hexcasting_props_file.as_posix()}",
         "--lang=en_us",
+        "--branch=main",
     ]
     subprocess.run(cmd, check=True)
 
