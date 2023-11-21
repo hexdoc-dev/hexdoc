@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import shutil
 from pathlib import Path
 from typing import Mapping
@@ -40,7 +39,7 @@ def tests(session: nox.Session):
 def pdoc(session: nox.Session):
     session.install(".[pdoc]")
 
-    version = run_silent(session, "hatch", "version")
+    version = run_silent(session, "hatch", "--quiet", "version")
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
     session.run(
@@ -69,7 +68,7 @@ def tag(session: nox.Session):
     message = "Automatic PEP 440 release tag"
 
     # validate some assumptions to make this simpler
-    version = Version(run_silent(session, "hatch", "version"))
+    version = Version(run_silent(session, "hatch", "--quiet", "version"))
     assert version.epoch != 0
     assert len(version.release) == 3
 
@@ -152,14 +151,12 @@ def run_silent(
     env: Mapping[str, str] | None = None,
     external: bool = False,
 ):
-    with io.StringIO() as f:
-        session.run(
-            *args,
-            env=env,
-            external=external,
-            stdout=f,
-        )
-        output = f.getvalue()
+    output: str | None = session.run(
+        *args,
+        env=env,
+        silent=True,
+        external=external,
+    )
     assert output
     return output.strip()
 
