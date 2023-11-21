@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import shutil
 from pathlib import Path
 from typing import Mapping
@@ -151,12 +152,14 @@ def run_silent(
     env: Mapping[str, str] | None = None,
     external: bool = False,
 ):
-    output: str | None = session.run(
-        *args,
-        env=env,
-        silent=True,
-        external=external,
-    )
+    with io.StringIO() as f:
+        session.run(
+            *args,
+            env=env,
+            external=external,
+            stdout=f,
+        )
+        output = f.getvalue()
     assert output
     return output.strip()
 
