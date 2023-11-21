@@ -76,7 +76,7 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("test/_submodules/HexMod/doc/hexdoc.toml")
+    return Path("submodules/HexMod/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")

@@ -20,7 +20,7 @@
             "args": [
                 "export",
                 "--props",
-                "./test/_submodules/HexMod/doc/hexdoc.toml",
+                "./submodules/HexMod/doc/hexdoc.toml",
                 "--release",
             ],
             "console": "integratedTerminal",
@@ -36,7 +36,7 @@
                 "render",
                 "_site/src/docs",
                 "--props",
-                "${workspaceFolder}/test/_submodules/HexMod/doc/hexdoc.toml",
+                "${workspaceFolder}/submodules/HexMod/doc/hexdoc.toml",
                 "--lang",
                 "en_us",
                 "--allow-missing",

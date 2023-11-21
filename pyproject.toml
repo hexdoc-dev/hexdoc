@@ -170,7 +170,6 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "test/_submodules/HexMod",
     "template",
 ]
 

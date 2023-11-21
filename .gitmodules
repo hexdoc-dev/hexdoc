@@ -1,3 +1,3 @@
-[submodule "test/_submodules/HexMod"]
-	path = test/_submodules/HexMod
+[submodule "submodules/HexMod"]
+	path = submodules/HexMod
 	url = https://github.com/object-Object/HexMod

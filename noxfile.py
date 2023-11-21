@@ -20,7 +20,7 @@ nox.options.sessions = ["tests"]
 @nox.session
 def tests(session: nox.Session):
     session.run("pip", "uninstall", "hexdoc-mod", "-y")
-    session.install("-e", ".[test]", "-e", "./test/_submodules/HexMod")
+    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
     # this apparently CANNOT run from pre-commit in GitHub Actions (venv issues)
     session.run("pyright", "src", "--warnings")
@@ -62,7 +62,7 @@ def hexdoc(session: nox.Session):
 @nox.session
 def mock_ci(session: nox.Session):
     session.install(".", "hatch")
-    session.install("./test/_submodules/HexMod", "--no-deps")
+    session.install("./submodules/HexMod", "--no-deps")
     session.install("../hexdoc-minecraft", "--no-deps")  # TODO: remove
 
     github_path = Path("out/github")
@@ -72,7 +72,7 @@ def mock_ci(session: nox.Session):
 
     github_path.mkdir(parents=True)
 
-    with session.cd("test/_submodules/HexMod"):
+    with session.cd("submodules/HexMod"):
         github_sha = run_silent_external(session, "git", "rev-parse", "HEAD")
 
     session.env.update(
@@ -83,7 +83,7 @@ def mock_ci(session: nox.Session):
         GITHUB_SHA=github_sha,
         GITHUB_STEP_SUMMARY=str(github_path / "step_summary.md"),
         GITHUB_TOKEN=run_silent_external(session, "gh", "auth", "token"),
-        HEXDOC_PROPS="test/_submodules/HexMod/doc/hexdoc.toml",
+        HEXDOC_PROPS="submodules/HexMod/doc/hexdoc.toml",
         HEXDOC_RELEASE="true",
     )
     if "-v" in session.posargs or "--verbose" in session.posargs:
