@@ -33,11 +33,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Install display server
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: xvfb
+
       - name: Install dependencies
         run: pip install . hatch
 
       - name: Export hexdoc resources
-        run: hexdoc ci export
+        run: xvfb-run --auto-servernum hexdoc ci export
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
@@ -55,6 +60,11 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Install display server
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: xvfb
+
       - name: Run pre-commit hooks
         env:
           SKIP: pyright
@@ -64,7 +74,7 @@ jobs:
         run: pip install nox
 
       - name: Run Nox
-        run: nox
+        run: xvfb-run --auto-servernum nox
 
   update-tags:
     runs-on: ubuntu-latest
