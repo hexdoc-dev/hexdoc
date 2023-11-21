@@ -17,7 +17,15 @@ CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/textures.css",
     "v/latest/main/en_us/index.js",
     "v/latest/main/en_us/hexcasting.js",
+    "v/latest/main/en_us/.sitemap-marker.json",
 ]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def patch_versions(monkeysession: MonkeyPatch):
+    monkeysession.setattr(_hooks, "GRADLE_VERSION", "MOD_VERSION")
+    monkeysession.setattr(_hooks, "PY_VERSION", "PLUGIN_VERSION")
+    monkeysession.setattr(_hooks, "FULL_VERSION", "FULL_VERSION")
 
 
 @pytest.fixture(scope="session")
@@ -33,13 +41,10 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
 @longrun
 @pytest.mark.dependency()
 def test_render_app_release(
-    monkeypatch: MonkeyPatch,
     tmp_path_factory: TempPathFactory,
     snapshot: SnapshotAssertion,
     hexcasting_props_file: Path,
 ):
-    monkeypatch.setattr(_hooks, "GRADLE_VERSION", "MOD_VERSION")
-    monkeypatch.setattr(_hooks, "PY_VERSION", "PLUGIN_VERSION")
     app_output_dir = tmp_path_factory.mktemp("app")
 
     render(
@@ -102,5 +107,8 @@ def test_files(
     app_file = app_output_dir / filename
     subprocess_file = subprocess_output_dir / filename
 
-    assert app_file.read_bytes() == subprocess_file.read_bytes()
     assert app_file == path_snapshot
+
+    # difficult to monkeypatch versions for subprocess, so this file will be different
+    if not filename.endswith(".sitemap-marker.json"):
+        assert app_file.read_bytes() == subprocess_file.read_bytes()
