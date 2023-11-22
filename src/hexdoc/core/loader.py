@@ -22,6 +22,7 @@ from hexdoc.utils import (
     strip_suffixes,
     write_to_path,
 )
+from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
 from .resource import ResourceLocation, ResourceType
@@ -43,7 +44,6 @@ BookFolder = Literal["categories", "entries", "templates"]
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
     props: Properties
-    root_book_id: ResourceLocation | None
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
@@ -92,7 +92,6 @@ class ModResourceLoader:
 
         return cls(
             props=props,
-            root_book_id=props.book,
             export_dir=export_dir,
             resource_dirs=[
                 path_resource_dir
@@ -166,52 +165,34 @@ class ModResourceLoader:
 
         return metadata
 
-    # TODO: maybe this should take lang as a variable?
     @must_yield_something
     def load_book_assets(
         self,
-        book_id: ResourceLocation,
+        parent_book_id: ResourceLocation,
         folder: BookFolder,
         use_resource_pack: bool,
+        lang: str | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
-        if not self.root_book_id:
-            raise RuntimeError("Unable to call load_book_assets, root_book_id is None")
+        if self.props.book_id is None:
+            raise TypeError("Can't load book assets because props.book_id is None")
 
-        # self.root_book_id: hexcasting:thehexbook
-        # book_id:           hexal:hexalbook
-        if book_id != self.root_book_id:
-            for extra_book_id in [book_id] + self.props.extra_books:
-                yield from self._load_book_assets(
-                    extra_book_id,
-                    folder,
-                    use_resource_pack=use_resource_pack,
-                    allow_missing=True,
-                )
+        if lang is None:
+            lang = self.props.default_lang
 
-        yield from self._load_book_assets(
-            self.root_book_id,
-            folder,
-            use_resource_pack=use_resource_pack,
-            allow_missing=False,
+        # use ordered set to be deterministic but avoid duplicate ids
+        books_to_check = PydanticOrderedSet.collect(
+            parent_book_id,
+            self.props.book_id,
+            *self.props.extra_books,
         )
 
-    def _load_book_assets(
-        self,
-        book_id: ResourceLocation,
-        folder: BookFolder,
-        *,
-        use_resource_pack: bool,
-        allow_missing: bool,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
-        yield from self.load_resources(
-            type="assets" if use_resource_pack else "data",
-            folder=Path("patchouli_books")
-            / book_id.path
-            / self.props.default_lang
-            / folder,
-            namespace=book_id.namespace,
-            allow_missing=allow_missing,
-        )
+        for book_id in books_to_check:
+            yield from self.load_resources(
+                type="assets" if use_resource_pack else "data",
+                folder=Path("patchouli_books") / book_id.path / lang / folder,
+                namespace=book_id.namespace,
+                allow_missing=True,
+            )
 
     @overload
     def load_resource(

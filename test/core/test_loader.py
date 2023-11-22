@@ -31,14 +31,14 @@ def patchi_book(
 
 def load_book_assets(
     loader: ModResourceLoader,
-    book_id: ResourceLocation,
+    parent_book_id: ResourceLocation,
     folder: BookFolder,
     key: Callable[[JSONDict], Any],
 ):
     assets = list(
         data
         for _, _, data in loader.load_book_assets(
-            book_id=book_id,
+            parent_book_id=parent_book_id,
             folder=folder,
             use_resource_pack=False,
         )
@@ -78,20 +78,19 @@ def test_multi_book(tmp_path: Path):
     with ExitStack() as stack:
         loader = ModResourceLoader(
             props=props,
-            root_book_id=hexcasting_id,
             export_dir=None,
             resource_dirs=resource_dirs,
             _stack=stack,
         )
 
-        assert load_book_assets(loader, hexal_id, "categories", key=sortkey) == [
+        assert load_book_assets(loader, hexcasting_id, "categories", key=sortkey) == [
             {"id": str(hexal_id)},
             {"id": str(hexcasting_id)},
         ]
 
         props.extra_books.append(hexgloop_id)
 
-        assert load_book_assets(loader, hexal_id, "categories", key=sortkey) == [
+        assert load_book_assets(loader, hexcasting_id, "categories", key=sortkey) == [
             {"id": str(hexal_id)},
             {"id": str(hexcasting_id)},
             {"id": str(hexgloop_id)},

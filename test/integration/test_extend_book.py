@@ -153,12 +153,12 @@ def child_loader(child_props: Properties, pm: PluginManager):
 @pytest.fixture
 def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
     parent_props = parent_loader.props
-    assert parent_props.book
+    assert parent_props.book_id
 
     i18n = I18n.load(parent_loader, parent_props.default_lang, allow_missing=True)
 
     return load_book(
-        book_id=parent_props.book,
+        book_id=parent_props.book_id,
         pm=pm,
         loader=parent_loader,
         i18n=i18n,
@@ -169,12 +169,12 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
 @pytest.fixture
 def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     child_props = child_loader.props
-    assert child_props.book
+    assert child_props.book_id
 
     i18n = I18n.load(child_loader, child_props.default_lang, allow_missing=True)
 
     return load_book(
-        book_id=child_props.book,
+        book_id=child_props.book_id,
         pm=pm,
         loader=child_loader,
         i18n=i18n,
@@ -187,9 +187,8 @@ def test_parent_ids(parent_book: tuple[Book, BookContext]):
 
     want_id = ResourceLocation("parent", "parentbook")
 
-    assert want_id == context.props.book
+    assert want_id == context.props.book_id
     assert want_id == context.book_id
-    assert want_id == context.loader.root_book_id
     assert want_id == book.id
 
 
@@ -199,7 +198,6 @@ def test_child_parent_ids(child_book: tuple[Book, BookContext]):
     want_id = ResourceLocation("parent", "parentbook")
 
     assert want_id == context.book_id
-    assert want_id == context.loader.root_book_id
     assert want_id == book.id
 
 
@@ -208,4 +206,4 @@ def test_child_child_ids(child_book: tuple[Book, BookContext]):
 
     want_id = ResourceLocation("child", "childbook")
 
-    assert want_id == context.props.book
+    assert want_id == context.props.book_id

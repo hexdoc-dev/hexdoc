@@ -124,7 +124,8 @@ class Properties(BaseProperties):
     """Pydantic model for `hexdoc.toml` / `properties.toml`."""
 
     modid: str
-    book: ResourceLocation | None = None
+    # TODO: make another properties type without book_id
+    book_id: ResourceLocation | None = Field(alias="book", default=None)
     extra_books: list[ResourceLocation] = Field(default_factory=list)
     default_lang: str
     default_branch: str

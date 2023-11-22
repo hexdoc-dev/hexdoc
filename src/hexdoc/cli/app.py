@@ -89,9 +89,9 @@ def repl(
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
         repl_locals["all_metadata"] = all_metadata
 
-        if props.book:
+        if props.book_id:
             book, context = load_book(
-                book_id=props.book,
+                book_id=props.book_id,
                 pm=pm,
                 loader=loader,
                 i18n=i18n,
@@ -149,9 +149,9 @@ def export(
         all_i18n = I18n.load_all(loader, allow_missing)
         i18n = all_i18n[props.default_lang]
 
-        if props.book:
+        if props.book_id:
             load_book(
-                book_id=props.book,
+                book_id=props.book_id,
                 pm=pm,
                 loader=loader,
                 i18n=i18n,
@@ -178,7 +178,7 @@ def render(
 
     # load data
     props, pm, plugin = load_common_data(props_file, verbosity, branch, book=True)
-    if not props.book:
+    if not props.book_id:
         raise ValueError("Expected a value for props.book, got None")
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
@@ -196,7 +196,7 @@ def render(
         i18n = I18n.load(loader, lang, allow_missing)
 
         book, context = load_book(
-            book_id=props.book,
+            book_id=props.book_id,
             pm=pm,
             loader=loader,
             i18n=i18n,

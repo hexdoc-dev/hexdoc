@@ -53,6 +53,10 @@ class PydanticOrderedSet(OrderedSet[_T]):
         super().__init__(initial or [])
 
     @classmethod
+    def collect(cls, *initial: _T):
+        return cls(initial)
+
+    @classmethod
     def __get_pydantic_core_schema__(
         cls,
         source: type[Any],
