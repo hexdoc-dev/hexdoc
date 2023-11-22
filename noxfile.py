@@ -24,10 +24,10 @@ nox.options.sessions = [
 
 @nox.session
 def test(session: nox.Session):
-    session.install(".[test]")
+    session.install("-e", ".[test]")
 
     # this apparently CANNOT run from pre-commit in GitHub Actions (venv issues)
-    session.run("pyright", "src", "--warnings")
+    session.run("pyright", "--warnings")
 
     session.run("pytest", *session.posargs)
 

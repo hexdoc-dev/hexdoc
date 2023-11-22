@@ -2,6 +2,7 @@
 
 import subprocess
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from hexdoc.cli.app import render
@@ -22,7 +23,11 @@ CHECK_RENDERED_FILENAMES = [
 
 @pytest.fixture(scope="session", autouse=True)
 def patch_versions(monkeysession: MonkeyPatch):
-    from hexdoc_hexcasting import _hooks
+    # because pyright complains when we do this in the CI
+    if TYPE_CHECKING:
+        _hooks = None
+    else:
+        from hexdoc_hexcasting import _hooks
 
     monkeysession.setattr(_hooks, "GRADLE_VERSION", "MOD_VERSION")
     monkeysession.setattr(_hooks, "PY_VERSION", "PLUGIN_VERSION")
