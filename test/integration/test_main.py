@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from hexdoc.cli.app import render
+from hexdoc.cli.app import export, render
 from hexdoc_hexcasting import _hooks
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
@@ -19,6 +19,12 @@ CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/hexcasting.js",
     "v/latest/main/en_us/.sitemap-marker.json",
 ]
+
+
+@pytest.fixture(autouse=True, scope="session")
+def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
+    export(props_file=Path("hexdoc.toml"), branch="main")
+    export(props_file=hexcasting_props_file, branch="main")
 
 
 @pytest.fixture(scope="session", autouse=True)

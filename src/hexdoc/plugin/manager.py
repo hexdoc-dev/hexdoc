@@ -90,18 +90,18 @@ class PluginManager:
     def __init__(self, branch: str, load: bool = True) -> None:
         """Initialize the hexdoc plugin manager.
 
-        If `load` is true (the default), calls `init_plugins` and `init_mod_plugins`.
+        If `load` is true (the default), calls `init_entrypoints` and `init_mod_plugins`.
         """
         self.branch = branch
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)
         self.mod_plugins: dict[str, ModPlugin] = {}
 
+        self.inner.add_hookspecs(PluginSpec)
         if load:
-            self.init_plugins()
+            self.init_entrypoints()
             self.init_mod_plugins()
 
-    def init_plugins(self):
-        self.inner.add_hookspecs(PluginSpec)
+    def init_entrypoints(self):
         self.inner.load_setuptools_entrypoints(HEXDOC_PROJECT_NAME)
         self.inner.check_pending()
 
