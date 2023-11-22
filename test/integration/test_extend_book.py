@@ -182,9 +182,30 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     )
 
 
-def test_load_parent(parent_book: tuple[Book, BookContext]):
-    pass
+def test_parent_ids(parent_book: tuple[Book, BookContext]):
+    book, context = parent_book
+
+    want_id = ResourceLocation("parent", "parentbook")
+
+    assert want_id == context.props.book
+    assert want_id == context.book_id
+    assert want_id == context.loader.root_book_id
+    assert want_id == book.id
 
 
-def test_load_child(child_book: tuple[Book, BookContext]):
-    pass
+def test_child_parent_ids(child_book: tuple[Book, BookContext]):
+    book, context = child_book
+
+    want_id = ResourceLocation("parent", "parentbook")
+
+    assert want_id == context.book_id
+    assert want_id == context.loader.root_book_id
+    assert want_id == book.id
+
+
+def test_child_child_ids(child_book: tuple[Book, BookContext]):
+    _, context = child_book
+
+    want_id = ResourceLocation("child", "childbook")
+
+    assert want_id == context.props.book
