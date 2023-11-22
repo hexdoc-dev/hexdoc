@@ -36,15 +36,29 @@ def test(session: nox.Session):
 def test_submodules(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
-    export_cmd = ["hexdoc", "export", "--branch", "main"]
-    session.run(*export_cmd)
-    session.run(*export_cmd, "--props", "submodules/HexMod/doc/hexdoc.toml")
+    # Hex Casting
+
+    for props_file in [
+        "hexdoc.toml",
+        "submodules/HexMod/doc/hexdoc.toml",
+    ]:
+        env = {
+            "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
+            "GITHUB_SHA": "GITHUB_SHA",
+            "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
+            "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
+        }
+        session.run(
+            "hexdoc", "export", "--branch", "main", "--props", props_file, env=env
+        )
 
     session.run("pytest", "-m", "hexcasting", *session.posargs)
 
-    # copier-template-tester
-    shutil.rmtree("submodules/hexdoc-hexcasting-template/.ctt", ignore_errors=True)
-    session.run("ctt", "--base-dir", "submodules/hexdoc-hexcasting-template")
+    # hexdoc-hexcasting-template
+
+    ctt_root = "submodules/hexdoc-hexcasting-template"
+    shutil.rmtree(f"{ctt_root}/.ctt", ignore_errors=True)
+    session.run("ctt", "--base-dir", ctt_root)  # run copier-template-tester
 
     session.run("pytest", "-m", "copier", *session.posargs)
 
