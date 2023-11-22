@@ -6,7 +6,7 @@ import sys
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Union
+from typing import Any, Union
 
 from packaging.version import Version
 from typer import Typer
@@ -64,37 +64,45 @@ def repl(
     allow_missing: bool = False,
 ):
     """Start a Python shell with some helpful extra locals added from hexdoc."""
-    props, pm, _ = load_common_data(props_file, verbosity, "")
 
-    loader = ModResourceLoader.load_all(
-        props,
-        pm,
-        export=False,
+    repl_locals = dict[str, Any](
+        props_path=props_file,
     )
 
-    all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-
-    i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
-
-    repl_locals = dict(
-        props=props,
-        pm=pm,
-        i18n=i18n,
-        loader=loader,
-    )
-
-    if props.book:
-        book, context = load_book(
-            book_id=props.book,
-            pm=pm,
-            loader=loader,
-            i18n=i18n,
-            all_metadata=all_metadata,
-        )
+    try:
+        props, pm, plugin = load_common_data(props_file, verbosity, "")
         repl_locals |= dict(
-            book=book,
-            context=context,
+            props=props,
+            pm=pm,
+            plugin=plugin,
         )
+
+        loader = ModResourceLoader.load_all(
+            props,
+            pm,
+            export=False,
+        )
+        repl_locals["loader"] = loader
+
+        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+
+        all_metadata = loader.load_metadata(model_type=HexdocMetadata)
+        repl_locals["all_metadata"] = all_metadata
+
+        if props.book:
+            book, context = load_book(
+                book_id=props.book,
+                pm=pm,
+                loader=loader,
+                i18n=i18n,
+                all_metadata=all_metadata,
+            )
+            repl_locals |= dict(
+                book=book,
+                context=context,
+            )
+    except Exception as e:
+        print(e)
 
     code.interact(
         banner=dedent(
