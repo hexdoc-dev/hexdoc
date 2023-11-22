@@ -5,55 +5,28 @@ import sys
 from pathlib import Path
 
 import pytest
-from hexdoc.cli.app import export, render
+from hexdoc.cli.app import render
 from pytest import MonkeyPatch
-from pytest_copie.plugin import Copie
 from syrupy.assertion import SnapshotAssertion
 
-from ..conftest import list_directory, nox_only, write_file_tree
+from ..conftest import list_directory, write_file_tree
 
 
 def run_pip(*args: str):
     return subprocess.run((sys.executable, "-m", "pip") + args, check=True)
 
 
-@pytest.fixture(autouse=True, scope="session")
-def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("hexdoc.toml"), branch="main")
-    export(props_file=hexcasting_props_file, branch="main")
-
-
-@nox_only
+@pytest.mark.copier
 def test_copier(
-    copie: Copie,
     monkeypatch: MonkeyPatch,
     snapshot: SnapshotAssertion,
     path_snapshot: SnapshotAssertion,
     env_overrides: dict[str, str],
 ):
-    git_tag = "v9999!9999"
-    subprocess.run(["git", "tag", git_tag])
-    try:
-        result = copie.copy(
-            {
-                "modid": "mod",
-                "multiloader": False,
-                "java_package": "com/package",
-                "pattern_registry": "Patterns.java",
-            }
-        )
-    finally:
-        subprocess.run(["git", "tag", "-d", git_tag])
-
-    assert result.exception is None
-    assert result.project_dir is not None
-
-    monkeypatch.chdir(result.project_dir)
-
-    subprocess.run(["git", "init"], check=True)
+    monkeypatch.chdir("submodules/hexdoc-hexcasting-template/.ctt/test_copier")
 
     write_file_tree(
-        result.project_dir,
+        ".",
         {
             "src/generated/resources": {},
             "src/main/java/com/package/Patterns.java": "",

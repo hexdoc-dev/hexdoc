@@ -6,29 +6,14 @@ from typing import Any, Callable, Literal
 import pytest
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import JSONValue
-from pytest import MonkeyPatch, Parser
+from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
 
-longrun = pytest.mark.skipif("not config.getoption('longrun')")
-nox_only = pytest.mark.skipif("not config.getoption('nox')")
-
-
-# https://stackoverflow.com/a/43938191
-def pytest_addoption(parser: Parser):
-    parser.addoption(
-        "--no-longrun",
-        action="store_false",
-        dest="longrun",
-        help="disable longrun-decorated tests",
-    )
-    parser.addoption(
-        "--nox",
-        action="store_true",
-        dest="nox",
-        help="enable nox_only-decorated tests",
-    )
+collect_ignore = [
+    "noxfile.py",
+]
 
 
 class FilePathSnapshotExtension(SingleFileSnapshotExtension):
@@ -105,9 +90,9 @@ FileValue = JSONValue | tuple[Literal["a"], str] | Callable[[str | None], str]
 FileTree = dict[str, "FileTree | FileValue"]
 
 
-def write_file_tree(root: Path, tree: FileTree):
+def write_file_tree(root: str | Path, tree: FileTree):
     for path, value in tree.items():
-        path = root / path
+        path = Path(root, path)
         match value:
             case {**children} if path.suffix != ".json":
                 # subtree

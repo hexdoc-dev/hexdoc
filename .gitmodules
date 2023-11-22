@@ -1,3 +1,6 @@
 [submodule "submodules/HexMod"]
 	path = submodules/HexMod
 	url = https://github.com/object-Object/HexMod
+[submodule ".\\submodules\\hexdoc-hexcasting-template"]
+	path = .\\submodules\\hexdoc-hexcasting-template
+	url = https://github.com/object-Object/hexdoc-hexcasting-template.git

@@ -4,12 +4,11 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from hexdoc.cli.app import export, render
-from hexdoc_hexcasting import _hooks
+from hexdoc.cli.app import render
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
-from ..conftest import list_directory, longrun
+from ..conftest import list_directory
 
 CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/index.html",
@@ -21,14 +20,10 @@ CHECK_RENDERED_FILENAMES = [
 ]
 
 
-@pytest.fixture(autouse=True, scope="session")
-def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("hexdoc.toml"), branch="main")
-    export(props_file=hexcasting_props_file, branch="main")
-
-
 @pytest.fixture(scope="session", autouse=True)
 def patch_versions(monkeysession: MonkeyPatch):
+    from hexdoc_hexcasting import _hooks
+
     monkeysession.setattr(_hooks, "GRADLE_VERSION", "MOD_VERSION")
     monkeysession.setattr(_hooks, "PY_VERSION", "PLUGIN_VERSION")
     monkeysession.setattr(_hooks, "FULL_VERSION", "FULL_VERSION")
@@ -44,8 +39,8 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
     return tmp_path_factory.mktemp("subprocess")
 
 
-@longrun
-@pytest.mark.dependency()
+@pytest.mark.hexcasting
+@pytest.mark.dependency
 def test_render_app_release(
     tmp_path_factory: TempPathFactory,
     snapshot: SnapshotAssertion,
@@ -64,8 +59,8 @@ def test_render_app_release(
     assert list_directory(app_output_dir) == snapshot
 
 
-@longrun
-@pytest.mark.dependency()
+@pytest.mark.hexcasting
+@pytest.mark.dependency
 def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
     render(
         output_dir=app_output_dir,
@@ -75,8 +70,8 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
     )
 
 
-@longrun
-@pytest.mark.dependency()
+@pytest.mark.hexcasting
+@pytest.mark.dependency
 def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",

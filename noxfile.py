@@ -13,25 +13,48 @@ PDOC_EDIT_URL = "https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/"
 
 nox.options.reuse_existing_virtualenvs = True
 
-nox.options.sessions = ["tests"]
+nox.options.sessions = [
+    "test",
+    "test_submodules",
+]
 
 
-# sessions
+# tests
 
 
 @nox.session
-def tests(session: nox.Session):
-    session.run("pip", "uninstall", "hexdoc-mod", "-y")
-    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+def test(session: nox.Session):
+    session.install(".[test]")
 
     # this apparently CANNOT run from pre-commit in GitHub Actions (venv issues)
     session.run("pyright", "src", "--warnings")
 
-    session.run("pytest", "--nox", *session.posargs)
+    session.run("pytest", *session.posargs)
+
+
+@nox.session
+def test_submodules(session: nox.Session):
+    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+
+    export_cmd = ["hexdoc", "export", "--branch", "main"]
+    session.run(*export_cmd)
+    session.run(*export_cmd, "--props", "submodules/HexMod/doc/hexdoc.toml")
+
+    session.run("pytest", "-m", "hexcasting", *session.posargs)
+
+    # copier-template-tester
+    shutil.rmtree("submodules/hexdoc-hexcasting-template/.ctt", ignore_errors=True)
+    session.run("ctt", "--base-dir", "submodules/hexdoc-hexcasting-template")
+
+    session.run("pytest", "-m", "copier", *session.posargs)
+
+
+# CI/CD
 
 
 @nox.session
 def pdoc(session: nox.Session):
+    # docs for the docs!
     session.install(".[pdoc]")
 
     version = run_silent(session, "hatch", "--quiet", "version")
@@ -82,6 +105,9 @@ def tag(session: nox.Session):
         update_git_tag(session, tag=tag, message=message)
 
 
+# development helpers
+
+
 @nox.session
 def hexdoc(session: nox.Session):
     session.install(".")
@@ -127,7 +153,7 @@ def mock_ci(session: nox.Session):
     session.run("hexdoc", "ci", "merge")
 
 
-# utils
+# utils (not sessions)
 
 
 def run_silent_external(
