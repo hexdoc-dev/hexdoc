@@ -219,14 +219,14 @@ class I18n(HexdocModel):
             if key in self.lookup:
                 return self.lookup[key]
 
-        if default is not None:
-            return LocalizedStr.skip_i18n(default)
-
         if not silent:
             logger.error(
                 f"No translation in {self.lang} for "
                 + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}")
             )
+
+        if default is not None:
+            return LocalizedStr.skip_i18n(default)
 
         if self.default_i18n:
             return self.default_i18n.localize(*keys, default=default, silent=silent)
@@ -285,11 +285,11 @@ class I18n(HexdocModel):
             f"tag.{tag.namespace}.{tag.path}",
             f"tag.item.{tag.namespace}.{tag.path}",
             f"tag.block.{tag.namespace}.{tag.path}",
+            default=self.fallback_tag_name(tag),
             silent=silent,
         )
         return LocalizedStr(key=localized.key, value=f"Tag: {localized.value}")
 
-    # TODO: actually use this
     def fallback_tag_name(self, tag: ResourceLocation):
         """Generates a more-or-less reasonable fallback name for a tag.
 
