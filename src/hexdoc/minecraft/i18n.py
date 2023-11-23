@@ -219,11 +219,11 @@ class I18n(HexdocModel):
             if key in self.lookup:
                 return self.lookup[key]
 
-        if not silent:
-            logger.error(
-                f"No translation in {self.lang} for "
-                + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}")
-            )
+        logger.log(
+            logging.DEBUG if silent else logging.ERROR,
+            f"No translation in {self.lang} for "
+            + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}"),
+        )
 
         if default is not None:
             return LocalizedStr.skip_i18n(default)
