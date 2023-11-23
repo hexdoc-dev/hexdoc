@@ -286,6 +286,22 @@ class I18n(HexdocModel):
         )
         return LocalizedStr(key=localized.key, value=f"Tag: {localized.value}")
 
+    # TODO: actually use this
+    def fallback_tag_name(self, tag: ResourceLocation):
+        """Generates a more-or-less reasonable fallback name for a tag.
+
+        For example:
+        * `forge:ores` -> Ores
+        * `c:saplings/almond` -> Almond Saplings
+        * `c:tea_ingredients/gloopy/weak` -> Tea Ingredients, Gloopy, Weak
+        """
+
+        if tag.path.count("/") == 1:
+            before, after = tag.path.split("/")
+            return f"{after} {before}".title()
+
+        return tag.path.replace("_", " ").replace("/", ", ").title()
+
     def localize_texture(self, texture_id: ResourceLocation):
         path = texture_id.path.removeprefix("textures/").removesuffix(".png")
         root, rest = path.split("/", 1)
