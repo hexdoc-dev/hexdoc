@@ -22,7 +22,7 @@ def get_default_props() -> Path:
     for path in DEFAULT_PROPS_FILES:
         path = Path(path)
         if path.is_file():
-            logger.info(f"Loading props from default path: {path}")
+            logger.debug(f"Loading props from default path: {path}")
             return path
 
     raise FileNotFoundError(

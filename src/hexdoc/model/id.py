@@ -7,7 +7,7 @@ from typing import Self
 from hexdoc.core.loader import LoaderContext, ModResourceLoader
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.utils import JSONDict, isinstance_or_raise
+from hexdoc.utils import TRACE, JSONDict, isinstance_or_raise
 
 from .base import HexdocModel, ValidationContext
 from .inline import InlineModel
@@ -29,7 +29,7 @@ class IDModel(HexdocModel):
         data: JSONDict,
         context: ValidationContext,
     ) -> Self:
-        logger.debug(f"Load {cls} at {id}")
+        logger.log(TRACE, f"Load {cls} at {id}")
         return cls.model_validate(
             data | {"id": id, "resource_dir": resource_dir},
             context=context,

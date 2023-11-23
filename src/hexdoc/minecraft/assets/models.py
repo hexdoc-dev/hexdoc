@@ -163,7 +163,7 @@ class ModelItem(HexdocModel):
             return "block_model", override.model
 
         if index in checked_overrides[self.id]:
-            logger.info(f"Ignoring recursive override: {override.model}")
+            logger.debug(f"Ignoring recursive override: {override.model}")
             return None
 
         checked_overrides[self.id].add(index)

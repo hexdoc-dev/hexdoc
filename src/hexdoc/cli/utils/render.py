@@ -58,7 +58,7 @@ class HexdocTemplateLoader(BaseLoader):
     def get_source(self, environment: Environment, template: str):
         for alias, replacement in JINJA_NAMESPACE_ALIASES.items():
             if template.startswith(f"{alias}:"):
-                logger.info(
+                logger.debug(
                     f"Replacing {alias} with {replacement} for template {template}"
                 )
                 template = replacement + template.removeprefix(alias)

@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 
+from .logging import TRACE
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +37,7 @@ def replace_suffixes(path: Path, suffix: str) -> Path:
 
 
 def write_to_path(path: Path, data: str | bytes, encoding: str = "utf-8"):
-    logger.debug(f"Writing to {path}")
+    logger.log(TRACE, f"Writing to {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     match data:
         case str():

@@ -24,7 +24,7 @@ from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import ModPlugin, ModPluginWithBook, PluginManager
 from hexdoc.utils import cast_or_raise
 
-from .logging import setup_logging
+from ...utils.logging import setup_logging
 
 logger = logging.getLogger(__name__)
 

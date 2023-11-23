@@ -12,6 +12,7 @@ __all__ = [
     "Sortable",
     "TOMLDict",
     "TOMLValue",
+    "TRACE",
     "TryGetEnum",
     "cast_or_raise",
     "clamping_validator",
@@ -26,6 +27,7 @@ __all__ = [
     "relative_path_root",
     "replace_suffixes",
     "set_contextvar",
+    "setup_logging",
     "sorted_dict",
     "strip_suffixes",
     "write_to_path",
@@ -47,6 +49,7 @@ from .deserialize import (
 )
 from .git import git_root
 from .iterators import listify, must_yield_something
+from .logging import TRACE, setup_logging
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
 from .types import (

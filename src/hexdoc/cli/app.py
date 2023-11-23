@@ -20,6 +20,7 @@ from hexdoc.minecraft.assets import (
 )
 from hexdoc.utils import git_root, write_to_path
 
+from ..utils.logging import repl_readfunc
 from . import ci, render_block
 from .utils.args import (
     DEFAULT_MERGE_DST,
@@ -35,7 +36,6 @@ from .utils.load import (
     load_common_data,
     render_textures_and_export_metadata,
 )
-from .utils.logging import repl_readfunc
 from .utils.render import create_jinja_env, render_book
 from .utils.sitemap import (
     delete_updated_books,

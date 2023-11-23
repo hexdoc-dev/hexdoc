@@ -10,6 +10,7 @@ from pydantic import Field, PrivateAttr, field_validator
 from hexdoc.model.base import HexdocSettings
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils import (
+    TRACE,
     NoTrailingSlashHttpUrl,
     PydanticOrderedSet,
     RelativePath,
@@ -116,7 +117,7 @@ class BaseProperties(StripHiddenModel):
                 },
             )
 
-        logger.debug(props)
+        logger.log(TRACE, props)
         return props
 
 

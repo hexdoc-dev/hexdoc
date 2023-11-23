@@ -16,6 +16,7 @@ from pydantic.dataclasses import dataclass
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContext
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import (
+    TRACE,
     JSONDict,
     decode_json_dict,
     must_yield_something,
@@ -449,7 +450,7 @@ class ModResourceLoader:
         if not path.is_file():
             raise FileNotFoundError(path)
 
-        logger.info(f"Loading {path}")
+        logger.debug(f"Loading {path}")
 
         data = path.read_text("utf-8")
         value = decode(data)
@@ -497,7 +498,7 @@ class ModResourceLoader:
             return
         out_path = self.export_dir / path
 
-        logger.debug(f"Exporting {path} to {out_path}")
+        logger.log(TRACE, f"Exporting {path} to {out_path}")
         if export is None:
             out_data = data
         else:
@@ -518,7 +519,7 @@ class ModResourceLoader:
             return
         out_path = self.export_dir / path
 
-        logger.debug(f"Exporting {path} to {out_path}")
+        logger.log(TRACE, f"Exporting {path} to {out_path}")
         write_to_path(out_path, data)
 
     def __repr__(self):

@@ -15,6 +15,7 @@ from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.model import DEFAULT_CONFIG
+from hexdoc.utils import TRACE
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,7 @@ class BaseResourceLocation:
     @classmethod
     def _pre_root(cls, values: Any, handler: ModelWrapValidatorHandler[Self]):
         # before validating the fields, if it's a string instead of a dict, convert it
-        logger.debug(f"Convert {values} to {cls.__name__}")
+        logger.log(TRACE, f"Convert {values} to {cls.__name__}")
         if isinstance(values, str):
             return cls.from_str(values)
         return handler(values)

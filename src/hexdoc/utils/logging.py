@@ -1,26 +1,30 @@
 import logging
 import sys
 
-logger = logging.getLogger(__name__)
+TRACE = 5
+"""For even more verbose logs than `logging.DEBUG`."""
 
 
 def setup_logging(verbosity: int):
     logging.basicConfig(
         style="{",
         format="\033[1m[{relativeCreated:.02f} | {levelname} | {name}]\033[0m {message}",
-        level=log_level(verbosity),
+        level=verbosity_log_level(verbosity),
     )
-    logger.info("Starting.")
+    logging.addLevelName(TRACE, "TRACE")
+    logging.getLogger(__name__).info("Starting.")
 
 
-def log_level(verbosity: int) -> int:
+def verbosity_log_level(verbosity: int) -> int:
     match verbosity:
         case 0:
             return logging.WARNING
         case 1:
             return logging.INFO
-        case _:
+        case 2:
             return logging.DEBUG
+        case _:
+            return TRACE
 
 
 def repl_readfunc():

@@ -221,7 +221,7 @@ def load_texture(
         try:
             meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
         except ValueError as e:
-            logger.info(f"Failed to parse AnimationMeta for {id}\n{e}")
+            logger.debug(f"Failed to parse AnimationMeta for {id}\n{e}")
         else:
             return AnimatedTexture(
                 url=url,
@@ -310,5 +310,5 @@ def render_block(
     out_root, out_path = result
 
     # blocks look better if antialiased
-    logger.info(f"Rendered {id} to {out_path} (in {out_root})")
+    logger.debug(f"Rendered {id} to {out_path} (in {out_root})")
     return SingleItemTexture.from_url(f"{site_url}/{out_path}", pixelated=False)
