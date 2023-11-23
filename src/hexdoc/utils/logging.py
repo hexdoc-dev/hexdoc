@@ -47,8 +47,8 @@ def setup_logging(verbosity: int, ci: bool):
     }
     if ci:
         formats |= {
-            logging.WARNING: "::warning file={name},title={levelname}::{message}",
-            logging.ERROR: "::error file={name},title={levelname}::{message}",
+            logging.WARNING: "::warning file={name},line={lineno},title={levelname}::{message}",
+            logging.ERROR: "::error file={name},line={lineno},title={levelname}::{message}",
         }
 
     handler = StreamHandler()
@@ -60,12 +60,7 @@ def setup_logging(verbosity: int, ci: bool):
     root_logger.addHandler(handler)
 
     logger = logging.getLogger(__name__)
-    logger.log(TRACE, "trace")
-    logger.debug("debug")
     logger.info("Starting.")
-    logger.warning("warning")
-    logger.error("error")
-    logger.critical("critical")
 
 
 def verbosity_log_level(verbosity: int) -> int:
