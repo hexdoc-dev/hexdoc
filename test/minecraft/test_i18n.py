@@ -20,6 +20,6 @@ def test_fallback_tag_name(namespace: str, path: str, want: str):
         default_i18n=None,
     )
 
-    got = i18n.fallback_tag_name(tag)
+    got = i18n.localize_item_tag(tag)
 
-    assert got == want
+    assert got.value == f"Tag: {want}"
