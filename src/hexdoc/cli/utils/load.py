@@ -22,9 +22,7 @@ from hexdoc.minecraft.assets.textures import PNGTexture
 from hexdoc.model import init_context
 from hexdoc.patchouli import Book, BookContext
 from hexdoc.plugin import ModPlugin, ModPluginWithBook, PluginManager
-from hexdoc.utils import cast_or_raise
-
-from ...utils.logging import setup_logging
+from hexdoc.utils import cast_or_raise, setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +32,8 @@ def load_common_data(
     props_file: Path,
     verbosity: int,
     branch: str,
+    *,
+    ci: bool,
     book: Literal[True],
 ) -> tuple[Properties, PluginManager, ModPluginWithBook]:
     ...
@@ -44,6 +44,8 @@ def load_common_data(
     props_file: Path,
     verbosity: int,
     branch: str,
+    *,
+    ci: bool,
     book: bool = False,
 ) -> tuple[Properties, PluginManager, ModPlugin]:
     ...
@@ -53,9 +55,11 @@ def load_common_data(
     props_file: Path,
     verbosity: int,
     branch: str,
+    *,
+    ci: bool,
     book: bool = False,
 ) -> tuple[Properties, PluginManager, ModPlugin]:
-    setup_logging(verbosity)
+    setup_logging(verbosity, ci)
 
     props = Properties.load(props_file)
     pm = PluginManager(branch)

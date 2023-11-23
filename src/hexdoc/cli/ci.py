@@ -44,6 +44,7 @@ def export(
         verbosity=env.verbosity,
         props_file=props_file,
         release=release,
+        ci=True,
     )
 
     subprocess.run(["hatch", "build", "--clean"], check=True)
@@ -78,6 +79,7 @@ def render(
         verbosity=env.verbosity,
         props_file=props_file,
         release=release,
+        ci=True,
     )
 
 
@@ -91,6 +93,7 @@ def merge(
     hexdoc_app.merge(
         props_file=props_file,
         verbosity=env.verbosity,
+        ci=True,
     )
 
 

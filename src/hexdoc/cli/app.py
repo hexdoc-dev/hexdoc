@@ -69,7 +69,7 @@ def repl(
     )
 
     try:
-        props, pm, plugin = load_common_data(props_file, verbosity, "")
+        props, pm, plugin = load_common_data(props_file, verbosity, "", ci=False)
         repl_locals |= dict(
             props=props,
             pm=pm,
@@ -123,9 +123,10 @@ def export(
     release: ReleaseOption = False,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
+    ci: bool = False,
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
-    props, pm, plugin = load_common_data(props_file, verbosity, branch)
+    props, pm, plugin = load_common_data(props_file, verbosity, branch, ci=ci)
 
     with ModResourceLoader.clean_and_load_all(
         props,
@@ -170,11 +171,14 @@ def render(
     lang: Union[str, None] = None,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
+    ci: bool = False,
 ):
     """Export resources and render the web book."""
 
     # load data
-    props, pm, plugin = load_common_data(props_file, verbosity, branch, book=True)
+    props, pm, plugin = load_common_data(
+        props_file, verbosity, branch, ci=ci, book=True
+    )
     if not props.book_id:
         raise ValueError("Expected a value for props.book, got None")
     if not props.template:
@@ -255,8 +259,9 @@ def merge(
     verbosity: VerbosityOption = 0,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
+    ci: bool = False,
 ):
-    props, _, plugin = load_common_data(props_file, verbosity, "", book=True)
+    props, _, plugin = load_common_data(props_file, verbosity, "", ci=ci, book=True)
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
