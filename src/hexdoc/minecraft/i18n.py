@@ -199,6 +199,7 @@ class I18n(HexdocModel):
         self,
         *keys: str,
         default: str | None = None,
+        silent: bool = False,
     ) -> LocalizedStr:
         """Looks up the given string in the lang table if i18n is enabled. Otherwise,
         returns the original key.
@@ -221,17 +222,22 @@ class I18n(HexdocModel):
         if default is not None:
             return LocalizedStr.skip_i18n(default)
 
-        logger.error(
-            f"No translation in {self.lang} for "
-            + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}")
-        )
+        if not silent:
+            logger.error(
+                f"No translation in {self.lang} for "
+                + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}")
+            )
 
         if self.default_i18n:
-            return self.default_i18n.localize(*keys, default=default)
+            return self.default_i18n.localize(*keys, default=default, silent=silent)
 
         return LocalizedStr.skip_i18n(keys[0])
 
-    def localize_pattern(self, op_id: ResourceLocation) -> LocalizedStr:
+    def localize_pattern(
+        self,
+        op_id: ResourceLocation,
+        silent: bool = False,
+    ) -> LocalizedStr:
         """Localizes the given pattern id (internal name, eg. brainsweep).
 
         Raises ValueError if i18n is enabled but the key has no localization.
@@ -242,9 +248,14 @@ class I18n(HexdocModel):
         return self.localize(
             f"hexcasting.{key_group}.book.{op_id}",
             f"hexcasting.{key_group}.{op_id}",
+            silent=silent,
         )
 
-    def localize_item(self, item: str | ResourceLocation | ItemStack) -> LocalizedItem:
+    def localize_item(
+        self,
+        item: str | ResourceLocation | ItemStack,
+        silent: bool = False,
+    ) -> LocalizedItem:
         """Localizes the given item resource name.
 
         Raises ValueError if i18n is enabled but the key has no localization.
@@ -260,19 +271,21 @@ class I18n(HexdocModel):
         localized = self.localize(
             item.i18n_key(),
             item.i18n_key("block"),
+            silent=silent,
         )
         return LocalizedItem(key=localized.key, value=localized.value)
 
-    def localize_key(self, key: str) -> LocalizedStr:
+    def localize_key(self, key: str, silent: bool = False) -> LocalizedStr:
         if not key.startswith("key."):
             key = "key." + key
-        return self.localize(key)
+        return self.localize(key, silent=silent)
 
-    def localize_item_tag(self, tag: ResourceLocation):
+    def localize_item_tag(self, tag: ResourceLocation, silent: bool = False):
         localized = self.localize(
             f"tag.{tag.namespace}.{tag.path}",
             f"tag.item.{tag.namespace}.{tag.path}",
             f"tag.block.{tag.namespace}.{tag.path}",
+            silent=silent,
         )
         return LocalizedStr(key=localized.key, value=f"Tag: {localized.value}")
 
@@ -292,7 +305,7 @@ class I18n(HexdocModel):
 
         return tag.path.replace("_", " ").replace("/", ", ").title()
 
-    def localize_texture(self, texture_id: ResourceLocation):
+    def localize_texture(self, texture_id: ResourceLocation, silent: bool = False):
         path = texture_id.path.removeprefix("textures/").removesuffix(".png")
         root, rest = path.split("/", 1)
 
@@ -300,11 +313,11 @@ class I18n(HexdocModel):
         if root == "mob_effect":
             root = "effect"
 
-        return self.localize(f"{root}.{texture_id.namespace}.{rest}")
+        return self.localize(f"{root}.{texture_id.namespace}.{rest}", silent=silent)
 
-    def localize_lang(self):
-        name = self.localize("language.name")
-        region = self.localize("language.region")
+    def localize_lang(self, silent: bool = False):
+        name = self.localize("language.name", silent=silent)
+        region = self.localize("language.region", silent=silent)
         return f"{name} ({region})"
 
 

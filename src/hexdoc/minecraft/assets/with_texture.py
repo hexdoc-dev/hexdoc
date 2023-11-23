@@ -101,6 +101,6 @@ class NamedTexture(InlineModel, BaseWithTexture[ResourceLocation, ImageTexture])
         assert isinstance_or_raise(context, I18nContext)
         return {
             "id": id,
-            "name": context.i18n.localize_texture(id),
+            "name": context.i18n.localize_texture(id, silent=True),
             "texture": id,
         }
