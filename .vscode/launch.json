@@ -39,7 +39,6 @@
                 "${workspaceFolder}/submodules/HexMod/doc/hexdoc.toml",
                 "--lang",
                 "en_us",
-                "--allow-missing",
             ],
             "console": "integratedTerminal",
             "justMyCode": false

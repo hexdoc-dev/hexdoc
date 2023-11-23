@@ -61,7 +61,6 @@ def repl(
     *,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
-    allow_missing: bool = False,
 ):
     """Start a Python shell with some helpful extra locals added from hexdoc."""
 
@@ -84,7 +83,7 @@ def repl(
         )
         repl_locals["loader"] = loader
 
-        i18n = I18n.load_all(loader, allow_missing)[props.default_lang]
+        i18n = I18n.load_all(loader)[props.default_lang]
 
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
         repl_locals["all_metadata"] = all_metadata
@@ -124,7 +123,6 @@ def export(
     release: ReleaseOption = False,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
-    allow_missing: bool = False,
 ):
     """Run hexdoc, but skip rendering the web book - just export the book resources."""
     props, pm, plugin = load_common_data(props_file, verbosity, branch)
@@ -146,7 +144,7 @@ def export(
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
 
-        all_i18n = I18n.load_all(loader, allow_missing)
+        all_i18n = I18n.load_all(loader)
         i18n = all_i18n[props.default_lang]
 
         if props.book_id:
@@ -172,7 +170,6 @@ def render(
     lang: Union[str, None] = None,
     props_file: PropsOption,
     verbosity: VerbosityOption = 0,
-    allow_missing: bool = False,
 ):
     """Export resources and render the web book."""
 
@@ -193,7 +190,7 @@ def render(
     ) as loader:
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
 
-        i18n = I18n.load(loader, lang, allow_missing)
+        i18n = I18n.load(loader, lang)
 
         book, context = load_book(
             book_id=props.book_id,
@@ -319,7 +316,6 @@ def serve(
     release: bool = True,  # generally want --release for development, looks nicer
     clean: bool = False,
     lang: Union[str, None] = None,
-    allow_missing: bool = False,
     verbosity: VerbosityOption = 0,
 ):
     book_root = dst
@@ -344,7 +340,6 @@ def serve(
         branch=branch,
         release=release,
         props_file=props_file,
-        allow_missing=allow_missing,
         verbosity=verbosity,
     )
 
@@ -356,7 +351,6 @@ def serve(
         release=release,
         clean=clean,
         lang=lang,
-        allow_missing=allow_missing,
         verbosity=verbosity,
     )
 

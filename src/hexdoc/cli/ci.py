@@ -70,24 +70,15 @@ def render(
 ):
     env = CIEnvironment.model_getenv()
 
-    def _render(*, allow_missing: bool):
-        hexdoc_app.render(
-            Path("_site"),
-            lang=lang,
-            clean=True,
-            allow_missing=allow_missing,
-            branch=env.branch,
-            verbosity=env.verbosity,
-            props_file=props_file,
-            release=release,
-        )
-
-    try:
-        _render(allow_missing=False)
-    except Exception as e:
-        add_warning(f"Render failed. Retrying with --allow-missing. Exception: {e}")
-        _render(allow_missing=True)
-        add_warning(f"Language {lang} is missing some i18n keys.")
+    hexdoc_app.render(
+        Path("_site"),
+        lang=lang,
+        clean=True,
+        branch=env.branch,
+        verbosity=env.verbosity,
+        props_file=props_file,
+        release=release,
+    )
 
 
 @app.command()

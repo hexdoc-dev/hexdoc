@@ -97,7 +97,6 @@ class I18n(HexdocModel):
 
     lookup: dict[str, LocalizedStr] | None
     lang: str
-    allow_missing: bool
     default_i18n: I18n | None
 
     @classmethod
@@ -111,7 +110,7 @@ class I18n(HexdocModel):
         )
 
     @classmethod
-    def load_all(cls, loader: ModResourceLoader, allow_missing: bool):
+    def load_all(cls, loader: ModResourceLoader):
         # lang -> (key -> value)
         lookups = defaultdict[str, dict[str, LocalizedStr]](dict)
         internal_langs = set[str]()
@@ -130,7 +129,6 @@ class I18n(HexdocModel):
         default_i18n = cls(
             lookup=default_lookup,
             lang=default_lang,
-            allow_missing=allow_missing,
             default_i18n=None,
         )
 
@@ -138,7 +136,6 @@ class I18n(HexdocModel):
             lang: cls(
                 lookup=lookup,
                 lang=lang,
-                allow_missing=allow_missing,
                 default_i18n=default_i18n,
             )
             for lang, lookup in lookups.items()
@@ -146,7 +143,7 @@ class I18n(HexdocModel):
         }
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, lang: str, allow_missing: bool) -> Self:
+    def load(cls, loader: ModResourceLoader, lang: str) -> Self:
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -166,12 +163,11 @@ class I18n(HexdocModel):
         default_lang = loader.props.default_lang
         default_i18n = None
         if lang != default_lang:
-            default_i18n = cls.load(loader, default_lang, allow_missing)
+            default_i18n = cls.load(loader, default_lang)
 
         return cls(
             lookup=lookup,
             lang=lang,
-            allow_missing=allow_missing,
             default_i18n=default_i18n,
         )
 
@@ -225,16 +221,10 @@ class I18n(HexdocModel):
         if default is not None:
             return LocalizedStr.skip_i18n(default)
 
-        message = f"No translation in {self.lang} for "
-        if len(keys) == 1:
-            message += f"key {keys[0]}"
-        else:
-            message += f"keys {keys}"
-
-        if not self.allow_missing:
-            raise ValueError(message)
-
-        logger.error(message)
+        logger.error(
+            f"No translation in {self.lang} for "
+            + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}")
+        )
 
         if self.default_i18n:
             return self.default_i18n.localize(*keys, default=default)

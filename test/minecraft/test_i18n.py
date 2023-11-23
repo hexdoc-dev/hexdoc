@@ -17,7 +17,6 @@ def test_fallback_tag_name(namespace: str, path: str, want: str):
     i18n = I18n(
         lookup={},
         lang="en_us",
-        allow_missing=True,
         default_i18n=None,
     )
 

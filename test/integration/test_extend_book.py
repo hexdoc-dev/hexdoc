@@ -155,7 +155,7 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
     parent_props = parent_loader.props
     assert parent_props.book_id
 
-    i18n = I18n.load(parent_loader, parent_props.default_lang, allow_missing=True)
+    i18n = I18n.load(parent_loader, parent_props.default_lang)
 
     return load_book(
         book_id=parent_props.book_id,
@@ -171,7 +171,7 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     child_props = child_loader.props
     assert child_props.book_id
 
-    i18n = I18n.load(child_loader, child_props.default_lang, allow_missing=True)
+    i18n = I18n.load(child_loader, child_props.default_lang)
 
     return load_book(
         book_id=child_props.book_id,

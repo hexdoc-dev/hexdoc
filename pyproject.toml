@@ -66,7 +66,7 @@ pdoc = [
     "hatch",
 ]
 test = [
-    "pyright!=1.1.335,!=1.1.336",
+    "pyright~=1.1.337",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
