@@ -73,6 +73,12 @@ class HexdocAssetLoader(HexdocModel):
     def gaslighting_items(self):
         return Tag.GASLIGHTING_ITEMS.load(self.loader).value_ids_set
 
+    def can_be_missing(self, id: ResourceLocation):
+        return any(id.match(pattern) for pattern in self.loader.props.textures.missing)
+
+    def get_override(self, id: ResourceLocation) -> Texture | None:
+        pass
+
     def find_image_textures(
         self,
     ) -> Iterable[tuple[ResourceLocation, Path | ImageTexture]]:
@@ -165,7 +171,9 @@ class HexdocAssetLoader(HexdocModel):
 
         # items
         for item_id, model in self.load_item_models():
-            if result := load_and_render_item(
+            if result := self.get_override(item_id):
+                yield item_id, result
+            elif result := load_and_render_item(
                 model,
                 self.loader,
                 self.renderer,
@@ -175,8 +183,6 @@ class HexdocAssetLoader(HexdocModel):
             ):
                 found_items_from_models.add(item_id)
                 yield item_id, result
-            elif item_id in self.loader.props.textures.missing:
-                yield item_id, missing_item_texture
             else:
                 missing_items.add(item_id)
 
@@ -188,16 +194,20 @@ class HexdocAssetLoader(HexdocModel):
             try:
                 yield block_id, render_block(block_id, self.renderer, self.site_url)
             except TextureNotFoundError:
-                if block_id in self.loader.props.textures.missing:
-                    yield block_id, missing_item_texture
+                pass
             else:
                 missing_items.remove(block_id)
 
         for item_id in list(missing_items):
             if result := self.fallback_texture(item_id):
                 logger.warning(f"Using fallback texture for item: {item_id}")
-                missing_items.remove(item_id)
-                yield item_id, result
+            elif self.can_be_missing(item_id):
+                logger.warning(f"Using missing texture for item: {item_id}")
+                result = missing_item_texture
+            else:
+                continue
+            missing_items.remove(item_id)
+            yield item_id, result
 
         # oopsies
         if missing_items:

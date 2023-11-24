@@ -42,7 +42,7 @@ class ModelOverride(HexdocModel):
     predicate: dict[ResourceLocation, float]
 
 
-class ModelItem(HexdocModel):
+class ModelItem(HexdocModel, extra="allow"):
     """https://minecraft.wiki/w/Tutorials/Models#Item_models
 
     This is called BaseModelItem instead of BaseItemModel because SomethingModel is our
