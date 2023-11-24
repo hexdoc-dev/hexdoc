@@ -93,9 +93,22 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
         return values
 
 
+# TODO: support item/block override
+class PNGTextureOverride(StripHiddenModel):
+    url: str
+    pixelated: bool
+
+
+class TextureTextureOverride(StripHiddenModel):
+    texture: ResourceLocation
+
+
 class TexturesProps(StripHiddenModel):
     missing: set[ResourceLocation] = Field(default_factory=set)
-    override: dict[ResourceLocation, ResourceLocation] = Field(default_factory=dict)
+    override: dict[
+        ResourceLocation,
+        PNGTextureOverride | TextureTextureOverride,
+    ] = Field(default_factory=dict)
 
 
 class BaseProperties(StripHiddenModel):

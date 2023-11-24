@@ -10,6 +10,10 @@ from minecraft_render.types.dataset.RenderClass import IRenderClass
 from minecraft_render.types.dataset.types import IResourceLoader
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.properties import (
+    PNGTextureOverride,
+    TextureTextureOverride,
+)
 from hexdoc.minecraft.tags import Tag
 from hexdoc.model import HexdocModel
 
@@ -76,8 +80,18 @@ class HexdocAssetLoader(HexdocModel):
     def can_be_missing(self, id: ResourceLocation):
         return any(id.match(pattern) for pattern in self.loader.props.textures.missing)
 
-    def get_override(self, id: ResourceLocation) -> Texture | None:
-        pass
+    def get_override(
+        self,
+        id: ResourceLocation,
+        image_textures: dict[ResourceLocation, ImageTexture],
+    ) -> Texture | None:
+        match self.loader.props.textures.override.get(id):
+            case PNGTextureOverride(url=url, pixelated=pixelated):
+                return PNGTexture(url=url, pixelated=pixelated)
+            case TextureTextureOverride(texture=texture):
+                return image_textures[texture]
+            case None:
+                return None
 
     def find_image_textures(
         self,
@@ -171,7 +185,7 @@ class HexdocAssetLoader(HexdocModel):
 
         # items
         for item_id, model in self.load_item_models():
-            if result := self.get_override(item_id):
+            if result := self.get_override(item_id, image_textures):
                 yield item_id, result
             elif result := load_and_render_item(
                 model,

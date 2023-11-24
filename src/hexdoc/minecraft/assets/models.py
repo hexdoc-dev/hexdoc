@@ -42,6 +42,7 @@ class ModelOverride(HexdocModel):
     predicate: dict[ResourceLocation, float]
 
 
+# allow missing because mods can add custom fields :/
 class ModelItem(HexdocModel, extra="allow"):
     """https://minecraft.wiki/w/Tutorials/Models#Item_models
 
