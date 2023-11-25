@@ -82,7 +82,7 @@ dev = [
 [project.urls]
 Homepage = "https://book.hexxy.media"
 Documentation = "https://hexdoc.hexxy.media"
-Source = "https://github.com/object-Object/hexdoc"
+Source = "https://github.com/hexdoc-dev/hexdoc"
 
 [tool.hatch.version]
 path = "src/hexdoc/__version__.py"

@@ -1,10 +1,10 @@
 <p align="center">
-  <img alt="hexdoc logo" src="https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.svg" height="200" />
+  <img alt="hexdoc logo" src="https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg" height="200" />
   <br /><br />
   <a href="https://hexdoc.hexxy.media/"><img alt="Docs - hexdoc.hexxy.media" src="https://img.shields.io/badge/docs-hexdoc.hexxy.media-darkmagenta"></a>
   <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
-  <a href="https://github.com/object-Object/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/object-Object/hexdoc/ci.yml?logo=github&label=ci"></a>
+  <a href="https://github.com/hexdoc-dev/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/hexdoc-dev/hexdoc/ci.yml?logo=github&label=ci"></a>
 </p>
 
 # hexdoc
@@ -22,7 +22,7 @@ WIP.
 - Run these commands, then follow the prompts:
   ```sh
   pip3 install cruft
-  cruft create https://github.com/object-Object/hexdoc
+  cruft create https://github.com/hexdoc-dev/hexdoc
   ```
   - `--directory doc` tells Cookiecutter to look for a template in the `doc` directory of hexdoc, and cannot be omitted.
   - If you run this from within an existing mod repo, add the flag `-f`, and leave the `output_directory` option blank when prompted by Cookiecutter.
@@ -65,7 +65,7 @@ pre-commit install
 For local testing, create a file called `.env` in the repo root following this template:
 ```sh
 GITHUB_SHA=main
-GITHUB_REPOSITORY=object-Object/hexdoc
+GITHUB_REPOSITORY=hexdoc-dev/hexdoc
 GITHUB_PAGES_URL=https://hexdoc.hexxy.media
 ```
 

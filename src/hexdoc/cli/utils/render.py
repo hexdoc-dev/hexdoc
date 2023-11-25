@@ -159,7 +159,7 @@ def render_book(
         "favicons_html": favicons_html,
         "favicons_formats": favicons_formats,
         "icon_href": props.template.icon.name,
-        "safari_pinned_tab_href": "https://raw.githubusercontent.com/object-Object/hexdoc/main/media/safari-pinned-tab.svg",
+        "safari_pinned_tab_href": "https://raw.githubusercontent.com/hexdoc-dev/hexdoc/main/media/safari-pinned-tab.svg",
         "safari_pinned_tab_color": "#332233",
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,

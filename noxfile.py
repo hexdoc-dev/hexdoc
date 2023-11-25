@@ -6,10 +6,10 @@ from typing import Mapping
 
 import nox
 
-PDOC_FAVICON = "https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.png"
+PDOC_FAVICON = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png"
 PDOC_LOGO_LINK = "https://pypi.org/project/hexdoc/"
-PDOC_LOGO = "https://github.com/object-Object/hexdoc/raw/main/media/hexdoc.svg"
-PDOC_EDIT_URL = "https://github.com/object-Object/hexdoc/blob/main/src/hexdoc/"
+PDOC_LOGO = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg"
+PDOC_EDIT_URL = "https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"
 
 nox.options.reuse_existing_virtualenvs = True
 
