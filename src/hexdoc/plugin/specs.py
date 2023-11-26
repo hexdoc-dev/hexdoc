@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from importlib.resources import Package
-from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol, TypeVar
+from typing import TYPE_CHECKING, Any, Protocol
 
 import pluggy
 from jinja2.sandbox import SandboxedEnvironment
+
+from .mod_plugin import ModPlugin
+from .types import HookReturn, HookReturns
 
 if TYPE_CHECKING:
     from hexdoc.core import ResourceLocation
@@ -17,22 +19,10 @@ HEXDOC_PROJECT_NAME = "hexdoc"
 hookspec = pluggy.HookspecMarker(HEXDOC_PROJECT_NAME)
 
 
-_T = TypeVar("_T")
-
-HookReturn = _T | list[_T]
-
-HookReturns = list[HookReturn[_T]]
-
-
 class PluginSpec(Protocol):
     @staticmethod
-    @hookspec(firstresult=True)
-    def hexdoc_mod_version() -> str | None:
-        ...
-
-    @staticmethod
     @hookspec
-    def hexdoc_minecraft_version() -> list[str]:
+    def hexdoc_mod_plugin(branch: str) -> list[ModPlugin]:
         ...
 
     @staticmethod
@@ -63,22 +53,7 @@ class PluginSpec(Protocol):
 
     @staticmethod
     @hookspec
-    def hexdoc_load_resource_dirs() -> HookReturns[Package]:
-        ...
-
-    @staticmethod
-    @hookspec
     def hexdoc_load_tagged_unions() -> HookReturns[Package]:
-        ...
-
-    @staticmethod
-    @hookspec
-    def hexdoc_load_jinja_templates() -> list[tuple[Package, str]]:
-        ...
-
-    @staticmethod
-    @hookspec
-    def hexdoc_default_rendered_templates(templates: dict[str | Path, str]) -> None:
         ...
 
 
@@ -93,23 +68,12 @@ class PluginImpl(Protocol):
     """
 
 
-class ModVersionImpl(PluginImpl, Protocol):
+class ModPluginImpl(PluginImpl, Protocol):
     @staticmethod
-    def hexdoc_mod_version() -> str:
-        """Return your plugin's mod version (eg. `0.10.3` for Hex Casting).
-
-        This should generally use a constant from `__gradle_version__.py`.
-        """
-        ...
-
-
-class MinecraftVersionImpl(PluginImpl, Protocol):
-    @staticmethod
-    def hexdoc_minecraft_version() -> str:
-        """Return the version of Minecraft supported by this version of your plugin.
-
-        This should generally use a constant from `__gradle_version__.py`.
-        """
+    def hexdoc_mod_plugin(branch: str) -> ModPlugin:
+        """If your plugin represents a Minecraft mod, this must return an instance of a
+        subclass of `ModPlugin` or `ModPluginWithBook`, with all abstract methods
+        implemented."""
         ...
 
 
@@ -158,42 +122,8 @@ class UpdateTemplateArgsImpl(PluginImpl, Protocol):
         ...
 
 
-class LoadResourceDirsImpl(PluginImpl, Protocol):
-    @staticmethod
-    def hexdoc_load_resource_dirs() -> HookReturn[Package]:
-        """Return the module(s) which contain your plugin's exported book resources."""
-        ...
-
-
 class LoadTaggedUnionsImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_load_tagged_unions() -> HookReturn[Package]:
         """Return the module(s) which contain your plugin's tagged union subtypes."""
-        ...
-
-
-class LoadJinjaTemplatesImpl(PluginImpl, Protocol):
-    @staticmethod
-    def hexdoc_load_jinja_templates() -> tuple[Package, str]:
-        """Return the module that contains the folder with your plugin's Jinja
-        templates, and the name of that folder.
-
-        For example:
-        ```py
-        @hookimpl
-        def hexdoc_load_jinja_templates():
-            return hexdoc, "_templates"
-        ```
-        """
-        ...
-
-
-class DefaultRenderedTemplatesImpl(PluginImpl, Protocol):
-    @staticmethod
-    def hexdoc_default_rendered_templates(templates: dict[str | Path, str]) -> None:
-        """Add extra templates to be rendered by default when your plugin is active.
-
-        This hook is not called if `props.template.render` is set, since that option
-        overrides all default templates.
-        """
         ...

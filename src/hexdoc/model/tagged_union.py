@@ -1,5 +1,7 @@
 # pyright: reportPrivateUsage=false
 
+from __future__ import annotations
+
 from collections import defaultdict
 from textwrap import dedent
 from typing import Any, ClassVar, Generator, Self, Unpack
@@ -92,7 +94,7 @@ class InternallyTaggedUnion(HexdocModel):
         return cls._tag_key
 
     @classmethod
-    def _supertypes(cls) -> Generator[type[Self], None, None]:
+    def _supertypes(cls) -> Generator[type[InternallyTaggedUnion], None, None]:
         tag_key = cls._tag_key_or_raise()
 
         # we consider a type to be its own supertype/subtype
@@ -125,7 +127,7 @@ class InternallyTaggedUnion(HexdocModel):
 
         # if it's already instantiated, just return it; otherwise ensure it's a dict
         match value:
-            case InternallyTaggedUnion():
+            case InternallyTaggedUnion() if isinstance(value, cls):
                 return value
             case dict() if _RESOLVED not in value:
                 data: dict[str, Any] = value

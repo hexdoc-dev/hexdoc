@@ -53,6 +53,10 @@ class PydanticOrderedSet(OrderedSet[_T]):
         super().__init__(initial or [])
 
     @classmethod
+    def collect(cls, *initial: _T):
+        return cls(initial)
+
+    @classmethod
     def __get_pydantic_core_schema__(
         cls,
         source: type[Any],
@@ -107,3 +111,10 @@ NoTrailingSlashHttpUrl = Annotated[
     HttpUrl,
     AfterValidator(lambda u: str(u).rstrip("/")),
 ]
+
+
+def clamping_validator(lower: float, upper: float):
+    def validator(value: float):
+        return max(lower, min(upper, value))
+
+    return AfterValidator(validator)

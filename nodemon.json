@@ -3,12 +3,12 @@
         "src",
         "resources",
         "vendor",
-        "test/_submodules/HexMod/doc/src",
-        "test/_submodules/HexMod/doc/resources",
-        "test/_submodules/HexMod/doc/hexdoc.toml",
-        "test/_submodules/HexMod/Common/src/main/resources/assets/*/lang"
+        "submodules/HexMod/doc/src",
+        "submodules/HexMod/doc/resources",
+        "submodules/HexMod/doc/hexdoc.toml",
+        "submodules/HexMod/Common/src/main/resources/assets/*/lang"
     ],
     "ignore": ["**/generated/**"],
     "ext": "jinja,html,css,js,ts,toml,json,json5,py",
-    "exec": "hexdoc export && hexdoc serve --props test/_submodules/HexMod/doc/hexdoc.toml --lang en_us --allow-missing"
+    "exec": "hexdoc export && hexdoc serve --props submodules/HexMod/doc/hexdoc.toml --lang en_us"
 }

@@ -16,18 +16,23 @@ from pydantic.dataclasses import dataclass
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContext
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import (
+    TRACE,
     JSONDict,
     decode_json_dict,
     must_yield_something,
     strip_suffixes,
     write_to_path,
 )
+from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
 from .resource import ResourceLocation, ResourceType
 from .resource_dir import PathResourceDir
 
+logger = logging.getLogger(__name__)
+
 METADATA_SUFFIX = ".hexdoc.json"
+
 
 _T = TypeVar("_T")
 _T_Model = TypeVar("_T_Model", bound=HexdocModel)
@@ -40,7 +45,6 @@ BookFolder = Literal["categories", "entries", "templates"]
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
 class ModResourceLoader:
     props: Properties
-    root_book_id: ResourceLocation | None
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
@@ -51,11 +55,14 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        export: bool = True,
+        export: bool = False,
     ):
         # clear the export dir so we start with a clean slate
         if props.export_dir and export:
-            subprocess.run(["git", "clean", "-fdX", props.export_dir])
+            subprocess.run(
+                ["git", "clean", "-fdX", props.export_dir],
+                cwd=props.props_dir,
+            )
 
             write_to_path(
                 props.export_dir / "__init__.py",
@@ -67,7 +74,11 @@ class ModResourceLoader:
                 ),
             )
 
-        return cls.load_all(props, pm, export=export)
+        return cls.load_all(
+            props,
+            pm,
+            export=export,
+        )
 
     @classmethod
     def load_all(
@@ -75,13 +86,13 @@ class ModResourceLoader:
         props: Properties,
         pm: PluginManager,
         *,
-        export: bool = True,
+        export: bool = False,
     ) -> Self:
         export_dir = props.export_dir if export else None
         stack = ExitStack()
+
         return cls(
             props=props,
-            root_book_id=props.book,
             export_dir=export_dir,
             resource_dirs=[
                 path_resource_dir
@@ -112,6 +123,10 @@ class ModResourceLoader:
             )
         }
 
+    @property
+    def should_export(self):
+        return self.export_dir is not None
+
     def load_metadata(
         self,
         *,
@@ -122,8 +137,18 @@ class ModResourceLoader:
         """eg. `"{modid}.patterns"`"""
         metadata = dict[str, _T_Model]()
 
+        # TODO: refactor
+        cached_metadata = self.props.cache_dir / (
+            name_pattern.format(modid=self.props.modid) + METADATA_SUFFIX
+        )
+        if cached_metadata.is_file():
+            metadata[self.props.modid] = model_type.model_validate_json(
+                cached_metadata.read_bytes()
+            )
+
         for resource_dir in self.resource_dirs:
-            # skip if we've already loaded this mod's metadata
+            # skip if the resource dir has no metadata set, because we're only loading
+            # this for external mods (TODO: this feels flawed)
             modid = resource_dir.modid
             if modid is None or modid in metadata:
                 continue
@@ -137,57 +162,38 @@ class ModResourceLoader:
             except FileNotFoundError:
                 if allow_missing:
                     continue
-                else:
-                    raise
+                raise
 
         return metadata
 
-    # TODO: maybe this should take lang as a variable?
     @must_yield_something
     def load_book_assets(
         self,
-        book_id: ResourceLocation,
+        parent_book_id: ResourceLocation,
         folder: BookFolder,
         use_resource_pack: bool,
+        lang: str | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
-        if not self.root_book_id:
-            raise RuntimeError("Unable to call load_book_assets, root_book_id is None")
+        if self.props.book_id is None:
+            raise TypeError("Can't load book assets because props.book_id is None")
 
-        # self.root_book_id: hexcasting:thehexbook
-        # book_id:           hexal:hexalbook
-        if book_id != self.root_book_id:
-            for extra_book_id in [book_id] + self.props.extra_books:
-                yield from self._load_book_assets(
-                    extra_book_id,
-                    folder,
-                    use_resource_pack=use_resource_pack,
-                    allow_missing=True,
-                )
+        if lang is None:
+            lang = self.props.default_lang
 
-        yield from self._load_book_assets(
-            self.root_book_id,
-            folder,
-            use_resource_pack=use_resource_pack,
-            allow_missing=False,
+        # use ordered set to be deterministic but avoid duplicate ids
+        books_to_check = PydanticOrderedSet.collect(
+            parent_book_id,
+            self.props.book_id,
+            *self.props.extra_books,
         )
 
-    def _load_book_assets(
-        self,
-        book_id: ResourceLocation,
-        folder: BookFolder,
-        *,
-        use_resource_pack: bool,
-        allow_missing: bool,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, JSONDict]]:
-        yield from self.load_resources(
-            type="assets" if use_resource_pack else "data",
-            folder=Path("patchouli_books")
-            / book_id.path
-            / self.props.default_lang
-            / folder,
-            namespace=book_id.namespace,
-            allow_missing=allow_missing,
-        )
+        for book_id in books_to_check:
+            yield from self.load_resources(
+                type="assets" if use_resource_pack else "data",
+                folder=Path("patchouli_books") / book_id.path / lang / folder,
+                namespace=book_id.namespace,
+                allow_missing=True,
+            )
 
     @overload
     def load_resource(
@@ -287,6 +293,7 @@ class ModResourceLoader:
         folder: str | Path,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
@@ -300,6 +307,7 @@ class ModResourceLoader:
         folder: str | Path,
         id: ResourceLocation,
         allow_missing: bool = False,
+        internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
@@ -332,6 +340,7 @@ class ModResourceLoader:
         folder: str | Path,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         ...
 
@@ -343,6 +352,7 @@ class ModResourceLoader:
         folder: str | Path,
         id: ResourceLocation,
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         ...
 
@@ -355,6 +365,7 @@ class ModResourceLoader:
         namespace: str | None = None,
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
+        internal_only: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         """Search for a glob under a given resource location in all of `resource_dirs`.
 
@@ -399,6 +410,9 @@ class ModResourceLoader:
         # find all files matching the resloc
         found_any = False
         for resource_dir in reversed(self.resource_dirs):
+            if internal_only and not resource_dir.internal:
+                continue
+
             # eg. .../resources/assets/*/lang/subdir
             for base_path in resource_dir.path.glob(base_path_stub.as_posix()):
                 for glob_ in globs:
@@ -436,7 +450,7 @@ class ModResourceLoader:
         if not path.is_file():
             raise FileNotFoundError(path)
 
-        logging.getLogger(__name__).info(f"Loading {path}")
+        logger.debug(f"Loading {path}")
 
         data = path.read_text("utf-8")
         value = decode(data)
@@ -453,7 +467,7 @@ class ModResourceLoader:
         return value
 
     @overload
-    def export(self, /, path: Path, data: str) -> None:
+    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None:
         ...
 
     @overload
@@ -466,6 +480,7 @@ class ModResourceLoader:
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | None = None,
+        cache: bool = False,
     ) -> None:
         ...
 
@@ -477,12 +492,13 @@ class ModResourceLoader:
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | None = None,
+        cache: bool = False,
     ) -> None:
         if not self.export_dir:
             return
         out_path = self.export_dir / path
 
-        logging.getLogger(__name__).debug(f"Exporting {path} to {out_path}")
+        logger.log(TRACE, f"Exporting {path} to {out_path}")
         if export is None:
             out_data = data
         else:
@@ -494,6 +510,20 @@ class ModResourceLoader:
             out_data = export(value, old_value)
 
         write_to_path(out_path, out_data)
+
+        if cache:
+            write_to_path(self.props.cache_dir / path, out_data)
+
+    def export_raw(self, path: Path, data: bytes):
+        if not self.export_dir:
+            return
+        out_path = self.export_dir / path
+
+        logger.log(TRACE, f"Exporting {path} to {out_path}")
+        write_to_path(out_path, data)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(...)"
 
 
 class LoaderContext(ValidationContext):

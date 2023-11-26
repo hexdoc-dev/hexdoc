@@ -1,278 +1,100 @@
 from __future__ import annotations
 
 import logging
-from functools import cached_property
-from pathlib import Path
-from typing import Literal, Self
+from abc import ABC, abstractmethod
+from collections import defaultdict
+from typing import (
+    Annotated,
+    Any,
+    Generic,
+    Iterable,
+    Self,
+    TypeVar,
+)
 
-from pydantic import Field, model_validator
+from pydantic import Field, SerializeAsAny
+from typing_extensions import override
 
-from hexdoc.core import ItemStack, ModResourceLoader, Properties, ResourceLocation
-from hexdoc.model import HexdocModel, InlineItemModel, InlineModel
+from hexdoc.core import ResourceLocation
+from hexdoc.model import (
+    InlineModel,
+    ValidationContext,
+)
+from hexdoc.utils import isinstance_or_raise
 
-from ..i18n import I18nContext, LocalizedStr
-from ..tags import Tag
-from .external import fetch_minecraft_textures
+from .constants import MISSING_TEXTURE_URL
 
-# 16x16 hashtag icon for tags
-TAG_TEXTURE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAC4jAAAuIwF4pT92AAAANUlEQVQ4y2NgGJRAXV39v7q6+n9cfGTARKllFBvAiOxMUjTevHmTkSouGPhAHA0DWnmBrgAANLIZgSXEQxIAAAAASUVORK5CYII="
-
-# purple and black square
-MISSING_TEXTURE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAACXBIWXMAAC4jAAAuIwF4pT92AAAAJElEQVQoz2NkwAF+MPzAKs7EQCIY1UAMYMQV3hwMHKOhRD8NAPogBA/DVsDEAAAAAElFTkSuQmCC"
+logger = logging.getLogger(__name__)
 
 
-class Texture(InlineModel):
-    file_id: ResourceLocation
-    url: str | None
+class BaseTexture(InlineModel, ABC):
+    @classmethod
+    @abstractmethod
+    def from_url(cls, url: str, pixelated: bool) -> Self:
+        ...
+
+    @override
+    @classmethod
+    def load_id(cls, id: ResourceLocation, context: ValidationContext):
+        assert isinstance_or_raise(context, TextureContext)
+        return cls.lookup(
+            id,
+            lookups=context.textures,  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
+            allowed_missing=context.allowed_missing_textures,
+        )
 
     @classmethod
-    def load_all(cls, root: Path, loader: ModResourceLoader):
-        for resource_dir, id, path in loader.find_resources(
-            "assets",
-            namespace="*",
-            folder="textures",
-            glob="**/*.png",
-            allow_missing=True,
-        ):
-            if resource_dir.external:
-                continue
-
-            relative_path = path.resolve().relative_to(root)
-            url = f"{loader.props.env.asset_url}/{relative_path.as_posix()}"
-
-            meta_path = path.with_suffix(".png.mcmeta")
-            if meta_path.is_file():
-                yield AnimatedTexture(
-                    file_id=id,
-                    url=url,
-                    meta=AnimationMeta.model_validate_json(meta_path.read_bytes()),
-                )
-            else:
-                yield Texture(file_id=id, url=url)
-
-    @classmethod
-    def load_id(cls, id: ResourceLocation, context: TextureContext):
-        return cls.find(id, props=context.props, textures=context.textures)
-
-    @classmethod
-    def find_item(
+    def lookup(
         cls,
         id: ResourceLocation,
-        props: Properties,
-        textures: dict[ResourceLocation, Texture],
-    ):
-        return cls.find(
-            id,
-            id.with_path(f"item/{id.path}.png"),
-            id.with_path(f"block/{id.path}.png"),
-            props=props,
-            textures=textures,
-        )
+        lookups: TextureLookups[Any],
+        allowed_missing: Iterable[ResourceLocation],
+    ) -> Self:
+        """Returns the texture from the lookup table if it exists, or the "missing
+        texture" texture if it's in `props.texture.missing`, or raises `ValueError`.
+
+        This is called frequently and does not load any files.
+        """
+        textures = cls.get_lookup(lookups)
+        if id in textures:
+            return textures[id]
+
+        if any(id.match(pattern) for pattern in allowed_missing):
+            logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
+            return cls.from_url(MISSING_TEXTURE_URL, pixelated=True)
+
+        raise ValueError(f"No {cls.__name__} for {id}")
 
     @classmethod
-    def find(
-        cls,
-        *ids: ResourceLocation,
-        props: Properties,
-        textures: dict[ResourceLocation, Texture],
-    ):
-        for id in ids:
-            id = id.with_path(id.path.removeprefix("textures/"))
-            if id in textures:
-                return textures[id]
+    def get_lookup(cls, lookups: TextureLookups[Any]) -> TextureLookup[Self]:
+        return lookups[cls.__name__]
 
-        # fallback/error
-        message = f"No texture for {', '.join(str(i) for i in ids)}"
-
-        for missing_id in props.textures.missing:
-            for id in ids:
-                if id.match(missing_id):
-                    logging.getLogger(__name__).warning(message)
-                    return Texture(file_id=id, url=MISSING_TEXTURE)
-
-        raise KeyError(message)
+    def insert_texture(self, lookups: TextureLookups[Any], id: ResourceLocation):
+        textures = self.get_lookup(lookups)
+        textures[id] = self
 
 
-class AnimatedTexture(Texture):
-    meta: AnimationMeta
-
-    @property
-    def class_name(self):
-        return self.file_id.class_name
-
-    @property
-    def time_seconds(self):
-        return self.time / 20
-
-    @cached_property
-    def time(self):
-        return sum(time for _, time in self._normalized_frames)
-
-    @property
-    def frames(self):
-        start = 0
-        for index, time in self._normalized_frames:
-            yield AnimatedTextureFrame(
-                index=index,
-                start=start,
-                time=time,
-                animation_time=self.time,
-            )
-            start += time
-
-    @property
-    def _normalized_frames(self):
-        """index, time"""
-        animation = self.meta.animation
-
-        for i, frame in enumerate(animation.frames):
-            match frame:
-                case int(index):
-                    time = None
-                case AnimationMetaFrame(index=index, time=time):
-                    pass
-
-            if index is None:
-                index = i
-            if time is None:
-                time = animation.frametime
-
-            yield index, time
-
-
-class AnimatedTextureFrame(HexdocModel):
-    index: int
-    start: int
-    time: int
-    animation_time: int
-
-    @property
-    def start_percent(self):
-        return self._format_time(self.start)
-
-    @property
-    def end_percent(self):
-        return self._format_time(self.start + self.time, backoff=True)
-
-    def _format_time(self, time: int, *, backoff: bool = False) -> str:
-        percent = 100 * time / self.animation_time
-        if backoff and percent < 100:
-            percent -= 0.01
-        return f"{percent:.2f}".rstrip("0").rstrip(".")
-
-
-class AnimationMeta(HexdocModel):
-    animation: AnimationMetaTag
-
-
-class AnimationMetaTag(HexdocModel):
-    interpolate: Literal[False]  # TODO: handle interpolation
-    width: None = None  # TODO: handle non-square textures
-    height: None = None
-    frametime: int = 1
-    frames: list[int | AnimationMetaFrame]
-
-
-class AnimationMetaFrame(HexdocModel):
-    index: int | None = None
-    time: int | None = None
-
-
-class TextureContext(I18nContext):
-    textures: dict[ResourceLocation, Texture] = Field(default_factory=dict)
-    gaslighting_textures: set[ResourceLocation] = Field(default_factory=set)
-
-    @model_validator(mode="after")
-    def _post_root(self) -> Self:
-        # minecraft textures
-        minecraft_textures = fetch_minecraft_textures(
-            ref=self.props.minecraft_assets.ref,
-            version=self.props.minecraft_assets.version,
-        )
-
-        for item in minecraft_textures:
-            id = ResourceLocation("minecraft", item["name"])
-            # prefer items, since they're added first
-            if id not in self.textures:
-                self.textures[id] = Texture(file_id=id, url=item["texture"])
-
-        # gaslighting
-        self.gaslighting_textures |= Tag.load(
-            id=ResourceLocation("hexdoc", "gaslighting"),
-            registry="items",
-            context=self,
-        ).value_ids_set
-
-        return self
-
-
-class ItemWithNormalTexture(InlineItemModel):
-    id: ItemStack
-    name: LocalizedStr
-    texture: Texture
+class PNGTexture(BaseTexture):
+    url: str
+    pixelated: bool
 
     @classmethod
-    def load_id(cls, item: ItemStack, context: TextureContext):
-        """Implements InlineModel."""
-        texture_id = context.props.textures.override.get(item.id, item.id)
-        return cls(
-            id=item,
-            name=context.i18n.localize_item(item),
-            texture=Texture.find_item(texture_id, context.props, context.textures),
-        )
-
-    @property
-    def gaslighting(self):
-        return False
+    def from_url(cls, url: str, pixelated: bool) -> Self:
+        return cls(url=url, pixelated=pixelated)
 
 
-class ItemWithGaslightingTexture(InlineItemModel):
-    id: ItemStack
-    name: LocalizedStr
-    textures: list[Texture]
+_T_BaseTexture = TypeVar("_T_BaseTexture", bound=BaseTexture)
 
-    @classmethod
-    def load_id(cls, item: ItemStack, context: TextureContext):
-        """Implements InlineModel."""
-        if item.id not in context.gaslighting_textures:
-            raise ValueError("Item does not have a gaslighting texture")
+TextureLookup = dict[ResourceLocation, SerializeAsAny[_T_BaseTexture]]
+"""dict[id, texture]"""
 
-        override_id = context.props.textures.override.get(item.id, item.id)
-
-        return cls(
-            id=item,
-            name=context.i18n.localize_item(item),
-            textures=[
-                Texture.find_item(
-                    id=override_id + f"_{index}",
-                    props=context.props,
-                    textures=context.textures,
-                )
-                for index in range(4)
-            ],
-        )
-
-    @property
-    def gaslighting(self):
-        return True
+TextureLookups = defaultdict[
+    str,
+    Annotated[TextureLookup[_T_BaseTexture], Field(default_factory=dict)],
+]
+"""dict[type(texture).__name__, TextureLookup]"""
 
 
-ItemWithTexture = ItemWithGaslightingTexture | ItemWithNormalTexture
-
-
-class TagWithTexture(InlineModel):
-    id: ResourceLocation
-    name: LocalizedStr
-    texture: Texture
-
-    @classmethod
-    def load_id(cls, id: ResourceLocation, context: TextureContext):
-        return cls(
-            id=id,
-            name=context.i18n.localize_item_tag(id),
-            texture=Texture(file_id=id, url=TAG_TEXTURE),
-        )
-
-    @property
-    def gaslighting(self):
-        return False
+class TextureContext(ValidationContext, Generic[_T_BaseTexture]):
+    textures: TextureLookups[_T_BaseTexture]
+    allowed_missing_textures: set[ResourceLocation]

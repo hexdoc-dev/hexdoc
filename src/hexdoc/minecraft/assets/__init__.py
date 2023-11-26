@@ -1,21 +1,49 @@
 __all__ = [
     "AnimatedTexture",
     "AnimationMeta",
-    "ItemWithGaslightingTexture",
-    "ItemWithNormalTexture",
+    "HexdocAssetLoader",
+    "HexdocPythonResourceLoader",
+    "ImageTexture",
+    "ItemTexture",
     "ItemWithTexture",
+    "ModelItem",
+    "MultiItemTexture",
+    "NamedTexture",
+    "PNGTexture",
+    "SingleItemTexture",
     "TagWithTexture",
     "Texture",
     "TextureContext",
+    "TextureI18nContext",
+    "TextureLookup",
+    "TextureLookups",
 ]
 
-from .textures import (
+from .animated import (
     AnimatedTexture,
     AnimationMeta,
-    ItemWithGaslightingTexture,
-    ItemWithNormalTexture,
-    ItemWithTexture,
-    TagWithTexture,
+)
+from .items import (
+    ImageTexture,
+    ItemTexture,
+    MultiItemTexture,
+    SingleItemTexture,
+)
+from .load_assets import (
+    HexdocAssetLoader,
+    HexdocPythonResourceLoader,
     Texture,
+)
+from .models import ModelItem
+from .textures import (
+    PNGTexture,
     TextureContext,
+    TextureLookup,
+    TextureLookups,
+)
+from .with_texture import (
+    ItemWithTexture,
+    NamedTexture,
+    TagWithTexture,
+    TextureI18nContext,
 )

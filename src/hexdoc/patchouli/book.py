@@ -82,8 +82,8 @@ class Book(HexdocModel):
     def load_book_json(cls, loader: ModResourceLoader, id: ResourceLocation):
         data = cls._load_book_resource(loader, id)
 
-        if IsVersion("<=1.19") and "extend" in data:
-            id = loader.root_book_id = ResourceLocation.model_validate(data["extend"])
+        if IsVersion("<1.20") and "extend" in data:
+            id = ResourceLocation.model_validate(data["extend"])
             return cls._load_book_resource(loader, id)
 
         return data
@@ -124,7 +124,7 @@ class Book(HexdocModel):
         internal_entries = defaultdict[ResLoc, dict[ResLoc, Entry]](dict)
 
         for resource_dir, id, data in context.loader.load_book_assets(
-            book_id=self.id,
+            parent_book_id=self.id,
             folder="entries",
             use_resource_pack=self.use_resource_pack,
         ):

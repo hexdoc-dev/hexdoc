@@ -1,12 +1,32 @@
 from __future__ import annotations
 
-from typing import Iterator, Self
+from dataclasses import dataclass
+from typing import Any, ClassVar, Iterator, Self
 
 from pydantic import Field
 
-from hexdoc.core import LoaderContext, ResourceLocation
+from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.model import HexdocModel
 from hexdoc.utils import PydanticOrderedSet, decode_json_dict
+
+
+@dataclass
+class TagLoader:
+    namespace: str
+    registry: str
+    path: str
+
+    @property
+    def id(self):
+        return ResourceLocation(self.namespace, self.path)
+
+    def load(self, loader: ModResourceLoader):
+        return Tag.load(
+            id=self.id,
+            registry=self.registry,
+            loader=loader,
+        )
 
 
 class OptionalTagValue(HexdocModel, frozen=True):
@@ -18,6 +38,17 @@ TagValue = ResourceLocation | OptionalTagValue
 
 
 class Tag(HexdocModel):
+    GASLIGHTING_ITEMS: ClassVar = TagLoader("hexdoc", "items", "gaslighting")
+    """Item/block ids that gaslight you. This tag isn't real, it's all in your head.
+
+    File: `hexdoc/tags/items/gaslighting.json`
+    """
+    SPOILERED_ADVANCEMENTS: ClassVar = TagLoader("hexdoc", "advancements", "spoilered")
+    """Advancements for entries that should be blurred in the web book.
+
+    File: `hexdoc/tags/advancements/spoilered.json`
+    """
+
     registry: str = Field(exclude=True)
     values: PydanticOrderedSet[TagValue]
     replace: bool = False
@@ -27,31 +58,33 @@ class Tag(HexdocModel):
         cls,
         registry: str,
         id: ResourceLocation,
-        context: LoaderContext,
+        loader: ModResourceLoader,
     ) -> Self:
         values = PydanticOrderedSet[TagValue]()
         replace = False
 
-        for _, _, tag in context.loader.load_resources(
+        for _, _, tag in loader.load_resources(
             "data",
             folder=f"tags/{registry}",
             id=id,
-            decode=lambda s: Tag._convert(registry, s, context),
-            export=cls._export,
+            decode=lambda raw_data: Tag._convert(
+                registry=registry,
+                raw_data=raw_data,
+            ),
+            # TODO: i have no idea why pyright doesn't like this.
+            export=cls._export,  # pyright: ignore[reportGeneralTypeIssues]
         ):
             if tag.replace:
                 values.clear()
-            for value in tag._load_values(context):
+            for value in tag._load_values(loader):
                 values.add(value)
 
-        return Tag(registry=registry, values=values, replace=replace)
+        return cls(registry=registry, values=values, replace=replace)
 
     @classmethod
-    def _convert(cls, registry: str, data: str, context: LoaderContext) -> Self:
-        return cls.model_validate(
-            decode_json_dict(data) | {"registry": registry},
-            context=context,
-        )
+    def _convert(cls, *, registry: str, raw_data: str) -> Self:
+        data = decode_json_dict(raw_data)
+        return cls.model_validate(data | {"registry": registry})
 
     @property
     def value_ids(self) -> Iterator[ResourceLocation]:
@@ -66,6 +99,16 @@ class Tag(HexdocModel):
     def value_ids_set(self):
         return set(self.value_ids)
 
+    def __ror__(self, other: set[ResourceLocation]):
+        new = set(other)
+        new |= self.value_ids_set
+        return new
+
+    def __contains__(self, x: Any) -> bool:
+        if isinstance(x, BaseResourceLocation):
+            return x.id in self.value_ids_set
+        return NotImplemented
+
     def _export(self, current: Self | None):
         if self.replace or current is None:
             tag = self
@@ -75,7 +118,7 @@ class Tag(HexdocModel):
             )
         return tag.model_dump_json(by_alias=True)
 
-    def _load_values(self, context: LoaderContext) -> Iterator[TagValue]:
+    def _load_values(self, loader: ModResourceLoader) -> Iterator[TagValue]:
         for value in self.values:
             match value:
                 case (
@@ -83,8 +126,8 @@ class Tag(HexdocModel):
                     | OptionalTagValue(id=child_id)
                 ) if child_id.is_tag:
                     try:
-                        child = Tag.load(self.registry, child_id, context)
-                        yield from child._load_values(context)
+                        child = Tag.load(self.registry, child_id, loader)
+                        yield from child._load_values(loader)
                     except FileNotFoundError:
                         yield value
                 case _:

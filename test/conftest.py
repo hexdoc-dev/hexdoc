@@ -1,32 +1,19 @@
+import json
 from pathlib import Path
-from typing import Any
+from textwrap import dedent
+from typing import Any, Callable, Literal
 
 import pytest
-from hexdoc._cli.app import export
 from hexdoc.plugin import PluginManager
-from pytest import MonkeyPatch, Parser
+from hexdoc.utils import JSONValue
+from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
 
-longrun = pytest.mark.skipif("not config.getoption('longrun')")
-nox_only = pytest.mark.skipif("not config.getoption('nox')")
-
-
-# https://stackoverflow.com/a/43938191
-def pytest_addoption(parser: Parser):
-    parser.addoption(
-        "--no-longrun",
-        action="store_false",
-        dest="longrun",
-        help="disable longrun-decorated tests",
-    )
-    parser.addoption(
-        "--nox",
-        action="store_true",
-        dest="nox",
-        help="enable nox_only-decorated tests",
-    )
+collect_ignore = [
+    "noxfile.py",
+]
 
 
 class FilePathSnapshotExtension(SingleFileSnapshotExtension):
@@ -55,7 +42,12 @@ def path_snapshot(snapshot: SnapshotAssertion):
 
 @pytest.fixture
 def pm():
-    return PluginManager()
+    return PluginManager(branch="main")
+
+
+@pytest.fixture
+def empty_pm():
+    return PluginManager(branch="main", load=False)
 
 
 @pytest.fixture(scope="session")
@@ -76,7 +68,7 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("test/_submodules/HexMod/doc/hexdoc.toml")
+    return Path("submodules/HexMod/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -85,15 +77,48 @@ def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
         monkeysession.setenv(name, value)
 
 
-@pytest.fixture(autouse=True, scope="session")
-def export_hexdoc_data(patch_env: None, hexcasting_props_file: Path):
-    export(props_file=Path("hexdoc.toml"))
-    export(props_file=hexcasting_props_file)
-
-
 # helpers
 
 
 def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
     root = Path(root)
     return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))
+
+
+FileValue = JSONValue | tuple[Literal["a"], str] | Callable[[str | None], str]
+
+FileTree = dict[str, "FileTree | FileValue"]
+
+
+def write_file_tree(root: str | Path, tree: FileTree):
+    for path, value in tree.items():
+        path = Path(root, path)
+        match value:
+            case {**children} if path.suffix != ".json":
+                # subtree
+                path.mkdir(parents=True, exist_ok=True)
+                write_file_tree(path, children)
+            case {**json_data}:
+                # JSON file
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps(json_data, indent="  "))
+            case tuple((mode, text)):
+                # append to existing file
+                with path.open(mode) as f:
+                    f.write(dedent(text))
+            case str() as text:
+                # anything else - usually just text
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(dedent(text))
+            case int() | float() | bool() | None:
+                raise TypeError(
+                    f"Type {type(value)} is only allowed in JSON data: {value}"
+                )
+            case fn:
+                assert not isinstance(fn, (list, dict))
+                path.parent.mkdir(parents=True, exist_ok=True)
+                try:
+                    current_value = path.read_text()
+                except FileNotFoundError:
+                    current_value = None
+                path.write_text(dedent(fn(current_value)))

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from enum import Enum, auto
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, final
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
@@ -321,6 +321,7 @@ class _CloseTag(HexdocModel, frozen=True):
 STYLE_REGEX = re.compile(r"\$\(([^)]*)\)")
 
 
+@final
 @dataclass(config=DEFAULT_CONFIG)
 class FormatTree:
     style: Style
@@ -402,13 +403,15 @@ class FormatTree:
             last_node = style_stack.pop()
             style_stack[-1].children.append(last_node)
 
-        return pm.validate_format_tree(
+        validated_tree = pm.validate_format_tree(
             tree=style_stack[0],
             macros=macros,
             book_id=book_id,
             i18n=i18n,
             is_0_black=is_0_black,
         )
+        assert isinstance(validated_tree, cls)
+        return validated_tree
 
     @model_validator(mode="wrap")
     @classmethod

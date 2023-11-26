@@ -45,6 +45,9 @@ class PathResourceDir(BaseResourceDir):
     external: bool = False
     reexport: bool = True
 
+    required: bool = True
+    """If false, ignore "file not found" errors."""
+
     # not a props field
     _modid: str | None = None
 
@@ -71,12 +74,11 @@ class PathResourceDir(BaseResourceDir):
             return {"path": value}
         return value
 
-    @field_validator("path", mode="after")
-    @classmethod
-    def _assert_exists(cls, path: Path):
-        if not path.exists():
-            raise ValueError(f"PathResourceDir path does not exist: {path}")
-        return path
+    @model_validator(mode="after")
+    def _assert_path_exists(self):
+        if self.required and not self.path.exists():
+            raise ValueError(f"PathResourceDir path does not exist: {self.path}")
+        return self
 
 
 class PluginResourceDir(BaseResourceDir):

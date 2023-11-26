@@ -13,7 +13,22 @@
             "justMyCode": false
         },
         {
-            "name": "Python: Generate Docs",
+            "name": "Python: hexdoc export",
+            "type": "python",
+            "request": "launch",
+            "module": "hexdoc",
+            "args": [
+                "export",
+                "--props",
+                "./submodules/HexMod/doc/hexdoc.toml",
+                "--release",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "python": "${workspaceFolder}/.nox/mock_ci/Scripts/python.exe",
+        },
+        {
+            "name": "Python: hexdoc render",
             "type": "python",
             "request": "launch",
             "module": "hexdoc",
@@ -21,10 +36,9 @@
                 "render",
                 "_site/src/docs",
                 "--props",
-                "${workspaceFolder}/test/_submodules/HexMod/doc/hexdoc.toml",
+                "${workspaceFolder}/submodules/HexMod/doc/hexdoc.toml",
                 "--lang",
                 "en_us",
-                "--allow-missing",
             ],
             "console": "integratedTerminal",
             "justMyCode": false
@@ -39,6 +53,6 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": false
-        }
+        },
     ]
 }

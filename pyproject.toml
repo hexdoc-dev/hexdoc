@@ -41,13 +41,14 @@ dynamic = ["version"]
 dependencies = [
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
-    "minecraft-render==2.0.0a5",
+    "minecraft-render~=2.0.0a6",
     "more_itertools~=10.1",
     "ordered-set~=4.1",
     "packaging~=23.2",
     "pluggy~=1.3",
     "pydantic_settings~=2.0",
     "pydantic~=2.3,!=2.4.0",
+    "pygithub~=2.1",
     "pyjson5~=1.6",
     "requests~=2.31",
     "typer[all]~=0.9",
@@ -65,11 +66,11 @@ pdoc = [
     "hatch",
 ]
 test = [
-    "pyright",
+    "pyright~=1.1.337",
     "pytest~=7.4",
-    "pytest-cookies~=0.7",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
+    "copier_template_tester",
 ]
 dev = [
     "hexdoc[pdoc,test]",
@@ -79,8 +80,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://object-object.github.io/HexMod/" # TODO: replace?
-Source = "https://github.com/object-Object/hexdoc"
+Homepage = "https://book.hexxy.media"
+Documentation = "https://hexdoc.hexxy.media"
+Source = "https://github.com/hexdoc-dev/hexdoc"
 
 [tool.hatch.version]
 path = "src/hexdoc/__version__.py"
@@ -103,7 +105,7 @@ packages = [
 ]
 
 [project.scripts]
-hexdoc = "hexdoc._cli.app:app"
+hexdoc = "hexdoc.cli.app:app"
 
 # hexdoc
 
@@ -113,9 +115,16 @@ hexdoc = "hexdoc._hooks:HexdocPlugin"
 # Pytest
 
 [tool.pytest.ini_options]
-addopts = ["--import-mode=importlib"]
-markers = ["template"]
 testpaths = ["test"]
+addopts = [
+    "--import-mode=importlib",
+    "-m=not copier and not hexcasting",
+]
+markers = [
+    "copier",
+    "hexcasting",
+    "template",
+]
 filterwarnings = [
     'ignore:setDaemon\(\) is deprecated, set the daemon attribute instead:DeprecationWarning:javascript.events',
 ]
@@ -133,6 +142,7 @@ extend-ignore = [
     # covered by Pyright
     "F821", # undefined variable
     "F401", # imported but unused
+    "F841", # unused variable
 ]
 extend-exclude = [
     "vendor",
@@ -140,7 +150,6 @@ extend-exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "[{][{]cookiecutter.output_directory[}][}]",
 ]
 
 [tool.ruff.lint.isort]
@@ -165,12 +174,11 @@ extraPaths = [
 exclude = [
     "noxfile.py",
     "vendor",
-    "venv",
+    "**/venv",
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "test/_submodules/HexMod",
-    "{{cookiecutter.output_directory}}",
+    "**/template",
 ]
 
 typeCheckingMode = "basic"
