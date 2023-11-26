@@ -174,11 +174,11 @@ extraPaths = [
 exclude = [
     "noxfile.py",
     "vendor",
-    "venv",
+    "**/venv",
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "template",
+    "**/template",
 ]
 
 typeCheckingMode = "basic"
