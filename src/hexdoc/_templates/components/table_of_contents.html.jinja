@@ -3,6 +3,9 @@
 {# put the link target outside of toc-container so jump to top still works in sidebar mode #}
 <div id="table-of-contents"></div>
 <nav class="toc-container">
+  <!-- Collapse button added here -->
+  <button id="collapse-button">Collapse</button>
+
   <h2 class="page-header">
     {{ _("hexdoc.toc.title") }}<a
       href="javascript:void(0)"
@@ -14,10 +17,7 @@
 
   {% for category in book.categories.values() if category.entries.values() %}
     <details class="toc-category">
-      {# category #}
       <summary>{{ fmt.maybe_spoilered_link(category) }}</summary>
-
-      {# list of entries in the category #}
       <ul>
         {% for entry in category.entries.values() %}
           <li>{{ fmt.maybe_spoilered_link(entry) }}</li>
@@ -26,3 +26,18 @@
     </details>
   {% endfor %}
 </nav>
+
+<script>
+// Add this script right before the closing body tag or in a separate JS file
+document.addEventListener('DOMContentLoaded', (event) => {
+  const btn = document.getElementById('collapse-button');
+  const tocContainer = document.querySelector('.toc-container');
+
+  btn.addEventListener('click', function() {
+    // Toggle the ToC container visibility
+    tocContainer.style.display = tocContainer.style.display === 'none' ? 'block' : 'none';
+    // Update button text accordingly
+    btn.textContent = tocContainer.style.display === 'none' ? 'Expand' : 'Collapse';
+  });
+});
+</script>
