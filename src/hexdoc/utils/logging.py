@@ -11,6 +11,8 @@ from typing import Any, Literal, Mapping
 TRACE = 5
 """For even more verbose logs than `logging.DEBUG`."""
 
+logger = logging.getLogger(__name__)
+
 
 # https://stackoverflow.com/a/68154386
 class LevelFormatter(Formatter):
@@ -39,7 +41,16 @@ class LevelFormatter(Formatter):
         return formatter.format(record)
 
 
+_is_initialized = False
+
+
 def setup_logging(verbosity: int, ci: bool):
+    global _is_initialized
+
+    if _is_initialized:
+        logger.debug("Root logger already initialized, skipping setup.")
+        return
+
     logging.addLevelName(TRACE, "TRACE")
 
     formats = {
@@ -59,8 +70,8 @@ def setup_logging(verbosity: int, ci: bool):
     root_logger.setLevel(verbosity_log_level(verbosity))
     root_logger.addHandler(handler)
 
-    logger = logging.getLogger(__name__)
-    logger.info("Starting.")
+    logger.debug("Initialized logger.")
+    _is_initialized = True
 
 
 def verbosity_log_level(verbosity: int) -> int:
