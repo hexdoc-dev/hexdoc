@@ -30,25 +30,31 @@ def test_copier(
         {
             "src/generated/resources": {},
             "src/main/java/com/package/Patterns.java": "",
-            "src/main/resources/assets/hexcasting/patchouli_books/thehexbook/en_us": {
-                "categories/foo.json": {
-                    "name": "hexdoc.mod.title",
-                    "icon": "minecraft:amethyst_shard",
-                    "description": "hexcasting.category.basics.desc",
-                    "sortnum": 0,
+            "src/main/resources/assets": {
+                "hexcasting/patchouli_books/thehexbook/en_us": {
+                    "categories/foo.json": {
+                        "name": "hexdoc.mod.title",
+                        "icon": "minecraft:amethyst_shard",
+                        "description": "hexcasting.category.basics.desc",
+                        "sortnum": 0,
+                    },
+                    "entries/bar.json": {
+                        "name": "hexdoc.welcome.header",
+                        "category": "hexcasting:foo",
+                        "icon": "minecraft:textures/mob_effect/nausea.png",
+                        "sortnum": 0,
+                        "advancement": "hexcasting:y_u_no_cast_angy",
+                        "pages": [
+                            {
+                                "type": "patchouli:text",
+                                "text": "bar.link.patterns",
+                            },
+                        ],
+                    },
                 },
-                "entries/bar.json": {
-                    "name": "hexdoc.welcome.header",
-                    "category": "hexcasting:foo",
-                    "icon": "minecraft:textures/mob_effect/nausea.png",
-                    "sortnum": 0,
-                    "advancement": "hexcasting:y_u_no_cast_angy",
-                    "pages": [
-                        {
-                            "type": "patchouli:text",
-                            "text": "hexcasting.page.couldnt_cast.1",
-                        },
-                    ],
+                "mod/lang/en_us.json": {
+                    # make sure we're specifically testing internal and external links
+                    "bar.link.patterns": "$(l:patterns)patterns$(l:foo)foo/$",
                 },
             },
             ".env": "\n".join(
