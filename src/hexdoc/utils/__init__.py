@@ -4,10 +4,10 @@ __all__ = [
     "InheritType",
     "JSONDict",
     "JSONValue",
-    "NoTrailingSlashHttpUrl",
     "NoValue",
     "NoValueType",
     "PydanticOrderedSet",
+    "PydanticURL",
     "RelativePath",
     "Sortable",
     "TOMLDict",
@@ -54,8 +54,8 @@ from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
 from .types import (
     IProperty,
-    NoTrailingSlashHttpUrl,
     PydanticOrderedSet,
+    PydanticURL,
     Sortable,
     TryGetEnum,
     clamping_validator,

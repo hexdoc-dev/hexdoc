@@ -11,6 +11,7 @@ from jinja2.runtime import Context
 from pydantic import Field, ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
+from yarl import URL
 
 from hexdoc.core import LoaderContext, ResourceLocation
 from hexdoc.minecraft import I18n, I18nContext, LocalizedStr
@@ -60,7 +61,7 @@ _COLORS = {
     "f": "fff",
 }
 
-BookLinkBases = dict[tuple[ResourceLocation, str | None], str]
+BookLinkBases = dict[tuple[ResourceLocation, str | None], URL]
 
 
 class FormattingContext(
@@ -305,7 +306,7 @@ class LinkStyle(Style, frozen=True):
                 link_bases: BookLinkBases = context["link_bases"]
                 if key not in link_bases:
                     raise ValueError(f"broken link: {book_link}")
-                return link_bases[key] + book_link.fragment
+                return str(link_bases[key]) + book_link.fragment
 
 
 # intentionally not inheriting from Style, because this is basically an implementation

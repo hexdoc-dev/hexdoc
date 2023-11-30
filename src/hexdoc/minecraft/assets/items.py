@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Self
 
+from yarl import URL
+
 from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.model import ValidationContext
 
@@ -17,7 +19,7 @@ class SingleItemTexture(BaseTexture):
     inner: ImageTexture
 
     @classmethod
-    def from_url(cls, url: str, pixelated: bool) -> Self:
+    def from_url(cls, url: URL, pixelated: bool) -> Self:
         return cls(
             inner=PNGTexture(url=url, pixelated=pixelated),
         )
@@ -36,7 +38,7 @@ class MultiItemTexture(BaseTexture):
     gaslighting: bool
 
     @classmethod
-    def from_url(cls, url: str, pixelated: bool) -> Self:
+    def from_url(cls, url: URL, pixelated: bool) -> Self:
         return cls(
             inner=[PNGTexture(url=url, pixelated=pixelated)],
             gaslighting=False,

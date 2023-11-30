@@ -14,13 +14,14 @@ from typing import (
 
 from pydantic import Field, SerializeAsAny
 from typing_extensions import override
+from yarl import URL
 
 from hexdoc.core import ResourceLocation
 from hexdoc.model import (
     InlineModel,
     ValidationContext,
 )
-from hexdoc.utils import isinstance_or_raise
+from hexdoc.utils import PydanticURL, isinstance_or_raise
 
 from .constants import MISSING_TEXTURE_URL
 
@@ -30,7 +31,7 @@ logger = logging.getLogger(__name__)
 class BaseTexture(InlineModel, ABC):
     @classmethod
     @abstractmethod
-    def from_url(cls, url: str, pixelated: bool) -> Self:
+    def from_url(cls, url: URL, pixelated: bool) -> Self:
         ...
 
     @override
@@ -75,11 +76,11 @@ class BaseTexture(InlineModel, ABC):
 
 
 class PNGTexture(BaseTexture):
-    url: str
+    url: PydanticURL
     pixelated: bool
 
     @classmethod
-    def from_url(cls, url: str, pixelated: bool) -> Self:
+    def from_url(cls, url: URL, pixelated: bool) -> Self:
         return cls(url=url, pixelated=pixelated)
 
 

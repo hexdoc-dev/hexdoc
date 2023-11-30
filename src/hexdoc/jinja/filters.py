@@ -56,14 +56,16 @@ def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
         props = cast_or_raise(context["props"], Properties)
         textures = cast_or_raise(context["png_textures"], TextureLookup[PNGTexture])
 
-        return PNGTexture.lookup(
+        texture = PNGTexture.lookup(
             id=ResourceLocation.model_validate(id),
             lookups=TextureLookups[Any](
                 dict,
                 PNGTexture=textures,
             ),
             allowed_missing=props.textures.missing,
-        ).url
+        )
+
+        return str(texture.url)
     except Exception as e:
         e.add_note(f"id: {id}")
         raise

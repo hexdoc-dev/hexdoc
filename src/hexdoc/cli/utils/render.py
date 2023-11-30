@@ -128,7 +128,7 @@ def render_book(
         raise ValueError("Expected a value for props.template, got None")
 
     output_dir /= site_path
-    page_url = "/".join([props.env.github_pages_url, *site_path.parts])
+    page_url = props.env.github_pages_url.joinpath(*site_path.parts)
 
     logger.info(f"Rendering {output_dir}")
 
@@ -146,8 +146,8 @@ def render_book(
         "book": book,
         "props": props,
         "i18n": i18n,
-        "site_url": props.env.github_pages_url,
-        "page_url": page_url,
+        "site_url": str(props.env.github_pages_url),
+        "page_url": str(page_url),
         "version": version,
         "lang": lang,
         "lang_name": lang_name,

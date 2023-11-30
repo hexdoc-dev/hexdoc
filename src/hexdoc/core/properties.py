@@ -6,18 +6,19 @@ from pathlib import Path
 from typing import Any, Self, Sequence
 
 from pydantic import Field, PrivateAttr, field_validator
+from yarl import URL
 
 from hexdoc.model.base import HexdocSettings
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils import (
     TRACE,
-    NoTrailingSlashHttpUrl,
     PydanticOrderedSet,
     RelativePath,
     git_root,
     load_toml_with_placeholders,
     relative_path_root,
 )
+from hexdoc.utils.types import PydanticURL
 
 from .resource import ResourceLocation
 from .resource_dir import ResourceDir
@@ -35,19 +36,21 @@ class EnvironmentVariableProps(HexdocSettings):
     github_sha: str
 
     # set by CI
-    github_pages_url: NoTrailingSlashHttpUrl
+    github_pages_url: PydanticURL
 
     # optional for debugging
-    debug_githubusercontent: str | None = None
+    debug_githubusercontent: PydanticURL | None = None
 
     @property
-    def asset_url(self):
+    def asset_url(self) -> URL:
         if self.debug_githubusercontent is not None:
-            return self.debug_githubusercontent
+            return URL(str(self.debug_githubusercontent))
 
         return (
-            f"https://raw.githubusercontent.com"
-            f"/{self.repo_owner}/{self.repo_name}/{self.github_sha}"
+            URL("https://raw.githubusercontent.com")
+            / self.repo_owner
+            / self.repo_name
+            / self.github_sha
         )
 
     @property
@@ -95,7 +98,7 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
 
 # TODO: support item/block override
 class PNGTextureOverride(StripHiddenModel):
-    url: str
+    url: PydanticURL
     pixelated: bool
 
 

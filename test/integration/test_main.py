@@ -89,6 +89,7 @@ def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: P
     subprocess.run(cmd, check=True)
 
 
+@pytest.mark.hexcasting
 @pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
 def test_file_structure(
     app_output_dir: Path,
@@ -102,6 +103,7 @@ def test_file_structure(
     assert app_list == snapshot
 
 
+@pytest.mark.hexcasting
 @pytest.mark.dependency(depends=["test_render_app", "test_render_subprocess"])
 @pytest.mark.parametrize("filename", CHECK_RENDERED_FILENAMES)
 def test_files(

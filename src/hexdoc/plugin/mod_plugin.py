@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from typing_extensions import override
+from yarl import URL
 
 from .types import HookReturn
 
@@ -151,8 +152,8 @@ class ModPlugin(ABC):
         self,
         loader: ModResourceLoader,
         *,
-        site_url: str,
-        asset_url: str,
+        site_url: URL,
+        asset_url: URL,
         render_dir: Path,
     ) -> HexdocAssetLoader:
         # unfortunately, this is necessary to avoid some *real* ugly circular imports

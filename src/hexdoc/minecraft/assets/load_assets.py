@@ -1,6 +1,7 @@
 import base64
 import logging
 from collections.abc import Set
+from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 from typing import Iterable, Iterator
@@ -8,15 +9,17 @@ from typing import Iterable, Iterator
 from minecraft_render import ResourcePath, js
 from minecraft_render.types.dataset.RenderClass import IRenderClass
 from minecraft_render.types.dataset.types import IResourceLoader
+from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import (
     PNGTextureOverride,
     TextureTextureOverride,
 )
-from hexdoc.minecraft.tags import Tag
 from hexdoc.model import HexdocModel
+from hexdoc.utils import PydanticURL
 
+from ..tags import Tag
 from .animated import AnimatedTexture, AnimationMeta
 from .items import (
     ImageTexture,
@@ -67,10 +70,11 @@ class HexdocPythonResourceLoader(HexdocModel):
         return Path("assets") / string_path
 
 
-class HexdocAssetLoader(HexdocModel):
+@dataclass(kw_only=True)
+class HexdocAssetLoader:
     loader: ModResourceLoader
-    site_url: str
-    asset_url: str
+    site_url: PydanticURL
+    asset_url: PydanticURL
     render_dir: Path
 
     @cached_property
@@ -236,9 +240,9 @@ def load_texture(
     *,
     path: Path,
     repo_root: Path,
-    asset_url: str,
+    asset_url: URL,
 ) -> ImageTexture:
-    url = f"{asset_url}/{path.relative_to(repo_root).as_posix()}"
+    url = asset_url.joinpath(*path.relative_to(repo_root).parts)
     meta_path = path.with_suffix(".png.mcmeta")
 
     if meta_path.is_file():
@@ -263,7 +267,7 @@ def load_and_render_item(
     renderer: IRenderClass,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
-    site_url: str,
+    site_url: URL,
 ) -> ItemTexture | None:
     try:
         match model.find_texture(loader, gaslighting_items):
@@ -300,7 +304,7 @@ def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
     renderer: IRenderClass,
     image_textures: dict[ResourceLocation, ImageTexture],
-    site_url: str,
+    site_url: URL,
 ) -> SingleItemTexture:
     match found_texture:
         case "texture", texture_id:
@@ -315,7 +319,7 @@ def lookup_or_render_single_item(
 def render_block(
     id: ResourceLocation,
     renderer: IRenderClass,
-    site_url: str,
+    site_url: URL,
 ) -> SingleItemTexture:
     render_id = js.ResourceLocation(id.namespace, id.path)
     file_id = id + ".png"
@@ -335,4 +339,4 @@ def render_block(
 
     # blocks look better if antialiased
     logger.debug(f"Rendered {id} to {out_path} (in {out_root})")
-    return SingleItemTexture.from_url(f"{site_url}/{out_path}", pixelated=False)
+    return SingleItemTexture.from_url(site_url / out_path, pixelated=False)

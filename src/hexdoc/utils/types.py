@@ -3,8 +3,14 @@ from enum import Enum, unique
 from typing import Annotated, Any, Mapping, Protocol, TypeVar, get_args
 
 from ordered_set import OrderedSet, OrderedSetInitializer
-from pydantic import AfterValidator, GetCoreSchemaHandler, HttpUrl
+from pydantic import (
+    AfterValidator,
+    GetCoreSchemaHandler,
+    GetPydanticSchema,
+    HttpUrl,
+)
 from pydantic_core import core_schema
+from yarl import URL
 
 _T = TypeVar("_T")
 
@@ -106,10 +112,22 @@ class PydanticOrderedSet(OrderedSet[_T]):
         return self.items
 
 
-NoTrailingSlashHttpUrl = Annotated[
-    str,
-    HttpUrl,
-    AfterValidator(lambda u: str(u).rstrip("/")),
+PydanticURL = Annotated[
+    URL,
+    GetPydanticSchema(
+        lambda typ, handler: core_schema.union_schema(
+            [
+                core_schema.is_instance_schema(typ),
+                core_schema.no_info_after_validator_function(
+                    function=lambda raw: URL(raw.rstrip("/")),
+                    schema=handler.generate_schema(Annotated[str, HttpUrl]),
+                ),
+            ],
+            serialization=core_schema.plain_serializer_function_ser_schema(
+                function=lambda url: str(url).rstrip("/"),
+            ),
+        )
+    ),
 ]
 
 

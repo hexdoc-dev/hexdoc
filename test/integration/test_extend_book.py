@@ -12,6 +12,7 @@ from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.book_context import BookContext
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
+from yarl import URL
 
 from ..conftest import write_file_tree
 
@@ -82,7 +83,7 @@ def parent_props(tmp_path: Path):
         env=EnvironmentVariableProps(
             github_repository="",
             github_sha="",
-            github_pages_url="",
+            github_pages_url=URL("https://example.com"),
         ),
     )
 
@@ -133,7 +134,7 @@ def child_props(tmp_path: Path, parent_props: Properties):
         env=EnvironmentVariableProps(
             github_repository="",
             github_sha="",
-            github_pages_url="",
+            github_pages_url=URL("https://example.com"),
         ),
     )
 

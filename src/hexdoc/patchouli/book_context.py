@@ -1,6 +1,7 @@
 from typing import Self
 
 from pydantic import Field, model_validator
+from yarl import URL
 
 from hexdoc.core import PathResourceDir, ResourceLocation
 from hexdoc.data import MetadataContext
@@ -15,10 +16,10 @@ class BookContext(FormattingContext, MetadataContext):
     extra: dict[str, ValidationContext] = Field(default_factory=dict)
     """Addons can add their own context here by implementing hexdoc_update_context."""
 
-    def get_link_base(self, resource_dir: PathResourceDir) -> str:
+    def get_link_base(self, resource_dir: PathResourceDir) -> URL:
         modid = resource_dir.modid
         if modid is None or modid == self.props.modid:
-            return ""
+            return URL()
 
         book_url = self.all_metadata[modid].book_url
         if book_url is None:

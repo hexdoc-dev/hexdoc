@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_v
 from pydantic.functional_validators import ModelBeforeValidator
 from pydantic_core import Some
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from yarl import URL
 
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import set_contextvar
@@ -17,6 +18,7 @@ DEFAULT_CONFIG = ConfigDict(
     validate_default=True,
     ignored_types=(  # pyright: ignore[reportUnknownArgumentType]
         ClassPropertyDescriptor,
+        URL,
     ),
 )
 

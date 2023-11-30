@@ -2,6 +2,7 @@ from functools import cached_property
 from typing import Any, Literal, Self
 
 from hexdoc.model import HexdocModel
+from hexdoc.utils.types import PydanticURL
 
 from .textures import BaseTexture
 
@@ -45,7 +46,7 @@ class AnimatedTextureFrame(HexdocModel):
 
 
 class AnimatedTexture(BaseTexture):
-    url: str
+    url: PydanticURL
     pixelated: bool
     css_class: str
     meta: AnimationMeta

@@ -118,7 +118,7 @@ class Book(HexdocModel):
 
         for id, category in categories.items():
             self._categories[id] = category
-            self.link_bases[(id, None)] = context.get_link_base(category.resource_dir)
+            self._link_bases[(id, None)] = context.get_link_base(category.resource_dir)
 
     def _load_entries(self, context: BookContext):
         internal_entries = defaultdict[ResLoc, dict[ResLoc, Entry]](dict)

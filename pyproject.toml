@@ -53,6 +53,7 @@ dependencies = [
     "requests~=2.31",
     "typer[all]~=0.9",
     "typing_extensions~=4.6",
+    "yarl~=1.9",
 
     # Favicons deps, because it's vendored
     "pillow~=9.5.0",
@@ -66,7 +67,7 @@ pdoc = [
     "hatch",
 ]
 test = [
-    "pyright~=1.1.337",
+    "pyright~=1.1.338",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",

@@ -5,15 +5,15 @@ from pydantic import model_validator
 
 from hexdoc.minecraft.assets import Texture, TextureI18nContext, TextureLookups
 from hexdoc.model import HexdocModel
-from hexdoc.utils import NoTrailingSlashHttpUrl
+from hexdoc.utils.types import PydanticURL
 
 
 class HexdocMetadata(HexdocModel):
     """Automatically generated at `export_dir/modid.hexdoc.json`."""
 
-    book_url: NoTrailingSlashHttpUrl | None
+    book_url: PydanticURL | None
     """Github Pages base url."""
-    asset_url: NoTrailingSlashHttpUrl
+    asset_url: PydanticURL
     """raw.githubusercontent.com base url."""
     textures: TextureLookups[Texture]
 

@@ -97,7 +97,7 @@ def render_textures_and_export_metadata(
 
     # this mod's metadata
     metadata = HexdocMetadata(
-        book_url=f"{asset_loader.site_url}/{loader.props.default_lang}",
+        book_url=asset_loader.site_url / loader.props.default_lang,
         asset_url=loader.props.env.asset_url,
         textures=internal_lookups,
     )

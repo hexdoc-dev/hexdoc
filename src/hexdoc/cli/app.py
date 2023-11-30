@@ -10,6 +10,7 @@ from typing import Any, Union
 
 from packaging.version import Version
 from typer import Typer
+from yarl import URL
 
 from hexdoc.core import ModResourceLoader
 from hexdoc.data.metadata import HexdocMetadata
@@ -137,8 +138,7 @@ def export(
 
         asset_loader = plugin.asset_loader(
             loader=loader,
-            # TODO: urlencode
-            site_url=f"{props.env.github_pages_url}/{site_path.as_posix()}",
+            site_url=props.env.github_pages_url.joinpath(*site_path.parts),
             asset_url=props.env.asset_url,
             render_dir=output_dir / site_path,
         )
@@ -326,8 +326,8 @@ def serve(
     book_root = dst
     relative_root = book_root.resolve().relative_to(Path.cwd())
 
-    base_url = f"http://localhost:{port}"
-    book_url = f"{base_url}/{relative_root.as_posix()}"
+    base_url = URL.build(scheme="http", host="localhost", port=port)
+    book_url = base_url.joinpath(*relative_root.parts)
 
     repo_root = git_root(props_file.parent)
     asset_root = repo_root.relative_to(Path.cwd())
@@ -336,8 +336,8 @@ def serve(
         # prepend a slash to the path so it can find the texture in the local repo
         # eg. http://localhost:8000/_site/src/docs/Common/...
         # vs. http://localhost:8000/Common/...
-        "DEBUG_GITHUBUSERCONTENT": f"{base_url}/{asset_root.as_posix()}",
-        "GITHUB_PAGES_URL": book_url,
+        "DEBUG_GITHUBUSERCONTENT": str(base_url.joinpath(*asset_root.parts)),
+        "GITHUB_PAGES_URL": str(book_url),
     }
 
     print("Exporting...")

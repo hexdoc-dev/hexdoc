@@ -3,6 +3,7 @@ from pathlib import Path
 
 import typer
 from minecraft_render import js
+from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResLoc, ResourceLocation
 from hexdoc.minecraft.assets.load_assets import HexdocAssetLoader
@@ -31,8 +32,8 @@ def id_(
     ) as loader:
         asset_loader = HexdocAssetLoader(
             loader=loader,
-            asset_url="",
-            site_url="",
+            asset_url=URL(),
+            site_url=URL(),
             render_dir=Path("out"),
         )
         output_path = asset_loader.renderer.renderToFile(
@@ -57,8 +58,8 @@ def model(
     ) as loader:
         asset_loader = HexdocAssetLoader(
             loader=loader,
-            asset_url="",
-            site_url="",
+            asset_url=URL(),
+            site_url=URL(),
             render_dir=Path("out"),
         )
 
