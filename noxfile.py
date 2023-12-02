@@ -152,13 +152,13 @@ def tag(session: nox.Session):
 
     # always update the prerelease tag, and also update the release tag if needed
     update_git_tag(session, tag=tag + ".dev", message=message)
-    if version.dev is None:
+    if not version.is_prerelease:
         update_git_tag(session, tag=tag, message=message)
 
     tag += f".{minor}"
 
     update_git_tag(session, tag=tag + ".dev", message=message)
-    if version.dev is None:
+    if not version.is_prerelease:
         update_git_tag(session, tag=tag, message=message)
 
 
