@@ -275,6 +275,11 @@ class I18n(HexdocModel):
         )
         return LocalizedItem(key=localized.key, value=localized.value)
 
+    def localize_entity(self, entity: ResourceLocation, type: str | None = None):
+        if type:
+            entity = type / entity
+        return self.localize(entity.i18n_key("entity"))
+
     def localize_key(self, key: str, silent: bool = False) -> LocalizedStr:
         if not key.startswith("key."):
             key = "key." + key

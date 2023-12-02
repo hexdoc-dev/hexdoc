@@ -13,6 +13,7 @@ from typing import Any, ClassVar, Literal, Self
 from pydantic import TypeAdapter, field_validator, model_serializer, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
+from typing_extensions import override
 
 from hexdoc.model import DEFAULT_CONFIG
 from hexdoc.utils import TRACE
@@ -97,6 +98,10 @@ class BaseResourceLocation:
     @property
     def id(self) -> ResourceLocation:
         return ResourceLocation(self.namespace, self.path)
+
+    def i18n_key(self, root: str) -> str:
+        # TODO: is this how i18n works????? (apparently, because it's working)
+        return f"{root}.{self.namespace}.{self.path.replace('/', '.')}"
 
     def __repr__(self) -> str:
         return f"{self.namespace}:{self.path}"
@@ -207,9 +212,9 @@ class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
     def __init_subclass__(cls, **kwargs: Any):
         super().__init_subclass__(regex=cls._from_str_regex, **kwargs)
 
+    @override
     def i18n_key(self, root: str = "item") -> str:
-        # TODO: is this how i18n works????? (apparently, because it's working)
-        return f"{root}.{self.namespace}.{self.path.replace('/', '.')}"
+        return super().i18n_key(root)
 
     def __repr__(self) -> str:
         s = super().__repr__()

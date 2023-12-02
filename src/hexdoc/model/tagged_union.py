@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from textwrap import dedent
 from typing import Any, ClassVar, Generator, Self, Unpack
@@ -210,7 +210,7 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
         return cls._type
 
 
-class TypeTaggedTemplate(TypeTaggedUnion, type=None):
+class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
     __template_id: ClassVar[ResourceLocation]
 
     def __init_subclass__(
@@ -231,14 +231,16 @@ class TypeTaggedTemplate(TypeTaggedUnion, type=None):
         if template_id:
             cls.__template_id = template_id
 
-    @property
+    @classproperty
+    @classmethod
     @abstractmethod
-    def template(self) -> str:
+    def template(cls) -> str:
         """Returns the Jinja template path for this class without any file extension.
 
         For example, return `"pages/{path}"`, not `"pages/{path}.html.jinja"`.
         """
 
-    @property
-    def template_id(self):
-        return self.__template_id
+    @classproperty
+    @classmethod
+    def template_id(cls):
+        return cls.__template_id

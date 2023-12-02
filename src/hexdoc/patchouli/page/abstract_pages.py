@@ -43,9 +43,10 @@ class Page(TypeTaggedTemplate, type=None):
             return handler({"type": "patchouli:text", "text": value})
         return handler(value)
 
-    @property
-    def template(self) -> str:
-        return f"pages/{self.template_id.namespace}/{self.template_id.path}"
+    @classproperty
+    @classmethod
+    def template(cls) -> str:
+        return f"pages/{cls.template_id.namespace}/{cls.template_id.path}"
 
 
 class PageWithText(Page, type=None):
