@@ -1,23 +1,21 @@
-from typing import Any, ClassVar, Self, Unpack
+from typing import Any, Self, Unpack
 
 from pydantic import ConfigDict, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.core import ResourceLocation
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.model import TypeTaggedUnion
+from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
 from ..text import FormatTree
 
 
-class Page(TypeTaggedUnion, type=None):
+class Page(TypeTaggedTemplate, type=None):
     """Base class for Patchouli page types.
 
     See: https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/page-types
     """
-
-    __template: ClassVar[str]
 
     advancement: ResourceLocation | None = None
     flag: str | None = None
@@ -30,16 +28,7 @@ class Page(TypeTaggedUnion, type=None):
         template_type: str | None = None,
         **kwargs: Unpack[ConfigDict],
     ) -> None:
-        super().__init_subclass__(type=type, **kwargs)
-
-        # jinja template path
-        if template_type is not None:
-            template_id = ResourceLocation.from_str(template_type)
-        else:
-            template_id = cls.type
-
-        if template_id:
-            cls.__template = f"pages/{template_id.namespace}/{template_id.path}"
+        super().__init_subclass__(type=type, template_type=template_type, **kwargs)
 
     @classproperty
     @classmethod
@@ -56,7 +45,7 @@ class Page(TypeTaggedUnion, type=None):
 
     @property
     def template(self) -> str:
-        return self.__template
+        return f"pages/{self.template_id.namespace}/{self.template_id.path}"
 
 
 class PageWithText(Page, type=None):

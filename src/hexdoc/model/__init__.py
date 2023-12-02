@@ -14,6 +14,7 @@ __all__ = [
     "ResourceModel",
     "StripHiddenModel",
     "TagValue",
+    "TypeTaggedTemplate",
     "TypeTaggedUnion",
     "ValidationContext",
     "init_context",
@@ -36,6 +37,7 @@ from .tagged_union import (
     NoValue,
     NoValueType,
     TagValue,
+    TypeTaggedTemplate,
     TypeTaggedUnion,
 )
 from .types import Color

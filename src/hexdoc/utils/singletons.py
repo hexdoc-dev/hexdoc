@@ -1,7 +1,7 @@
 # pyright: reportPrivateUsage=false
 
 from enum import Enum
-from typing import Final
+from typing import Final, Literal
 
 
 class NoValueType(Enum):
@@ -11,6 +11,9 @@ class NoValueType(Enum):
 
     def __str__(self):
         return "NoValue"
+
+    def __bool__(self) -> Literal[False]:
+        return False
 
 
 NoValue: Final = NoValueType._token
