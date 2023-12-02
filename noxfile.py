@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+import tomllib
 from pathlib import Path
 from typing import Mapping
 
@@ -89,6 +90,48 @@ def pdoc(session: nox.Session):
         f"Version: {version} ({commit})",
         *session.posargs,
     )
+
+
+@nox.session
+def version(session: nox.Session):
+    """Usage: `nox -s version -- <hatch version arguments>`"""
+
+    session.install("hatch", "packaging")
+
+    from packaging.version import Version
+
+    if not session.posargs:
+        session.run("hatch", "--quiet", "version")
+        return
+
+    # bump version
+
+    old_version = Version(run_silent(session, "hatch", "--quiet", "version"))
+    print(f"Old version: {old_version}")
+
+    session.run("hatch", "version", *session.posargs)
+
+    new_version = Version(run_silent(session, "hatch", "--quiet", "version"))
+
+    if old_version.epoch and not new_version.epoch:
+        session.warn("Adding epoch to updated version")
+        new_version = Version(f"{old_version.epoch}!{new_version}")
+        session.run("hatch", "version", str(new_version))
+
+    print(f"New version: {new_version}")
+
+    # commit new version and add tag
+
+    session.log("Loading pyproject.toml")
+    with open("pyproject.toml", "rb") as f:
+        pyproject_toml = tomllib.load(f)
+        version_path = pyproject_toml["tool"]["hatch"]["version"]["path"]
+
+    message = f"Bump version to `{new_version}`"
+
+    session.run("git", "add", version_path, external=True)
+    session.run("git", "commit", "-m", message, external=True)
+    session.run("git", "tag", f"v{new_version}", "-m", message, external=True)
 
 
 @nox.session
