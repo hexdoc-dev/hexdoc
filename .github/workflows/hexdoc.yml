@@ -50,7 +50,7 @@ jobs:
     concurrency:
       # only limit concurrency if we're trying to bump the version (ie. pushing changes)
       # everything else is fine to run concurrently
-      group: hexdoc-build-${{ inputs.bump-version-segment && (inputs.build-group-id || github.sha) || github.run_id }}
+      group: hexdoc-build-${{ inputs.build-group-id || (inputs.bump-version-segment && github.sha) || github.run_id }}
       cancel-in-progress: false
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
