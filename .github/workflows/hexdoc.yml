@@ -78,7 +78,10 @@ jobs:
 
       - name: Bump version
         if: inputs.bump-version-segment
-        run: hatch version "${{ inputs.bump-version-segment }}"
+        run: |
+          hatch version "${{ inputs.bump-version-segment }}"
+          pip install -e .${{ inputs.pip-extras }}
+        # ^ reinstall to sync the version, since we just changed it - otherwise the book builds to the wrong path
 
       - name: Commit changes
         if: inputs.bump-version-segment
