@@ -15,20 +15,18 @@ on:
         description: Path to your props file (hexdoc.toml or properties.toml)
         type: string
         required: false
-      bump-version-segment:
-        description: Version segment to bump with Hatch
-        type: string
-        required: false
       pip-extras:
         description: Pip extras for your package (eg. [dev])
         type: string
         required: false
-      build-group-id:
+      bump-version-segment:
+        description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
         type: string
         required: false
     secrets:
       GH_TOKEN:
-        required: true
+        description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
+        required: false
     outputs:
       pages-url:
         description: Current GitHub Pages url for this repo
@@ -47,13 +45,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    concurrency:
-      # only limit concurrency if we're trying to bump the version (ie. pushing changes)
-      # everything else is fine to run concurrently
-      group: hexdoc-build-${{ inputs.build-group-id || (inputs.bump-version-segment && github.sha) || github.run_id }}
-      cancel-in-progress: false
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     permissions:
       contents: write
       pages: read
@@ -75,19 +66,6 @@ jobs:
 
       - name: Install Python packages
         run: pip install -e .${{ inputs.pip-extras }} hatch
-
-      - name: Bump version
-        if: inputs.bump-version-segment
-        run: |
-          hatch version "${{ inputs.bump-version-segment }}"
-          pip install -e .${{ inputs.pip-extras }}
-        # ^ reinstall to sync the version, since we just changed it - otherwise the book builds to the wrong path
-
-      - name: Commit changes
-        if: inputs.bump-version-segment
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Bump web book version from ${{ github.ref }}
 
       - name: Export common data
         id: export
