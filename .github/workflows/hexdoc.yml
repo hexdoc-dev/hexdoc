@@ -25,8 +25,7 @@ on:
         required: false
     secrets:
       GH_TOKEN:
-        description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
-        required: false
+        required: true
     outputs:
       pages-url:
         description: Current GitHub Pages url for this repo
@@ -45,6 +44,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     permissions:
       contents: write
       pages: read
