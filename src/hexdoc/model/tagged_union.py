@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from textwrap import dedent
 from typing import Any, ClassVar, Generator, Self, Unpack
 
 import more_itertools
-from pydantic import ConfigDict, ValidationInfo, model_validator
+from pydantic import ConfigDict, ValidationError, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
+from pydantic_core import InitErrorDetails, PydanticCustomError
 
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.utils import (
@@ -145,14 +145,27 @@ class InternallyTaggedUnion(HexdocModel):
             raise TypeError(f"Unhandled tag: {tag_key}={tag_value} for {cls}: {data}")
 
         # try all the types
-        exceptions: list[Exception] = []
+        exceptions: list[InitErrorDetails] = []
         matches: dict[type[Self], Self] = {}
 
         for inner_type in tag_types:
             try:
                 matches[inner_type] = inner_type.model_validate(data, context=context)
             except Exception as e:
-                exceptions.append(e)
+                exceptions.append(
+                    InitErrorDetails(
+                        type=PydanticCustomError(
+                            "TaggedUnionMatchError",
+                            "Failed to match tagged union: {exception}",
+                            {"exception": str(e)},
+                        ),
+                        loc=(
+                            cls.__name__,
+                            inner_type.__name__,
+                        ),
+                        input=data,
+                    )
+                )
 
         # ensure we only matched one
         match len(matches):
@@ -165,16 +178,40 @@ class InternallyTaggedUnion(HexdocModel):
                 reason = "No match found"
 
         # something went wrong, raise an exception
-        message = dedent(
-            f"""\
-            Failed to match tagged union {cls}: {reason}
-            Tag: {cls._tag_key}={tag_value}
-            Types: {", ".join(str(t) for t in tag_types)}
-            Data: {data}"""
+        error = PydanticCustomError(
+            "TaggedUnionMatchErrorGroup",
+            (
+                "Failed to match tagged union {class_name}: {reason}\n"
+                "  Tag: {tag_key}={tag_value}\n"
+                "  Types: {types}\n"
+                "  Data: {data}"
+            ),
+            {
+                "class_name": str(cls),
+                "reason": reason,
+                "tag_key": cls._tag_key,
+                "tag_value": tag_value,
+                "types": ", ".join(str(t) for t in tag_types),
+                "data": repr(data),
+            },
         )
+
         if exceptions:
-            raise ExceptionGroup(message, exceptions)
-        raise RuntimeError(message)
+            if _RESOLVED in data:
+                data.pop(_RESOLVED)  # avoid interfering with other types
+            exceptions.insert(
+                0,
+                InitErrorDetails(
+                    type=error,
+                    loc=(cls.__name__,),
+                    input=data,
+                ),
+            )
+            raise ValidationError.from_exception_data(
+                "TaggedUnionMatchError", exceptions
+            )
+
+        raise RuntimeError(str(error))
 
     @model_validator(mode="before")
     def _pop_temporary_keys(cls, value: dict[Any, Any] | Any):
