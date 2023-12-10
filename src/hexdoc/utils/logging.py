@@ -46,16 +46,22 @@ _is_initialized = False
 
 def setup_logging(verbosity: int, ci: bool):
     global _is_initialized
-
     if _is_initialized:
         logger.debug("Root logger already initialized, skipping setup.")
         return
 
     logging.addLevelName(TRACE, "TRACE")
 
+    level = verbosity_log_level(verbosity)
+
     formats = {
-        logging.INFO: "\033[1m[{relativeCreated:.02f} | {levelname} | {name}]\033[0m {message}",
+        logging.DEBUG: log_format("relativeCreated", "levelname", "name"),
     }
+    if level >= logging.INFO:
+        formats |= {
+            logging.INFO: log_format("levelname"),
+            logging.WARNING: log_format("levelname", "name"),
+        }
     if ci:
         formats |= {
             logging.WARNING: "::warning file={name},line={lineno},title={levelname}::{message}",
@@ -67,11 +73,22 @@ def setup_logging(verbosity: int, ci: bool):
     handler.setFormatter(LevelFormatter(formats, style="{"))
 
     root_logger = logging.getLogger()
-    root_logger.setLevel(verbosity_log_level(verbosity))
+    root_logger.setLevel(level)
     root_logger.addHandler(handler)
 
     logger.debug("Initialized logger.")
     _is_initialized = True
+
+
+def log_format(*names: Literal["relativeCreated", "levelname", "name"]):
+    components = {
+        "relativeCreated": "{relativeCreated:.02f}",
+        "levelname": "{levelname}",
+        "name": "{name}",
+    }
+
+    joined_components = " | ".join(components[name] for name in names)
+    return "\033[1m[" + joined_components + "]\033[0m {message}"
 
 
 def verbosity_log_level(verbosity: int) -> int:
