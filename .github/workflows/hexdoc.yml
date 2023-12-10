@@ -87,11 +87,15 @@ jobs:
           GITHUB_PAGES_URL: ${{ steps.export.outputs.pages-url }}
         run: hexdoc ci merge
 
+      - name: Zip web book
+        working-directory: _site/dst/docs
+        run: zip site.zip ./* -r
+
       - name: Upload Pages artifact
         uses: actions/upload-artifact@v3
         with:
           name: hexdoc-pages
-          path: _site/dst/docs
+          path: _site/dst/docs/site.zip
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
@@ -119,7 +123,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: hexdoc-pages
-          path: _site
+
+      - name: Unzip web book
+        run: unzip site.zip -d _site
 
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@v4
