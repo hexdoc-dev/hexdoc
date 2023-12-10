@@ -10,5 +10,5 @@
     ],
     "ignore": ["**/generated/**"],
     "ext": "jinja,html,css,js,ts,toml,json,json5,py",
-    "exec": "hexdoc export && hexdoc serve --props submodules/HexMod/doc/hexdoc.toml --lang en_us"
+    "exec": "hexdoc build && hexdoc serve --props submodules/HexMod/doc/hexdoc.toml"
 }

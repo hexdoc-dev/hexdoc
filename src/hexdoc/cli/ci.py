@@ -24,8 +24,27 @@ from . import app as hexdoc_app
 app = Typer(name="ci")
 
 
-@app.command()
+@app.command(deprecated=True)
 def export(
+    *,
+    props_file: PropsOption,
+    release: ReleaseOption,
+):
+    build(props_file=props_file, release=release)
+
+
+@app.command(deprecated=True)
+def render(
+    lang: str,
+    *,
+    props_file: PropsOption,
+    release: ReleaseOption,
+):
+    build(props_file=props_file, release=release)
+
+
+@app.command()
+def build(
     *,
     props_file: PropsOption,
     release: ReleaseOption,
@@ -38,8 +57,9 @@ def export(
         GITHUB_PAGES_URL=pages_url,
     )
 
-    props, all_i18n, path = hexdoc_app.export(
-        Path("_site"),
+    site_path = hexdoc_app.build(
+        Path("_site/src/docs"),
+        clean=True,
         branch=env.branch,
         verbosity=env.verbosity,
         props_file=props_file,
@@ -48,39 +68,9 @@ def export(
     )
 
     subprocess.run(["hatch", "build", "--clean"], check=True)
-    shutil.copytree("dist", path / "dist")
-
-    matrix = [
-        CIMatrixItem(
-            value=lang,
-            continue_on_error=lang != props.default_lang,
-        )
-        for lang in all_i18n.keys()
-    ]
+    shutil.copytree("dist", site_path / "dist")
 
     env.set_output("pages-url", pages_url)
-    env.set_output("matrix", (list[CIMatrixItem], matrix))
-
-
-@app.command()
-def render(
-    lang: str,
-    *,
-    props_file: PropsOption,
-    release: ReleaseOption,
-):
-    env = CIEnvironment.model_getenv()
-
-    hexdoc_app.render(
-        Path("_site"),
-        lang=lang,
-        clean=True,
-        branch=env.branch,
-        verbosity=env.verbosity,
-        props_file=props_file,
-        release=release,
-        ci=True,
-    )
 
 
 @app.command()

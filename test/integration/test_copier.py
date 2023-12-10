@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hexdoc.cli.app import render
+from hexdoc.cli.app import build
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 
@@ -74,7 +74,7 @@ def test_copier(
 
     try:
         run_pip("install", ".", "--force-reinstall", "--no-deps")
-        render(
+        build(
             output_dir=output_dir,
             props_file=Path("doc/hexdoc.toml"),
             branch="main",

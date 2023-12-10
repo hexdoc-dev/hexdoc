@@ -50,7 +50,7 @@ def test_submodules(session: nox.Session):
             "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
         }
         session.run(
-            "hexdoc", "export", "--branch", "main", "--props", props_file, env=env
+            "hexdoc", "build", "--branch", "main", "--props", props_file, env=env
         )
 
     session.run("pytest", "-m", "hexcasting", *session.posargs)
@@ -199,14 +199,7 @@ def mock_ci(session: nox.Session):
     if "-v" in session.posargs or "--verbose" in session.posargs:
         session.env.update(RUNNER_DEBUG="1")
 
-    session.run("hexdoc", "ci", "export")
-
-    session.run("hexdoc", "ci", "render", "en_us")
-    session.run("hexdoc", "ci", "render", "zh_cn")
-
-    shutil.move("_site", "_site_tmp")
-    shutil.move("_site_tmp", "_site/src/docs")
-
+    session.run("hexdoc", "ci", "build")
     session.run("hexdoc", "ci", "merge")
 
 

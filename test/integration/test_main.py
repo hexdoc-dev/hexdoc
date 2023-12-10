@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from hexdoc.cli.app import render
+from hexdoc.cli.app import build
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
@@ -53,10 +53,9 @@ def test_render_app_release(
 ):
     app_output_dir = tmp_path_factory.mktemp("app")
 
-    render(
+    build(
         output_dir=app_output_dir,
         props_file=hexcasting_props_file,
-        lang="en_us",
         release=True,
         branch="main",
     )
@@ -67,10 +66,9 @@ def test_render_app_release(
 @pytest.mark.hexcasting
 @pytest.mark.dependency
 def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
-    render(
+    build(
         output_dir=app_output_dir,
         props_file=hexcasting_props_file,
-        lang="en_us",
         branch="main",
     )
 
@@ -80,10 +78,9 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
 def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",
-        "render",
+        "build",
         subprocess_output_dir.as_posix(),
         f"--props={hexcasting_props_file.as_posix()}",
-        "--lang=en_us",
         "--branch=main",
     ]
     subprocess.run(cmd, check=True)

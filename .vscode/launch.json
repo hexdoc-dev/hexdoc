@@ -37,8 +37,6 @@
                 "_site/src/docs",
                 "--props",
                 "${workspaceFolder}/submodules/HexMod/doc/hexdoc.toml",
-                "--lang",
-                "en_us",
             ],
             "console": "integratedTerminal",
             "justMyCode": false

@@ -3,6 +3,7 @@ import logging
 import os
 import shutil
 import sys
+import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
@@ -19,9 +20,11 @@ from hexdoc.minecraft.assets import (
     AnimatedTexture,
     PNGTexture,
 )
-from hexdoc.utils import git_root, write_to_path
+from hexdoc.patchouli import Book, BookContext
+from hexdoc.plugin.mod_plugin import ModPluginWithBook
+from hexdoc.utils import git_root, setup_logging, write_to_path
+from hexdoc.utils.logging import repl_readfunc
 
-from ..utils.logging import repl_readfunc
 from . import ci, render_block
 from .utils.args import (
     DEFAULT_MERGE_DST,
@@ -116,7 +119,7 @@ def repl(
     )
 
 
-@app.command()
+@app.command(deprecated=True)
 def export(
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
     *,
@@ -126,9 +129,68 @@ def export(
     verbosity: VerbosityOption = 0,
     ci: bool = False,
 ):
-    """Run hexdoc, but skip rendering the web book - just export the book resources."""
+    """Use `hexdoc build` instead."""
+
+    build(
+        output_dir,
+        branch=branch,
+        release=release,
+        props_file=props_file,
+        verbosity=verbosity,
+        ci=ci,
+    )
+
+
+@app.command(deprecated=True)
+def render(
+    output_dir: PathArgument = DEFAULT_MERGE_SRC,
+    *,
+    branch: BranchOption,
+    release: ReleaseOption = False,
+    clean: bool = False,
+    lang: Union[str, None] = None,
+    props_file: PropsOption,
+    verbosity: VerbosityOption = 0,
+    ci: bool = False,
+):
+    """Use `hexdoc build` instead."""
+
+    setup_logging(verbosity, ci)
+    if lang is not None:
+        logger.warning(
+            "`--lang` is deprecated and has been removed from `hexdoc build`."
+        )
+
+    build(
+        output_dir,
+        branch=branch,
+        release=release,
+        clean=clean,
+        props_file=props_file,
+        verbosity=verbosity,
+        ci=ci,
+    )
+
+
+@app.command()
+def build(
+    output_dir: PathArgument = DEFAULT_MERGE_SRC,
+    *,
+    branch: BranchOption,
+    release: ReleaseOption = False,
+    clean: bool = False,
+    props_file: PropsOption,
+    verbosity: VerbosityOption = 0,
+    ci: bool = False,
+) -> Path:
+    """Export resources and render the web book.
+
+    For developers: returns the site path (eg. `/v/latest/main`).
+    """
+
     props, pm, plugin = load_common_data(props_file, verbosity, branch, ci=ci)
 
+    logger.info("Exporting resources and generating textures...")
     with ModResourceLoader.clean_and_load_all(
         props,
         pm,
@@ -146,110 +208,92 @@ def export(
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
 
         all_i18n = I18n.load_all(loader)
-        i18n = all_i18n[props.default_lang]
 
-        if props.book_id:
-            load_book(
-                book_id=props.book_id,
-                pm=pm,
-                loader=loader,
-                i18n=i18n,
-                all_metadata=all_metadata,
+        if not props.book_id:
+            logger.info("Skipping book load because props.book_id is not set.")
+            return site_path
+
+        logger.info("Loading books for all languages...")
+        books = list[tuple[str, I18n, Book, BookContext]]()
+        for language, i18n in all_i18n.items():
+            try:
+                book, context = load_book(
+                    book_id=props.book_id,
+                    pm=pm,
+                    loader=loader,
+                    i18n=i18n,
+                    all_metadata=all_metadata,
+                )
+                books.append((language, i18n, book, context))
+            except Exception:
+                if release:
+                    raise
+                logger.exception(f"Failed to load book for {language}")
+
+        if not props.template:
+            logger.info("Skipping book render because props.template is not set.")
+            return site_path
+
+        if not isinstance(plugin, ModPluginWithBook):
+            raise ValueError(
+                f"ModPlugin registered for modid `{props.modid}` (from props.modid)"
+                f" does not inherit from ModPluginWithBook: {plugin}"
             )
 
-    # for CI
-    return props, all_i18n, output_dir / site_path
+        logger.info("Setting up Jinja template environment...")
+        env = create_jinja_env(pm, props.template.include, props_file)
 
+        if props.template.override_default_render:
+            template_names = props.template.render
+        else:
+            template_names = pm.default_rendered_templates(props.template.include)
 
-@app.command()
-def render(
-    output_dir: PathArgument = DEFAULT_MERGE_SRC,
-    *,
-    branch: BranchOption,
-    release: ReleaseOption = False,
-    clean: bool = False,
-    lang: Union[str, None] = None,
-    props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
-    ci: bool = False,
-):
-    """Export resources and render the web book."""
+        template_names |= props.template.extend_render
 
-    # load data
-    props, pm, plugin = load_common_data(
-        props_file, verbosity, branch, ci=ci, book=True
-    )
-    if not props.book_id:
-        raise ValueError("Expected a value for props.book, got None")
-    if not props.template:
-        raise ValueError("Expected a value for props.template, got None")
+        templates = {
+            Path(path): env.get_template(template_name)
+            for path, template_name in template_names.items()
+        }
+        if not templates:
+            raise RuntimeError(
+                "No templates to render, check your props.template configuration "
+                f"(in {props_file.as_posix()})"
+            )
 
-    if not lang:
-        lang = props.default_lang
+        logger.info(f"Rendering book for {len(books)} language(s)...")
+        for language, i18n, book, context in books:
+            try:
+                site_path = plugin.site_book_path(language, versioned=release)
+                if clean:
+                    shutil.rmtree(output_dir / site_path, ignore_errors=True)
 
-    with ModResourceLoader.load_all(
-        props,
-        pm,
-        export=True,
-    ) as loader:
-        all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-
-        i18n = I18n.load(loader, lang)
-
-        book, context = load_book(
-            book_id=props.book_id,
-            pm=pm,
-            loader=loader,
-            i18n=i18n,
-            all_metadata=all_metadata,
-        )
-
-    # set up Jinja
-    env = create_jinja_env(pm, props.template.include, props_file)
-
-    template_names = (
-        props.template.render
-        if props.template.override_default_render
-        else pm.default_rendered_templates(props.template.include)
-    ) | props.template.extend_render
-
-    templates = {
-        Path(path): env.get_template(template_name)
-        for path, template_name in template_names.items()
-    }
-
-    if not templates:
-        raise RuntimeError(
-            "No templates to render, check your props.template configuration "
-            f"(in {props_file.as_posix()})"
-        )
-
-    site_path = plugin.site_book_path(lang, versioned=release)
-    if clean:
-        shutil.rmtree(output_dir / site_path, ignore_errors=True)
-
-    render_book(
-        props=props,
-        pm=pm,
-        plugin=plugin,
-        lang=lang,
-        book=book,
-        i18n=i18n,
-        env=env,
-        templates=templates,
-        output_dir=output_dir,
-        all_metadata=all_metadata,
-        version=plugin.mod_version if release else f"latest/{branch}",
-        site_path=site_path,
-        png_textures=PNGTexture.get_lookup(context.textures),
-        animations=sorted(  # this MUST be sorted to avoid flaky tests
-            AnimatedTexture.get_lookup(context.textures).values(),
-            key=lambda t: t.css_class,
-        ),
-        versioned=release,
-    )
+                render_book(
+                    props=props,
+                    pm=pm,
+                    plugin=plugin,
+                    lang=language,
+                    book=book,
+                    i18n=i18n,
+                    env=env,
+                    templates=templates,
+                    output_dir=output_dir,
+                    all_metadata=all_metadata,
+                    version=plugin.mod_version if release else f"latest/{branch}",
+                    site_path=site_path,
+                    png_textures=PNGTexture.get_lookup(context.textures),
+                    animations=sorted(  # this MUST be sorted to avoid flaky tests
+                        AnimatedTexture.get_lookup(context.textures).values(),
+                        key=lambda t: t.css_class,
+                    ),
+                    versioned=release,
+                )
+            except Exception:
+                if release:
+                    raise
+                logger.exception(f"Failed to render book for {language}")
 
     logger.info("Done.")
+    return site_path
 
 
 @app.command()
@@ -318,11 +362,12 @@ def serve(
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
     branch: BranchOption,
-    release: bool = True,  # generally want --release for development, looks nicer
+    try_release: bool = True,
     clean: bool = False,
-    lang: Union[str, None] = None,
     verbosity: VerbosityOption = 0,
 ):
+    setup_logging(verbosity, ci=False)
+
     book_root = dst
     relative_root = book_root.resolve().relative_to(Path.cwd())
 
@@ -340,26 +385,39 @@ def serve(
         "GITHUB_PAGES_URL": str(book_url),
     }
 
-    print("Exporting...")
-    export(
-        branch=branch,
-        release=release,
-        props_file=props_file,
-        verbosity=verbosity,
-    )
+    build_latest = True
 
-    print("Rendering...")
-    render(
-        branch=branch,
-        props_file=props_file,
-        output_dir=src,
-        release=release,
-        clean=clean,
-        lang=lang,
-        verbosity=verbosity,
-    )
+    if try_release:
+        try:
+            print()
+            logger.info("hexdoc build --release")
+            build(
+                branch=branch,
+                props_file=props_file,
+                output_dir=src,
+                release=True,
+                clean=clean,
+                verbosity=verbosity,
+            )
+            build_latest = False
+        except Exception:
+            logger.exception("Release build failed")
+            time.sleep(2)
 
-    print("Merging...")
+    if build_latest:
+        print()
+        logger.info("hexdoc build --no-release")
+        build(
+            branch=branch,
+            props_file=props_file,
+            output_dir=src,
+            release=False,
+            clean=clean,
+            verbosity=verbosity,
+        )
+
+    print()
+    logger.info("hexdoc merge")
     merge(
         src=src,
         dst=dst,
@@ -367,7 +425,8 @@ def serve(
         verbosity=verbosity,
     )
 
-    print(f"Serving web book at {book_url} (press ctrl+c to exit)\n")
+    print()
+    logger.info(f"Serving web book at {book_url} (press ctrl+c to exit)\n")
     with HTTPServer(("", port), SimpleHTTPRequestHandler) as httpd:
         # ignore KeyboardInterrupt to stop Typer from printing "Aborted."
         # because it keeps printing after nodemon exits and breaking the output
