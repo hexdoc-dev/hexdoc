@@ -19,6 +19,10 @@ on:
         description: Pip extras for your package (eg. [dev])
         type: string
         required: false
+      deploy-pages:
+        description: If the workflow should deploy to GitHub Pages
+        type: boolean
+        default: true
       bump-version-segment:
         description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
         type: string
@@ -47,11 +51,10 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
     permissions:
-      contents: write
+      contents: read
       pages: read
     outputs:
       pages-url: ${{ steps.export.outputs.pages-url }}
-      matrix:    ${{ steps.export.outputs.matrix }}
 
     steps:
       - uses: actions/checkout@v3
@@ -68,21 +71,25 @@ jobs:
       - name: Install Python packages
         run: pip install -e .${{ inputs.pip-extras }} hatch
 
-      - name: Export common data
+      - name: Checkout current Pages
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: _site/dst
+
+      - name: Build web book
         id: export
-        run: xvfb-run --auto-servernum hexdoc ci export
+        run: xvfb-run --auto-servernum hexdoc ci build
 
-      - name: Upload hexdoc cache artifact
+      - name: Merge web book
+        run: hexdoc ci merge
+
+      - name: Upload Pages artifact
         uses: actions/upload-artifact@v3
         with:
-          name: hexdoc-cache
-          path: .hexdoc
-
-      - name: Upload temporary Pages artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: github-pages-tmp
-          path: _site
+          name: hexdoc-pages
+          path: _site/dst/docs
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
@@ -93,81 +100,27 @@ jobs:
       - name: Add job summary
         run: echo "Built version \`$(hatch version)\` from commit \`$(git rev-parse --short "$GITHUB_SHA")\`." >> $GITHUB_STEP_SUMMARY
 
-  render:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PAGES_URL: ${{ needs.build.outputs.pages-url }}
-    strategy:
-      fail-fast: false
-      matrix:
-        lang: ${{ fromJson(needs.build.outputs.matrix) }}
-    continue-on-error: ${{ matrix.lang.continue_on_error }}
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ inputs.python-version }}
-          cache: pip
-
-      - name: Install Python packages
-        run: pip install .${{ inputs.pip-extras }}
-
-      - name: Download hexdoc cache artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: hexdoc-cache
-          path: .hexdoc
-
-      - name: Generate web book
-        run: hexdoc ci render ${{ matrix.lang.value }}
-
-      - name: Upload temporary Pages artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: github-pages-tmp
-          path: _site
-
   deploy-pages:
-    needs: [build, render]
+    needs: build
+    if: inputs.deploy-pages
     runs-on: ubuntu-latest
     concurrency:
       group: hexdoc-deploy-pages
       cancel-in-progress: false
     permissions:
       contents: write
-    env:
-      GITHUB_PAGES_URL: ${{ needs.build.outputs.pages-url }}
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ inputs.python-version }}
-          cache: pip
 
-      - name: Install Python packages
-        run: pip install .${{ inputs.pip-extras }}
-
-      - name: Checkout current Pages
-        uses: actions/checkout@v3
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: _site/dst
-
-      - name: Download temporary Pages artifact
+      - name: Download Pages artifact
         uses: actions/download-artifact@v3
         with:
-          name: github-pages-tmp
-          path: _site/src/docs
-
-      - name: Add new docs to site
-        run: hexdoc ci merge
+          name: hexdoc-pages
+          path: _site
 
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: _site/dst/docs
+          folder: _site
           target-folder: docs
