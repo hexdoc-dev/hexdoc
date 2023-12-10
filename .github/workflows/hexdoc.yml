@@ -83,6 +83,8 @@ jobs:
         run: xvfb-run --auto-servernum hexdoc ci build
 
       - name: Merge web book
+        env:
+          GITHUB_PAGES_URL: ${{ steps.export.outputs.pages-url }}
         run: hexdoc ci merge
 
       - name: Upload Pages artifact
