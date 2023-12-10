@@ -1,17 +1,35 @@
 import logging
+import re
 import sys
 from bisect import bisect
 from logging import (
+    Filter,
     Formatter,
     LogRecord,
     StreamHandler,
 )
-from typing import Any, Literal, Mapping
+from typing import Any, Iterable, Literal, Mapping
 
 TRACE = 5
 """For even more verbose logs than `logging.DEBUG`."""
 
 logger = logging.getLogger(__name__)
+
+
+class RegexFilter(Filter):
+    def __init__(self, pattern: str | re.Pattern[str]):
+        super().__init__()
+        self.regex: re.Pattern[str]
+        match pattern:
+            case str():
+                self.regex = re.compile(pattern)
+            case re.Pattern():
+                self.regex = pattern
+
+    def filter(self, record: LogRecord) -> bool:
+        if not super().filter(record):
+            return False
+        return self.regex.search(record.msg) is None
 
 
 # https://stackoverflow.com/a/68154386
@@ -41,27 +59,41 @@ class LevelFormatter(Formatter):
         return formatter.format(record)
 
 
-_is_initialized = False
+# separate class so we can isinstance below
+class HexdocLevelFormatter(LevelFormatter):
+    pass
 
 
-def setup_logging(verbosity: int, ci: bool):
-    global _is_initialized
-    if _is_initialized:
-        logger.debug("Root logger already initialized, skipping setup.")
-        return
-
+def setup_logging(
+    verbosity: int,
+    ci: bool,
+    *,
+    filters: Iterable[Filter] | None = None,
+    quiet_langs: Iterable[str] | None = None,
+):
     logging.addLevelName(TRACE, "TRACE")
 
+    root_logger = logging.getLogger()
+
+    if root_logger.handlers:
+        for handler in root_logger.handlers:
+            if isinstance(handler.formatter, HexdocLevelFormatter):
+                logger.debug(f"Removing existing handler from root logger: {handler}")
+                root_logger.removeHandler(handler)
+
     level = verbosity_log_level(verbosity)
+    root_logger.setLevel(level)
 
     formats = {
         logging.DEBUG: log_format("relativeCreated", "levelname", "name"),
     }
+
     if level >= logging.INFO:
         formats |= {
             logging.INFO: log_format("levelname"),
             logging.WARNING: log_format("levelname", "name"),
         }
+
     if ci:
         formats |= {
             logging.WARNING: "::warning file={name},line={lineno},title={levelname}::{message}",
@@ -69,15 +101,20 @@ def setup_logging(verbosity: int, ci: bool):
         }
 
     handler = StreamHandler()
-    handler.setLevel(TRACE)
-    handler.setFormatter(LevelFormatter(formats, style="{"))
 
-    root_logger = logging.getLogger()
-    root_logger.setLevel(level)
+    handler.setLevel(level)
+    handler.setFormatter(HexdocLevelFormatter(formats, style="{"))
+
+    if filters:
+        for filter in filters:
+            handler.addFilter(filter)
+
+    if quiet_langs:
+        for lang in quiet_langs:
+            handler.addFilter(RegexFilter(f"^No translation in {lang}"))
+
     root_logger.addHandler(handler)
-
     logger.debug("Initialized logger.")
-    _is_initialized = True
 
 
 def log_format(*names: Literal["relativeCreated", "levelname", "name"]):

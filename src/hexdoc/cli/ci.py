@@ -16,12 +16,48 @@ from github.Repository import Repository
 from typer import Typer
 
 from hexdoc.cli.utils.args import PropsOption, ReleaseOption
-from hexdoc.model import HexdocModel, HexdocSettings
-from hexdoc.model.base import HexdocTypeAdapter
+from hexdoc.model import HexdocModel, HexdocSettings, HexdocTypeAdapter
+from hexdoc.utils import setup_logging
 
 from . import app as hexdoc_app
 
 app = Typer(name="ci")
+
+
+@app.command()
+def build(
+    *,
+    props_file: PropsOption,
+    release: ReleaseOption,
+):
+    env = CIEnvironment.model_getenv()
+    setup_logging(env.verbosity, ci=True)
+
+    pages_url = get_pages_url(env.repo)
+    os.environ["GITHUB_PAGES_URL"] = pages_url
+
+    site_path = hexdoc_app.build(
+        Path("_site/src/docs"),
+        clean=True,
+        branch=env.branch,
+        props_file=props_file,
+        release=release,
+    )
+
+    subprocess.run(["hatch", "build", "--clean"], check=True)
+    shutil.copytree("dist", site_path / "dist")
+
+    env.set_output("pages-url", pages_url)
+
+
+@app.command()
+def merge(
+    *,
+    props_file: PropsOption,
+):
+    env = CIEnvironment.model_getenv()
+    setup_logging(env.verbosity, ci=True)
+    hexdoc_app.merge(props_file=props_file)
 
 
 @app.command(deprecated=True)
@@ -41,50 +77,6 @@ def render(
     release: ReleaseOption,
 ):
     build(props_file=props_file, release=release)
-
-
-@app.command()
-def build(
-    *,
-    props_file: PropsOption,
-    release: ReleaseOption,
-):
-    env = CIEnvironment.model_getenv()
-
-    pages_url = get_pages_url(env.repo)
-
-    os.environ.update(
-        GITHUB_PAGES_URL=pages_url,
-    )
-
-    site_path = hexdoc_app.build(
-        Path("_site/src/docs"),
-        clean=True,
-        branch=env.branch,
-        verbosity=env.verbosity,
-        props_file=props_file,
-        release=release,
-        ci=True,
-    )
-
-    subprocess.run(["hatch", "build", "--clean"], check=True)
-    shutil.copytree("dist", site_path / "dist")
-
-    env.set_output("pages-url", pages_url)
-
-
-@app.command()
-def merge(
-    *,
-    props_file: PropsOption,
-):
-    env = CIEnvironment.model_getenv()
-
-    hexdoc_app.merge(
-        props_file=props_file,
-        verbosity=env.verbosity,
-        ci=True,
-    )
 
 
 # utils

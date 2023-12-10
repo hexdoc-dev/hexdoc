@@ -23,7 +23,7 @@ def id_(
 ):
     """Render a 3D image of a block."""
 
-    props, pm, _ = load_common_data(props_file, verbosity, "", ci=False)
+    props, pm, _ = load_common_data(props_file, branch="")
 
     with ModResourceLoader.load_all(
         props,
@@ -50,7 +50,7 @@ def model(
     verbosity: VerbosityOption = 0,
 ):
     """Render a 3D image of a block."""
-    props, pm, _ = load_common_data(props_file, verbosity, "", ci=False)
+    props, pm, _ = load_common_data(props_file, branch="")
     with ModResourceLoader.load_all(
         props,
         pm,

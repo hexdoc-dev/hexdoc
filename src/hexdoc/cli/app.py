@@ -7,7 +7,7 @@ import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Union
+from typing import Any, Optional
 
 from packaging.version import Version
 from typer import Typer
@@ -54,18 +54,22 @@ app = Typer(
     context_settings={
         "help_option_names": ["--help", "-h"],
     },
+    add_completion=False,
 )
-
 app.add_typer(render_block.app)
 app.add_typer(ci.app)
 
 
-@app.command()
-def repl(
-    *,
-    props_file: PropsOption,
+@app.callback()
+def callback(
     verbosity: VerbosityOption = 0,
+    quiet_lang: Optional[list[str]] = None,
 ):
+    setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
+
+
+@app.command()
+def repl(*, props_file: PropsOption):
     """Start a Python shell with some helpful extra locals added from hexdoc."""
 
     repl_locals = dict[str, Any](
@@ -73,7 +77,7 @@ def repl(
     )
 
     try:
-        props, pm, plugin = load_common_data(props_file, verbosity, "", ci=False)
+        props, pm, plugin = load_common_data(props_file, branch="")
         repl_locals |= dict(
             props=props,
             pm=pm,
@@ -119,59 +123,6 @@ def repl(
     )
 
 
-@app.command(deprecated=True)
-def export(
-    output_dir: PathArgument = DEFAULT_MERGE_SRC,
-    *,
-    branch: BranchOption,
-    release: ReleaseOption = False,
-    props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
-    ci: bool = False,
-):
-    """Use `hexdoc build` instead."""
-
-    build(
-        output_dir,
-        branch=branch,
-        release=release,
-        props_file=props_file,
-        verbosity=verbosity,
-        ci=ci,
-    )
-
-
-@app.command(deprecated=True)
-def render(
-    output_dir: PathArgument = DEFAULT_MERGE_SRC,
-    *,
-    branch: BranchOption,
-    release: ReleaseOption = False,
-    clean: bool = False,
-    lang: Union[str, None] = None,
-    props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
-    ci: bool = False,
-):
-    """Use `hexdoc build` instead."""
-
-    setup_logging(verbosity, ci)
-    if lang is not None:
-        logger.warning(
-            "`--lang` is deprecated and has been removed from `hexdoc build`."
-        )
-
-    build(
-        output_dir,
-        branch=branch,
-        release=release,
-        clean=clean,
-        props_file=props_file,
-        verbosity=verbosity,
-        ci=ci,
-    )
-
-
 @app.command()
 def build(
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
@@ -180,15 +131,13 @@ def build(
     release: ReleaseOption = False,
     clean: bool = False,
     props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
-    ci: bool = False,
 ) -> Path:
     """Export resources and render the web book.
 
     For developers: returns the site path (eg. `/v/latest/main`).
     """
 
-    props, pm, plugin = load_common_data(props_file, verbosity, branch, ci=ci)
+    props, pm, plugin = load_common_data(props_file, branch)
 
     logger.info("Exporting resources and generating textures...")
     with ModResourceLoader.clean_and_load_all(
@@ -300,12 +249,10 @@ def build(
 def merge(
     *,
     props_file: PropsOption,
-    verbosity: VerbosityOption = 0,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
-    ci: bool = False,
 ):
-    props, _, plugin = load_common_data(props_file, verbosity, "", ci=ci, book=True)
+    props, _, plugin = load_common_data(props_file, branch="", book=True)
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 
@@ -364,10 +311,7 @@ def serve(
     branch: BranchOption,
     try_release: bool = True,
     clean: bool = False,
-    verbosity: VerbosityOption = 0,
 ):
-    setup_logging(verbosity, ci=False)
-
     book_root = dst
     relative_root = book_root.resolve().relative_to(Path.cwd())
 
@@ -397,7 +341,6 @@ def serve(
                 output_dir=src,
                 release=True,
                 clean=clean,
-                verbosity=verbosity,
             )
             build_latest = False
         except Exception:
@@ -413,7 +356,6 @@ def serve(
             output_dir=src,
             release=False,
             clean=clean,
-            verbosity=verbosity,
         )
 
     print()
@@ -422,7 +364,6 @@ def serve(
         src=src,
         dst=dst,
         props_file=props_file,
-        verbosity=verbosity,
     )
 
     print()
@@ -434,6 +375,47 @@ def serve(
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass
+
+
+@app.command(deprecated=True)
+def export(
+    output_dir: PathArgument = DEFAULT_MERGE_SRC,
+    *,
+    branch: BranchOption,
+    release: ReleaseOption = False,
+    props_file: PropsOption,
+):
+    logger.warning("This command is deprecated, use `hexdoc build` instead.")
+    build(
+        output_dir,
+        branch=branch,
+        release=release,
+        props_file=props_file,
+    )
+
+
+@app.command(deprecated=True)
+def render(
+    output_dir: PathArgument = DEFAULT_MERGE_SRC,
+    *,
+    branch: BranchOption,
+    release: ReleaseOption = False,
+    clean: bool = False,
+    lang: Optional[str] = None,
+    props_file: PropsOption,
+):
+    logger.warning("This command is deprecated, use `hexdoc build` instead.")
+    if lang is not None:
+        logger.warning(
+            "`--lang` is deprecated and has been removed from `hexdoc build`."
+        )
+    build(
+        output_dir,
+        branch=branch,
+        release=release,
+        clean=clean,
+        props_file=props_file,
+    )
 
 
 if __name__ == "__main__":
