@@ -16,7 +16,9 @@ nox.options.reuse_existing_virtualenvs = True
 
 nox.options.sessions = [
     "test",
-    "test_submodules",
+    "test_build",
+    "test_hexcasting",
+    "test_copier",
 ]
 
 
@@ -34,32 +36,46 @@ def test(session: nox.Session):
 
 
 @nox.session
-def test_submodules(session: nox.Session):
+def test_build(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
-    # Hex Casting
+    env = {
+        "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
+        "GITHUB_SHA": "GITHUB_SHA",
+        "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
+        "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
+    }
 
-    for props_file in [
-        "hexdoc.toml",
-        "submodules/HexMod/doc/hexdoc.toml",
-    ]:
-        env = {
-            "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
-            "GITHUB_SHA": "GITHUB_SHA",
-            "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
-            "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
-        }
-        session.run(
-            "hexdoc", "build", "--branch", "main", "--props", props_file, env=env
-        )
+    session.run("hexdoc", "build", "--branch=main", env=env)
+
+    session.run(
+        "hexdoc",
+        "--quiet-lang=ru_ru",
+        "--quiet-lang=zh_cn",
+        "build",
+        "--branch=main",
+        "--props=submodules/HexMod/doc/hexdoc.toml",
+        env=env,
+    )
+
+
+@nox.session
+def test_hexcasting(session: nox.Session):
+    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
     session.run("pytest", "-m", "hexcasting", *session.posargs)
 
-    # hexdoc-hexcasting-template
 
-    ctt_root = "submodules/hexdoc-hexcasting-template"
-    shutil.rmtree(f"{ctt_root}/.ctt", ignore_errors=True)
-    session.run("ctt", "--base-dir", ctt_root)  # run copier-template-tester
+@nox.session
+def test_copier(session: nox.Session):
+    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+
+    template_repo = Path("submodules/hexdoc-hexcasting-template")
+    rendered_template = template_repo / ".ctt" / "test_copier"
+
+    shutil.rmtree(rendered_template, ignore_errors=True)
+    session.run("ctt", "--base-dir", str(template_repo))
+    session.run("git", "init", str(rendered_template), external=True)
 
     session.run("pytest", "-m", "copier", *session.posargs)
 

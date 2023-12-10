@@ -5,11 +5,16 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from hexdoc.cli.app import build
+from hexdoc.cli.app import build, callback
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
 from ..conftest import list_directory
+
+# include: v/latest/main/assets
+# include: v/latest/main/assets/hexcasting
+# exclude: v/latest/main/assets/hexcasting/textures/block/akashic_ligature.png
+EXCLUDE_GLOB = "**/assets/**/**"
 
 CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/index.html",
@@ -19,6 +24,11 @@ CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/hexcasting.js",
     "v/latest/main/en_us/.sitemap-marker.json",
 ]
+
+
+@pytest.fixture(scope="session", autouse=True)
+def call_callback():
+    callback(quiet_lang=["ru_ru", "zh_cn"])
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -60,7 +70,7 @@ def test_render_app_release(
         branch="main",
     )
 
-    assert list_directory(app_output_dir) == snapshot
+    assert list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB) == snapshot
 
 
 @pytest.mark.hexcasting
@@ -78,6 +88,8 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
 def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",
+        "--quiet-lang=ru_ru",
+        "--quiet-lang=zh_cn",
         "build",
         subprocess_output_dir.as_posix(),
         f"--props={hexcasting_props_file.as_posix()}",
@@ -93,8 +105,8 @@ def test_file_structure(
     subprocess_output_dir: Path,
     snapshot: SnapshotAssertion,
 ):
-    app_list = list_directory(app_output_dir)
-    subprocess_list = list_directory(subprocess_output_dir)
+    app_list = list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB)
+    subprocess_list = list_directory(subprocess_output_dir, exclude_glob=EXCLUDE_GLOB)
 
     assert app_list == subprocess_list
     assert app_list == snapshot

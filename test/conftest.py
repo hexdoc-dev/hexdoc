@@ -1,4 +1,5 @@
 import json
+from fnmatch import fnmatch
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal
@@ -80,9 +81,22 @@ def patch_env(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
 # helpers
 
 
-def list_directory(root: str | Path, glob: str = "**/*") -> list[str]:
+def list_directory(
+    root: str | Path,
+    glob: str = "**/*",
+    exclude_glob: str | None = None,
+) -> list[str]:
+    def _should_include(path: Path):
+        if not exclude_glob:
+            return True
+        return not fnmatch(path.as_posix(), exclude_glob)
+
     root = Path(root)
-    return sorted(path.relative_to(root).as_posix() for path in root.glob(glob))
+    return sorted(
+        path.relative_to(root).as_posix()
+        for path in root.glob(glob)
+        if _should_include(path)
+    )
 
 
 FileValue = JSONValue | tuple[Literal["a"], str] | Callable[[str | None], str]
