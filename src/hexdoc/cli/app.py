@@ -175,7 +175,7 @@ def build(
                 )
                 books.append((language, i18n, book, context))
             except Exception:
-                if release:
+                if release or language == props.default_lang:
                     raise
                 logger.exception(f"Failed to load book for {language}")
 
@@ -237,7 +237,7 @@ def build(
                     versioned=release,
                 )
             except Exception:
-                if release:
+                if release or language == props.default_lang:
                     raise
                 logger.exception(f"Failed to render book for {language}")
 
