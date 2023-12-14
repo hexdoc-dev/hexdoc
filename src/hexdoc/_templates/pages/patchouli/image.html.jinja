@@ -4,9 +4,10 @@
 {% block inner_body %}
   <p class="img-wrapper">
     {% for image in page.images %}
+      {#- TODO: figure out a better default name if there's no title #}
       {{
         texture_macros.render_texture(
-          name=page.title or image.file_id,
+          name=page.title or "",
           texture=image,
           lazy=false,
         )
