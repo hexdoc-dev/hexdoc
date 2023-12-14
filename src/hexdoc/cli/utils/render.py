@@ -82,12 +82,20 @@ class HexdocTemplateLoader(BaseLoader):
 def create_jinja_env(pm: PluginManager, include: Sequence[str], props_file: Path):
     included, extra = pm.load_jinja_templates(include)
 
-    env = SandboxedEnvironment(
-        loader=HexdocTemplateLoader(
+    env = create_jinja_env_with_loader(
+        HexdocTemplateLoader(
             included=included,
             extra=extra,
             props_file=props_file,
-        ),
+        )
+    )
+
+    return pm.update_jinja_env(env)
+
+
+def create_jinja_env_with_loader(loader: BaseLoader):
+    env = SandboxedEnvironment(
+        loader=loader,
         undefined=StrictUndefined,
         lstrip_blocks=True,
         trim_blocks=True,
@@ -103,7 +111,7 @@ def create_jinja_env(pm: PluginManager, include: Sequence[str], props_file: Path
         "hexdoc_texture": hexdoc_texture,
     }
 
-    return pm.update_jinja_env(env)
+    return env
 
 
 def render_book(
