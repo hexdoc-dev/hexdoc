@@ -158,6 +158,11 @@ def tag(session: nox.Session):
 
     message = "Automatic PEP 440 release tag"
 
+    # because hatch is dumb and thinks it's ok to log on stdout i guess?
+    # or maybe nox is capturing it
+    # i have no idea
+    run_silent(session, "hatch", "--quiet", "version")
+
     # validate some assumptions to make this simpler
     version = Version(run_silent(session, "hatch", "--quiet", "version"))
     assert version.epoch != 0
