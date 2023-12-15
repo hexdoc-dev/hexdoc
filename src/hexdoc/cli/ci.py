@@ -44,8 +44,12 @@ def build(
         release=release,
     )
 
+    site_dist = site_path / "dist"
+    if site_dist.is_dir():
+        shutil.rmtree(site_dist)
+
     subprocess.run(["hatch", "build", "--clean"], check=True)
-    shutil.copytree("dist", site_path / "dist")
+    shutil.copytree("dist", site_dist)
 
     env.set_output("pages-url", pages_url)
 
