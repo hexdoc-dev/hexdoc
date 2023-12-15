@@ -132,3 +132,7 @@ jobs:
         with:
           folder: _site
           target-folder: docs
+          clean: true
+          clean-exclude: |
+            CNAME
+            .gitignore
