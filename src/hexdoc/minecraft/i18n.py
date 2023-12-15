@@ -219,8 +219,15 @@ class I18n(HexdocModel):
             if key in self.lookup:
                 return self.lookup[key]
 
+        if silent:
+            log_level = logging.DEBUG
+        elif self.is_default:
+            log_level = logging.ERROR
+        else:
+            log_level = logging.WARNING
+
         logger.log(
-            logging.DEBUG if silent else logging.ERROR,
+            log_level,
             f"No translation in {self.lang} for "
             + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}"),
         )
