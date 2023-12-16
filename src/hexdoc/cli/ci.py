@@ -19,8 +19,6 @@ from hexdoc.cli.utils.args import PropsOption, ReleaseOption
 from hexdoc.model import HexdocModel, HexdocSettings, HexdocTypeAdapter
 from hexdoc.utils import setup_logging
 
-from . import app as hexdoc_app
-
 app = Typer(name="ci")
 
 
@@ -30,11 +28,14 @@ def build(
     props_file: PropsOption,
     release: ReleaseOption,
 ):
+    from . import app as hexdoc_app
+
     env = CIEnvironment.model_getenv()
     setup_logging(env.verbosity, ci=True)
 
-    pages_url = get_pages_url(env.repo)
-    os.environ["GITHUB_PAGES_URL"] = pages_url
+    if not (pages_url := os.getenv("MOCK_GITHUB_PAGES_URL")):
+        pages_url = get_pages_url(env.repo)
+        os.environ["GITHUB_PAGES_URL"] = pages_url
 
     site_path = hexdoc_app.build(
         Path("_site/src/docs"),
@@ -59,6 +60,8 @@ def merge(
     *,
     props_file: PropsOption,
 ):
+    from . import app as hexdoc_app
+
     env = CIEnvironment.model_getenv()
     setup_logging(env.verbosity, ci=True)
     hexdoc_app.merge(props_file=props_file)

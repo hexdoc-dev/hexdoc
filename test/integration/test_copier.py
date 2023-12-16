@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hexdoc.cli.app import build
+from hexdoc.cli import ci
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 
@@ -16,14 +16,9 @@ def run_pip(*args: str):
     return subprocess.run((sys.executable, "-m", "pip") + args, check=True)
 
 
-@pytest.mark.copier
-def test_copier(
-    monkeypatch: MonkeyPatch,
-    snapshot: SnapshotAssertion,
-    path_snapshot: SnapshotAssertion,
-    env_overrides: dict[str, str],
-):
-    monkeypatch.chdir("submodules/hexdoc-hexcasting-template/.ctt/test_copier")
+@pytest.fixture(scope="session")
+def output_dir(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
+    monkeysession.chdir("submodules/hexdoc-hexcasting-template/.ctt/test_copier")
 
     write_file_tree(
         ".",
@@ -70,19 +65,26 @@ def test_copier(
         },
     )
 
-    output_dir = Path("_site")
+    run_pip("install", ".", "--force-reinstall", "--no-deps")
 
-    try:
-        run_pip("install", ".", "--force-reinstall", "--no-deps")
-        build(
-            output_dir=output_dir,
-            props_file=Path("doc/hexdoc.toml"),
-            branch="main",
-        )
-    finally:
-        run_pip("uninstall", "hexdoc-mod", "-y")
+    monkeysession.setenv("GITHUB_OUTPUT", "github_output.txt")
+    monkeysession.setenv("GITHUB_REF_NAME", "main")
+    monkeysession.setenv("MOCK_GITHUB_PAGES_URL", "GITHUB_PAGES_URL")
 
+    ci.build(
+        props_file=Path("doc/hexdoc.toml"),
+        release=False,
+    )
+
+    yield Path("_site/src/docs").resolve()
+
+
+@pytest.mark.copier
+def test_index(output_dir: Path, path_snapshot: SnapshotAssertion):
     path_snapshot._custom_index = "vlatestmainen_usindex.html"  # pyright: ignore[reportPrivateUsage]
     assert output_dir / "v/latest/main/en_us/index.html" == path_snapshot
 
+
+@pytest.mark.copier
+def test_list_directory(output_dir: Path, snapshot: SnapshotAssertion):
     assert list_directory(output_dir) == snapshot
