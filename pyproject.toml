@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "hatchling",
+    "hatchling>=1.19.0",
     "hatch-regex-commit",
 ]
 build-backend = "hatchling.build"
@@ -84,7 +84,10 @@ Documentation = "https://hexdoc.hexxy.media"
 Source = "https://github.com/hexdoc-dev/hexdoc"
 
 [tool.hatch.version]
+source = "regex_commit"
 path = "src/hexdoc/__version__.py"
+commit_message = "Bump version to `{new_version}`"
+tag_message = "Bump version to `{new_version}`"
 
 [project.scripts]
 hexdoc = "hexdoc.cli.app:app"
