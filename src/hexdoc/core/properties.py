@@ -120,13 +120,19 @@ class BaseProperties(StripHiddenModel):
 
     @classmethod
     def load(cls, path: Path) -> Self:
-        path = path.resolve()
-        props_dir = path.parent
+        return cls.load_data(
+            props_dir=path.parent,
+            data=load_toml_with_placeholders(path),
+        )
+
+    @classmethod
+    def load_data(cls, props_dir: Path, data: dict[str, Any]) -> Self:
+        props_dir = props_dir.resolve()
 
         with relative_path_root(props_dir):
             env = EnvironmentVariableProps.model_getenv()
             props = cls.model_validate(
-                load_toml_with_placeholders(path)
+                data
                 | {
                     "env": env,
                     "props_dir": props_dir,
