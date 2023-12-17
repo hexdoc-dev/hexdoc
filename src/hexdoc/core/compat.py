@@ -8,11 +8,11 @@ from pydantic import GetCoreSchemaHandler, ValidationInfo
 from pydantic_core import core_schema
 from typing_extensions import override
 
-from hexdoc.model.base import HexdocBaseModel
+from hexdoc.model.base import HexdocModel
 
 _T = TypeVar("_T")
 
-_T_ModelType = TypeVar("_T_ModelType", bound=type[HexdocBaseModel])
+_T_ModelType = TypeVar("_T_ModelType", bound=type[HexdocModel])
 
 _If = TypeVar("_If")
 _Else = TypeVar("_Else")

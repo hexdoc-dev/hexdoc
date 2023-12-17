@@ -20,7 +20,8 @@ from hexdoc.minecraft.assets import (
     AnimatedTexture,
     PNGTexture,
 )
-from hexdoc.patchouli import Book, BookContext
+from hexdoc.minecraft.assets.textures import TextureContext
+from hexdoc.patchouli import Book
 from hexdoc.plugin.mod_plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
@@ -164,7 +165,7 @@ def build(
             return site_dir
 
         logger.info("Loading books for all languages...")
-        books = list[tuple[str, I18n, Book, BookContext]]()
+        books = list[tuple[str, I18n, Book, dict[str, Any]]]()
         for language, i18n in all_i18n.items():
             try:
                 book, context = load_book(
@@ -217,6 +218,8 @@ def build(
                 if clean:
                     shutil.rmtree(output_dir / site_book_path, ignore_errors=True)
 
+                texture_ctx = TextureContext.of(context)
+
                 render_book(
                     props=props,
                     pm=pm,
@@ -230,9 +233,9 @@ def build(
                     all_metadata=all_metadata,
                     version=plugin.mod_version if release else f"latest/{branch}",
                     site_path=site_book_path,
-                    png_textures=PNGTexture.get_lookup(context.textures),
+                    png_textures=PNGTexture.get_lookup(texture_ctx.textures),
                     animations=sorted(  # this MUST be sorted to avoid flaky tests
-                        AnimatedTexture.get_lookup(context.textures).values(),
+                        AnimatedTexture.get_lookup(texture_ctx.textures).values(),
                         key=lambda t: t.css_class,
                     ),
                     versioned=release,

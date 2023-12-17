@@ -1,7 +1,6 @@
 import logging
-from collections import defaultdict
 from pathlib import Path
-from typing import Literal, overload
+from typing import Any, Literal, overload
 
 from hexdoc.core import (
     MinecraftVersion,
@@ -11,16 +10,16 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.data.metadata import load_metadata_textures
-from hexdoc.minecraft import I18n
+from hexdoc.minecraft import I18n, Tag
 from hexdoc.minecraft.assets import (
     HexdocAssetLoader,
     Texture,
     TextureLookups,
 )
 from hexdoc.minecraft.assets.animated import AnimatedTexture
-from hexdoc.minecraft.assets.textures import PNGTexture
-from hexdoc.model import init_context
+from hexdoc.minecraft.assets.textures import PNGTexture, TextureContext
 from hexdoc.patchouli import Book, BookContext
+from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
 from hexdoc.plugin import ModPlugin, ModPluginWithBook, PluginManager
 from hexdoc.utils import cast_or_raise
 
@@ -116,21 +115,32 @@ def load_book(
     i18n: I18n,
     all_metadata: dict[str, HexdocMetadata],
 ):
+    props = loader.props
+
+    context = dict[str, Any]()
+    for item in [pm, loader, props, i18n]:
+        item.add_to_context(context)
+
+    TextureContext(
+        textures=load_metadata_textures(all_metadata),
+        allowed_missing_textures=props.textures.missing,
+    ).add_to_context(context)
+
     book_data = Book.load_book_json(loader, book_id)
+    BookContext(
+        modid=props.modid,
+        spoilered_advancements=Tag.SPOILERED_ADVANCEMENTS.load(loader).value_ids_set,
+        all_metadata=all_metadata,
+    ).add_to_context(context)
 
-    with init_context(book_data):
-        context = BookContext(
-            pm=pm,
-            loader=loader,
-            i18n=i18n,
-            # id is inserted by Book.load_book_json
-            book_id=cast_or_raise(book_data["id"], ResourceLocation),
-            all_metadata=all_metadata,
-            textures=defaultdict(dict),
-            allowed_missing_textures=loader.props.textures.missing,
-        )
-        pm.update_context(context)
+    FormattingContext(
+        book_id=cast_or_raise(book_data["id"], ResourceLocation),
+        macros=DEFAULT_MACROS | book_data.get("macros", {}),
+    ).add_to_context(context)
 
-    book = Book.load_all_from_data(book_data, context)
+    for item in pm.update_context(context):
+        item.add_to_context(context)
+
+    book = Book.load_all_from_data(book_data, context=context)
 
     return book, context

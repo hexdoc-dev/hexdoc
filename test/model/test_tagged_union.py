@@ -1,9 +1,8 @@
 from typing import Any
 
 import pytest
-from hexdoc.model.base import HexdocModel, HexdocTypeAdapter, PluginManagerContext
-from hexdoc.model.tagged_union import TypeTaggedUnion
-from hexdoc.plugin.manager import PluginManager
+from hexdoc.model import HexdocModel, HexdocTypeAdapter, TypeTaggedUnion
+from hexdoc.plugin import PluginManager
 from hexdoc.utils.singletons import NoValue
 
 
@@ -17,9 +16,8 @@ class _OtherType(HexdocModel):
 
 @pytest.fixture
 def context():
-    return PluginManagerContext(
-        pm=PluginManager(""),
-    )
+    pm = PluginManager("")
+    return {pm.context_key: pm}
 
 
 @pytest.mark.parametrize(

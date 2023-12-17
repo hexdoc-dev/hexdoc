@@ -14,12 +14,12 @@ from hexdoc.core import (
 )
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
-from hexdoc.utils import cast_or_raise, sorted_dict
+from hexdoc.utils import sorted_dict
 
 from .book_context import BookContext
 from .category import Category
 from .entry import Entry
-from .text import BookLinkBases, FormatTree
+from .text import BookLinkBases, FormattingContext, FormatTree
 
 
 class Book(HexdocModel):
@@ -89,14 +89,27 @@ class Book(HexdocModel):
         return data
 
     @classmethod
-    def load_all_from_data(cls, data: Mapping[str, Any], context: BookContext) -> Self:
+    def load_all_from_data(
+        cls,
+        data: Mapping[str, Any],
+        *,
+        context: dict[str, Any],
+    ) -> Self:
+        book_ctx = BookContext.of(context)
+        loader = ModResourceLoader.of(context)
+
         book = cls.model_validate(data, context=context)
-        book._load_categories(context)
-        book._load_entries(context)
+        book._load_categories(context, book_ctx)
+        book._load_entries(context, book_ctx, loader)
+
         return book
 
     @classmethod
-    def _load_book_resource(cls, loader: ModResourceLoader, id: ResourceLocation):
+    def _load_book_resource(
+        cls,
+        loader: ModResourceLoader,
+        id: ResourceLocation,
+    ) -> dict[str, Any]:
         _, data = loader.load_resource("data", "patchouli_books", id / "book")
         return data | {"id": id}
 
@@ -108,7 +121,7 @@ class Book(HexdocModel):
     def link_bases(self):
         return self._link_bases
 
-    def _load_categories(self, context: BookContext):
+    def _load_categories(self, context: dict[str, Any], book_ctx: BookContext):
         categories = Category.load_all(context, self.id, self.use_resource_pack)
 
         if not categories:
@@ -118,12 +131,17 @@ class Book(HexdocModel):
 
         for id, category in categories.items():
             self._categories[id] = category
-            self._link_bases[(id, None)] = context.get_link_base(category.resource_dir)
+            self._link_bases[(id, None)] = book_ctx.get_link_base(category.resource_dir)
 
-    def _load_entries(self, context: BookContext):
+    def _load_entries(
+        self,
+        context: dict[str, Any],
+        book_ctx: BookContext,
+        loader: ModResourceLoader,
+    ):
         internal_entries = defaultdict[ResLoc, dict[ResLoc, Entry]](dict)
 
-        for resource_dir, id, data in context.loader.load_book_assets(
+        for resource_dir, id, data in loader.load_book_assets(
             parent_book_id=self.id,
             folder="entries",
             use_resource_pack=self.use_resource_pack,
@@ -134,7 +152,7 @@ class Book(HexdocModel):
             if resource_dir.internal:
                 internal_entries[entry.category_id][entry.id] = entry
 
-            link_base = context.get_link_base(resource_dir)
+            link_base = book_ctx.get_link_base(resource_dir)
             self._link_bases[(id, None)] = link_base
             for page in entry.pages:
                 if page.anchor is not None:
@@ -160,9 +178,8 @@ class Book(HexdocModel):
     def _post_root(self, info: ValidationInfo):
         if not info.context:
             return self
-        context = cast_or_raise(info.context, BookContext)
 
         # make the macros accessible when rendering the template
-        self.macros |= context.macros
+        self.macros |= FormattingContext.of(info).macros
 
         return self

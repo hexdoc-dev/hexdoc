@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 import pytest
 from hexdoc._hooks import HexdocPlugin
@@ -9,7 +10,7 @@ from hexdoc.core.properties import EnvironmentVariableProps, Properties, Texture
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
-from hexdoc.patchouli.book_context import BookContext
+from hexdoc.patchouli.text import FormattingContext
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
 from yarl import URL
@@ -183,28 +184,28 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     )
 
 
-def test_parent_ids(parent_book: tuple[Book, BookContext]):
+def test_parent_ids(parent_book: tuple[Book, dict[str, Any]]):
     book, context = parent_book
 
     want_id = ResourceLocation("parent", "parentbook")
 
-    assert want_id == context.props.book_id
-    assert want_id == context.book_id
+    assert want_id == Properties.of(context).book_id
+    assert want_id == FormattingContext.of(context).book_id
     assert want_id == book.id
 
 
-def test_child_parent_ids(child_book: tuple[Book, BookContext]):
+def test_child_parent_ids(child_book: tuple[Book, dict[str, Any]]):
     book, context = child_book
 
     want_id = ResourceLocation("parent", "parentbook")
 
-    assert want_id == context.book_id
+    assert want_id == FormattingContext.of(context).book_id
     assert want_id == book.id
 
 
-def test_child_child_ids(child_book: tuple[Book, BookContext]):
+def test_child_child_ids(child_book: tuple[Book, dict[str, Any]]):
     _, context = child_book
 
     want_id = ResourceLocation("child", "childbook")
 
-    assert want_id == context.props.book_id
+    assert want_id == Properties.of(context).book_id

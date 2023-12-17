@@ -14,6 +14,8 @@ __all__ = [
     "TOMLValue",
     "TRACE",
     "TryGetEnum",
+    "ValidationContext",
+    "add_to_context",
     "cast_or_raise",
     "clamping_validator",
     "classproperty",
@@ -35,6 +37,7 @@ __all__ = [
 
 from .cd import RelativePath, relative_path_root
 from .classproperties import classproperty
+from .context import ValidationContext, add_to_context
 from .contextmanagers import set_contextvar
 from .deserialize import (
     JSONDict,

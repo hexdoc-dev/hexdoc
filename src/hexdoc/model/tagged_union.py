@@ -12,16 +12,16 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 from pydantic_core import InitErrorDetails, PydanticCustomError
 
 from hexdoc.core.resource import ResourceLocation
+from hexdoc.plugin import PluginManager
 from hexdoc.utils import (
     Inherit,
     InheritType,
     NoValue,
     NoValueType,
-    cast_or_raise,
     classproperty,
 )
 
-from .base import HexdocModel, PluginManagerContext
+from .base import HexdocModel
 
 TagValue = str | NoValueType
 
@@ -115,12 +115,12 @@ class InternallyTaggedUnion(HexdocModel):
         handler: ModelWrapValidatorHandler[Self],
         info: ValidationInfo,
     ) -> Self:
-        context = cast_or_raise(info.context, PluginManagerContext)
+        pm = PluginManager.of(info)
 
         # load plugins from entry points
         global _is_loaded
         if not _is_loaded:
-            more_itertools.consume(context.pm.load_tagged_unions())
+            more_itertools.consume(pm.load_tagged_unions())
             _is_loaded = True
 
         # do this early so we know it's part of a union before returning anything
@@ -150,7 +150,9 @@ class InternallyTaggedUnion(HexdocModel):
 
         for inner_type in tag_types:
             try:
-                matches[inner_type] = inner_type.model_validate(data, context=context)
+                matches[inner_type] = inner_type.model_validate(
+                    data, context=info.context
+                )
             except Exception as e:
                 exceptions.append(
                     InitErrorDetails(

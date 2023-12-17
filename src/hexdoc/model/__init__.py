@@ -10,13 +10,12 @@ __all__ = [
     "InternallyTaggedUnion",
     "NoValue",
     "NoValueType",
-    "PluginManagerContext",
     "ResourceModel",
     "StripHiddenModel",
     "TagValue",
     "TypeTaggedTemplate",
     "TypeTaggedUnion",
-    "ValidationContext",
+    "ValidationContextModel",
     "init_context",
 ]
 
@@ -25,8 +24,7 @@ from .base import (
     HexdocModel,
     HexdocSettings,
     HexdocTypeAdapter,
-    PluginManagerContext,
-    ValidationContext,
+    ValidationContextModel,
     init_context,
 )
 from .id import IDModel, ResourceModel

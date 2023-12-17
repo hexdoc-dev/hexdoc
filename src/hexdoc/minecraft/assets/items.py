@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import Self
+from typing import Any, Self
 
 from yarl import URL
 
 from hexdoc.core import ItemStack, ResourceLocation
-from hexdoc.model import ValidationContext
 
 from .animated import AnimatedTexture
 from .textures import BaseTexture, PNGTexture
@@ -25,7 +24,7 @@ class SingleItemTexture(BaseTexture):
         )
 
     @classmethod
-    def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
+    def load_id(cls, id: ResourceLocation | ItemStack, context: dict[str, Any]):
         return super().load_id(id.id, context)
 
     @property
@@ -45,7 +44,7 @@ class MultiItemTexture(BaseTexture):
         )
 
     @classmethod
-    def load_id(cls, id: ResourceLocation | ItemStack, context: ValidationContext):
+    def load_id(cls, id: ResourceLocation | ItemStack, context: dict[str, Any]):
         return super().load_id(id.id, context)
 
 

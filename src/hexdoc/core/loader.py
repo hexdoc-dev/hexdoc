@@ -13,11 +13,12 @@ from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
 
-from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContext
+from hexdoc.model import DEFAULT_CONFIG, HexdocModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import (
     TRACE,
     JSONDict,
+    ValidationContext,
     decode_json_dict,
     must_yield_something,
     strip_suffixes,
@@ -43,7 +44,7 @@ BookFolder = Literal["categories", "entries", "templates"]
 
 
 @dataclass(config=DEFAULT_CONFIG | {"arbitrary_types_allowed": True}, kw_only=True)
-class ModResourceLoader:
+class ModResourceLoader(ValidationContext):
     props: Properties
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
@@ -524,11 +525,3 @@ class ModResourceLoader:
 
     def __repr__(self):
         return f"{self.__class__.__name__}(...)"
-
-
-class LoaderContext(ValidationContext):
-    loader: ModResourceLoader
-
-    @property
-    def props(self):
-        return self.loader.props

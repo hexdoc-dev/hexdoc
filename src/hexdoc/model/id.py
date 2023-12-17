@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Self
+from typing import Any, Self
 
-from hexdoc.core.loader import LoaderContext, ModResourceLoader
+from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.utils import TRACE, JSONDict, isinstance_or_raise
+from hexdoc.utils import TRACE, JSONDict
 
-from .base import HexdocModel, ValidationContext
+from .base import HexdocModel
 from .inline import InlineModel
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class IDModel(HexdocModel):
         resource_dir: PathResourceDir,
         id: ResourceLocation,
         data: JSONDict,
-        context: ValidationContext,
+        context: dict[str, Any],
     ) -> Self:
         logger.log(TRACE, f"Load {cls} at {id}")
         return cls.model_validate(
@@ -38,9 +38,9 @@ class IDModel(HexdocModel):
 
 class ResourceModel(IDModel, InlineModel, ABC):
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext):
-        assert isinstance_or_raise(context, LoaderContext)
-        resource_dir, data = cls.load_resource(id, context.loader)
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+        loader = ModResourceLoader.of(context)
+        resource_dir, data = cls.load_resource(id, loader)
         return cls.load(resource_dir, id, data, context)
 
     @classmethod

@@ -7,7 +7,7 @@ from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
 from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
-from hexdoc.utils import Sortable, cast_or_raise
+from hexdoc.utils import Sortable
 
 from .book_context import BookContext
 from .page import CraftingPage, Page, PageWithTitle
@@ -99,11 +99,11 @@ class Entry(IDModel, Sortable):
     def _check_is_spoiler(self, info: ValidationInfo):
         if not info.context or self.advancement is None:
             return self
-        context = cast_or_raise(info.context, BookContext)
+        book_ctx = BookContext.of(info)
 
         self.is_spoiler = any(
             self.advancement.match(spoiler)
-            for spoiler in context.spoilered_advancements
+            for spoiler in book_ctx.spoilered_advancements
         )
         return self
 

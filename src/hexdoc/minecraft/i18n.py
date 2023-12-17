@@ -11,13 +11,12 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.core import (
     ItemStack,
-    LoaderContext,
     ModResourceLoader,
     ResourceLocation,
     ValueIfVersion,
 )
-from hexdoc.model import HexdocModel
-from hexdoc.utils import cast_or_raise, decode_and_flatten_json_dict
+from hexdoc.model import HexdocModel, ValidationContextModel
+from hexdoc.utils import decode_and_flatten_json_dict
 
 logger = logging.getLogger(__name__)
 
@@ -52,8 +51,8 @@ class LocalizedStr(HexdocModel, frozen=True):
         if not isinstance(value, str):
             return handler(value)
 
-        context = cast_or_raise(info.context, I18nContext)
-        return cls._localize(context.i18n, value)
+        i18n = I18n.of(info)
+        return cls._localize(i18n, value)
 
     @classmethod
     def _localize(cls, i18n: I18n, key: str) -> Self:
@@ -92,7 +91,7 @@ class LocalizedItem(LocalizedStr, frozen=True):
         return cls.model_validate(i18n.localize_item(key))
 
 
-class I18n(HexdocModel):
+class I18n(ValidationContextModel):
     """Handles localization of strings."""
 
     lookup: dict[str, LocalizedStr] | None
@@ -331,7 +330,3 @@ class I18n(HexdocModel):
         name = self.localize("language.name", silent=silent)
         region = self.localize("language.region", silent=silent)
         return f"{name} ({region})"
-
-
-class I18nContext(LoaderContext):
-    i18n: I18n

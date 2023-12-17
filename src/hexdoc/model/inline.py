@@ -9,14 +9,14 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 from hexdoc.core.resource import ItemStack, ResourceLocation
 from hexdoc.utils import cast_or_raise
 
-from .base import HexdocModel, ValidationContext
+from .base import HexdocModel
 
 
 @dataclass_transform()
 class InlineModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext) -> Any:
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
         ...
 
     @model_validator(mode="wrap")
@@ -41,7 +41,7 @@ class InlineModel(HexdocModel, ABC):
                 return handler(value)
 
         # load the data
-        context = cast_or_raise(info.context, ValidationContext)
+        context = cast_or_raise(info.context, dict[str, Any])
         return handler(cls.load_id(id, context))
 
 
@@ -49,7 +49,7 @@ class InlineModel(HexdocModel, ABC):
 class InlineItemModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, item: ItemStack, context: ValidationContext) -> Any:
+    def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
         ...
 
     @model_validator(mode="wrap")
@@ -76,5 +76,5 @@ class InlineItemModel(HexdocModel, ABC):
                 return handler(value)
 
         # load the data
-        context = cast_or_raise(info.context, ValidationContext)
+        context = cast_or_raise(info.context, dict[str, Any])
         return handler(cls.load_id(item, context))

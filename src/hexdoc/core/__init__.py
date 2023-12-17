@@ -12,7 +12,6 @@ __all__ = [
     "ExportFn",
     "IsVersion",
     "ItemStack",
-    "LoaderContext",
     "METADATA_SUFFIX",
     "MinecraftVersion",
     "ModResourceLoader",
@@ -45,7 +44,6 @@ from .loader import (
     METADATA_SUFFIX,
     BookFolder,
     ExportFn,
-    LoaderContext,
     ModResourceLoader,
 )
 from .properties import BaseProperties, Properties

@@ -4,20 +4,20 @@ from __future__ import annotations
 
 import re
 from enum import Enum, auto
-from typing import Any, Literal, Self, final
+from typing import Literal, Self, final
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
-from pydantic import Field, ValidationInfo, model_validator
+from pydantic import ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 from yarl import URL
 
-from hexdoc.core import LoaderContext, ResourceLocation
-from hexdoc.minecraft import I18n, I18nContext, LocalizedStr
-from hexdoc.model import DEFAULT_CONFIG, HexdocModel, PluginManagerContext
+from hexdoc.core import Properties, ResourceLocation
+from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import TryGetEnum, cast_or_raise, classproperty
+from hexdoc.utils import TryGetEnum, classproperty
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",
@@ -64,20 +64,9 @@ _COLORS = {
 BookLinkBases = dict[tuple[ResourceLocation, str | None], URL]
 
 
-class FormattingContext(
-    I18nContext,
-    LoaderContext,
-    PluginManagerContext,
-):
+class FormattingContext(ValidationContextModel):
     book_id: ResourceLocation
-    macros: dict[str, str] = Field(default_factory=dict)
-
-    @model_validator(mode="after")
-    def _add_macros(self, info: ValidationInfo) -> Self:
-        # precedence: ctx arguments, book macros, default macros
-        context: dict[str, Any] = cast_or_raise(info.context, dict)
-        self.macros = DEFAULT_MACROS | context.get("macros", {}) | self.macros
-        return self
+    macros: dict[str, str]
 
 
 class BookLink(HexdocModel):
@@ -425,17 +414,21 @@ class FormatTree:
         if not info.context or isinstance(value, FormatTree):
             return handler(value)
 
-        context = cast_or_raise(info.context, FormattingContext)
+        context = FormattingContext.of(info)
+        i18n = I18n.of(info)
+        pm = PluginManager.of(info)
+        props = Properties.of(info)
+
         if isinstance(value, str):
-            value = context.i18n.localize(value)
+            value = i18n.localize(value)
 
         return cls.format(
             value.value,
             book_id=context.book_id,
-            i18n=context.i18n,
+            i18n=i18n,
             macros=context.macros,
-            is_0_black=context.props.is_0_black,
-            pm=context.pm,
+            is_0_black=props.is_0_black,
+            pm=pm,
         )
 
 

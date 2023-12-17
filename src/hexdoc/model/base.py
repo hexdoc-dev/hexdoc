@@ -1,16 +1,19 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, Any, ClassVar, Self, TypeVar, dataclass_transform
+from typing import (
+    Any,
+    ClassVar,
+    TypeVar,
+    dataclass_transform,
+)
 
 from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelBeforeValidator
-from pydantic_core import Some
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
 
-from hexdoc.plugin import PluginManager
-from hexdoc.utils import set_contextvar
+from hexdoc.utils import ValidationContext, set_contextvar
 from hexdoc.utils.classproperties import ClassPropertyDescriptor
 
 DEFAULT_CONFIG = ConfigDict(
@@ -31,9 +34,8 @@ def init_context(value: Any):
 
 
 @dataclass_transform()
-class HexdocBaseModel(BaseModel):
-    """Base class for all Pydantic models in hexdoc. You should probably use
-    `HexdocModel` or `ValidationContext` instead.
+class HexdocModel(BaseModel):
+    """Base class for all Pydantic models in hexdoc.
 
     Sets the default model config, and overrides __init__ to allow using the
     `init_context` context manager to set validation context for constructors.
@@ -61,50 +63,6 @@ class HexdocBaseModel(BaseModel):
         return value
 
 
-@dataclass_transform()
-class ValidationContext(HexdocBaseModel):
-    """Base class for Pydantic validation context for `HexdocModel`."""
-
-
-class PluginManagerContext(ValidationContext, arbitrary_types_allowed=True):
-    pm: PluginManager
-
-
-@dataclass_transform()
-class HexdocModel(HexdocBaseModel):
-    """Base class for most Pydantic models in hexdoc.
-
-    Includes type overrides to require using subclasses of `ValidationContext` for
-    validation context.
-    """
-
-    model_config = DEFAULT_CONFIG
-
-    # pydantic core actually allows PyAny for context, so I'm pretty sure this is fine
-    if TYPE_CHECKING:
-
-        @classmethod
-        def model_validate(  # pyright: ignore[reportIncompatibleMethodOverride]
-            cls,
-            obj: Any,
-            *,
-            strict: bool | None = None,
-            from_attributes: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> Self:
-            ...
-
-        @classmethod
-        def model_validate_json(  # pyright: ignore[reportIncompatibleMethodOverride]
-            cls,
-            json_data: str | bytes | bytearray,
-            *,
-            strict: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> Self:
-            ...
-
-
 class HexdocSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -125,40 +83,6 @@ class HexdocTypeAdapter(TypeAdapter[_T]):
             config = DEFAULT_CONFIG
         return super().__init__(type, config=config)
 
-    if TYPE_CHECKING:
 
-        def validate_python(  # pyright: ignore[reportIncompatibleMethodOverride]
-            self,
-            __object: Any,
-            *,
-            strict: bool | None = None,
-            from_attributes: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> _T:
-            ...
-
-        def validate_json(  # pyright: ignore[reportIncompatibleMethodOverride]
-            self,
-            __data: str | bytes,
-            *,
-            strict: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> _T:
-            ...
-
-        def validate_strings(  # pyright: ignore[reportIncompatibleMethodOverride]
-            self,
-            __obj: Any,
-            *,
-            strict: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> _T:
-            ...
-
-        def get_default_value(  # pyright: ignore[reportIncompatibleMethodOverride]
-            self,
-            *,
-            strict: bool | None = None,
-            context: ValidationContext | None = None,
-        ) -> Some[_T] | None:
-            ...
+class ValidationContextModel(HexdocModel, ValidationContext):
+    pass

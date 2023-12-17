@@ -6,13 +6,15 @@ from typing import TYPE_CHECKING, Any, Protocol
 import pluggy
 from jinja2.sandbox import SandboxedEnvironment
 
+from hexdoc.utils import ValidationContext
+
 from .mod_plugin import ModPlugin
 from .types import HookReturn, HookReturns
 
 if TYPE_CHECKING:
     from hexdoc.core import ResourceLocation
     from hexdoc.minecraft import I18n
-    from hexdoc.patchouli import BookContext, FormatTree
+    from hexdoc.patchouli import FormatTree
 
 HEXDOC_PROJECT_NAME = "hexdoc"
 
@@ -38,7 +40,9 @@ class PluginSpec(Protocol):
 
     @staticmethod
     @hookspec
-    def hexdoc_update_context(context: BookContext) -> None:
+    def hexdoc_update_context(
+        context: dict[str, Any]
+    ) -> HookReturns[ValidationContext]:
         ...
 
     @staticmethod
@@ -96,7 +100,7 @@ class ValidateFormatTreeImpl(PluginImpl, Protocol):
 
 class UpdateContextImpl(PluginImpl, Protocol):
     @staticmethod
-    def hexdoc_update_context(context: BookContext) -> None:
+    def hexdoc_update_context(context: dict[str, Any]) -> HookReturn[ValidationContext]:
         """Modify the book validation context.
 
         For example, Hex Casting uses this to add pattern data needed by pattern pages.

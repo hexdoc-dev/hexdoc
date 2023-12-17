@@ -6,7 +6,6 @@ from collections import defaultdict
 from typing import (
     Annotated,
     Any,
-    Generic,
     Iterable,
     Self,
     TypeVar,
@@ -19,9 +18,9 @@ from yarl import URL
 from hexdoc.core import ResourceLocation
 from hexdoc.model import (
     InlineModel,
-    ValidationContext,
+    ValidationContextModel,
 )
-from hexdoc.utils import PydanticURL, isinstance_or_raise
+from hexdoc.utils import PydanticURL
 
 from .constants import MISSING_TEXTURE_URL
 
@@ -36,12 +35,12 @@ class BaseTexture(InlineModel, ABC):
 
     @override
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext):
-        assert isinstance_or_raise(context, TextureContext)
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+        texture_ctx = TextureContext.of(context)
         return cls.lookup(
             id,
-            lookups=context.textures,  # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
-            allowed_missing=context.allowed_missing_textures,
+            lookups=texture_ctx.textures,
+            allowed_missing=texture_ctx.allowed_missing_textures,
         )
 
     @classmethod
@@ -96,6 +95,6 @@ TextureLookups = defaultdict[
 """dict[type(texture).__name__, TextureLookup]"""
 
 
-class TextureContext(ValidationContext, Generic[_T_BaseTexture]):
-    textures: TextureLookups[_T_BaseTexture]
+class TextureContext(ValidationContextModel):
+    textures: TextureLookups[Any]
     allowed_missing_textures: set[ResourceLocation]

@@ -1,8 +1,9 @@
-from typing import Self
+from typing import Any, Self
 
 from pydantic import Field
 
-from hexdoc.core import LoaderContext, ResourceLocation
+from hexdoc.core import ResourceLocation
+from hexdoc.core.loader import ModResourceLoader
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
 from hexdoc.model import IDModel
@@ -35,14 +36,15 @@ class Category(IDModel, Sortable):
     @classmethod
     def load_all(
         cls,
-        context: LoaderContext,
+        context: dict[str, Any],
         book_id: ResourceLocation,
         use_resource_pack: bool,
     ) -> dict[ResourceLocation, Self]:
         # load
+        loader = ModResourceLoader.of(context)
         categories = {
             id: cls.load(resource_dir, id, data, context)
-            for resource_dir, id, data in context.loader.load_book_assets(
+            for resource_dir, id, data in loader.load_book_assets(
                 book_id,
                 "categories",
                 use_resource_pack,

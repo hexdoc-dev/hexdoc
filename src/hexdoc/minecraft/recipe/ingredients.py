@@ -3,10 +3,11 @@ from typing import Annotated, Any, Iterator
 from pydantic import AfterValidator, BeforeValidator, ValidationError, ValidationInfo
 
 from hexdoc.core import ResourceLocation
+from hexdoc.core.loader import ModResourceLoader
 from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
-from hexdoc.utils import cast_or_raise, listify
+from hexdoc.utils import listify
 
-from ..assets import ItemWithTexture, TagWithTexture, TextureI18nContext
+from ..assets import ItemWithTexture, TagWithTexture
 from ..tags import Tag
 
 
@@ -44,21 +45,21 @@ def _validate_flatten_nested_tags(
     ingredients: list[ItemIngredient],
     info: ValidationInfo,
 ) -> Iterator[ItemIngredient]:
-    context = cast_or_raise(info.context, TextureI18nContext)
-
+    loader = ModResourceLoader.of(info)
     for ingredient in ingredients:
         yield ingredient
 
         if isinstance(ingredient, MinecraftItemTagIngredient):
-            yield from _items_in_tag(ingredient.tag.id, context)
+            yield from _items_in_tag(ingredient.tag.id, info, loader)
 
 
 def _items_in_tag(
     tag_id: ResourceLocation,
-    context: TextureI18nContext,
+    info: ValidationInfo,
+    loader: ModResourceLoader,
 ) -> Iterator[ItemIngredient]:
     try:
-        tag = Tag.load("items", tag_id, context.loader)
+        tag = Tag.load("items", tag_id, loader)
     except FileNotFoundError:
         return
 
@@ -66,10 +67,10 @@ def _items_in_tag(
         try:
             yield MinecraftItemIdIngredient.model_validate(
                 {"item": id},
-                context=context,
+                context=info.context,
             )
         except ValidationError:
-            yield from _items_in_tag(id, context)
+            yield from _items_in_tag(id, info, loader)
 
 
 ItemIngredientList = Annotated[

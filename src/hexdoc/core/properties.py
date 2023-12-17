@@ -14,6 +14,7 @@ from hexdoc.utils import (
     TRACE,
     PydanticOrderedSet,
     RelativePath,
+    ValidationContext,
     git_root,
     load_toml_with_placeholders,
     relative_path_root,
@@ -114,7 +115,7 @@ class TexturesProps(StripHiddenModel):
     ] = Field(default_factory=dict)
 
 
-class BaseProperties(StripHiddenModel):
+class BaseProperties(StripHiddenModel, ValidationContext):
     env: EnvironmentVariableProps
     props_dir: Path
 

@@ -14,7 +14,6 @@ __all__ = [
     "TagWithTexture",
     "Texture",
     "TextureContext",
-    "TextureI18nContext",
     "TextureLookup",
     "TextureLookups",
 ]
@@ -45,5 +44,4 @@ from .with_texture import (
     ItemWithTexture,
     NamedTexture,
     TagWithTexture,
-    TextureI18nContext,
 )

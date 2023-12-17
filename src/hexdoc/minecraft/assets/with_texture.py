@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from hexdoc.core import (
     ItemStack,
@@ -11,27 +11,21 @@ from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.model import (
     InlineItemModel,
     InlineModel,
-    ValidationContext,
 )
 from hexdoc.model.base import HexdocModel
-from hexdoc.utils import isinstance_or_raise
 
-from ..i18n import I18nContext, LocalizedStr
+from ..i18n import I18n, LocalizedStr
 from .animated import AnimatedTexture
 from .constants import TAG_TEXTURE_URL
 from .items import ImageTexture, ItemTexture, MultiItemTexture, SingleItemTexture
 from .load_assets import Texture
-from .textures import PNGTexture, TextureContext
+from .textures import PNGTexture
 
 logger = logging.getLogger(__name__)
 
 _T_BaseResourceLocation = TypeVar("_T_BaseResourceLocation", bound=BaseResourceLocation)
 
 _T_Texture = TypeVar("_T_Texture", bound=Texture)
-
-
-class TextureI18nContext(TextureContext[Texture], I18nContext):
-    pass
 
 
 class BaseWithTexture(HexdocModel, Generic[_T_BaseResourceLocation, _T_Texture]):
@@ -68,14 +62,14 @@ class BaseWithTexture(HexdocModel, Generic[_T_BaseResourceLocation, _T_Texture])
 
 class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
     @classmethod
-    def load_id(cls, item: ItemStack, context: ValidationContext):
+    def load_id(cls, item: ItemStack, context: dict[str, Any]):
         """Implements InlineModel."""
-        assert isinstance_or_raise(context, TextureI18nContext)
 
+        i18n = I18n.of(context)
         if item.path.startswith("texture"):
-            name = context.i18n.localize_texture(item.id)
+            name = i18n.localize_texture(item.id)
         else:
-            name = context.i18n.localize_item(item)
+            name = i18n.localize_item(item)
 
         return {
             "id": item,
@@ -86,21 +80,21 @@ class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
 
 class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext):
-        assert isinstance_or_raise(context, I18nContext)
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+        i18n = I18n.of(context)
         return cls(
             id=id,
-            name=context.i18n.localize_item_tag(id),
+            name=i18n.localize_item_tag(id),
             texture=PNGTexture.from_url(TAG_TEXTURE_URL, pixelated=True),
         )
 
 
 class NamedTexture(InlineModel, BaseWithTexture[ResourceLocation, ImageTexture]):
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: ValidationContext):
-        assert isinstance_or_raise(context, I18nContext)
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+        i18n = I18n.of(context)
         return {
             "id": id,
-            "name": context.i18n.localize_texture(id, silent=True),
+            "name": i18n.localize_texture(id, silent=True),
             "texture": id,
         }

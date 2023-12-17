@@ -24,10 +24,12 @@ import pluggy
 from jinja2 import PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
+from hexdoc.utils import ValidationContext
+
 if TYPE_CHECKING:
     from hexdoc.core import ResourceLocation
     from hexdoc.minecraft import I18n
-    from hexdoc.patchouli import BookContext, FormatTree
+    from hexdoc.patchouli import FormatTree
 
 from .mod_plugin import ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
@@ -84,7 +86,7 @@ class _NoCallTypedHookCaller(TypedHookCaller[_P, None]):
         ...
 
 
-class PluginManager:
+class PluginManager(ValidationContext):
     """Custom hexdoc plugin manager with helpers and stronger typing."""
 
     def __init__(self, branch: str, load: bool = True) -> None:
@@ -173,10 +175,10 @@ class PluginManager:
         )
         return tree
 
-    def update_context(self, context: BookContext):
+    def update_context(self, context: dict[str, Any]) -> Iterator[ValidationContext]:
         caller = self._hook_caller(PluginSpec.hexdoc_update_context)
-        caller.try_call(context=context)
-        return context
+        if returns := caller.try_call(context=context):
+            yield from flatten(returns)
 
     def update_jinja_env(self, env: SandboxedEnvironment):
         caller = self._hook_caller(PluginSpec.hexdoc_update_jinja_env)
