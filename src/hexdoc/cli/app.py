@@ -146,12 +146,13 @@ def build(
         export=True,
     ) as loader:
         site_path = plugin.site_path(versioned=release)
+        site_dir = output_dir / site_path
 
         asset_loader = plugin.asset_loader(
             loader=loader,
             site_url=props.env.github_pages_url.joinpath(*site_path.parts),
             asset_url=props.env.asset_url,
-            render_dir=output_dir / site_path,
+            render_dir=site_dir,
         )
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
@@ -160,7 +161,7 @@ def build(
 
         if not props.book_id:
             logger.info("Skipping book load because props.book_id is not set.")
-            return site_path
+            return site_dir
 
         logger.info("Loading books for all languages...")
         books = list[tuple[str, I18n, Book, BookContext]]()
@@ -181,7 +182,7 @@ def build(
 
         if not props.template:
             logger.info("Skipping book render because props.template is not set.")
-            return site_path
+            return site_dir
 
         if not isinstance(plugin, ModPluginWithBook):
             raise ValueError(
@@ -212,9 +213,9 @@ def build(
         logger.info(f"Rendering book for {len(books)} language(s)...")
         for language, i18n, book, context in books:
             try:
-                site_path = plugin.site_book_path(language, versioned=release)
+                site_book_path = plugin.site_book_path(language, versioned=release)
                 if clean:
-                    shutil.rmtree(output_dir / site_path, ignore_errors=True)
+                    shutil.rmtree(output_dir / site_book_path, ignore_errors=True)
 
                 render_book(
                     props=props,
@@ -228,7 +229,7 @@ def build(
                     output_dir=output_dir,
                     all_metadata=all_metadata,
                     version=plugin.mod_version if release else f"latest/{branch}",
-                    site_path=site_path,
+                    site_path=site_book_path,
                     png_textures=PNGTexture.get_lookup(context.textures),
                     animations=sorted(  # this MUST be sorted to avoid flaky tests
                         AnimatedTexture.get_lookup(context.textures).values(),
@@ -242,7 +243,7 @@ def build(
                 logger.exception(f"Failed to render book for {language}")
 
     logger.info("Done.")
-    return site_path
+    return site_dir
 
 
 @app.command()
