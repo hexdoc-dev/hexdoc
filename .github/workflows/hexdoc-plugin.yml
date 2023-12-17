@@ -60,13 +60,6 @@ jobs:
       - name: Install Python packages
         run: pip install -e .${{ inputs.pip-extras }}
 
-      - name: Checkout current Pages
-        uses: actions/checkout@v3
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: _site/dst
-
       - name: Build web book
         id: export
         run: |
