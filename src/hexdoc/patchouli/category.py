@@ -20,6 +20,7 @@ class Category(IDModel, Sortable):
     """
 
     entries: dict[ResourceLocation, Entry] = Field(default_factory=dict)
+    is_spoiler: bool = False
 
     # required
     name: LocalizedStr
@@ -77,10 +78,6 @@ class Category(IDModel, Sortable):
 
         # return sorted by sortnum, which requires parent to be initialized
         return sorted_dict(categories)
-
-    @property
-    def is_spoiler(self) -> bool:
-        return all(entry.is_spoiler for entry in self.entries.values())
 
     @property
     def _is_cmp_key_ready(self) -> bool:

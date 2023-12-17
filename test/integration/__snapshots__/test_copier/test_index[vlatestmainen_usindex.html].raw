@@ -129,6 +129,24 @@
   ><i class="bi bi-link-45deg"></i></a></span>
   </h2>
     <details class="toc-category">
+      <summary><a href="#basics" class="toc-elem "><img
+      title="Amethyst Shard"
+      alt="Amethyst Shard"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    > Getting Started</a></summary>
+      <ul>
+          <li><a href="#baz" class="toc-elem spoilered"><img
+      title="Nausea"
+      alt="Nausea"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    > This is the online version of the {} documentation.</a></li>
+      </ul>
+    </details>
+    <details class="toc-category">
       <summary><a href="#foo" class="toc-elem spoilered"><img
       title="Amethyst Shard"
       alt="Amethyst Shard"
@@ -148,6 +166,47 @@
     </details>
 </nav>
   <main class="book-body">
+<section id="basics">
+    <h2 class="category-title page-header">
+    <img
+      title="Amethyst Shard"
+      alt="Amethyst Shard"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    >Getting Started<a
+    href="#table-of-contents"
+    class="permalink small"
+    title="Jump to top"
+  ><i class="bi bi-box-arrow-up"></i></a><a
+    href="#basics"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h2>
+    <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
+<div id="baz" class="entry">
+    <div class="spoilered">
+      <h3 class="entry-title page-header">
+    <img
+      title="Nausea"
+      alt="Nausea"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    >This is the online version of the {} documentation.<a
+    href="#table-of-contents"
+    class="permalink small"
+    title="Jump to top"
+  ><i class="bi bi-box-arrow-up"></i></a><a
+    href="#baz"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h3>
+    <p><a href="GITHUB_PAGES_URL/v/latest/main/en_us#patterns">patterns</a><a href="#foo">foo</a></p>
+<br />
+    </div>
+</div>
+</section>
 <section id="foo">
     <div class="spoilered">
       <h2 class="category-title page-header">

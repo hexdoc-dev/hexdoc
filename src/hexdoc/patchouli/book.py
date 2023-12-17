@@ -140,6 +140,7 @@ class Book(HexdocModel):
         loader: ModResourceLoader,
     ):
         internal_entries = defaultdict[ResLoc, dict[ResLoc, Entry]](dict)
+        spoilered_categories = dict[ResLoc, bool]()
 
         for resource_dir, id, data in loader.load_book_assets(
             parent_book_id=self.id,
@@ -147,6 +148,10 @@ class Book(HexdocModel):
             use_resource_pack=self.use_resource_pack,
         ):
             entry = Entry.load(resource_dir, id, data, context)
+
+            spoilered_categories[entry.category_id] = (
+                entry.is_spoiler and spoilered_categories.get(entry.category_id, True)
+            )
 
             # i used the entry to insert the entry (pretty sure thanos said that)
             if resource_dir.internal:
@@ -166,6 +171,8 @@ class Book(HexdocModel):
         for category_id, new_entries in internal_entries.items():
             category = self._categories[category_id]
             category.entries = sorted_dict(category.entries | new_entries)
+            if is_spoiler := spoilered_categories.get(category.id):
+                category.is_spoiler = is_spoiler
 
     @model_validator(mode="before")
     @classmethod

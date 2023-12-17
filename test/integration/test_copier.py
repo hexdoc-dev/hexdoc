@@ -46,6 +46,20 @@ def output_dir(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
                             },
                         ],
                     },
+                    # expect the entry to be spoilered but the category to not be
+                    "entries/baz.json": {
+                        "name": "hexdoc.welcome.header",
+                        "category": "hexcasting:basics",
+                        "icon": "minecraft:textures/mob_effect/nausea.png",
+                        "sortnum": 0,
+                        "advancement": "hexcasting:enlightenment",
+                        "pages": [
+                            {
+                                "type": "patchouli:text",
+                                "text": "bar.link.patterns",
+                            },
+                        ],
+                    },
                 },
                 "mod/lang/en_us.json": {
                     # make sure we're specifically testing internal and external links

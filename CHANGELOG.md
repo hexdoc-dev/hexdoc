@@ -21,3 +21,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### Fixes
 
 - Fixed an issue that was preventing CI plugin builds from being copied to the Pages branch.
+- Fixed category spoilers not taking external entries into account.
