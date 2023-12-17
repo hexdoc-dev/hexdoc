@@ -76,10 +76,9 @@ nox -s hexdoc -- export
 nox -s hexdoc -- repl
 ```
 
-## GitHub Badges
+## Badges
 
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
-
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1" alt="powered by hexdoc" style="max-width:100%;"></a>
 
 ### Markdown
