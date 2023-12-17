@@ -138,7 +138,7 @@ def render_book(
     output_dir /= site_path
     page_url = props.env.github_pages_url.joinpath(*site_path.parts)
 
-    logger.info(f"Rendering {output_dir}...")
+    logger.info(f"Rendering {output_dir}.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
 

@@ -140,7 +140,7 @@ def build(
 
     props, pm, plugin = load_common_data(props_file, branch)
 
-    logger.info("Exporting resources...")
+    logger.info("Exporting resources.")
     with ModResourceLoader.clean_and_load_all(
         props,
         pm,
@@ -164,7 +164,7 @@ def build(
             logger.info("Skipping book load because props.book_id is not set.")
             return site_dir
 
-        logger.info("Loading books for all languages...")
+        logger.info("Loading books for all languages.")
         books = list[tuple[str, I18n, Book, dict[str, Any]]]()
         for language, i18n in all_i18n.items():
             try:
@@ -191,7 +191,7 @@ def build(
                 f" does not inherit from ModPluginWithBook: {plugin}"
             )
 
-        logger.info("Setting up Jinja template environment...")
+        logger.info("Setting up Jinja template environment.")
         env = create_jinja_env(pm, props.template.include, props_file)
 
         if props.template.override_default_render:
@@ -211,7 +211,7 @@ def build(
                 f"(in {props_file.as_posix()})"
             )
 
-        logger.info(f"Rendering book for {len(books)} language(s)...")
+        logger.info(f"Rendering book for {len(books)} language(s).")
         for language, i18n, book, context in books:
             try:
                 site_book_path = plugin.site_book_path(language, versioned=release)

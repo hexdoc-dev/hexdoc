@@ -57,7 +57,7 @@ def load_common_data(
 
     plugin = pm.mod_plugin(props.modid, book=book)
     logging.getLogger(__name__).info(
-        f"Loading hexdoc for {props.modid} {plugin.full_version}"
+        f"Loading hexdoc for {props.modid} {plugin.full_version}."
     )
 
     minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
@@ -84,7 +84,7 @@ def render_textures_and_export_metadata(
 
     internal_lookups = TextureLookups[Texture](dict)
     if loader.props.textures.enabled:
-        logger.info("Loading and rendering textures...")
+        logger.info("Loading and rendering textures.")
         for id, texture in asset_loader.load_and_render_internal_textures(
             image_textures
         ):
