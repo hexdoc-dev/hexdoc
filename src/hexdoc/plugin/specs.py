@@ -4,7 +4,6 @@ from importlib.resources import Package
 from typing import TYPE_CHECKING, Any, Protocol
 
 import pluggy
-from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.utils import ValidationContext
 
@@ -12,7 +11,7 @@ from .mod_plugin import ModPlugin
 from .types import HookReturn, HookReturns
 
 if TYPE_CHECKING:
-    from hexdoc.core import ResourceLocation
+    from hexdoc.core import Properties, ResourceLocation
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
@@ -24,7 +23,7 @@ hookspec = pluggy.HookspecMarker(HEXDOC_PROJECT_NAME)
 class PluginSpec(Protocol):
     @staticmethod
     @hookspec
-    def hexdoc_mod_plugin(branch: str) -> list[ModPlugin]:
+    def hexdoc_mod_plugin(branch: str, props: Properties) -> list[ModPlugin]:
         ...
 
     @staticmethod
@@ -44,11 +43,6 @@ class PluginSpec(Protocol):
     def hexdoc_update_context(
         context: dict[str, Any]
     ) -> HookReturns[ValidationContext]:
-        ...
-
-    @staticmethod
-    @hookspec
-    def hexdoc_update_jinja_env(env: SandboxedEnvironment) -> None:
         ...
 
     @staticmethod
@@ -82,6 +76,15 @@ class ModPluginImpl(PluginImpl, Protocol):
         ...
 
 
+class ModPluginImplWithProps(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_mod_plugin(branch: str, props: Properties) -> ModPlugin:
+        """If your plugin represents a Minecraft mod, this must return an instance of a
+        subclass of `ModPlugin` or `ModPluginWithBook`, with all abstract methods
+        implemented."""
+        ...
+
+
 class ValidateFormatTreeImpl(PluginImpl, Protocol):
     @staticmethod
     def hexdoc_validate_format_tree(
@@ -106,17 +109,6 @@ class UpdateContextImpl(PluginImpl, Protocol):
         """Modify the book validation context.
 
         For example, Hex Casting uses this to add pattern data needed by pattern pages.
-        """
-        ...
-
-
-class UpdateJinjaEnvImpl(PluginImpl, Protocol):
-    @staticmethod
-    def hexdoc_update_jinja_env(env: SandboxedEnvironment) -> None:
-        """Modify the Jinja environment/configuration.
-
-        This is called after hexdoc is done setting up the Jinja environment, before
-        rendering the book.
         """
         ...
 

@@ -90,7 +90,7 @@ def create_jinja_env(pm: PluginManager, include: Sequence[str], props_file: Path
         )
     )
 
-    return pm.update_jinja_env(env)
+    return pm.update_jinja_env(env, include)
 
 
 def create_jinja_env_with_loader(loader: BaseLoader):
@@ -138,15 +138,23 @@ def render_book(
     output_dir /= site_path
     page_url = props.env.github_pages_url.joinpath(*site_path.parts)
 
-    logger.info(f"Rendering {output_dir}")
+    logger.info(f"Rendering {output_dir}...")
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    shutil.copy(props.template.icon, output_dir)
 
-    with Favicons(props.template.icon, output_dir, base_url="") as favicons:
-        favicons.sgenerate()
-        favicons_html = favicons.html()
-        favicons_formats = favicons.formats()
+    if icon := props.template.icon:
+        icon_href = icon.name
+
+        shutil.copy(icon, output_dir)
+
+        with Favicons(icon, output_dir, base_url="") as favicons:
+            favicons.sgenerate()
+            favicons_html = favicons.html()
+            favicons_formats = favicons.formats()
+    else:
+        icon_href = None
+        favicons_html = []
+        favicons_formats = []
 
     lang_name = i18n.localize_lang()
 
@@ -166,7 +174,7 @@ def render_book(
         "link_bases": book.link_bases,
         "favicons_html": favicons_html,
         "favicons_formats": favicons_formats,
-        "icon_href": props.template.icon.name,
+        "icon_href": icon_href,
         "safari_pinned_tab_href": "https://raw.githubusercontent.com/hexdoc-dev/hexdoc/main/media/safari-pinned-tab.svg",
         "safari_pinned_tab_color": "#332233",
         "_": lambda key: hexdoc_localize(  # i18n helper
@@ -198,9 +206,12 @@ def render_book(
         shutil.copytree(props.template.static_dir, output_dir, dirs_exist_ok=True)
 
     # redirect file for this book
-    _, redirect_template_name = props.template.redirect
-    redirect_template = env.get_template(redirect_template_name)
-    redirect_contents = strip_empty_lines(redirect_template.render(template_args))
+    if props.template.redirect:
+        _, redirect_template_name = props.template.redirect
+        redirect_template = env.get_template(redirect_template_name)
+        redirect_contents = strip_empty_lines(redirect_template.render(template_args))
+    else:
+        redirect_contents = ""
 
     # marker file for updating the sitemap later
     # we use this because matrix doesn't have outputs

@@ -70,13 +70,13 @@ class EnvironmentVariableProps(HexdocSettings):
 
 class TemplateProps(StripHiddenModel, validate_assignment=True):
     static_dir: RelativePath | None = None
-    icon: RelativePath
+    icon: RelativePath | None = None
     include: PydanticOrderedSet[str]
 
     render: dict[Path, str] = Field(default_factory=dict)
     extend_render: dict[Path, str] = Field(default_factory=dict)
 
-    redirect: tuple[Path, str] = (Path("index.html"), "redirect.html.jinja")
+    redirect: tuple[Path, str] | None = (Path("index.html"), "redirect.html.jinja")
     """filename, template"""
 
     args: dict[str, Any]
@@ -108,6 +108,8 @@ class TextureTextureOverride(StripHiddenModel):
 
 
 class TexturesProps(StripHiddenModel):
+    enabled: bool = True
+    """Set to False to disable texture rendering."""
     missing: set[ResourceLocation] = Field(default_factory=set)
     override: dict[
         ResourceLocation,

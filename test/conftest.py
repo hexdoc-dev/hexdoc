@@ -2,9 +2,10 @@ import json
 from fnmatch import fnmatch
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Literal, cast
 
 import pytest
+from hexdoc.core.properties import Properties
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import JSONValue
 from pytest import MonkeyPatch
@@ -43,12 +44,12 @@ def path_snapshot(snapshot: SnapshotAssertion):
 
 @pytest.fixture
 def pm():
-    return PluginManager(branch="main")
+    return PluginManager(branch="main", props=cast(Properties, None))
 
 
 @pytest.fixture
 def empty_pm():
-    return PluginManager(branch="main", load=False)
+    return PluginManager(branch="main", props=cast(Properties, None), load=False)
 
 
 @pytest.fixture(scope="session")

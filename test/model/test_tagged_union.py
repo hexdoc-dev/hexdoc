@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, cast
 
 import pytest
+from hexdoc.core.properties import Properties
 from hexdoc.model import HexdocModel, HexdocTypeAdapter, TypeTaggedUnion
 from hexdoc.plugin import PluginManager
 from hexdoc.utils.singletons import NoValue
@@ -16,7 +17,7 @@ class _OtherType(HexdocModel):
 
 @pytest.fixture
 def context():
-    pm = PluginManager("")
+    pm = PluginManager("", props=cast(Properties, None))
     return {pm.context_key: pm}
 
 

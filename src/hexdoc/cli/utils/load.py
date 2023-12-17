@@ -53,7 +53,7 @@ def load_common_data(
     book: bool = False,
 ) -> tuple[Properties, PluginManager, ModPlugin]:
     props = Properties.load(props_file)
-    pm = PluginManager(branch)
+    pm = PluginManager(branch, props)
 
     plugin = pm.mod_plugin(props.modid, book=book)
     logging.getLogger(__name__).info(
@@ -83,8 +83,12 @@ def render_textures_and_export_metadata(
     }
 
     internal_lookups = TextureLookups[Texture](dict)
-    for id, texture in asset_loader.load_and_render_internal_textures(image_textures):
-        texture.insert_texture(internal_lookups, id)
+    if loader.props.textures.enabled:
+        logger.info("Loading and rendering textures...")
+        for id, texture in asset_loader.load_and_render_internal_textures(
+            image_textures
+        ):
+            texture.insert_texture(internal_lookups, id)
 
     # this mod's metadata
     metadata = HexdocMetadata(

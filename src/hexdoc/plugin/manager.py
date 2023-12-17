@@ -27,7 +27,7 @@ from jinja2.sandbox import SandboxedEnvironment
 from hexdoc.utils import ValidationContext
 
 if TYPE_CHECKING:
-    from hexdoc.core import ResourceLocation
+    from hexdoc.core import Properties, ResourceLocation
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
@@ -86,15 +86,17 @@ class _NoCallTypedHookCaller(TypedHookCaller[_P, None]):
         ...
 
 
+# TODO: convert to dataclass
 class PluginManager(ValidationContext):
     """Custom hexdoc plugin manager with helpers and stronger typing."""
 
-    def __init__(self, branch: str, load: bool = True) -> None:
+    def __init__(self, branch: str, props: Properties, load: bool = True) -> None:
         """Initialize the hexdoc plugin manager.
 
         If `load` is true (the default), calls `init_entrypoints` and `init_mod_plugins`.
         """
         self.branch = branch
+        self.props = props
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)
         self.mod_plugins: dict[str, ModPlugin] = {}
 
@@ -109,8 +111,12 @@ class PluginManager(ValidationContext):
 
     def init_mod_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_mod_plugin)
-        for plugin in caller.try_call(branch=self.branch) or []:
+        for plugin in caller.try_call(branch=self.branch, props=self.props) or []:
             self.mod_plugins[plugin.modid] = plugin
+
+    def register(self, plugin: Any, name: str | None = None):
+        self.inner.register(plugin, name)
+        self.init_mod_plugins()
 
     @overload
     def mod_plugin(self, modid: str, book: Literal[True]) -> ModPluginWithBook:
@@ -182,9 +188,10 @@ class PluginManager(ValidationContext):
         if returns := caller.try_call(context=context):
             yield from flatten(returns)
 
-    def update_jinja_env(self, env: SandboxedEnvironment):
-        caller = self._hook_caller(PluginSpec.hexdoc_update_jinja_env)
-        caller.try_call(env=env)
+    def update_jinja_env(self, env: SandboxedEnvironment, modids: Sequence[str]):
+        for modid in modids:
+            plugin = self.mod_plugin(modid)
+            plugin.update_jinja_env(env)
         return env
 
     def update_template_args(self, template_args: dict[str, Any]):

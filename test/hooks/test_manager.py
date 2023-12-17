@@ -6,8 +6,9 @@ from typing import Any, Callable
 import pytest
 from hexdoc.cli.utils.render import create_jinja_env
 from hexdoc.plugin import (
+    ModPlugin,
+    ModPluginImpl,
     PluginManager,
-    UpdateJinjaEnvImpl,
     UpdateTemplateArgsImpl,
     hookimpl,
 )
@@ -15,7 +16,7 @@ from jinja2.sandbox import SandboxedEnvironment
 from markupsafe import Markup
 from pytest import FixtureRequest, Mark
 
-RenderTemplate = Callable[[], str]
+RenderTemplate = Callable[[list[str]], str]
 
 
 @pytest.fixture
@@ -26,8 +27,8 @@ def render_template(request: FixtureRequest, pm: PluginManager) -> RenderTemplat
         case marker:
             raise TypeError(f"Expected marker `template` with 1 string, got {marker}")
 
-    def callback():
-        env = create_jinja_env(pm, [], Path())
+    def callback(include: list[str]):
+        env = create_jinja_env(pm, include, Path())
         template = env.from_string(template_str)
         return template.render(pm.update_template_args(dict(template_args)))
 
@@ -36,15 +37,33 @@ def render_template(request: FixtureRequest, pm: PluginManager) -> RenderTemplat
 
 @pytest.mark.template("{{ '<br />' }}")
 def test_update_jinja_env(pm: PluginManager, render_template: RenderTemplate):
-    class Hooks(UpdateJinjaEnvImpl):
-        @staticmethod
-        @hookimpl
-        def hexdoc_update_jinja_env(env: SandboxedEnvironment) -> None:
+    class _ModPlugin(ModPlugin):
+        @property
+        def modid(self):
+            return "modplugin"
+
+        @property
+        def full_version(self):
+            return ""
+
+        @property
+        def plugin_version(self):
+            return ""
+
+        def update_jinja_env(self, env: SandboxedEnvironment) -> None:
             env.autoescape = False
 
-    assert render_template() == Markup.escape("<br />")
-    pm.inner.register(Hooks)
-    assert render_template() == "<br />"
+    class _Plugin(ModPluginImpl):
+        @staticmethod
+        @hookimpl
+        def hexdoc_mod_plugin(branch: str) -> ModPlugin:
+            return _ModPlugin(branch="")
+
+    # TODO: split this into 3 separate tests
+    assert render_template([]) == Markup.escape("<br />")
+    pm.register(_Plugin)
+    assert render_template([]) == Markup.escape("<br />")
+    assert render_template(["modplugin"]) == "<br />"
 
 
 @pytest.mark.template(
@@ -58,6 +77,6 @@ def test_update_template_args(pm: PluginManager, render_template: RenderTemplate
         def hexdoc_update_template_args(template_args: dict[str, Any]) -> None:
             template_args["key"] = "new_value"
 
-    assert render_template() == "old_value"
+    assert render_template([]) == "old_value"
     pm.inner.register(Hooks)
-    assert render_template() == "new_value"
+    assert render_template([]) == "new_value"

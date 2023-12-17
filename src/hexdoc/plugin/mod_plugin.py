@@ -6,13 +6,14 @@ from importlib.resources import Package
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from jinja2.sandbox import SandboxedEnvironment
 from typing_extensions import override
 from yarl import URL
 
 from .types import HookReturn
 
 if TYPE_CHECKING:
-    from hexdoc.core import ModResourceLoader
+    from hexdoc.core import ModResourceLoader, Properties
     from hexdoc.minecraft.assets import HexdocAssetLoader
 
 
@@ -29,6 +30,7 @@ class ModPlugin(ABC):
     """
 
     branch: str
+    props: Properties | None = None
 
     # required hooks
 
@@ -110,6 +112,13 @@ class ModPlugin(ABC):
         overrides all default templates.
         """
         return {}
+
+    def update_jinja_env(self, env: SandboxedEnvironment) -> None:
+        """Modify the Jinja environment/configuration.
+
+        This is called after hexdoc is done setting up the Jinja environment but before
+        rendering the book.
+        """
 
     # utils
 

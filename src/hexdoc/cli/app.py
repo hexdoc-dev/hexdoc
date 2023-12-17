@@ -140,7 +140,7 @@ def build(
 
     props, pm, plugin = load_common_data(props_file, branch)
 
-    logger.info("Exporting resources and generating textures...")
+    logger.info("Exporting resources...")
     with ModResourceLoader.clean_and_load_all(
         props,
         pm,
@@ -300,9 +300,10 @@ def merge(
         redirects[Path()] = root_redirect
 
     # write redirect pages
-    filename, _ = props.template.redirect
-    for path, redirect_contents in redirects.items():
-        write_to_path(dst / path / filename, redirect_contents)
+    if props.template.redirect:
+        filename, _ = props.template.redirect
+        for path, redirect_contents in redirects.items():
+            write_to_path(dst / path / filename, redirect_contents)
 
 
 @app.command()
