@@ -37,7 +37,7 @@ jobs:
           packages: xvfb
 
       - name: Install dependencies
-        run: pip install . hatch
+        run: pip install .
 
       - name: Export hexdoc resources
         run: xvfb-run --auto-servernum hexdoc ci export

@@ -151,7 +151,7 @@ def hexdoc(session: nox.Session):
 
 @nox.session
 def mock_ci(session: nox.Session):
-    session.install(".", "./submodules/HexMod", "hatch")
+    session.install(".", "./submodules/HexMod")
 
     github_path = Path("out/github")
 
