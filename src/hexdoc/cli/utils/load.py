@@ -139,7 +139,7 @@ def load_book(
 
     FormattingContext(
         book_id=cast_or_raise(book_data["id"], ResourceLocation),
-        macros=DEFAULT_MACROS | book_data.get("macros", {}),
+        macros=DEFAULT_MACROS | book_data.get("macros", {}) | props.macros,
     ).add_to_context(context)
 
     for item in pm.update_context(context):

@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### New Features
 
 - `hexdoc.toml`: Added `textures.enabled`. Set to `false` to disable texture rendering.
-- Added `props` to the instance attributes of `ModPlugin`. Implement `ModPluginImplWithProps` to get the props object when constructing your plugin.
+- `hexdoc.toml`: Added `macros` for adding local macro overrides, with the same structure as the `book.json` field.
+- Added an optional `props` field to `ModPlugin`. Implement `ModPluginImplWithProps` instead of `ModPluginImpl` to get the props object when constructing your plugin.
 - Added `ModPlugin.update_jinja_env`.
 
 ### Changes
