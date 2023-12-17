@@ -9,12 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### New Features
 
 - Added `link_overrides` field to `hexdoc.toml`, for patching broken inter-mod links.
+- Created a couple of [Shields.io](https://shields.io) badges for hexdoc.
 - Started keeping a changelog!
 
 ### Changes
 
 - ⚠️ BREAKING: Completely reworked the validation context system. Context is now a dict (returning to the Pydantic standard), and classes can now inherit from `hexdoc.utils.ValidationContext` to get the methods `.of()` and `.add_to_context()`. `BookContext` is no longer the god object for all validation context.
 - Moved Hatch to a required dependency, from `[pdoc]`.
+- Slightly tweaked the page footer text.
 
 ### Fixes
 

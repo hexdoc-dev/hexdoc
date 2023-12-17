@@ -5,6 +5,7 @@
   <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
   <a href="https://github.com/hexdoc-dev/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/hexdoc-dev/hexdoc/ci.yml?logo=github&label=ci"></a>
+  <a href="https://github.com/hexdoc-dev/hexdoc#badges"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
 </p>
 
 # hexdoc
@@ -73,4 +74,38 @@ nox -- --snapshot-update
 # run hexdoc commands in an isolated environment to ensure it works on its own
 nox -s hexdoc -- export
 nox -s hexdoc -- repl
+```
+
+## GitHub Badges
+
+<a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
+
+<a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1" alt="powered by hexdoc" style="max-width:100%;"></a>
+
+### Markdown
+
+```md
+[![hexdoc](https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc)](https://github.com/hexdoc-dev/hexdoc)
+
+[![powered by hexdoc](https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1)](https://github.com/hexdoc-dev/hexdoc)
+```
+
+### HTML
+
+```html
+<a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
+
+<a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1" alt="powered by hexdoc" style="max-width:100%;"></a>
+```
+
+### reStructuredText
+
+```rst
+.. image:: https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc
+    :target: https://github.com/hexdoc-dev/hexdoc
+    :alt: hexdoc
+
+.. image:: https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1
+    :target: https://github.com/hexdoc-dev/hexdoc
+    :alt: powered by hexdoc
 ```
