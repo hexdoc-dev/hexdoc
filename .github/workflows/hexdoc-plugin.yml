@@ -19,6 +19,9 @@ on:
         description: Pip extras for your package (eg. [dev])
         type: string
         required: false
+      pages-url:
+        type: string
+        default: https://example.com # lie
     secrets:
       GH_TOKEN:
         required: true
@@ -62,6 +65,8 @@ jobs:
 
       - name: Build web book
         id: export
+        env:
+          GITHUB_PAGES_URL: ${{ inputs.pages-url }}
         run: |
           hexdoc build
           hatch build --clean
