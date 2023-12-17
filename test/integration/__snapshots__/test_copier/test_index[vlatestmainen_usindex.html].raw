@@ -198,7 +198,7 @@
           <p class="text-muted">
             Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.<br />
             Minecraft content and materials are the intellectual property of their respective owners.<br />
-            Made with ❤️ using <a href="https://pypi.org/project/hexdoc/" target="_blank">hexdoc</a>
+            Made with ❤️ using <a href="https://pypi.org/project/hexdoc/" target="_blank">hexdoc</a>.
           </p>
         </div>
       </footer>
