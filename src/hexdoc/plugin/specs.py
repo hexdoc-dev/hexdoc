@@ -35,6 +35,7 @@ class PluginSpec(Protocol):
         i18n: I18n,
         book_id: ResourceLocation,
         is_0_black: bool,
+        link_overrides: dict[str, str],
     ) -> None:
         ...
 
@@ -89,6 +90,7 @@ class ValidateFormatTreeImpl(PluginImpl, Protocol):
         book_id: ResourceLocation,
         i18n: I18n,
         is_0_black: bool,
+        link_overrides: dict[str, str],
     ) -> None:
         """This is called as the last step when a FormatTree (styled Patchouli text) is
         generated. You can use this to modify or validate the text and styles.

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from enum import Enum, auto
+from fnmatch import fnmatch
 from typing import Literal, Self, final
 
 from jinja2 import pass_context
@@ -163,6 +164,7 @@ class Style(HexdocModel, frozen=True):
         book_id: ResourceLocation,
         i18n: I18n,
         is_0_black: bool,
+        link_overrides: dict[str, str],
     ) -> Style | _CloseTag | str:
         # direct text replacements
         if style_str in _REPLACEMENTS:
@@ -198,8 +200,7 @@ class Style(HexdocModel, frozen=True):
 
             # links
             if name == SpecialStyleType.link.value:
-                value, external = _format_href(value, book_id)
-                return LinkStyle(value=value, external=external)
+                return LinkStyle.from_str(value, book_id, link_overrides)
 
             # all the other functions
             if style_type := FunctionStyleType.get(name):
@@ -229,15 +230,6 @@ class Style(HexdocModel, frozen=True):
 
 def is_external_link(value: str) -> bool:
     return value.startswith(("https:", "http:"))
-
-
-def _format_href(value: str, book_id: ResourceLocation) -> tuple[str | BookLink, bool]:
-    if is_external_link(value):
-        return value, True
-    # TODO: kinda hacky, BookLink should *probably* support query params
-    if value.startswith("?"):
-        return value, False
-    return BookLink.from_str(value, book_id), False
 
 
 class CommandStyle(Style, frozen=True):
@@ -286,6 +278,28 @@ class LinkStyle(Style, frozen=True):
     value: str | BookLink
     external: bool
 
+    @classmethod
+    def from_str(
+        cls,
+        raw_value: str,
+        book_id: ResourceLocation,
+        link_overrides: dict[str, str],
+    ) -> Self:
+        value = raw_value
+        external = False
+
+        for link, override in link_overrides.items():
+            if fnmatch(value, link):
+                value = override
+                break
+
+        if is_external_link(value):
+            external = True
+        elif not value.startswith("?"):  # TODO: support query params in BookLink
+            value = BookLink.from_str(value, book_id)
+
+        return cls(value=value, external=external)
+
     @pass_context
     def href(self, context: Context | dict[{"link_bases": BookLinkBases}]):  # noqa
         match self.value:
@@ -327,6 +341,7 @@ class FormatTree:
         macros: dict[str, str],
         is_0_black: bool,
         pm: PluginManager,
+        link_overrides: dict[str, str],
     ) -> Self:
         for macro, replace in macros.items():
             if macro in replace:
@@ -348,7 +363,7 @@ class FormatTree:
             text_since_prev_style.append(leading_text)
             last_end = match.end()
 
-            match Style.parse(match[1], book_id, i18n, is_0_black):
+            match Style.parse(match[1], book_id, i18n, is_0_black, link_overrides):
                 case str(replacement):
                     # str means "use this instead of the original value"
                     text_since_prev_style.append(replacement)
@@ -399,6 +414,7 @@ class FormatTree:
             book_id=book_id,
             i18n=i18n,
             is_0_black=is_0_black,
+            link_overrides=link_overrides,
         )
         assert isinstance(validated_tree, cls)
         return validated_tree
@@ -429,6 +445,7 @@ class FormatTree:
             macros=context.macros,
             is_0_black=props.is_0_black,
             pm=pm,
+            link_overrides=props.link_overrides,
         )
 
 

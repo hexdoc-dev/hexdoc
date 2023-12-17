@@ -164,6 +164,7 @@ class PluginManager(ValidationContext):
         book_id: ResourceLocation,
         i18n: I18n,
         is_0_black: bool,
+        link_overrides: dict[str, str],
     ):
         caller = self._hook_caller(PluginSpec.hexdoc_validate_format_tree)
         caller.try_call(
@@ -172,6 +173,7 @@ class PluginManager(ValidationContext):
             book_id=book_id,
             i18n=i18n,
             is_0_black=is_0_black,
+            link_overrides=link_overrides,
         )
         return tree
 

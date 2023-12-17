@@ -45,6 +45,7 @@ def hexdoc_localize(
         macros=book.macros,
         is_0_black=props.is_0_black,
         pm=pm,
+        link_overrides=props.link_overrides,
     )
     return formatted
 

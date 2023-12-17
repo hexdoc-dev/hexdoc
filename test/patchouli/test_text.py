@@ -24,7 +24,11 @@ class MockPluginManager:
         return tree
 
 
-def format_with_mocks(test_str: str, macros: dict[str, str] = {}):
+def format_with_mocks(
+    test_str: str,
+    macros: dict[str, str] = {},
+    link_overrides: dict[str, str] = {},
+):
     return FormatTree.format(
         test_str,
         book_id=ResourceLocation("hexcasting", "thehexbook"),
@@ -32,6 +36,7 @@ def format_with_mocks(test_str: str, macros: dict[str, str] = {}):
         macros=DEFAULT_MACROS | macros,
         is_0_black=False,
         pm=cast(PluginManager, MockPluginManager()),
+        link_overrides=link_overrides,
     )
 
 
@@ -108,7 +113,8 @@ def test_colors_across_link():
 
 def test_format_string():
     tree = format_with_mocks(
-        "Write the given iota to my $(l:patterns/readwrite#hexcasting:write/local)$(#490)local$().$(br)The $(l:patterns/readwrite#hexcasting:write/local)$(#490)local$() is a lot like a $(l:items/focus)$(#b0b)Focus$(). It's cleared when I stop casting a Hex, starts with $(l:casting/influences)$(#490)Null$() in it, and is preserved between casts of $(l:patterns/meta#hexcasting:for_each)$(#fc77be)Thoth's Gambit$(). "
+        "Write the given iota to my $(l:patterns/readwrite#hexcasting:write/local)$(#490)local$().$(br)The $(l:patterns/readwrite#hexcasting:write/local)$(#490)local$() is a lot like a $(l:items/focus)$(#b0b)Focus$(). It's cleared when I stop casting a Hex, starts with $(l:casting/influences)$(#490)Null$() in it, and is preserved between casts of $(l:patterns/meta#hexcasting:for_each)$(#fc77be)Thoth's Gambit$(). ",
+        link_overrides={"casting/*": "https://example.com"},
     )
 
     assert tree == FormatTree(
@@ -177,11 +183,8 @@ def test_format_string():
                     ". It's cleared when I stop casting a Hex, starts with ",
                     FormatTree(
                         style=LinkStyle(
-                            value=BookLink.from_str(
-                                "casting/influences",
-                                ResourceLocation("hexcasting", "thehexbook"),
-                            ),
-                            external=False,
+                            value="https://example.com",
+                            external=True,
                         ),
                         children=[
                             FormatTree(
@@ -217,3 +220,50 @@ def test_format_string():
             )
         ],
     )
+
+
+def test_broken_link_fails_without_override():
+    style = LinkStyle.from_str(
+        "link",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={},
+    )
+
+    with pytest.raises(ValueError):
+        style.href({"link_bases": {}})
+
+
+def test_broken_link_uses_override():
+    style = LinkStyle.from_str(
+        "link",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={"link": "https://example.com"},
+    )
+
+    href = style.href({"link_bases": {}})
+
+    assert href == "https://example.com"
+
+
+def test_wildcard_link_override():
+    style = LinkStyle.from_str(
+        "foo/bar",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={"foo*": "https://example.com"},
+    )
+
+    href = style.href({"link_bases": {}})
+
+    assert href == "https://example.com"
+
+
+def test_wildcard_link_override_not_matching():
+    style = LinkStyle.from_str(
+        "https://example.ca",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={"foo*": "https://example.com"},
+    )
+
+    href = style.href({"link_bases": {}})
+
+    assert href == "https://example.ca"

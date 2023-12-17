@@ -163,6 +163,8 @@ class Properties(BaseProperties):
 
     entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
 
+    link_overrides: dict[str, str] = Field(default_factory=dict)
+
     textures: TexturesProps = Field(default_factory=TexturesProps)
 
     template: TemplateProps | None = None
