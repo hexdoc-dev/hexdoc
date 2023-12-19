@@ -11,12 +11,18 @@ from hexdoc.core import (
 )
 from hexdoc.model import ResourceModel, TypeTaggedUnion
 
-from .ingredients import ItemIngredientList, ItemResult
+from ..assets import ItemWithTexture
+from .ingredients import ItemIngredient, ItemIngredientList, ItemResult
 
 
-class Recipe(TypeTaggedUnion, ResourceModel, type=None):
-    group: str | None = None
+class Recipe(TypeTaggedUnion, ResourceModel):
+    """Base model for Minecraft recipes.
+
+    https://minecraft.wiki/w/Recipe
+    """
+
     category: str | None = None
+    group: str | None = None
     show_notification: AtLeast_1_20[bool] | Before_1_20[None] = Field(
         default_factory=lambda: ValueIfVersion(">=1.20", True, None)()
     )
@@ -26,7 +32,7 @@ class Recipe(TypeTaggedUnion, ResourceModel, type=None):
         return loader.load_resource("data", "recipes", id)
 
 
-class CraftingRecipe(Recipe, type=None):
+class CraftingRecipe(Recipe):
     result: ItemResult
 
 
@@ -49,3 +55,46 @@ class CraftingShapedRecipe(CraftingRecipe, type="minecraft:crafting_shaped"):
                         yield None
                     case _:
                         yield self.key[item_key]
+
+
+class CookingRecipe(Recipe):
+    ingredient: ItemIngredientList
+    result: ItemWithTexture
+    experience: float
+    cookingtime: int
+
+
+class BlastingRecipe(CookingRecipe, type="minecraft:blasting"):
+    cookingtime: int = 100
+
+
+class CampfireCookingRecipe(CookingRecipe, type="minecraft:campfire_cooking"):
+    cookingtime: int = 100
+
+
+class SmeltingRecipe(CookingRecipe, type="minecraft:smelting"):
+    cookingtime: int = 200
+
+
+class SmokingRecipe(CookingRecipe, type="minecraft:smoking"):
+    cookingtime: int = 100
+
+
+class SmithingRecipe(Recipe):
+    base: ItemIngredient
+    addition: ItemIngredient
+    template: ItemIngredient
+
+
+class SmithingTransformRecipe(SmithingRecipe, type="minecraft:smithing_transform"):
+    result: ItemWithTexture
+
+
+class SmithingTrimRecipe(SmithingRecipe, type="minecraft:smithing_trim"):
+    pass
+
+
+class StonecuttingRecipe(Recipe, type="minecraft:stonecutting"):
+    ingredient: ItemIngredientList
+    result: ItemWithTexture
+    count: int

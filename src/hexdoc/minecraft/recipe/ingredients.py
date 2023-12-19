@@ -11,7 +11,7 @@ from ..assets import ItemWithTexture, TagWithTexture
 from ..tags import Tag
 
 
-class ItemIngredient(TypeTaggedUnion, type=None):
+class ItemIngredient(TypeTaggedUnion):
     pass
 
 
@@ -78,3 +78,4 @@ ItemIngredientList = Annotated[
     BeforeValidator(_validate_single_item_to_list),
     AfterValidator(_validate_flatten_nested_tags),
 ]
+"""A list of ItemIngredients. Accepts a single value or a list."""

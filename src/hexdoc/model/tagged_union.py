@@ -232,7 +232,7 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
     def __init_subclass__(
         cls,
         *,
-        type: TagValue | InheritType | None,
+        type: TagValue | InheritType | None = Inherit,
         **kwargs: Unpack[ConfigDict],
     ):
         super().__init_subclass__(value=type, **kwargs)
