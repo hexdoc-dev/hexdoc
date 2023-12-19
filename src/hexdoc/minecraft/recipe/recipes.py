@@ -1,9 +1,33 @@
 from typing import Iterator
 
-from hexdoc.core import AtLeast_1_20, Before_1_20
+from pydantic import Field
 
-from .abstract_recipes import CraftingRecipe
-from .ingredients import ItemIngredientList
+from hexdoc.core import (
+    AtLeast_1_20,
+    Before_1_20,
+    ModResourceLoader,
+    ResourceLocation,
+    ValueIfVersion,
+)
+from hexdoc.model import ResourceModel, TypeTaggedUnion
+
+from .ingredients import ItemIngredientList, ItemResult
+
+
+class Recipe(TypeTaggedUnion, ResourceModel, type=None):
+    group: str | None = None
+    category: str | None = None
+    show_notification: AtLeast_1_20[bool] | Before_1_20[None] = Field(
+        default_factory=lambda: ValueIfVersion(">=1.20", True, None)()
+    )
+
+    @classmethod
+    def load_resource(cls, id: ResourceLocation, loader: ModResourceLoader):
+        return loader.load_resource("data", "recipes", id)
+
+
+class CraftingRecipe(Recipe, type=None):
+    result: ItemResult
 
 
 class CraftingShapelessRecipe(CraftingRecipe, type="minecraft:crafting_shapeless"):
@@ -13,7 +37,6 @@ class CraftingShapelessRecipe(CraftingRecipe, type="minecraft:crafting_shapeless
 class CraftingShapedRecipe(CraftingRecipe, type="minecraft:crafting_shaped"):
     key: dict[str, ItemIngredientList]
     pattern: list[str]
-    show_notification: AtLeast_1_20[bool] | Before_1_20[None] = None
 
     @property
     def ingredients(self) -> Iterator[ItemIngredientList | None]:
