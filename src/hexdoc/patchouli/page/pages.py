@@ -2,13 +2,21 @@ from typing import Any, Self
 
 from pydantic import model_validator
 
-from hexdoc.core import Entity, ItemStack, ResourceLocation
+from hexdoc.core import Entity, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.assets import ItemWithTexture, Texture
-from hexdoc.minecraft.recipe import CraftingRecipe
+from hexdoc.minecraft.recipe import (
+    BlastingRecipe,
+    CampfireCookingRecipe,
+    CraftingRecipe,
+    SmeltingRecipe,
+    SmithingRecipe,
+    SmokingRecipe,
+    StonecuttingRecipe,
+)
 
 from ..text import FormatTree
-from .abstract_pages import Page, PageDoubleRecipe, PageWithText, PageWithTitle
+from .abstract_pages import Page, PageWithDoubleRecipe, PageWithText, PageWithTitle
 
 
 class TextPage(Page, type="patchouli:text"):
@@ -16,7 +24,17 @@ class TextPage(Page, type="patchouli:text"):
     text: FormatTree
 
 
-class CraftingPage(PageDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
+class BlastingPage(PageWithDoubleRecipe[BlastingRecipe], type="patchouli:blasting"):
+    pass
+
+
+class CampfireCookingPage(
+    PageWithDoubleRecipe[CampfireCookingRecipe], type="patchouli:campfire_cooking"
+):
+    pass
+
+
+class CraftingPage(PageWithDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
     pass
 
 
@@ -76,9 +94,22 @@ class RelationsPage(PageWithText, type="patchouli:relations"):
     title: LocalizedStr = LocalizedStr.with_value("Related Chapters")
 
 
-class SmeltingPage(PageWithTitle, type="patchouli:smelting"):
-    recipe: ItemStack
-    recipe2: ItemStack | None = None
+class SmeltingPage(PageWithDoubleRecipe[SmeltingRecipe], type="patchouli:smelting"):
+    pass
+
+
+class SmithingPage(PageWithDoubleRecipe[SmithingRecipe], type="patchouli:smithing"):
+    pass
+
+
+class SmokingPage(PageWithDoubleRecipe[SmokingRecipe], type="patchouli:smoking"):
+    pass
+
+
+class StonecuttingPage(
+    PageWithDoubleRecipe[StonecuttingRecipe], type="patchouli:stonecutting"
+):
+    pass
 
 
 class SpotlightPage(PageWithTitle, type="patchouli:spotlight"):

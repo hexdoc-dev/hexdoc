@@ -1,4 +1,7 @@
 __all__ = [
+    "BlastingRecipe",
+    "CampfireCookingRecipe",
+    "CookingRecipe",
     "CraftingRecipe",
     "CraftingShapedRecipe",
     "CraftingShapelessRecipe",
@@ -8,6 +11,12 @@ __all__ = [
     "MinecraftItemIdIngredient",
     "MinecraftItemTagIngredient",
     "Recipe",
+    "SmeltingRecipe",
+    "SmithingRecipe",
+    "SmithingTransformRecipe",
+    "SmithingTrimRecipe",
+    "SmokingRecipe",
+    "StonecuttingRecipe",
 ]
 
 from .ingredients import (
@@ -18,8 +27,17 @@ from .ingredients import (
     MinecraftItemTagIngredient,
 )
 from .recipes import (
+    BlastingRecipe,
+    CampfireCookingRecipe,
+    CookingRecipe,
     CraftingRecipe,
     CraftingShapedRecipe,
     CraftingShapelessRecipe,
     Recipe,
+    SmeltingRecipe,
+    SmithingRecipe,
+    SmithingTransformRecipe,
+    SmithingTrimRecipe,
+    SmokingRecipe,
+    StonecuttingRecipe,
 )

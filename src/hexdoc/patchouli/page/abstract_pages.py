@@ -70,7 +70,7 @@ class PageWithTitle(PageWithText, type=None):
     title: LocalizedStr | None = None
 
 
-class PageDoubleRecipe(PageWithTitle, Generic[_T_Recipe], type=None):
+class PageWithDoubleRecipe(PageWithTitle, Generic[_T_Recipe], type=None):
     recipe: _T_Recipe
     recipe2: _T_Recipe | None = None
 
