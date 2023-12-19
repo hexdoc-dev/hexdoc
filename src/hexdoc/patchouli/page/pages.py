@@ -8,7 +8,7 @@ from hexdoc.minecraft.assets import ItemWithTexture, Texture
 from hexdoc.minecraft.recipe import CraftingRecipe
 
 from ..text import FormatTree
-from .abstract_pages import Page, PageWithText, PageWithTitle
+from .abstract_pages import Page, PageDoubleRecipe, PageWithText, PageWithTitle
 
 
 class TextPage(Page, type="patchouli:text"):
@@ -29,13 +29,8 @@ class ImagePage(PageWithTitle, type="patchouli:image"):
                 yield image, str(image)
 
 
-class CraftingPage(PageWithTitle, type="patchouli:crafting"):
-    recipe: CraftingRecipe
-    recipe2: CraftingRecipe | None = None
-
-    @property
-    def recipes(self) -> list[CraftingRecipe]:
-        return [r for r in [self.recipe, self.recipe2] if r is not None]
+class CraftingPage(PageDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
+    pass
 
 
 class SmeltingPage(PageWithTitle, type="patchouli:smelting"):

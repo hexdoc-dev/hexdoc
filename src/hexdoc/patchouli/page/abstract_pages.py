@@ -1,14 +1,17 @@
-from typing import Any, Self, Unpack
+from typing import Any, Generic, Self, TypeVar, Unpack
 
 from pydantic import ConfigDict, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.core import ResourceLocation
 from hexdoc.minecraft import LocalizedStr
+from hexdoc.minecraft.recipe import Recipe
 from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
 from ..text import FormatTree
+
+_T_Recipe = TypeVar("_T_Recipe", bound=Recipe)
 
 
 class Page(TypeTaggedTemplate, type=None):
@@ -65,3 +68,12 @@ class PageWithTitle(PageWithText, type=None):
     """
 
     title: LocalizedStr | None = None
+
+
+class PageDoubleRecipe(PageWithTitle, Generic[_T_Recipe], type=None):
+    recipe: _T_Recipe
+    recipe2: _T_Recipe | None = None
+
+    @property
+    def recipes(self) -> list[_T_Recipe]:
+        return [r for r in [self.recipe, self.recipe2] if r is not None]
