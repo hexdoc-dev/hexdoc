@@ -16,6 +16,23 @@ class TextPage(Page, type="patchouli:text"):
     text: FormatTree
 
 
+class CraftingPage(PageDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
+    pass
+
+
+class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
+    draw_filler: bool = True
+
+
+class EntityPage(PageWithText, type="patchouli:entity"):
+    entity: Entity
+    scale: float = 1
+    offset: float = 0
+    rotate: bool = True
+    default_rotation: float = -45
+    name: LocalizedStr | None = None
+
+
 class ImagePage(PageWithTitle, type="patchouli:image"):
     images: list[Texture]
     border: bool = False
@@ -29,13 +46,9 @@ class ImagePage(PageWithTitle, type="patchouli:image"):
                 yield image, str(image)
 
 
-class CraftingPage(PageDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
-    pass
-
-
-class SmeltingPage(PageWithTitle, type="patchouli:smelting"):
-    recipe: ItemStack
-    recipe2: ItemStack | None = None
+class LinkPage(TextPage, type="patchouli:link"):
+    url: str
+    link_text: LocalizedStr
 
 
 class MultiblockPage(PageWithText, type="patchouli:multiblock"):
@@ -53,23 +66,9 @@ class MultiblockPage(PageWithText, type="patchouli:multiblock"):
         return self
 
 
-class EntityPage(PageWithText, type="patchouli:entity"):
-    entity: Entity
-    scale: float = 1
-    offset: float = 0
-    rotate: bool = True
-    default_rotation: float = -45
-    name: LocalizedStr | None = None
-
-
-class SpotlightPage(PageWithTitle, type="patchouli:spotlight"):
-    item: ItemWithTexture
-    link_recipe: bool = False
-
-
-class LinkPage(TextPage, type="patchouli:link"):
-    url: str
-    link_text: LocalizedStr
+class QuestPage(PageWithText, type="patchouli:quest"):
+    trigger: ResourceLocation | None = None
+    title: LocalizedStr = LocalizedStr.with_value("Objective")
 
 
 class RelationsPage(PageWithText, type="patchouli:relations"):
@@ -77,10 +76,11 @@ class RelationsPage(PageWithText, type="patchouli:relations"):
     title: LocalizedStr = LocalizedStr.with_value("Related Chapters")
 
 
-class QuestPage(PageWithText, type="patchouli:quest"):
-    trigger: ResourceLocation | None = None
-    title: LocalizedStr = LocalizedStr.with_value("Objective")
+class SmeltingPage(PageWithTitle, type="patchouli:smelting"):
+    recipe: ItemStack
+    recipe2: ItemStack | None = None
 
 
-class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
-    draw_filler: bool = True
+class SpotlightPage(PageWithTitle, type="patchouli:spotlight"):
+    item: ItemWithTexture
+    link_recipe: bool = False
