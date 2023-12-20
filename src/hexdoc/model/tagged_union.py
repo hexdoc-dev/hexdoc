@@ -158,8 +158,11 @@ class InternallyTaggedUnion(HexdocModel):
                     InitErrorDetails(
                         type=PydanticCustomError(
                             "TaggedUnionMatchError",
-                            "Failed to match tagged union: {exception}",
-                            {"exception": str(e)},
+                            "{exception_class}: {exception}",
+                            {
+                                "exception_class": e.__class__.__name__,
+                                "exception": str(e),
+                            },
                         ),
                         loc=(
                             cls.__name__,
