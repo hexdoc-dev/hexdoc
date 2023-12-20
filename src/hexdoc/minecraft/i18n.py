@@ -94,9 +94,10 @@ class LocalizedItem(LocalizedStr, frozen=True):
 class I18n(ValidationContextModel):
     """Handles localization of strings."""
 
-    lookup: dict[str, LocalizedStr] | None
+    lookup: dict[str, LocalizedStr]
     lang: str
     default_i18n: I18n | None
+    enabled: bool
 
     @classmethod
     def list_all(cls, loader: ModResourceLoader):
@@ -109,7 +110,9 @@ class I18n(ValidationContextModel):
         )
 
     @classmethod
-    def load_all(cls, loader: ModResourceLoader):
+    def load_all(cls, loader: ModResourceLoader, book_data: dict[str, Any]):
+        enabled = cls.is_enabled(book_data)
+
         # lang -> (key -> value)
         lookups = defaultdict[str, dict[str, LocalizedStr]](dict)
         internal_langs = set[str]()
@@ -129,6 +132,7 @@ class I18n(ValidationContextModel):
             lookup=default_lookup,
             lang=default_lang,
             default_i18n=None,
+            enabled=enabled,
         )
 
         return {default_lang: default_i18n} | {
@@ -136,13 +140,21 @@ class I18n(ValidationContextModel):
                 lookup=lookup,
                 lang=lang,
                 default_i18n=default_i18n,
+                enabled=enabled,
             )
             for lang, lookup in lookups.items()
             if lang in internal_langs and lang != default_lang
         }
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, lang: str) -> Self:
+    def load(
+        cls,
+        loader: ModResourceLoader,
+        book_data: dict[str, Any],
+        lang: str,
+    ) -> Self:
+        enabled = cls.is_enabled(book_data)
+
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -154,7 +166,7 @@ class I18n(ValidationContextModel):
             if not resource_dir.external:
                 is_internal = True
 
-        if not is_internal:
+        if enabled and not is_internal:
             raise FileNotFoundError(
                 f"Lang {lang} exists, but {loader.props.modid} does not support it"
             )
@@ -162,13 +174,18 @@ class I18n(ValidationContextModel):
         default_lang = loader.props.default_lang
         default_i18n = None
         if lang != default_lang:
-            default_i18n = cls.load(loader, default_lang)
+            default_i18n = cls.load(loader, book_data, default_lang)
 
         return cls(
             lookup=lookup,
             lang=lang,
             default_i18n=default_i18n,
+            enabled=enabled,
         )
+
+    @classmethod
+    def is_enabled(cls, book_data: dict[str, Any]):
+        return book_data.get("i18n", False)
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):
@@ -190,6 +207,15 @@ class I18n(ValidationContextModel):
     def _export(cls, new: dict[str, str], current: dict[str, str] | None):
         return json.dumps((current or {}) | new)
 
+    @model_validator(mode="after")
+    def _warn_if_disabled(self):
+        if not self.enabled:
+            logger.warning(
+                "I18n is disabled for this book. Warnings about missing translations"
+                + " will only be logged in verbose mode."
+            )
+        return self
+
     @property
     def is_default(self):
         return self.default_i18n is None
@@ -210,15 +236,11 @@ class I18n(ValidationContextModel):
         corresponding localized value.
         """
 
-        # if i18n is disabled, just return the key
-        if self.lookup is None:
-            return LocalizedStr.skip_i18n(keys[0])
-
         for key in keys:
             if key in self.lookup:
                 return self.lookup[key]
 
-        if silent:
+        if silent or not self.enabled:
             log_level = logging.DEBUG
         elif self.is_default:
             log_level = logging.ERROR

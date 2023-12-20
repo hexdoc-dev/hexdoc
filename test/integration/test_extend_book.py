@@ -45,9 +45,6 @@ def parent_props(tmp_path: Path):
                 "parent.entry": "parent entry",
                 "parent.landing_text": "parent landing text",
             },
-            "data/hexdoc/tags/advancements/spoilered.json": {
-                "values": [],
-            },
             "data/parent/patchouli_books/parentbook": {
                 "en_us/categories/parent_category.json": {
                     "name": "parent.category",
@@ -157,10 +154,12 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
     parent_props = parent_loader.props
     assert parent_props.book_id
 
-    i18n = I18n.load(parent_loader, parent_props.default_lang)
+    book_data = Book.load_book_json(parent_loader, parent_props.book_id)
+
+    i18n = I18n.load(parent_loader, book_data, parent_props.default_lang)
 
     return load_book(
-        book_id=parent_props.book_id,
+        book_data=book_data,
         pm=pm,
         loader=parent_loader,
         i18n=i18n,
@@ -173,10 +172,12 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     child_props = child_loader.props
     assert child_props.book_id
 
-    i18n = I18n.load(child_loader, child_props.default_lang)
+    book_data = Book.load_book_json(child_loader, child_props.book_id)
+
+    i18n = I18n.load(child_loader, book_data, child_props.default_lang)
 
     return load_book(
-        book_id=child_props.book_id,
+        book_data=book_data,
         pm=pm,
         loader=child_loader,
         i18n=i18n,

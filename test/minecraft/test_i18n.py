@@ -1,6 +1,10 @@
+from typing import Any
+
 import pytest
 from hexdoc.core import ResourceLocation
-from hexdoc.minecraft import I18n
+from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.patchouli.page.abstract_pages import PageWithTitle
+from hexdoc.plugin import PluginManager
 
 
 @pytest.mark.parametrize(
@@ -18,8 +22,36 @@ def test_fallback_tag_name(namespace: str, path: str, want: str):
         lookup={},
         lang="en_us",
         default_i18n=None,
+        enabled=True,
     )
 
     got = i18n.localize_item_tag(tag)
 
     assert got.value == f"Tag: {want}"
+
+
+@pytest.mark.skip("known issue: #50")
+def test_disabled_i18n(pm: PluginManager):
+    context = dict[str, Any]()
+
+    pm.add_to_context(context)
+
+    I18n(
+        lookup={"key": LocalizedStr(key="key", value="value")},
+        lang="en_us",
+        default_i18n=None,
+        enabled=False,
+    ).add_to_context(context)
+
+    class MockPage(PageWithTitle, type="patchouli:mock"):
+        pass
+
+    page = MockPage.model_validate(
+        {
+            "type": "patchouli:mock",
+            "title": "key",
+        },
+        context=context,
+    )
+
+    assert str(page.title) == "key"

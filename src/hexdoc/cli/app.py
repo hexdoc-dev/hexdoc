@@ -92,19 +92,25 @@ def repl(*, props_file: PropsOption):
         )
         repl_locals["loader"] = loader
 
-        i18n = I18n.load_all(loader)[props.default_lang]
+        if props.book_id:
+            book_data = Book.load_book_json(loader, props.book_id)
+        else:
+            book_data = {}
+
+        i18n = I18n.load_all(loader, book_data)[props.default_lang]
 
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
         repl_locals["all_metadata"] = all_metadata
 
-        if props.book_id:
+        if book_data:
             book, context = load_book(
-                book_id=props.book_id,
+                book_data=book_data,
                 pm=pm,
                 loader=loader,
                 i18n=i18n,
                 all_metadata=all_metadata,
             )
+
             repl_locals |= dict(
                 book=book,
                 context=context,
@@ -158,18 +164,20 @@ def build(
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
 
-        all_i18n = I18n.load_all(loader)
-
         if not props.book_id:
             logger.info("Skipping book load because props.book_id is not set.")
             return site_dir
+
+        book_data = Book.load_book_json(loader, props.book_id)
+
+        all_i18n = I18n.load_all(loader, book_data)
 
         logger.info("Loading books for all languages.")
         books = list[tuple[str, I18n, Book, dict[str, Any]]]()
         for language, i18n in all_i18n.items():
             try:
                 book, context = load_book(
-                    book_id=props.book_id,
+                    book_data=book_data,
                     pm=pm,
                     loader=loader,
                     i18n=i18n,

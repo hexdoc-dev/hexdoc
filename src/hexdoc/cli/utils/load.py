@@ -113,7 +113,7 @@ def render_textures_and_export_metadata(
 
 def load_book(
     *,
-    book_id: ResourceLocation,
+    book_data: dict[str, Any],
     pm: PluginManager,
     loader: ModResourceLoader,
     i18n: I18n,
@@ -130,7 +130,6 @@ def load_book(
         allowed_missing_textures=props.textures.missing,
     ).add_to_context(context)
 
-    book_data = Book.load_book_json(loader, book_id)
     BookContext(
         modid=props.modid,
         spoilered_advancements=Tag.SPOILERED_ADVANCEMENTS.load(loader).value_ids_set,
