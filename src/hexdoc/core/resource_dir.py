@@ -8,11 +8,11 @@ from pathlib import Path
 from typing import Any, ContextManager, Iterable, Self
 
 import importlib_resources as resources
-from pydantic import ValidationInfo, field_validator, model_validator
+from pydantic import model_validator
 
 from hexdoc.model import HexdocModel
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import RelativePath, relative_path_root
+from hexdoc.utils import JSONDict, RelativePath, relative_path_root
 
 
 class BaseResourceDir(HexdocModel, ABC):
@@ -30,11 +30,38 @@ class BaseResourceDir(HexdocModel, ABC):
     ) -> ContextManager[Iterable[PathResourceDir]]:
         ...
 
-    @field_validator("reexport", mode="before")
-    def _default_reexport(cls, value: Any, info: ValidationInfo):
-        if value is None and "external" in info.data:
-            return not info.data["external"]
-        return value
+    @property
+    def internal(self):
+        return not self.external
+
+    @model_validator(mode="before")
+    @classmethod
+    def _default_reexport(cls, data: JSONDict | Any):
+        if not isinstance(data, dict):
+            return data
+
+        external = cls._get_external(data)
+        if external is None:
+            return data
+
+        if "reexport" not in data:
+            data["reexport"] = not external
+
+        return data
+
+    @classmethod
+    def _get_external(cls, data: JSONDict | Any):
+        match data:
+            case {"external": bool(), "internal": bool()}:
+                raise ValueError(f"Expected internal OR external, got both: {data}")
+            case {"external": bool(external)}:
+                return external
+            case {"internal": bool(internal)}:
+                data.pop("internal")
+                external = data["external"] = not internal
+                return external
+            case _:
+                return None
 
 
 class PathResourceDir(BaseResourceDir):
@@ -54,10 +81,6 @@ class PathResourceDir(BaseResourceDir):
     @property
     def modid(self):
         return self._modid
-
-    @property
-    def internal(self):
-        return not self.external
 
     def set_modid(self, modid: str) -> Self:
         self._modid = modid
