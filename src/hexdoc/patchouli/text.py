@@ -330,6 +330,7 @@ STYLE_REGEX = re.compile(r"\$\(([^)]*)\)")
 class FormatTree:
     style: Style
     children: list[FormatTree | str]  # this can't be Self, it breaks Pydantic
+    raw: str | None = None
 
     @classmethod
     def format(
@@ -349,7 +350,7 @@ class FormatTree:
                     f"Recursive macro: replacement `{replace}` is matched by key `{macro}`"
                 )
 
-        string = resolve_macros(string, macros)
+        working_string = resolve_macros(string, macros)
 
         # lex out parsed styles
         text_nodes: list[str] = []
@@ -357,9 +358,9 @@ class FormatTree:
         text_since_prev_style: list[str] = []
         last_end = 0
 
-        for match in re.finditer(STYLE_REGEX, string):
+        for match in re.finditer(STYLE_REGEX, working_string):
             # get the text between the previous match and here
-            leading_text = string[last_end : match.start()]
+            leading_text = working_string[last_end : match.start()]
             text_since_prev_style.append(leading_text)
             last_end = match.end()
 
@@ -373,7 +374,7 @@ class FormatTree:
                     text_nodes.append("".join(text_since_prev_style))
                     text_since_prev_style.clear()
 
-        text_nodes.append("".join(text_since_prev_style) + string[last_end:])
+        text_nodes.append("".join(text_since_prev_style) + working_string[last_end:])
         first_node = text_nodes.pop(0)
 
         # parse
@@ -408,8 +409,11 @@ class FormatTree:
             last_node = style_stack.pop()
             style_stack[-1].children.append(last_node)
 
+        unvalidated_tree = style_stack[0]
+        unvalidated_tree.raw = string
+
         validated_tree = pm.validate_format_tree(
-            tree=style_stack[0],
+            tree=unvalidated_tree,
             macros=macros,
             book_id=book_id,
             i18n=i18n,
@@ -417,6 +421,7 @@ class FormatTree:
             link_overrides=link_overrides,
         )
         assert isinstance(validated_tree, cls)
+
         return validated_tree
 
     @model_validator(mode="wrap")
