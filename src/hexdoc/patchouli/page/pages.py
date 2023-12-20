@@ -1,10 +1,10 @@
-from typing import Any, Self
+from typing import Self
 
 from pydantic import model_validator
 
 from hexdoc.core import Entity, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, Texture
+from hexdoc.minecraft.assets import ItemWithTexture, TagWithTexture, Texture
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -14,6 +14,7 @@ from hexdoc.minecraft.recipe import (
     SmokingRecipe,
     StonecuttingRecipe,
 )
+from hexdoc.model import HexdocModel
 
 from ..text import FormatTree
 from .abstract_pages import Page, PageWithDoubleRecipe, PageWithText, PageWithTitle
@@ -69,12 +70,19 @@ class LinkPage(TextPage, type="patchouli:link"):
     link_text: LocalizedStr
 
 
+class Multiblock(HexdocModel):
+    """https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/multiblocks/"""
+
+    mapping: dict[str, ItemWithTexture | TagWithTexture]
+    pattern: list[list[str]]
+    symmetrical: bool = False
+    offset: tuple[int, int, int] | None = None
+
+
 class MultiblockPage(PageWithText, type="patchouli:multiblock"):
     name: LocalizedStr
     multiblock_id: ResourceLocation | None = None
-    # TODO: https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/multiblocks/
-    # this should be a modeled class, but hex doesn't have any multiblock pages so idc
-    multiblock: Any | None = None
+    multiblock: Multiblock | None = None
     enable_visualize: bool = True
 
     @model_validator(mode="after")
