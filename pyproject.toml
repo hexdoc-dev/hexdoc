@@ -116,6 +116,7 @@ packages = [
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
+pythonpath = ["."]
 addopts = [
     "--import-mode=importlib",
     "-m=not copier and not hexcasting",

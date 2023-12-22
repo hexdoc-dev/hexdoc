@@ -14,7 +14,7 @@ from hexdoc.patchouli.text import FormatTree
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
 
-from ..conftest import write_file_tree
+from ..tree import write_file_tree
 
 
 @pytest.fixture(scope="session", autouse=True)

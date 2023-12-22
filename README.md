@@ -74,6 +74,14 @@ nox -- --snapshot-update
 # run hexdoc commands in an isolated environment to ensure it works on its own
 nox -s hexdoc -- export
 nox -s hexdoc -- repl
+
+# set up a dummy book for local testing
+nox -s dummy_setup
+nox -s dummy_serve
+
+nox -s dummy_hexdoc -- build
+
+nox -s dummy_clean
 ```
 
 ## Badges

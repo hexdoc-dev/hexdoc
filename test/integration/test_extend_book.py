@@ -15,7 +15,7 @@ from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
 from yarl import URL
 
-from ..conftest import write_file_tree
+from ..tree import write_file_tree
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import logging
 import shutil
+import stat
+import sys
 from pathlib import Path
-from typing import Mapping
+from typing import Any, Mapping
 
 import nox
+
+DUMMY_PATH = Path(".hexdoc/dummy_book")
 
 PDOC_FAVICON = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png"
 PDOC_LOGO_LINK = "https://pypi.org/project/hexdoc/"
@@ -58,14 +63,14 @@ def test_build(session: nox.Session):
     )
 
 
-@nox.session
+@nox.session(tags=["post_build"])
 def test_hexcasting(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
     session.run("pytest", "-m", "hexcasting", *session.posargs)
 
 
-@nox.session
+@nox.session(tags=["post_build"])
 def test_copier(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
@@ -150,35 +155,130 @@ def hexdoc(session: nox.Session):
 
 
 @nox.session
-def mock_ci(session: nox.Session):
-    session.install(".", "./submodules/HexMod")
+def dummy_setup(session: nox.Session):
+    session.install("copier")
 
-    github_path = Path("out/github")
+    from copier import run_copy  # type: ignore
 
-    shutil.rmtree("_site", ignore_errors=True)
-    shutil.rmtree(github_path, ignore_errors=True)
+    sys.path.insert(0, ".")
 
-    github_path.mkdir(parents=True)
+    from test.tree import write_file_tree
 
-    with session.cd("submodules/HexMod"):
-        github_sha = run_silent_external(session, "git", "rev-parse", "HEAD")
+    sys.path.pop(0)
 
-    session.env.update(
-        GITHUB_ENV=str(github_path / "env.txt"),
-        GITHUB_OUTPUT=str(github_path / "output.txt"),
-        GITHUB_REF_NAME="main",
-        GITHUB_REPOSITORY="object-Object/HexMod",
-        GITHUB_SHA=github_sha,
-        GITHUB_STEP_SUMMARY=str(github_path / "step_summary.md"),
-        GITHUB_TOKEN=run_silent_external(session, "gh", "auth", "token"),
-        HEXDOC_PROPS="submodules/HexMod/doc/hexdoc.toml",
-        HEXDOC_RELEASE="true",
+    logging.getLogger("plumbum.local").setLevel(logging.WARNING)
+    run_copy(
+        "gh:hexdoc-dev/hexdoc-mod-template",
+        DUMMY_PATH,
+        cleanup_on_error=False,
+        defaults=True,
+        overwrite=True,
+        data=dict(
+            modid="dummy",
+            author="author",
+            multiloader=False,
+        ),
     )
-    if "-v" in session.posargs or "--verbose" in session.posargs:
-        session.env.update(RUNNER_DEBUG="1")
 
-    session.run("hexdoc", "ci", "build")
-    session.run("hexdoc", "ci", "merge")
+    session.log(f"write_file_tree({DUMMY_PATH}, ...)")
+    write_file_tree(
+        DUMMY_PATH,
+        {
+            "doc": {
+                "resources": {
+                    "assets/dummy/patchouli_books/dummybook": {
+                        "en_us": {
+                            "categories/foo.json": {
+                                "name": "Dummy Category",
+                                "icon": "minecraft:amethyst_shard",
+                                "description": "Foo bar baz qux quux corge grault garply waldo fred plugh xyzzy thud",
+                                "sortnum": 0,
+                            },
+                            "entries/bar.json": {
+                                "name": "Dummy Entry",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:textures/mob_effect/nausea.png",
+                                "sortnum": 0,
+                                "pages": [
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "Dummy Page",
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                    "data/dummy/patchouli_books/dummybook/book.json": {
+                        "name": "Dummy Book",
+                        "landing_text": "Lorem ipsum dolor sit amet",
+                        "use_resource_pack": True,
+                        "i18n": False,
+                    },
+                },
+                "hexdoc.toml": (
+                    """\
+                    modid = "dummy"
+                    book = "dummy:dummybook"
+                    default_lang = "en_us"
+                    default_branch = "main"
+
+                    resource_dirs = [
+                        "resources",
+                        { modid="minecraft" },
+                        { modid="hexdoc" },
+                    ]
+                    export_dir = "src/hexdoc_dummy/_export/generated"
+
+                    [template]
+                    icon = "icon.png"
+                    include = [
+                        "dummy",
+                        "hexdoc",
+                    ]
+
+                    [template.args]
+                    mod_name = "Dummy"
+                    author = "author"
+                    show_landing_text = true
+                    """
+                ),
+            },
+            "gradle.properties": (
+                """\
+                modVersion=1.0.0
+                minecraftVersion=1.20.1
+                """
+            ),
+        },
+    )
+
+    with session.chdir(DUMMY_PATH):
+        session.run("git", "init", ".", external=True)
+        session.run("git", "add", ".", external=True)
+        session.run("git", "commit", "-m", "Initial commit", external=True)
+
+
+@nox.session
+def dummy_hexdoc(session: nox.Session):
+    session.install("-e", ".", "-e", f"./{DUMMY_PATH.as_posix()}")
+
+    with session.chdir(DUMMY_PATH):
+        session.run("hexdoc", *session.posargs)
+
+
+@nox.session
+def dummy_serve(session: nox.Session):
+    session.install("-e", ".", "-e", f"./{DUMMY_PATH.as_posix()}")
+
+    with session.chdir(DUMMY_PATH):
+        session.run("nodemon", "--config", "./doc/nodemon.json", external=True)
+
+
+@nox.session(python=False)
+def dummy_clean(session: nox.Session):
+    if DUMMY_PATH.is_dir():
+        session.log(f"Removing directory: {DUMMY_PATH}")
+        shutil.rmtree(DUMMY_PATH, onerror=on_rm_error)
 
 
 # utils (not sessions)
@@ -221,3 +321,10 @@ def update_git_tag(session: nox.Session, *, tag: str, message: str):
             GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com",
         ),
     )
+
+
+def on_rm_error(func: Any, path: str, exc_info: Any):
+    # from: https://stackoverflow.com/questions/4829043/how-to-remove-read-only-attrib-directory-with-python-in-windows
+    path_ = Path(path)
+    path_.chmod(stat.S_IWRITE)
+    path_.unlink()

@@ -9,7 +9,8 @@ from hexdoc.cli import ci
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 
-from ..conftest import list_directory, write_file_tree
+from ..conftest import list_directory
+from ..tree import write_file_tree
 
 
 def run_pip(*args: str):
