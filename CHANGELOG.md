@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### New Features
+
+* `hexdoc_item`, a Jinja filter that looks up an `ItemWithTexture` from the item id.
+  * Syntax: `{{ texture_macros.render_item("minecraft:stone"|hexdoc_item) }}`
+
+### Changed
+
+* `ModPlugin.jinja_template_root` can now return a list of tuples, to expose multiple template roots from a single plugin.
+
+### Fixed
+
+* `AttributeError` when generating error message for a nonexistent resource dir.
+
 ## `1!0.1.0a7`
 
 ### New Features
