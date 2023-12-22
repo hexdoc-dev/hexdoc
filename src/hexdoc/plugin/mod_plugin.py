@@ -95,7 +95,7 @@ class ModPlugin(ABC):
         """
         return []
 
-    def jinja_template_root(self) -> tuple[Package, str] | None:
+    def jinja_template_root(self) -> HookReturn[tuple[Package, str]] | None:
         """The module that contains the folder with your plugin's Jinja templates, and
         the name of that folder.
 

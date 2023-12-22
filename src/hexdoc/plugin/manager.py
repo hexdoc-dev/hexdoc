@@ -21,7 +21,7 @@ from typing import (
 )
 
 import pluggy
-from jinja2 import PackageLoader
+from jinja2 import BaseLoader, ChoiceLoader, PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.utils import ValidationContext
@@ -217,7 +217,7 @@ class PluginManager(ValidationContext):
         return included, extra
 
     def _package_loaders_for(self, modids: Iterable[str]):
-        loaders = dict[str, PackageLoader]()
+        loaders = dict[str, BaseLoader]()
 
         for modid in modids:
             plugin = self.mod_plugin(modid)
@@ -226,10 +226,15 @@ class PluginManager(ValidationContext):
             if not result:
                 continue
 
-            package, package_path = result
-            package_name = import_package(package).__name__
-
-            loaders[modid] = PackageLoader(package_name, package_path)
+            loaders[modid] = ChoiceLoader(
+                [
+                    PackageLoader(
+                        package_name=import_package(package).__name__,
+                        package_path=package_path,
+                    )
+                    for package, package_path in flatten([result])
+                ]
+            )
 
         return loaders
 

@@ -11,7 +11,6 @@ from jinja2 import (
     BaseLoader,
     ChoiceLoader,
     Environment,
-    PackageLoader,
     PrefixLoader,
     StrictUndefined,
     Template,
@@ -41,8 +40,8 @@ logger = logging.getLogger(__name__)
 class HexdocTemplateLoader(BaseLoader):
     def __init__(
         self,
-        included: dict[str, PackageLoader],
-        extra: dict[str, PackageLoader],
+        included: dict[str, BaseLoader],
+        extra: dict[str, BaseLoader],
         props_file: Path,
     ):
         self.inner = ChoiceLoader(
