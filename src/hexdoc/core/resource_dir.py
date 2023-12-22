@@ -84,7 +84,9 @@ class BasePathResourceDir(BaseResourceDir):
     def _assert_path_exists(self):
         if self.required:
             for path in self._paths:
-                assert path.exists(), f"{self.__name__} path does not exist: {path}"
+                assert (
+                    path.exists()
+                ), f"{self.__class__.__name__} path does not exist: {path}"
 
         return self
 
