@@ -49,16 +49,12 @@ Useful commands:
 # show help
 hexdoc -h
 
-# render and serve the web book in watch mode
+# serve hexdoc resources locally
+# this is useful if serving other books locally that depend on hexdoc resources
+nodemon --exec "hexdoc serve --port 8001 --no-merge"
+
+# render and serve the Hex Casting web book in watch mode
 nodemon
-
-# render and serve the web book
-hexdoc serve
-
-# export, render, and merge the web book
-hexdoc export
-hexdoc render
-hexdoc merge
 
 # start the Python interpreter with some extra local variables
 hexdoc repl
@@ -72,7 +68,7 @@ nox --no-install  # after the first Nox run, use this to skip reinstalling every
 nox -- --snapshot-update
 
 # run hexdoc commands in an isolated environment to ensure it works on its own
-nox -s hexdoc -- export
+nox -s hexdoc -- build
 nox -s hexdoc -- repl
 
 # set up a dummy book for local testing

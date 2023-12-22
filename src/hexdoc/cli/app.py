@@ -7,10 +7,10 @@ import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 
 from packaging.version import Version
-from typer import Typer
+from typer import Option, Typer
 from yarl import URL
 
 from hexdoc.core import ModResourceLoader
@@ -330,6 +330,7 @@ def serve(
     branch: BranchOption,
     try_release: bool = True,
     clean: bool = False,
+    do_merge: Annotated[bool, Option("--merge/--no-merge")] = True,
 ):
     book_root = dst
     relative_root = book_root.resolve().relative_to(Path.cwd())
@@ -377,13 +378,14 @@ def serve(
             clean=clean,
         )
 
-    print()
-    logger.info("hexdoc merge")
-    merge(
-        src=src,
-        dst=dst,
-        props_file=props_file,
-    )
+    if do_merge:
+        print()
+        logger.info("hexdoc merge")
+        merge(
+            src=src,
+            dst=dst,
+            props_file=props_file,
+        )
 
     print()
     logger.info(f"Serving web book at {book_url} (press ctrl+c to exit)\n")
