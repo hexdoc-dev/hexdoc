@@ -204,6 +204,10 @@ def dummy_setup(session: nox.Session):
                                         "type": "patchouli:text",
                                         "text": "Dummy Page",
                                     },
+                                    {
+                                        "type": "dummy:example",
+                                        "example_value": "insert funny message here",
+                                    },
                                 ],
                             },
                         },
