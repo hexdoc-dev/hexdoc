@@ -21,15 +21,14 @@ from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.core import MinecraftVersion, Properties
 from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
-from hexdoc.data import HexdocMetadata
 from hexdoc.jinja import (
     IncludeRawExtension,
+    hexdoc_item,
     hexdoc_localize,
     hexdoc_texture,
     hexdoc_wrap,
 )
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureLookup
 from hexdoc.patchouli import Book
 from hexdoc.plugin import ModPluginWithBook, PluginManager
 from hexdoc.utils import write_to_path
@@ -109,6 +108,7 @@ def create_jinja_env_with_loader(loader: BaseLoader):
         "hexdoc_wrap": hexdoc_wrap,
         "hexdoc_localize": hexdoc_localize,
         "hexdoc_texture": hexdoc_texture,
+        "hexdoc_item": hexdoc_item,
     }
 
     return env
@@ -126,11 +126,9 @@ def render_book(
     templates: dict[Path, Template],
     output_dir: Path,
     site_path: Path,
-    all_metadata: dict[str, HexdocMetadata],
-    png_textures: TextureLookup[PNGTexture],
-    animations: list[AnimatedTexture],
     version: str,
     versioned: bool,
+    template_args: dict[str, Any],
 ):
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
@@ -158,7 +156,7 @@ def render_book(
 
     lang_name = i18n.localize_lang()
 
-    template_args: dict[str, Any] = {
+    template_args |= {
         "book": book,
         "props": props,
         "i18n": i18n,
@@ -167,9 +165,6 @@ def render_book(
         "version": version,
         "lang": lang,
         "lang_name": lang_name,
-        "all_metadata": all_metadata,
-        "png_textures": png_textures,
-        "animations": animations,
         "is_bleeding_edge": version.startswith("latest"),
         "link_bases": book.link_bases,
         "favicons_html": favicons_html,

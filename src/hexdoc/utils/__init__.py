@@ -1,4 +1,5 @@
 __all__ = [
+    "ContextSource",
     "IProperty",
     "Inherit",
     "InheritType",
@@ -37,7 +38,7 @@ __all__ = [
 
 from .cd import RelativePath, relative_path_root
 from .classproperties import classproperty
-from .context import ValidationContext, add_to_context
+from .context import ContextSource, ValidationContext, add_to_context
 from .contextmanagers import set_contextvar
 from .deserialize import (
     JSONDict,

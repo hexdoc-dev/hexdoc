@@ -20,7 +20,7 @@ from hexdoc.model import (
     InlineModel,
     ValidationContextModel,
 )
-from hexdoc.utils import PydanticURL
+from hexdoc.utils import ContextSource, PydanticURL
 
 from .constants import MISSING_TEXTURE_URL
 
@@ -35,7 +35,7 @@ class BaseTexture(InlineModel, ABC):
 
     @override
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+    def load_id(cls, id: ResourceLocation, context: ContextSource):
         texture_ctx = TextureContext.of(context)
         return cls.lookup(
             id,

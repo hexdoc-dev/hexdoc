@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from hexdoc.core import (
     ItemStack,
@@ -9,10 +9,11 @@ from hexdoc.core import (
 )
 from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.model import (
+    HexdocModel,
     InlineItemModel,
     InlineModel,
 )
-from hexdoc.model.base import HexdocModel
+from hexdoc.utils import ContextSource
 
 from ..i18n import I18n, LocalizedStr
 from .animated import AnimatedTexture
@@ -62,7 +63,7 @@ class BaseWithTexture(HexdocModel, Generic[_T_BaseResourceLocation, _T_Texture])
 
 class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
     @classmethod
-    def load_id(cls, item: ItemStack, context: dict[str, Any]):
+    def load_id(cls, item: ItemStack, context: ContextSource):
         """Implements InlineModel."""
 
         i18n = I18n.of(context)
@@ -80,7 +81,7 @@ class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
 
 class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+    def load_id(cls, id: ResourceLocation, context: ContextSource):
         i18n = I18n.of(context)
         return cls(
             id=id,
@@ -91,7 +92,7 @@ class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
 
 class NamedTexture(InlineModel, BaseWithTexture[ResourceLocation, ImageTexture]):
     @classmethod
-    def load_id(cls, id: ResourceLocation, context: dict[str, Any]):
+    def load_id(cls, id: ResourceLocation, context: ContextSource):
         i18n = I18n.of(context)
         return {
             "id": id,

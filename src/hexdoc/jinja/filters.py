@@ -1,17 +1,45 @@
-from typing import Any
+import functools
+from typing import Any, Callable, ParamSpec, TypeVar, cast
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
 from markupsafe import Markup
 
 from hexdoc.core import Properties, ResourceLocation
+from hexdoc.core.resource import ItemStack
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets.textures import PNGTexture, TextureLookup, TextureLookups
+from hexdoc.minecraft.assets import (
+    ItemWithTexture,
+    PNGTexture,
+)
 from hexdoc.patchouli import Book, FormatTree
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import cast_or_raise
+
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
 
 
+def make_jinja_exceptions_suck_a_bit_less(f: Callable[_P, _R]) -> Callable[_P, _R]:
+    @functools.wraps(f)
+    def wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            args_ = list(args)
+            if args_ and isinstance(args_[0], Context):
+                args_ = args_[1:]
+
+            e.add_note(f"args:   {args_}")
+            e.add_note(f"kwargs: {kwargs}")
+            raise
+
+    return wrapper
+
+
+# filters
+
+
+@make_jinja_exceptions_suck_a_bit_less
 def hexdoc_wrap(value: str, *args: str):
     tag, *attributes = args
     if attributes:
@@ -22,6 +50,7 @@ def hexdoc_wrap(value: str, *args: str):
 
 
 # aliased as _() and _f() at render time
+@make_jinja_exceptions_suck_a_bit_less
 def hexdoc_localize(
     key: str,
     *,
@@ -52,21 +81,20 @@ def hexdoc_localize(
 
 # TODO: support the full texture lookup
 @pass_context
+@make_jinja_exceptions_suck_a_bit_less
 def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
-    try:
-        props = cast_or_raise(context["props"], Properties)
-        textures = cast_or_raise(context["png_textures"], TextureLookup[PNGTexture])
+    id = ResourceLocation.model_validate(id)
+    texture = PNGTexture.load_id(id, context)
+    return str(texture.url)
 
-        texture = PNGTexture.lookup(
-            id=ResourceLocation.model_validate(id),
-            lookups=TextureLookups[Any](
-                dict,
-                PNGTexture=textures,
-            ),
-            allowed_missing=props.textures.missing,
-        )
 
-        return str(texture.url)
-    except Exception as e:
-        e.add_note(f"id: {id}")
-        raise
+@pass_context
+@make_jinja_exceptions_suck_a_bit_less
+def hexdoc_item(
+    context: Context,
+    id: str | ResourceLocation | ItemStack,
+) -> ItemWithTexture:
+    return ItemWithTexture.model_validate(
+        id,
+        context=cast(dict[str, Any], context),  # lie
+    )

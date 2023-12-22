@@ -1,9 +1,13 @@
 from typing import Any, Self, overload
 
+from jinja2.runtime import Context
 from pydantic import ValidationInfo
 
 from .classproperties import classproperty
 from .deserialize import cast_or_raise
+
+ContextSource = dict[str, Any] | ValidationInfo | Context
+"""Valid argument types for `ValidationContext.of`."""
 
 
 class ValidationContext:
@@ -19,13 +23,21 @@ class ValidationContext:
 
     @overload
     @classmethod
-    def of(cls, context: dict[str, Any], /) -> Self:
+    def of(cls, context: dict[str, Any] | Context, /) -> Self:
+        ...
+
+    @overload
+    @classmethod
+    def of(cls, source: ContextSource, /) -> Self:
         ...
 
     @classmethod
-    def of(cls, source: ValidationInfo | dict[str, Any], /) -> Self:
-        if not isinstance(source, dict):
-            source = cast_or_raise(source.context, dict)
+    def of(cls, source: ContextSource, /) -> Self:
+        match source:
+            case dict() | Context():
+                pass
+            case _:
+                source = cast_or_raise(source.context, dict)
         return cast_or_raise(source[cls.context_key], cls)
 
     def add_to_context(self, context: dict[str, Any], overwrite: bool = False):

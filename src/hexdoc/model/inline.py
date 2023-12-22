@@ -7,7 +7,6 @@ from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.core.resource import ItemStack, ResourceLocation
-from hexdoc.utils import cast_or_raise
 
 from .base import HexdocModel
 
@@ -41,8 +40,8 @@ class InlineModel(HexdocModel, ABC):
                 return handler(value)
 
         # load the data
-        context = cast_or_raise(info.context, dict[str, Any])
-        return handler(cls.load_id(id, context))
+        assert info.context is not None
+        return handler(cls.load_id(id, info.context))
 
 
 @dataclass_transform()
@@ -76,5 +75,5 @@ class InlineItemModel(HexdocModel, ABC):
                 return handler(value)
 
         # load the data
-        context = cast_or_raise(info.context, dict[str, Any])
-        return handler(cls.load_id(item, context))
+        assert info.context is not None
+        return handler(cls.load_id(item, info.context))

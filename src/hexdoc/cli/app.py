@@ -228,6 +228,17 @@ def build(
 
                 texture_ctx = TextureContext.of(context)
 
+                template_args: dict[str, Any] = {
+                    "all_metadata": all_metadata,
+                    "png_textures": PNGTexture.get_lookup(texture_ctx.textures),
+                    "animations": sorted(  # this MUST be sorted to avoid flaky tests
+                        AnimatedTexture.get_lookup(texture_ctx.textures).values(),
+                        key=lambda t: t.css_class,
+                    ),
+                }
+                for ctx in [props, i18n, texture_ctx]:
+                    ctx.add_to_context(template_args)
+
                 render_book(
                     props=props,
                     pm=pm,
@@ -238,15 +249,10 @@ def build(
                     env=env,
                     templates=templates,
                     output_dir=output_dir,
-                    all_metadata=all_metadata,
                     version=plugin.mod_version if release else f"latest/{branch}",
                     site_path=site_book_path,
-                    png_textures=PNGTexture.get_lookup(texture_ctx.textures),
-                    animations=sorted(  # this MUST be sorted to avoid flaky tests
-                        AnimatedTexture.get_lookup(texture_ctx.textures).values(),
-                        key=lambda t: t.css_class,
-                    ),
                     versioned=release,
+                    template_args=template_args,
                 )
             except Exception:
                 if release or language == props.default_lang:
