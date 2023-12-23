@@ -66,6 +66,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install display server
+        if: matrix.os == 'ubuntu-latest'
         uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: xvfb
@@ -79,7 +80,12 @@ jobs:
         run: pip install nox
 
       - name: Run Nox
-        run: xvfb-run --auto-servernum nox
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            xvfb-run --auto-servernum nox
+          else
+            nox
+          fi
 
   update-tags:
     runs-on: ubuntu-latest
