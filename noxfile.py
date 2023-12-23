@@ -91,7 +91,7 @@ def test_copier(session: nox.Session):
 @nox.session
 def pdoc(session: nox.Session):
     # docs for the docs!
-    session.install(".[pdoc]")
+    session.install("-e", ".[pdoc]")
 
     version = metadata.version("hexdoc")
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
@@ -115,7 +115,7 @@ def pdoc(session: nox.Session):
 
 @nox.session
 def tag(session: nox.Session):
-    session.install("packaging")
+    session.install("-e", ".", "packaging")
 
     from packaging.version import Version
 
