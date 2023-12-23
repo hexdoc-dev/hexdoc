@@ -1,9 +1,15 @@
 from typing import Annotated, Any, Iterator
 
-from pydantic import AfterValidator, BeforeValidator, ValidationError, ValidationInfo
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    ValidationError,
+    ValidationInfo,
+)
 
 from hexdoc.core import ResourceLocation
 from hexdoc.core.loader import ModResourceLoader
+from hexdoc.core.resource import AssumeTag
 from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
 from hexdoc.utils import listify
 
@@ -20,7 +26,7 @@ class MinecraftItemIdIngredient(ItemIngredient, type=NoValue):
 
 
 class MinecraftItemTagIngredient(ItemIngredient, type=NoValue):
-    tag: TagWithTexture
+    tag: AssumeTag[TagWithTexture]
 
     @property
     def item(self):

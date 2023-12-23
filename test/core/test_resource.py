@@ -1,5 +1,6 @@
 import pytest
-from hexdoc.core.resource import ItemStack, ResLoc, ResourceLocation
+from hexdoc.core.resource import AssumeTag, ItemStack, ResLoc, ResourceLocation
+from pydantic import TypeAdapter
 
 resource_locations: list[tuple[str, ResourceLocation, str]] = [
     (
@@ -66,3 +67,20 @@ def test_itemstack(s: str, expected: ItemStack, str_prefix: str):
     actual = ItemStack.from_str(s)
     assert actual == expected
     assert str(actual) == str_prefix + s
+
+
+@pytest.mark.parametrize(
+    ["type", "value", "want_is_tag"],
+    [
+        [ResourceLocation, "namespace:path", False],
+        [ResourceLocation, "#namespace:path", True],
+        [AssumeTag[ResourceLocation], "namespace:path", True],
+        [AssumeTag[ResourceLocation], "#namespace:path", True],
+    ],
+)
+def test_assume_is_tag(type: type[ResourceLocation], value: str, want_is_tag: bool):
+    ta = TypeAdapter(type)
+
+    got = ta.validate_python(value)
+
+    assert got.is_tag == want_is_tag

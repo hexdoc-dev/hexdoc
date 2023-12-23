@@ -1,6 +1,7 @@
 __all__ = [
     "After_1_19",
     "After_1_20",
+    "AssumeTag",
     "AtLeast_1_19",
     "AtLeast_1_20",
     "BaseProperties",
@@ -47,7 +48,14 @@ from .loader import (
     ModResourceLoader,
 )
 from .properties import BaseProperties, Properties
-from .resource import Entity, ItemStack, ResLoc, ResourceLocation, ResourceType
+from .resource import (
+    AssumeTag,
+    Entity,
+    ItemStack,
+    ResLoc,
+    ResourceLocation,
+    ResourceType,
+)
 from .resource_dir import (
     BaseResourceDir,
     PathResourceDir,

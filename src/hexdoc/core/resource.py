@@ -8,9 +8,15 @@ import logging
 import re
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any, ClassVar, Literal, Self
+from typing import Annotated, Any, ClassVar, Literal, Self, TypeVar
 
-from pydantic import TypeAdapter, field_validator, model_serializer, model_validator
+from pydantic import (
+    BeforeValidator,
+    TypeAdapter,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 from typing_extensions import override
@@ -21,6 +27,8 @@ from hexdoc.utils import TRACE
 logger = logging.getLogger(__name__)
 
 ResourceType = Literal["assets", "data", ""]
+
+_T = TypeVar("_T")
 
 MODEL_PATH_REGEX = re.compile(
     r"""
@@ -239,3 +247,18 @@ class Entity(BaseResourceLocation, regex=_make_regex(nbt=True)):
         if self.nbt is not None:
             s += self.nbt
         return s
+
+
+def _add_hashtag_to_tag(value: Any):
+    match value:
+        case str() if not value.startswith("#"):
+            return f"#{value}"
+        case ResourceLocation(namespace, path) if not value.is_tag:
+            return ResourceLocation(namespace, path, is_tag=True)
+        case _:
+            return value
+
+
+AssumeTag = Annotated[_T, BeforeValidator(_add_hashtag_to_tag)]
+"""Validator that adds `#` to the start of strings, and sets `ResourceLocation.is_tag`
+to `True`."""

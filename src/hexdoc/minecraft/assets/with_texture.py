@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 from typing import Generic, TypeVar
 
+from pydantic import field_validator
+
 from hexdoc.core import (
     ItemStack,
     ResourceLocation,
@@ -88,6 +90,12 @@ class TagWithTexture(InlineModel, BaseWithTexture[ResourceLocation, Texture]):
             name=i18n.localize_item_tag(id),
             texture=PNGTexture.from_url(TAG_TEXTURE_URL, pixelated=True),
         )
+
+    @field_validator("id", mode="after")
+    @classmethod
+    def _validate_id(cls, id: ResourceLocation):
+        assert id.is_tag, f"Expected tag id, got {id}"
+        return id
 
 
 class NamedTexture(InlineModel, BaseWithTexture[ResourceLocation, ImageTexture]):
