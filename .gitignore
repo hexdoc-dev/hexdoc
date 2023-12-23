@@ -5,6 +5,9 @@ __gradle_version__.py
 out/
 .hexdoc*/
 
+node_modules/
+package-lock.json
+
 # Python
 
 .ruff_cache/
