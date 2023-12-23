@@ -119,10 +119,7 @@ class I18n(ValidationContextModel):
 
         for resource_dir, lang_id, data in cls._load_lang_resources(loader):
             lang = lang_id.path
-            lookups[lang] |= {
-                key: LocalizedStr(key=key, value=value.replace("%%", "%"))
-                for key, value in data.items()
-            }
+            lookups[lang] |= cls.parse_lookup(data)
             if not resource_dir.external:
                 internal_langs.add(lang)
 
@@ -159,10 +156,7 @@ class I18n(ValidationContextModel):
         is_internal = False
 
         for resource_dir, _, data in cls._load_lang_resources(loader, lang):
-            lookup |= {
-                key: LocalizedStr(key=key, value=value.replace("%%", "%"))
-                for key, value in data.items()
-            }
+            lookup |= cls.parse_lookup(data)
             if not resource_dir.external:
                 is_internal = True
 
@@ -182,6 +176,13 @@ class I18n(ValidationContextModel):
             default_i18n=default_i18n,
             enabled=enabled,
         )
+
+    @classmethod
+    def parse_lookup(cls, raw_lookup: dict[str, str]) -> dict[str, LocalizedStr]:
+        return {
+            key: LocalizedStr(key=key, value=value.replace("%%", "%"))
+            for key, value in raw_lookup.items()
+        }
 
     @classmethod
     def is_enabled(cls, book_data: dict[str, Any]):
