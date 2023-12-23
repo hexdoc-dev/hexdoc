@@ -1,13 +1,7 @@
 __all__ = [
-    "After_1_19",
-    "After_1_20",
     "AssumeTag",
-    "AtLeast_1_19",
-    "AtLeast_1_20",
     "BaseProperties",
     "BaseResourceDir",
-    "Before_1_19",
-    "Before_1_20",
     "BookFolder",
     "Entity",
     "ExportFn",
@@ -26,15 +20,11 @@ __all__ = [
     "ValueIfVersion",
     "VersionSource",
     "Versioned",
+    "compat",
 ]
 
+from . import compat
 from .compat import (
-    After_1_19,
-    After_1_20,
-    AtLeast_1_19,
-    AtLeast_1_20,
-    Before_1_19,
-    Before_1_20,
     IsVersion,
     MinecraftVersion,
     ValueIfVersion,

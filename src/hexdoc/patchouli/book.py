@@ -4,14 +4,13 @@ from typing import Any, Literal, Mapping, Self
 from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
 from hexdoc.core import (
-    AtLeast_1_20,
-    Before_1_20,
     IsVersion,
     ItemStack,
     ModResourceLoader,
     ResLoc,
     ResourceLocation,
 )
+from hexdoc.core.compat import AtLeast_1_20, Before_1_20
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
 from hexdoc.utils import sorted_dict

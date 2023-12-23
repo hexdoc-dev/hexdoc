@@ -3,12 +3,11 @@ from typing import Iterator
 from pydantic import Field
 
 from hexdoc.core import (
-    AtLeast_1_20,
-    Before_1_20,
     ModResourceLoader,
     ResourceLocation,
     ValueIfVersion,
 )
+from hexdoc.core.compat import AtLeast_1_20, Before_1_20
 from hexdoc.model import ResourceModel, TypeTaggedUnion
 
 from ..assets import ItemWithTexture
