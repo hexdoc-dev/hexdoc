@@ -134,7 +134,7 @@ blockquote.crafting-info {
   left: 202px;
 }
 
-.crafting-table-result .badge {
+.item-texture-count {
   position: absolute;
   background-color: #292929;
   bottom: -4px;
@@ -152,6 +152,105 @@ blockquote.crafting-info {
 
 .multi-textures .texture {
   position: absolute;
+}
+
+.item-slot {
+  position: relative;
+  width: min-content;
+}
+
+.item-slot > .texture {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.extra-info .texture{
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+}
+
+.extra-info{
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: start;
+}
+
+.smelting-recipe{
+  position:relative;
+}
+
+.smelting-input{
+  position: absolute;
+  top: 50px;
+  left: 54px;
+}
+
+.smelting-result{
+  position: absolute;
+  top: 50px;
+  left: 174px;
+}
+
+.stonecutting-recipe{
+  position:relative;
+}
+
+.stonecutting-input{
+  position: absolute;
+  top: 50px;
+  left: 54px;
+}
+
+.stonecutting-result{
+  position: absolute;
+  top: 50px;
+  left: 174px;
+}
+
+.smithing-recipe{
+  position:relative;
+}
+
+.smithing-template{
+  position: absolute;
+  top: 64px;
+  left: 34px;
+}
+
+.smithing-base{
+  position: absolute;
+  top: 64px;
+  left: 70px;
+}
+
+.smithing-addition{
+  position: absolute;
+  top: 64px;
+  left: 106px;
+}
+
+.smithing-result{
+  position: absolute;
+  top: 64px;
+  left: 198px;
+}
+
+.multiblock-details{
+  width: max-content;
+}
+
+.multiblock-ingredient{
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.multiblock-ingredient .item-slot{
+  margin-right: 4px;
 }
 
 .toc-elem > .texture {

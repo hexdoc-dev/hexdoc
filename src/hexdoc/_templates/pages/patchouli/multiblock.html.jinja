@@ -1,0 +1,29 @@
+{% extends "pages/patchouli/text.html.jinja" %}
+{% import "macros/textures.html.jinja" as texture_macros with context %}
+
+{% block inner_body %}
+  {% if page.multiblock is defined%}
+  <h5 class="multiblock-name">
+    {{ page.name }}
+  </h5>
+  <details class="details-collapsible multiblock-details">
+    <summary class="collapse-details">
+      <span class="collapse-recipe-show">{{ _('hexdoc.multiblock.show') }}</span>
+      <span class="collapse-recipe-hide">{{ _('hexdoc.multiblock.hide') }}</span>
+    </summary>
+    {% for entry in page.multiblock.bill_of_materials %}
+      <div class="multiblock-ingredient">
+        <div class="item-slot">
+          <img
+            alt="Spotlight inventory slot"
+            src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
+          >
+          {{ texture_macros.render_item(entry[0]) }}
+        </div>
+        <span class="multiblock-ingredient-amount">{{ entry[1] }}x {{ entry[0].name }}</span>
+      </div>
+    {% endfor %}
+  {% endif %}
+  </details>
+  {{ super() }}
+{% endblock inner_body %}

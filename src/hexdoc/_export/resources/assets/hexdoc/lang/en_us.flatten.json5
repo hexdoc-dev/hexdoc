@@ -24,6 +24,15 @@
     recipe: {
       show: "Click to show recipes",
       hide: "Click to hide recipes",
+      smelting: {
+        cooktime: "<span class='cooktime-highlight'>{}</span> Seconds",
+        exp: "<span class='exp-highlight'>{}</span> XP"
+      }
+    },
+
+    multiblock: {
+      show: "Click to show material list",
+      hide: "Click to hide material list",
     },
 
     when_clicked: "When clicked, would execute: {}",

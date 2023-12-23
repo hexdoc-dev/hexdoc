@@ -63,3 +63,43 @@
     </div>
   </details>
 {%- endmacro %}
+
+{# render a smelting interface for each recipe #}
+{% macro smelting(recipes, type="_default") -%}
+  <details class="details-collapsible smelting-details">
+    <summary class="collapse-details">
+      <span class="collapse-recipe-show">{{ _('hexdoc.recipe.show') }}</span>
+      <span class="collapse-recipe-hide">{{ _('hexdoc.recipe.hide') }}</span>
+    </summary>
+    <div class="smelting-recipes">
+      {% for recipe in recipes %}
+        <div>
+          <h5>{{ recipe.result.name }}</h5>
+          <div class="smelting-recipe pixelated">
+            <img
+              alt="Smelting interface"
+              src="{{ ('hexdoc:textures/gui/smelting'~type~'.png')|hexdoc_texture }}"
+            >
+
+            <div class="smelting-input">
+              {{ render_ingredients(recipe.ingredient) }}
+            </div>
+
+            <div class="smelting-result">
+              {{ texture_macros.render_item(recipe.result) }}
+            </div>
+            {{ extra_info("minecraft:lava_bucket", _("hexdoc.recipe.smelting.cooktime").format(recipe.cookingtime / 20)) }}
+            {{ extra_info("minecraft:experience_bottle", _("hexdoc.recipe.smelting.exp").format(recipe.experience)) }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+{%- endmacro %}
+
+{% macro extra_info(item_id, text, classes="") -%}
+  <div class="extra-info {{classes}}">
+    {{ texture_macros.render_item(item_id|hexdoc_item)}}
+    <span class="extra-info-desc">{{ text }}</span>
+  </div>
+{%- endmacro %}
