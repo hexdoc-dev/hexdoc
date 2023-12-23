@@ -2,7 +2,7 @@
 {% import "macros/formatting.html.jinja" as fmt with context %}
 
 {% block body %}
-  {% if page.title is not none %}
+  {% if page.title is defined and page.title is not none %}
     {# need title_attrs for LookupPatternPage -#}
     <h4{% block title_attrs %}{% endblock %}>
       {{- page.title -}}
