@@ -52,7 +52,7 @@ dependencies = [
     "typer[all]~=0.9",
     "typing_extensions~=4.6",
     "yarl~=1.9",
-    "hatch~=1.7",
+    "hatch~=1.9",
 
     # Favicons deps, because it's vendored
     "pillow~=9.5.0",

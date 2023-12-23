@@ -79,13 +79,13 @@ jobs:
       - name: Install Nox
         run: pip install nox
 
+      - name: Run Nox with display server
+        if: matrix.os == 'ubuntu-latest'
+        run: xvfb-run --auto-servernum nox
+
       - name: Run Nox
-        run: |
-          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            xvfb-run --auto-servernum nox
-          else
-            nox
-          fi
+        if: matrix.os != 'ubuntu-latest'
+        run: nox
 
   update-tags:
     runs-on: ubuntu-latest
