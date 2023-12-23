@@ -49,7 +49,11 @@ jobs:
           path: dist
 
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     env:
       HEXDOC_RELEASE: false
     steps:
