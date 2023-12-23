@@ -90,9 +90,14 @@ def test_copier(session: nox.Session):
 @nox.session
 def pdoc(session: nox.Session):
     # docs for the docs!
-    session.install(".[pdoc]")
+    session.install("-e", ".[pdoc]")
 
-    version = run_silent(session, "hatch", "--quiet", "version")
+    sys.path.insert(0, "src")
+
+    from hexdoc.__version__ import VERSION
+
+    sys.path.pop(0)
+
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
     session.run(
@@ -107,26 +112,27 @@ def pdoc(session: nox.Session):
         "--edit-url",
         f"hexdoc={PDOC_EDIT_URL}",
         "--footer-text",
-        f"Version: {version} ({commit})",
+        f"Version: {VERSION} ({commit})",
         *session.posargs,
     )
 
 
 @nox.session
 def tag(session: nox.Session):
-    session.install("hatch", "packaging")
+    session.install("packaging")
+
+    sys.path.insert(0, "src")
+
+    from hexdoc.__version__ import VERSION
+
+    sys.path.pop(0)
 
     from packaging.version import Version
 
     message = "Automatic PEP 440 release tag"
 
-    # because hatch is dumb and thinks it's ok to log on stdout i guess?
-    # or maybe nox is capturing it
-    # i have no idea
-    run_silent(session, "hatch", "--quiet", "version")
-
     # validate some assumptions to make this simpler
-    version = Version(run_silent(session, "hatch", "--quiet", "version"))
+    version = Version(VERSION)
     assert version.epoch != 0
     assert len(version.release) == 3
 
