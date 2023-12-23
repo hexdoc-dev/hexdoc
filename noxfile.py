@@ -4,6 +4,7 @@ import logging
 import shutil
 import stat
 import sys
+from importlib import metadata
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -92,7 +93,7 @@ def pdoc(session: nox.Session):
     # docs for the docs!
     session.install(".[pdoc]")
 
-    version = run_silent(session, "hatch", "--quiet", "version")
+    version = metadata.version("hexdoc")
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
     session.run(
@@ -114,19 +115,14 @@ def pdoc(session: nox.Session):
 
 @nox.session
 def tag(session: nox.Session):
-    session.install("hatch", "packaging")
+    session.install("packaging")
 
     from packaging.version import Version
 
     message = "Automatic PEP 440 release tag"
 
-    # because hatch is dumb and thinks it's ok to log on stdout i guess?
-    # or maybe nox is capturing it
-    # i have no idea
-    run_silent(session, "hatch", "--quiet", "version")
-
     # validate some assumptions to make this simpler
-    version = Version(run_silent(session, "hatch", "--quiet", "version"))
+    version = Version(metadata.version("hexdoc"))
     assert version.epoch != 0
     assert len(version.release) == 3
 
