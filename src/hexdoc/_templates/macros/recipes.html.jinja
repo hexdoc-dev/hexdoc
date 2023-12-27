@@ -54,7 +54,7 @@
               {% endfor %}
             </div>
 
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               {{ texture_macros.render_item(recipe.result.item, count=recipe.result.count) }}
             </div>
           </div>
@@ -75,17 +75,17 @@
       {% for recipe in recipes %}
         <div>
           <h5>{{ recipe.result.name }}</h5>
-          <div class="smelting-recipe pixelated">
+          <div class="smelting-recipe recipe pixelated">
             <img
               alt="Smelting interface"
               src="{{ ('hexdoc:textures/gui/smelting'~type~'.png')|hexdoc_texture }}"
             >
 
-            <div class="smelting-input">
+            <div class="smelting-input recipe-item-slot">
               {{ render_ingredients(recipe.ingredient) }}
             </div>
 
-            <div class="smelting-result">
+            <div class="smelting-result recipe-item-slot">
               {{ texture_macros.render_item(recipe.result) }}
             </div>
             {{ extra_info("minecraft:lava_bucket", _("hexdoc.recipe.smelting.cooktime").format(recipe.cookingtime / 20)) }}

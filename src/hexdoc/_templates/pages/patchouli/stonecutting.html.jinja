@@ -12,17 +12,17 @@
       {% for recipe in page.recipes %}
         <div>
           <h5>{{ recipe.result.name }}</h5>
-          <div class="stonecutting-recipe pixelated">
+          <div class="stonecutting-recipe recipe pixelated">
             <img
               alt="stonecutting interface"
               src="{{ 'hexdoc:textures/gui/stonecutting.png'|hexdoc_texture }}"
             >
 
-            <div class="stonecutting-input">
+            <div class="stonecutting-input recipe-item-slot">
               {{ recipe_macros.render_ingredients(recipe.ingredient) }}
             </div>
 
-            <div class="stonecutting-result">
+            <div class="stonecutting-result recipe-item-slot">
               {{ texture_macros.render_item(recipe.result, count=recipe.count) }}
             </div>
           </div>

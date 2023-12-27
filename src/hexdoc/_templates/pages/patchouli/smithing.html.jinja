@@ -16,28 +16,28 @@
           {% else %}
             <h5>{{ recipe.base.item.name }}</h5>
           {% endif %}
-          <div class="smithing-recipe pixelated">
+          <div class="smithing-recipe recipe pixelated">
             <img
               alt="smithing interface"
               src="{{ 'hexdoc:textures/gui/smithing120.png'|hexdoc_texture }}"
             >
 
-            <div class="smithing-base">
+            <div class="smithing-base recipe-item-slot">
               {{ texture_macros.render_item(recipe.base.item) }}
             </div>
-            <div class="smithing-addition">
+            <div class="smithing-addition recipe-item-slot">
               {{ texture_macros.render_item(recipe.addition.item) }}
             </div>
-            <div class="smithing-template">
+            <div class="smithing-template recipe-item-slot">
               {{ texture_macros.render_item(recipe.template.item) }}
             </div>
 
             {% if recipe.result is defined%}
-              <div class="smithing-result">
+              <div class="smithing-result recipe-item-slot">
                 {{ texture_macros.render_item(recipe.result) }}
               </div>
             {% else %}
-              <div class="smithing-result">
+              <div class="smithing-result recipe-item-slot">
                 {{ texture_macros.render_item(recipe.base.item) }}
               </div>
             {% endif %}
