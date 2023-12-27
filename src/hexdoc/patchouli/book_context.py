@@ -3,10 +3,13 @@ from yarl import URL
 from hexdoc.core import PathResourceDir, ResourceLocation
 from hexdoc.data import HexdocMetadata
 from hexdoc.model import ValidationContextModel
+from hexdoc.patchouli.text import BookLinkBases
 
 
 class BookContext(ValidationContextModel):
     modid: str
+    book_id: ResourceLocation
+    link_bases: BookLinkBases
     spoilered_advancements: set[ResourceLocation]
     all_metadata: dict[str, HexdocMetadata]
 

@@ -12,7 +12,7 @@ from hexdoc.minecraft.assets import (
     ItemWithTexture,
     PNGTexture,
 )
-from hexdoc.patchouli import Book, FormatTree
+from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
 
 _P = ParamSpec("_P")
@@ -56,8 +56,9 @@ def hexdoc_localize(
     *,
     do_format: bool,
     props: Properties,
-    book: Book,
+    book_id: ResourceLocation,
     i18n: I18n,
+    macros: dict[str, str],
     pm: PluginManager,
 ):
     # get the localized value from i18n
@@ -69,9 +70,9 @@ def hexdoc_localize(
     # construct a FormatTree from the localized value (to allow using patchi styles)
     formatted = FormatTree.format(
         localized.value,
-        book_id=book.id,
+        book_id=book_id,
         i18n=i18n,
-        macros=book.macros,
+        macros=macros,
         is_0_black=props.is_0_black,
         pm=pm,
         link_overrides=props.link_overrides,

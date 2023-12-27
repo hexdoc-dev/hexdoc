@@ -7,6 +7,7 @@ import pluggy
 
 from hexdoc.utils import ValidationContext
 
+from .book_plugin import BookPlugin
 from .mod_plugin import ModPlugin
 from .types import HookReturn, HookReturns
 
@@ -21,6 +22,11 @@ hookspec = pluggy.HookspecMarker(HEXDOC_PROJECT_NAME)
 
 
 class PluginSpec(Protocol):
+    @staticmethod
+    @hookspec
+    def hexdoc_book_plugin() -> list[BookPlugin[Any]]:
+        ...
+
     @staticmethod
     @hookspec
     def hexdoc_mod_plugin(branch: str, props: Properties) -> list[ModPlugin]:
@@ -65,6 +71,14 @@ class PluginImpl(Protocol):
     These protocols are optional - they gives better type checking, but everything will
     work fine with a standard pluggy hook implementation.
     """
+
+
+class BookPluginImpl(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_book_plugin() -> BookPlugin[Any]:
+        """If your plugin represents a book system (like Patchouli), this must return an
+        instance of a subclass of `BookPlugin` with all abstract methods implemented."""
+        ...
 
 
 class ModPluginImpl(PluginImpl, Protocol):

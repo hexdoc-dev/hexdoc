@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 import time
+from dataclasses import dataclass
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from textwrap import dedent
@@ -14,6 +15,7 @@ from typer import Option, Typer
 from yarl import URL
 
 from hexdoc.core import ModResourceLoader
+from hexdoc.core.resource import ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
@@ -21,9 +23,11 @@ from hexdoc.minecraft.assets import (
     PNGTexture,
 )
 from hexdoc.minecraft.assets.textures import TextureContext
-from hexdoc.patchouli import Book
+from hexdoc.patchouli.book_context import BookContext
+from hexdoc.patchouli.text import FormattingContext
 from hexdoc.plugin.mod_plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
+from hexdoc.utils.context import ContextSource
 from hexdoc.utils.logging import repl_readfunc
 
 from . import ci, render_block
@@ -37,7 +41,7 @@ from .utils.args import (
     VerbosityOption,
 )
 from .utils.load import (
-    load_book,
+    init_context,
     load_common_data,
     render_textures_and_export_metadata,
 )
@@ -78,7 +82,7 @@ def repl(*, props_file: PropsOption):
     )
 
     try:
-        props, pm, plugin = load_common_data(props_file, branch="")
+        props, pm, book_plugin, plugin = load_common_data(props_file, branch="")
         repl_locals |= dict(
             props=props,
             pm=pm,
@@ -93,24 +97,29 @@ def repl(*, props_file: PropsOption):
         repl_locals["loader"] = loader
 
         if props.book_id:
-            book_data = Book.load_book_json(loader, props.book_id)
+            book_id, book_data = book_plugin.load_book_data(props.book_id, loader)
         else:
+            book_id = None
             book_data = {}
 
-        i18n = I18n.load_all(loader, book_data)[props.default_lang]
+        i18n = I18n.load_all(
+            loader,
+            enabled=book_plugin.is_i18n_enabled(book_data),
+        )[props.default_lang]
 
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
         repl_locals["all_metadata"] = all_metadata
 
-        if book_data:
-            book, context = load_book(
+        if book_id and book_data:
+            context = init_context(
+                book_id=book_id,
                 book_data=book_data,
                 pm=pm,
                 loader=loader,
                 i18n=i18n,
                 all_metadata=all_metadata,
             )
-
+            book = book_plugin.validate_book(book_data, context=context)
             repl_locals |= dict(
                 book=book,
                 context=context,
@@ -130,6 +139,15 @@ def repl(*, props_file: PropsOption):
     )
 
 
+@dataclass(kw_only=True)
+class LoadedBookInfo:
+    language: str
+    i18n: I18n
+    context: ContextSource
+    book_id: ResourceLocation
+    book: Any
+
+
 @app.command()
 def build(
     output_dir: PathArgument = DEFAULT_MERGE_SRC,
@@ -144,14 +162,10 @@ def build(
     For developers: returns the site path (eg. `/v/latest/main`).
     """
 
-    props, pm, plugin = load_common_data(props_file, branch)
+    props, pm, book_plugin, plugin = load_common_data(props_file, branch)
 
     logger.info("Exporting resources.")
-    with ModResourceLoader.clean_and_load_all(
-        props,
-        pm,
-        export=True,
-    ) as loader:
+    with ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader:
         site_path = plugin.site_path(versioned=release)
         site_dir = output_dir / site_path
 
@@ -168,22 +182,34 @@ def build(
             logger.info("Skipping book load because props.book_id is not set.")
             return site_dir
 
-        book_data = Book.load_book_json(loader, props.book_id)
+        book_id, book_data = book_plugin.load_book_data(props.book_id, loader)
 
-        all_i18n = I18n.load_all(loader, book_data)
+        all_i18n = I18n.load_all(
+            loader,
+            enabled=book_plugin.is_i18n_enabled(book_data),
+        )
 
         logger.info("Loading books for all languages.")
-        books = list[tuple[str, I18n, Book, dict[str, Any]]]()
+        books = list[LoadedBookInfo]()
         for language, i18n in all_i18n.items():
             try:
-                book, context = load_book(
+                context = init_context(
+                    book_id=book_id,
                     book_data=book_data,
                     pm=pm,
                     loader=loader,
                     i18n=i18n,
                     all_metadata=all_metadata,
                 )
-                books.append((language, i18n, book, context))
+                books.append(
+                    LoadedBookInfo(
+                        language=language,
+                        i18n=i18n,
+                        context=context,
+                        book_id=book_id,
+                        book=book_plugin.validate_book(book_data, context=context),
+                    )
+                )
             except Exception:
                 if release or language == props.default_lang:
                     raise
@@ -220,13 +246,18 @@ def build(
             )
 
         logger.info(f"Rendering book for {len(books)} language(s).")
-        for language, i18n, book, context in books:
+        for book_info in books:
             try:
-                site_book_path = plugin.site_book_path(language, versioned=release)
+                book_ctx = BookContext.of(book_info.context)
+                formatting_ctx = FormattingContext.of(book_info.context)
+                texture_ctx = TextureContext.of(book_info.context)
+
+                site_book_path = plugin.site_book_path(
+                    book_info.language,
+                    versioned=release,
+                )
                 if clean:
                     shutil.rmtree(output_dir / site_book_path, ignore_errors=True)
-
-                texture_ctx = TextureContext.of(context)
 
                 template_args: dict[str, Any] = {
                     "all_metadata": all_metadata,
@@ -235,17 +266,20 @@ def build(
                         AnimatedTexture.get_lookup(texture_ctx.textures).values(),
                         key=lambda t: t.css_class,
                     ),
+                    "book": book_info.book,
+                    "link_bases": book_ctx.link_bases,
                 }
-                for ctx in [props, i18n, texture_ctx]:
+                for ctx in [props, book_info.i18n, texture_ctx]:
                     ctx.add_to_context(template_args)
 
                 render_book(
                     props=props,
                     pm=pm,
                     plugin=plugin,
-                    lang=language,
-                    book=book,
-                    i18n=i18n,
+                    lang=book_info.language,
+                    book_id=book_info.book_id,
+                    i18n=book_info.i18n,
+                    macros=formatting_ctx.macros,
                     env=env,
                     templates=templates,
                     output_dir=output_dir,
@@ -255,9 +289,9 @@ def build(
                     template_args=template_args,
                 )
             except Exception:
-                if release or language == props.default_lang:
+                if release or book_info.language == props.default_lang:
                     raise
-                logger.exception(f"Failed to render book for {language}")
+                logger.exception(f"Failed to render book for {book_info.language}")
 
     logger.info("Done.")
     return site_dir
@@ -270,7 +304,7 @@ def merge(
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
 ):
-    props, _, plugin = load_common_data(props_file, branch="", book=True)
+    props, _, _, plugin = load_common_data(props_file, branch="", book=True)
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
 

@@ -8,20 +8,19 @@ from hexdoc.core import (
     Properties,
     ResourceLocation,
 )
-from hexdoc.data import HexdocMetadata
-from hexdoc.data.metadata import load_metadata_textures
+from hexdoc.data import HexdocMetadata, load_metadata_textures
 from hexdoc.minecraft import I18n, Tag
 from hexdoc.minecraft.assets import (
+    AnimatedTexture,
     HexdocAssetLoader,
+    PNGTexture,
     Texture,
+    TextureContext,
     TextureLookups,
 )
-from hexdoc.minecraft.assets.animated import AnimatedTexture
-from hexdoc.minecraft.assets.textures import PNGTexture, TextureContext
-from hexdoc.patchouli import Book, BookContext
+from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
-from hexdoc.plugin import ModPlugin, ModPluginWithBook, PluginManager
-from hexdoc.utils import cast_or_raise
+from hexdoc.plugin import BookPlugin, ModPlugin, ModPluginWithBook, PluginManager
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,7 @@ def load_common_data(
     branch: str,
     *,
     book: Literal[True],
-) -> tuple[Properties, PluginManager, ModPluginWithBook]:
+) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPluginWithBook]:
     ...
 
 
@@ -42,7 +41,7 @@ def load_common_data(
     branch: str,
     *,
     book: bool = False,
-) -> tuple[Properties, PluginManager, ModPlugin]:
+) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPlugin]:
     ...
 
 
@@ -51,13 +50,16 @@ def load_common_data(
     branch: str,
     *,
     book: bool = False,
-) -> tuple[Properties, PluginManager, ModPlugin]:
+) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPlugin]:
     props = Properties.load(props_file)
     pm = PluginManager(branch, props)
 
-    plugin = pm.mod_plugin(props.modid, book=book)
+    book_plugin = pm.book_plugin(props.book_type)
+    mod_plugin = pm.mod_plugin(props.modid, book=book)
+
     logging.getLogger(__name__).info(
-        f"Loading hexdoc for {props.modid} {plugin.full_version}."
+        f"Loading hexdoc with {book_plugin.modid}"
+        + f" for {props.modid} {mod_plugin.full_version}."
     )
 
     minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
@@ -66,7 +68,7 @@ def load_common_data(
             "No plugins implement minecraft_version. All versions may be used."
         )
 
-    return props, pm, plugin
+    return props, pm, book_plugin, mod_plugin
 
 
 def render_textures_and_export_metadata(
@@ -111,8 +113,10 @@ def render_textures_and_export_metadata(
     return all_metadata | {loader.props.modid: metadata}
 
 
-def load_book(
+# TODO: refactor a lot of this out
+def init_context(
     *,
+    book_id: ResourceLocation,
     book_data: dict[str, Any],
     pm: PluginManager,
     loader: ModResourceLoader,
@@ -122,28 +126,33 @@ def load_book(
     props = loader.props
 
     context = dict[str, Any]()
-    for item in [pm, loader, props, i18n]:
+
+    for item in [
+        props,
+        pm,
+        loader,
+        i18n,
+        TextureContext(
+            textures=load_metadata_textures(all_metadata),
+            allowed_missing_textures=props.textures.missing,
+        ),
+        FormattingContext(
+            book_id=book_id,
+            macros=DEFAULT_MACROS | book_data.get("macros", {}) | props.macros,
+        ),
+        BookContext(
+            modid=props.modid,
+            book_id=book_id,
+            spoilered_advancements=Tag.SPOILERED_ADVANCEMENTS.load(
+                loader
+            ).value_ids_set,
+            all_metadata=all_metadata,
+            link_bases={},
+        ),
+    ]:
         item.add_to_context(context)
-
-    TextureContext(
-        textures=load_metadata_textures(all_metadata),
-        allowed_missing_textures=props.textures.missing,
-    ).add_to_context(context)
-
-    BookContext(
-        modid=props.modid,
-        spoilered_advancements=Tag.SPOILERED_ADVANCEMENTS.load(loader).value_ids_set,
-        all_metadata=all_metadata,
-    ).add_to_context(context)
-
-    FormattingContext(
-        book_id=cast_or_raise(book_data["id"], ResourceLocation),
-        macros=DEFAULT_MACROS | book_data.get("macros", {}) | props.macros,
-    ).add_to_context(context)
 
     for item in pm.update_context(context):
         item.add_to_context(context)
 
-    book = Book.load_all_from_data(book_data, context=context)
-
-    return book, context
+    return context

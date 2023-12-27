@@ -1,4 +1,4 @@
-from typing import Any, Self, overload
+from typing import Any, Self, cast, overload
 
 from jinja2.runtime import Context
 from pydantic import ValidationInfo
@@ -53,3 +53,9 @@ def add_to_context(
     if not overwrite and key in context:
         raise KeyError(f"Key {key} for {value} already exists in context")
     context[key] = value
+
+
+def cast_context(source: ContextSource) -> dict[str, Any]:
+    """Wrapper for `typing.cast` to simplify passing `ContextSource` to validation
+    methods. This is a lie to keep the type checker happy."""
+    return cast(dict[str, Any], source)
