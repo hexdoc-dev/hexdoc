@@ -94,6 +94,7 @@ hexdoc = "hexdoc.cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
+modonomicon = "hexdoc_modonomicon._hooks:ModonomiconPlugin"
 
 [tool.hatch.build]
 artifacts = [
