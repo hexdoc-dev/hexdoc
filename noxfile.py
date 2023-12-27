@@ -210,13 +210,180 @@ def dummy_setup(session: nox.Session):
                                     },
                                 ],
                             },
+                            "entries/patchistuff.json": {
+                                "name": "Patchouli Stuff",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:book",
+                                "sortnum": 0,
+                                "pages": [
+                                    {
+                                        "type": "patchouli:multiblock",
+                                        "name": "MultiBlock Test",
+                                        "multiblock": {
+                                            "pattern": [
+                                                [
+                                                    " GRG ",
+                                                    "GGRGG",
+                                                    "RRRRR",
+                                                    "GGRGG",
+                                                    " GRG ",
+                                                ],
+                                                [
+                                                    "GG GG",
+                                                    "G   G",
+                                                    "     ",
+                                                    "G   G",
+                                                    "GG GG",
+                                                ],
+                                                [
+                                                    "G   G",
+                                                    "     ",
+                                                    "     ",
+                                                    "     ",
+                                                    "G   G",
+                                                ],
+                                                [
+                                                    "G   G",
+                                                    "     ",
+                                                    "  0  ",
+                                                    "     ",
+                                                    "G   G",
+                                                ],
+                                                [
+                                                    "_WWW_",
+                                                    "WWWWW",
+                                                    "WWWWW",
+                                                    "WWWWW",
+                                                    "_WWW_",
+                                                ],
+                                            ],
+                                            "mapping": {
+                                                "G": "minecraft:gold_block",
+                                                "W": "#minecraft:wool",
+                                                "R": "minecraft:terracotta",
+                                            },
+                                        },
+                                        "text": "Multi Block Test !",
+                                    },
+                                    {
+                                        "type": "patchouli:quest",
+                                        "trigger": "story/smelt_iron",
+                                        "text": "Wow, what a wonderful quest this is here",
+                                    },
+                                ],
+                            },
+                            "entries/otherrecipes.json": {
+                                "name": "More Recipe Types",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:stonecutter",
+                                "sortnum": 0,
+                                "pages": [
+                                    {
+                                        "type": "patchouli:stonecutting",
+                                        "recipe": "dummy:test_stonecutting",
+                                        "text": "Very true and valid stonecutting recipe",
+                                    },
+                                    {
+                                        "type": "patchouli:smithing",
+                                        "recipe": "dummy:test_smithing_trim",
+                                        "text": "Pretty armor!",
+                                    },
+                                    {
+                                        "type": "patchouli:crafting",
+                                        "recipe": "dummy:test_crafting",
+                                    },
+                                ],
+                            },
+                            "entries/smelting.json": {
+                                "name": "Smelting",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:furnace",
+                                "sortnum": 0,
+                                "pages": [
+                                    {
+                                        "type": "patchouli:smelting",
+                                        "recipe": "dummy:test_smelting",
+                                        "text": "Smelting Time !",
+                                    },
+                                    {
+                                        "type": "patchouli:smoking",
+                                        "recipe": "dummy:test_smoking",
+                                        "text": "Smoking Time !",
+                                    },
+                                    {
+                                        "type": "patchouli:campfire_cooking",
+                                        "recipe": "dummy:test_campfire",
+                                        "text": "Campfire Time !",
+                                    },
+                                    {
+                                        "type": "patchouli:blasting",
+                                        "recipe": "dummy:test_blasting",
+                                        "text": "Blasting Time !",
+                                    },
+                                ],
+                            },
                         },
                     },
-                    "data/dummy/patchouli_books/dummybook/book.json": {
-                        "name": "Dummy Book",
-                        "landing_text": "Lorem ipsum dolor sit amet",
-                        "use_resource_pack": True,
-                        "i18n": False,
+                    "data/dummy": {
+                        "patchouli_books/dummybook/book.json": {
+                            "name": "Dummy Book",
+                            "landing_text": "Lorem ipsum dolor sit amet",
+                            "use_resource_pack": True,
+                            "i18n": False,
+                        },
+                        "recipes": {
+                            "test_blasting.json": {
+                                "type": "minecraft:blasting",
+                                "experience": 0.1,
+                                "ingredient": {"item": "minecraft:raw_iron"},
+                                "result": "minecraft:iron_ingot",
+                            },
+                            "test_campfire.json": {
+                                "type": "minecraft:campfire_cooking",
+                                "experience": 0.1,
+                                "ingredient": {"item": "minecraft:potato"},
+                                "result": "minecraft:baked_potato",
+                            },
+                            "test_crafting.json": {
+                                "type": "minecraft:crafting_shaped",
+                                "pattern": [" DD", " SD", "S  "],
+                                "key": {
+                                    "S": {"item": "minecraft:stick"},
+                                    "D": {"item": "minecraft:diamond"},
+                                },
+                                "result": {
+                                    "item": "minecraft:diamond_pickaxe",
+                                    "count": 3,
+                                },
+                            },
+                            "test_smelting.json": {
+                                "type": "minecraft:smelting",
+                                "cookingtime": 200,
+                                "experience": 0.1,
+                                "ingredient": {"item": "minecraft:sand"},
+                                "result": "minecraft:glass",
+                            },
+                            "test_smithing_trim.json": {
+                                "type": "minecraft:smithing_trim",
+                                "base": {"item": "minecraft:netherite_chestplate"},
+                                "template": {
+                                    "item": "minecraft:wayfinder_armor_trim_smithing_template"
+                                },
+                                "addition": {"item": "minecraft:gold_ingot"},
+                            },
+                            "test_smoking.json": {
+                                "type": "minecraft:smoking",
+                                "experience": 0.1,
+                                "ingredient": {"item": "minecraft:potato"},
+                                "result": "minecraft:baked_potato",
+                            },
+                            "test_stonecutting.json": {
+                                "type": "minecraft:stonecutting",
+                                "ingredient": {"item": "minecraft:stone"},
+                                "result": "minecraft:stone_bricks",
+                                "count": 9,
+                            },
+                        },
                     },
                 },
                 "hexdoc.toml": (
