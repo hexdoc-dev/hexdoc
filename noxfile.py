@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import shutil
 import stat
 import sys
@@ -17,8 +18,8 @@ PDOC_LOGO = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg"
 PDOC_EDIT_URL = "https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"
 
 nox.options.reuse_existing_virtualenvs = True
-
 nox.options.sessions = [
+    "pyright",
     "test",
     "test_build",
     "test_hexcasting",
@@ -30,16 +31,24 @@ nox.options.sessions = [
 
 
 @nox.session
-def test(session: nox.Session):
+def pyright(session: nox.Session):
     session.install("-e", ".[test]")
 
-    # this apparently CANNOT run from pre-commit in GitHub Actions (venv issues)
-    session.run("pyright", "--warnings")
+    if os.getenv("RUNNER_DEBUG") == "1" or "--verbose" in session.posargs:
+        session.run("pyright", "--version")
+        session.run("pyright", "--warnings", "--verbose")
+    else:
+        session.run("pyright", "--warnings")
+
+
+@nox.session(tags=["test"])
+def test(session: nox.Session):
+    session.install("-e", ".[test]")
 
     session.run("pytest", *session.posargs)
 
 
-@nox.session
+@nox.session(tags=["test"])
 def test_build(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
@@ -63,14 +72,14 @@ def test_build(session: nox.Session):
     )
 
 
-@nox.session(tags=["post_build"])
+@nox.session(tags=["test", "post_build"])
 def test_hexcasting(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
     session.run("pytest", "-m", "hexcasting", *session.posargs)
 
 
-@nox.session(tags=["post_build"])
+@nox.session(tags=["test", "post_build"])
 def test_copier(session: nox.Session):
     session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
@@ -82,6 +91,16 @@ def test_copier(session: nox.Session):
     session.run("git", "init", str(rendered_template), external=True)
 
     session.run("pytest", "-m", "copier", *session.posargs)
+
+
+# pre-commit
+
+
+@nox.session(python=False)
+def precommit_pyright(session: nox.Session):
+    session.run("pip", "install", "-e", ".[test]")
+
+    session.run("pyright", "--warnings", *session.posargs)
 
 
 # CI/CD

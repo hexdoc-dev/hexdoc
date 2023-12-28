@@ -163,9 +163,6 @@ combine-as-imports = true
 pythonVersion = "3.11"
 pythonPlatform = "All"
 
-venvPath = "."
-venv = "venv"
-
 include = [
     "src",
     "test",
