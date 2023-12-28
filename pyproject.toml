@@ -94,11 +94,11 @@ hexdoc = "hexdoc.cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
-modonomicon = "hexdoc_modonomicon._hooks:ModonomiconPlugin"
+modonomicon = "hexdoc_modonomicon._hooks:ModonomiconPlugin"  # TODO: remove
 
 [tool.hatch.build]
 artifacts = [
-    "/src/hexdoc/_export/generated",
+    "_export/generated",
 ]
 
 [tool.hatch.build.targets.sdist]
@@ -110,6 +110,7 @@ only-include = [
 [tool.hatch.build.targets.wheel]
 packages = [
     "src/hexdoc",
+    "src/hexdoc_modonomicon",  # TODO: remove
     "vendor/_hexdoc_favicons",
 ]
 
@@ -177,7 +178,6 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "**/template",
 ]
 
 typeCheckingMode = "basic"

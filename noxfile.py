@@ -43,7 +43,7 @@ def pyright(session: nox.Session):
 
 @nox.session(tags=["test"])
 def test(session: nox.Session):
-    session.install("-e", ".[test]")
+    session.install(".[test]")
 
     session.run("pytest", *session.posargs)
 

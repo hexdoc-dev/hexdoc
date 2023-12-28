@@ -40,7 +40,7 @@ jobs:
         run: pip install .
 
       - name: Export hexdoc resources
-        run: xvfb-run --auto-servernum hexdoc ci export
+        run: xvfb-run --auto-servernum hexdoc ci build
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
