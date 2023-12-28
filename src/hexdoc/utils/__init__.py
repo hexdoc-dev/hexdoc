@@ -1,5 +1,6 @@
 __all__ = [
     "ContextSource",
+    "FieldOrProperty",
     "IProperty",
     "Inherit",
     "InheritType",
@@ -58,6 +59,7 @@ from .logging import TRACE, setup_logging
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
 from .types import (
+    FieldOrProperty,
     IProperty,
     PydanticOrderedSet,
     PydanticURL,
