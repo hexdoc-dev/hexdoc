@@ -8,8 +8,6 @@ from .assertions import cast_or_raise
 
 # TODO: there's (figuratively) literally no comments in this file
 
-TOMLDict = dict[str, "TOMLValue"]
-
 TOMLValue = (
     str
     | int
@@ -19,9 +17,11 @@ TOMLValue = (
     | datetime.date
     | datetime.time
     | list["TOMLValue"]
-    | TOMLDict
+    | dict[str, "TOMLValue"]
     | None
 )
+
+TOMLDict = dict[str, "TOMLValue"]
 
 
 def fill_placeholders(data: TOMLDict):
