@@ -117,12 +117,17 @@ class PluginManager(ValidationContext):
 
     def _init_book_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_book_plugin)
-        for plugin in caller.try_call() or []:
+        for plugin in flatten(caller.try_call()):
             self.book_plugins[plugin.modid] = plugin
 
     def _init_mod_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_mod_plugin)
-        for plugin in caller.try_call(branch=self.branch, props=self.props) or []:
+        for plugin in flatten(
+            caller.try_call(
+                branch=self.branch,
+                props=self.props,
+            )
+        ):
             self.mod_plugins[plugin.modid] = plugin
 
     def register(self, plugin: Any, name: str | None = None):
@@ -285,8 +290,8 @@ class PluginManager(ValidationContext):
         return TypedHookCaller(None, caller)
 
 
-def flatten(values: list[list[_T] | _T]) -> Iterator[_T]:
-    for value in values:
+def flatten(values: list[list[_T] | _T] | None) -> Iterator[_T]:
+    for value in values or []:
         if isinstance(value, list):
             yield from value
         else:
