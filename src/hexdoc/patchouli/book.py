@@ -73,15 +73,6 @@ class Book(HexdocModel):
     pause_game: bool = False
     text_overflow_mode: Literal["overflow", "resize", "truncate"] | None = None
 
-    @classmethod
-    def _load_book_resource(
-        cls,
-        loader: ModResourceLoader,
-        id: ResourceLocation,
-    ) -> dict[str, Any]:
-        _, data = loader.load_resource("data", "patchouli_books", id / "book")
-        return data | {"id": id}
-
     @property
     def categories(self):
         return self._categories

@@ -201,13 +201,14 @@ def build(
                     i18n=i18n,
                     all_metadata=all_metadata,
                 )
+                book = book_plugin.validate_book(book_data, context=context)
                 books.append(
                     LoadedBookInfo(
                         language=language,
                         i18n=i18n,
                         context=context,
                         book_id=book_id,
-                        book=book_plugin.validate_book(book_data, context=context),
+                        book=book,
                     )
                 )
             except Exception:
