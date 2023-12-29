@@ -25,7 +25,17 @@ def output_dir(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
         ".",
         {
             "src/generated/resources": {},
-            "src/main/java/com/package/Patterns.java": "",
+            "src/main/java/com/package/Patterns.java": (
+                """\
+                public static final ActionRegistryEntry GET_CASTER = make(
+                    "foobar",
+                    new ActionRegistryEntry(
+                        HexPattern.fromAngles("qaqaqaqaqaq", HexDir.NORTH_EAST),
+                        OpGetCaster.INSTANCE
+                    )
+                );
+                """
+            ),
             "src/main/resources/assets": {
                 "hexcasting/patchouli_books/thehexbook/en_us": {
                     "categories/foo.json": {
