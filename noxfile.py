@@ -185,7 +185,7 @@ def hexdoc(session: nox.Session):
 
 @nox.session
 def dummy_setup(session: nox.Session):
-    session.install("copier")
+    session.install("copier", "hatch")
 
     from copier import run_copy  # type: ignore
 
@@ -286,9 +286,18 @@ def dummy_setup(session: nox.Session):
     )
 
     with session.chdir(DUMMY_PATH):
+        session.run("hatch", "version", silent=True)
+
         session.run("git", "init", ".", external=True)
         session.run("git", "add", ".", external=True)
-        session.run("git", "commit", "-m", "Initial commit", external=True)
+        session.run(
+            "git",
+            "commit",
+            "-m",
+            "Initial commit",
+            external=True,
+            success_codes=[0, 1],
+        )
 
 
 @nox.session
