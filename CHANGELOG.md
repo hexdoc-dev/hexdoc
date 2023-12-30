@@ -13,17 +13,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * Updated the version dropdown! Versions are now grouped by Minecraft version, and branches are hidden behind a submenu to reduce clutter.
   * This allows you to use the same mod version for different Minecraft versions, as long as the plugin version is different.
   * To switch back to the old style, add `hide_dropdown_minecraft_version = true` to the `[template.args]` section of your `hexdoc.toml` file.
+* Added `BookPlugin`, a base class for implementing alternative book systems. This is still heavily WIP, and there **will** be more breaking changes. We're planning to use this to implement Modonomicon support.
+* Internal: Added a Nox session to generate a dummy book for testing templates locally.
 
 ### Changed
 
-* `ModPlugin.jinja_template_root` can now return a list of tuples, to expose multiple template roots from a single plugin.
+* ⚠️ BREAKING: Reworked book loading to support the new `BookPlugin` system. This *probably* won't affect most users, but it is a breaking change.
+* `ModPlugin.jinja_template_root` may now return a list of template roots.
+* `hexdoc_mod_plugin` may now return a list of plugins.
 * `hexdoc merge` and `hexdoc ci merge` will now raise an error if trying to overwrite an existing version in release mode.
   * If you need to bypass this, either pass `--no-release` to `hexdoc [ci] merge`, or delete the `.sitemap-marker.json` file(s) in the merge destination.
 * The dropdown item for the current version is now disabled to give better feedback.
+* Replaced our `JSONValue` type with an alias for Pydantic's `JsonValue` type.
+
+### Removed
+
+* ⚠️ BREAKING: Removed reexports from `hexdoc.core` for `After_1_20`, `Before_1_19`, etc. They can still be imported from `hexdoc.core.compat` if needed, but this makes the namespace a bit cleaner.
 
 ### Fixed
 
 * `AttributeError` when generating error message for a nonexistent resource dir.
+* Deserializing the union type `ItemWithTexture | TagWithTexture` sometimes returned `TagWithTexture` for non-tag inputs.
 
 ## `1!0.1.0a7`
 
