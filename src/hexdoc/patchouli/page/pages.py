@@ -1,3 +1,4 @@
+from collections import defaultdict
 from typing import Self
 
 from pydantic import model_validator
@@ -77,6 +78,19 @@ class Multiblock(HexdocModel):
     pattern: list[list[str]]
     symmetrical: bool = False
     offset: tuple[int, int, int] | None = None
+
+    @property
+    def bill_of_materials(self) -> list[tuple[ItemWithTexture | TagWithTexture, int]]:
+        bom = defaultdict[str, int](int)
+        for layer in self.pattern:
+            for row in layer:
+                for item in row:
+                    if item in self.mapping:
+                        bom[item] += 1
+        bom_list = list[tuple[ItemWithTexture | TagWithTexture, int]]()
+        for item_key, count in bom.items():
+            bom_list.append((self.mapping[item_key], count))
+        return bom_list
 
 
 class MultiblockPage(PageWithText, type="patchouli:multiblock"):
