@@ -88,12 +88,18 @@ class SitemapItem(HexdocModel, alias_generator=to_camel):
 Sitemap = dict[str, SitemapItem]
 
 
-def delete_updated_books(*, src: Path, dst: Path):
+def delete_updated_books(*, src: Path, dst: Path, release: bool):
     src_markers = src.rglob(MARKER_NAME)
     for marker in src_markers:
-        src_dir = marker.parent
+        # eg. /v/latest/main/en_us/.sitemap-marker.json -> /v/latest/main
+        src_dir = marker.parent.parent
         dst_dir = dst / src_dir.relative_to(src)
-        shutil.rmtree(dst_dir, ignore_errors=True)
+        if dst_dir.exists():
+            if release:
+                raise ValueError(
+                    f"Tried to overwrite book directory in release mode: {dst_dir}"
+                )
+            shutil.rmtree(dst_dir)
 
 
 def load_sitemap(root: Path) -> Sitemap:

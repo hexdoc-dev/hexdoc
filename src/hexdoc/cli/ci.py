@@ -59,12 +59,13 @@ def build(
 def merge(
     *,
     props_file: PropsOption,
+    release: ReleaseOption,
 ):
     from . import app as hexdoc_app
 
     env = CIEnvironment.model_getenv()
     setup_logging(env.verbosity, ci=True)
-    hexdoc_app.merge(props_file=props_file)
+    hexdoc_app.merge(props_file=props_file, release=release)
 
 
 @app.command(deprecated=True)

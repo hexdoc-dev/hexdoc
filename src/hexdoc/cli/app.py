@@ -304,6 +304,7 @@ def merge(
     props_file: PropsOption,
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
+    release: ReleaseOption = False,
 ):
     props, _, _, plugin = load_common_data(props_file, branch="", book=True)
     if not props.template:
@@ -312,7 +313,7 @@ def merge(
     dst.mkdir(parents=True, exist_ok=True)
 
     # remove any stale data that we're about to replace
-    delete_updated_books(src=src, dst=dst)
+    delete_updated_books(src=src, dst=dst, release=release)
 
     # do the merge
     shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)

@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 * `hexdoc_item`, a Jinja filter that looks up an `ItemWithTexture` from the item id.
   * Syntax: `{{ texture_macros.render_item("minecraft:stone"|hexdoc_item) }}`
+* `hexdoc merge` and `hexdoc ci merge` will now raise an error if trying to overwrite an existing version in release mode.
+  * If you need to bypass this, either pass `--no-release` to `hexdoc [ci] merge`, or delete the `.sitemap-marker.json` file(s) in the merge destination.
 
 ### Changed
 
