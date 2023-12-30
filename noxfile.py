@@ -99,6 +99,7 @@ def test_copier(session: nox.Session):
 
 @nox.session(python=False)
 def precommit_pyright(session: nox.Session):
+    session.run("pip", "install", "--upgrade", "pyright")
     session.run("pip", "install", "-e", ".[test]")
 
     session.run("pyright", "--warnings", *session.posargs)

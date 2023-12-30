@@ -21,9 +21,9 @@ __all__ = [
     "VersionSource",
     "Versioned",
     "compat",
+    "properties",
 ]
 
-from . import compat
 from .compat import (
     IsVersion,
     MinecraftVersion,
