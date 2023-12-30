@@ -8,14 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### New Features
 
-* `hexdoc_item`, a Jinja filter that looks up an `ItemWithTexture` from the item id.
+* Added `hexdoc_item`, a Jinja filter that looks up an `ItemWithTexture` from the item id.
   * Syntax: `{{ texture_macros.render_item("minecraft:stone"|hexdoc_item) }}`
-* `hexdoc merge` and `hexdoc ci merge` will now raise an error if trying to overwrite an existing version in release mode.
-  * If you need to bypass this, either pass `--no-release` to `hexdoc [ci] merge`, or delete the `.sitemap-marker.json` file(s) in the merge destination.
+* Updated the version dropdown! Versions are now grouped by Minecraft version, and branches are hidden behind a submenu to reduce clutter.
+  * This allows you to use the same mod version for different Minecraft versions, as long as the plugin version is different.
+  * To switch back to the old style, add `hide_dropdown_minecraft_version = true` to the `[template.args]` section of your `hexdoc.toml` file.
 
 ### Changed
 
 * `ModPlugin.jinja_template_root` can now return a list of tuples, to expose multiple template roots from a single plugin.
+* `hexdoc merge` and `hexdoc ci merge` will now raise an error if trying to overwrite an existing version in release mode.
+  * If you need to bypass this, either pass `--no-release` to `hexdoc [ci] merge`, or delete the `.sitemap-marker.json` file(s) in the merge destination.
 
 ### Fixed
 

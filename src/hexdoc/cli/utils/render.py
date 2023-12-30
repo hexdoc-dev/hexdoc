@@ -155,6 +155,8 @@ def render_book(
 
     lang_name = i18n.localize_lang()
 
+    minecraft_version = MinecraftVersion.get()
+
     template_args |= {
         "props": props,
         "i18n": i18n,
@@ -169,6 +171,7 @@ def render_book(
         "icon_href": icon_href,
         "safari_pinned_tab_href": "https://raw.githubusercontent.com/hexdoc-dev/hexdoc/main/media/safari-pinned-tab.svg",
         "safari_pinned_tab_color": "#332233",
+        "minecraft_version": minecraft_version or "???",
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,
             do_format=False,
@@ -212,7 +215,6 @@ def render_book(
     # this feels scuffed but it does work
     marker_path = "/" + "/".join(site_path.parts)
     is_default_lang = lang == props.default_lang
-    minecraft_version = MinecraftVersion.get()
 
     if versioned:
         marker = VersionedSitemapMarker(

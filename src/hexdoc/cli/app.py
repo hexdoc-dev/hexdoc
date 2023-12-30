@@ -319,8 +319,8 @@ def merge(
     shutil.copytree(src=src, dst=dst, dirs_exist_ok=True)
 
     # rebuild the sitemap
-    sitemap = load_sitemap(dst)
-    dump_sitemap(dst, sitemap)
+    sitemap, minecraft_sitemap = load_sitemap(dst)
+    dump_sitemap(dst, sitemap, minecraft_sitemap)
 
     # find paths for redirect pages
     redirects = dict[Path, str]()
