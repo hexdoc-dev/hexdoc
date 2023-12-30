@@ -172,6 +172,7 @@ def render_book(
         "safari_pinned_tab_href": "https://raw.githubusercontent.com/hexdoc-dev/hexdoc/main/media/safari-pinned-tab.svg",
         "safari_pinned_tab_color": "#332233",
         "minecraft_version": minecraft_version or "???",
+        "full_version": plugin.full_version,
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,
             do_format=False,

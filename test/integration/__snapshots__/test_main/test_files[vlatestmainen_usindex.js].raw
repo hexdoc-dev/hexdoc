@@ -4,6 +4,7 @@ import semver from 'https://cdn.jsdelivr.net/npm/semver@7.5.4/+esm';
 const BOOK_URL = "GITHUB_PAGES_URL";
 const VERSION = "latest/main";
 const MINECRAFT_VERSION = "1.20.1";
+const FULL_VERSION = "FULL_VERSION";
 const LANG = "en_us";
 const SHOW_DROPDOWN_MINECRAFT_VERSION = "true" === "true";
 let cycleNodes = [];
@@ -147,7 +148,7 @@ function dropdownItem(text, href) {
 }
 function versionDropdownItem(sitemap, versionKey) {
   const {defaultPath, langPaths, markers, defaultLang} = sitemap[versionKey];
-  const {version} = markers[LANG] ?? markers[defaultLang];
+  const {version, full_version} = markers[LANG] ?? markers[defaultLang];
   // link to the current language if available, else link to the default language
   let path;
   if (langPaths.hasOwnProperty(LANG)) {
@@ -155,7 +156,11 @@ function versionDropdownItem(sitemap, versionKey) {
   } else {
     path = defaultPath;
   }
-  return dropdownItem(version, BOOK_URL + path);
+  const li = dropdownItem(version, BOOK_URL + path);
+  if (full_version === FULL_VERSION) {
+    li.classList.add("disabled");
+  }
+  return li;
 }
 function versionDropdownItems(sitemap, versions) {
   return versions.map((version) => (

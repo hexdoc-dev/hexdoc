@@ -6,6 +6,7 @@ import semver from 'https://cdn.jsdelivr.net/npm/semver@7.5.4/+esm';
 const BOOK_URL = "{{ site_url }}";
 const VERSION = "{{ version }}";
 const MINECRAFT_VERSION = "{{ minecraft_version }}";
+const FULL_VERSION = "{{ full_version }}";
 const LANG = "{{ lang }}";
 const SHOW_DROPDOWN_MINECRAFT_VERSION = "{{ 'true' if hide_dropdown_minecraft_version is not defined or not hide_dropdown_minecraft_version }}" === "true";
 
@@ -179,7 +180,7 @@ function dropdownItem(text, href) {
 
 function versionDropdownItem(sitemap, versionKey) {
   const {defaultPath, langPaths, markers, defaultLang} = sitemap[versionKey];
-  const {version} = markers[LANG] ?? markers[defaultLang];
+  const {version, full_version} = markers[LANG] ?? markers[defaultLang];
 
   // link to the current language if available, else link to the default language
   let path;
@@ -189,7 +190,11 @@ function versionDropdownItem(sitemap, versionKey) {
     path = defaultPath;
   }
 
-  return dropdownItem(version, BOOK_URL + path);
+  const li = dropdownItem(version, BOOK_URL + path);
+  if (full_version === FULL_VERSION) {
+    li.classList.add("disabled");
+  }
+  return li;
 }
 
 function versionDropdownItems(sitemap, versions) {

@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * `ModPlugin.jinja_template_root` can now return a list of tuples, to expose multiple template roots from a single plugin.
 * `hexdoc merge` and `hexdoc ci merge` will now raise an error if trying to overwrite an existing version in release mode.
   * If you need to bypass this, either pass `--no-release` to `hexdoc [ci] merge`, or delete the `.sitemap-marker.json` file(s) in the merge destination.
+* The dropdown item for the current version is now disabled to give better feedback.
 
 ### Fixed
 
