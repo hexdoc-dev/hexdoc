@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 * Added `ModPlugin.default_rendered_templates_v2`, which works the same as `default_rendered_templates` but gets the book and context as arguments.
   * This is meant to allow generating multi-file book structures instead of a single HTML document.
+* `hexdoc.toml`: Added `template.render_from`, which is a list of modids to include default rendered templates from, defaulting to `template.include`.
+  * This can be used in conjunction with `template.include` to add a plugin's templates to the environment without rendering its default templates.
 
 ### Changed
 

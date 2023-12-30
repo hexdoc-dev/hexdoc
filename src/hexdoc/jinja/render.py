@@ -126,7 +126,7 @@ def get_templates(
         template_names = {k: (v, {}) for k, v in props.template.render.items()}
     else:
         template_names = pm.default_rendered_templates(
-            modids=props.template.include,
+            modids=props.template.render_from,
             book=book,
             context=context,
         )
