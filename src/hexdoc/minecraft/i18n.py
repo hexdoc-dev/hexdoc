@@ -110,9 +110,7 @@ class I18n(ValidationContextModel):
         )
 
     @classmethod
-    def load_all(cls, loader: ModResourceLoader, book_data: dict[str, Any]):
-        enabled = cls.is_enabled(book_data)
-
+    def load_all(cls, loader: ModResourceLoader, enabled: bool):
         # lang -> (key -> value)
         lookups = defaultdict[str, dict[str, LocalizedStr]](dict)
         internal_langs = set[str]()
@@ -147,11 +145,9 @@ class I18n(ValidationContextModel):
     def load(
         cls,
         loader: ModResourceLoader,
-        book_data: dict[str, Any],
+        enabled: bool,
         lang: str,
     ) -> Self:
-        enabled = cls.is_enabled(book_data)
-
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -168,7 +164,7 @@ class I18n(ValidationContextModel):
         default_lang = loader.props.default_lang
         default_i18n = None
         if lang != default_lang:
-            default_i18n = cls.load(loader, book_data, default_lang)
+            default_i18n = cls.load(loader, enabled, default_lang)
 
         return cls(
             lookup=lookup,
@@ -183,10 +179,6 @@ class I18n(ValidationContextModel):
             key: LocalizedStr(key=key, value=value.replace("%%", "%"))
             for key, value in raw_lookup.items()
         }
-
-    @classmethod
-    def is_enabled(cls, book_data: dict[str, Any]):
-        return book_data.get("i18n", False)
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):

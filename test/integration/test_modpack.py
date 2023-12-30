@@ -3,7 +3,7 @@ from typing import Any
 
 import pytest
 from hexdoc._hooks import HexdocPlugin
-from hexdoc.cli.utils.load import load_book
+from hexdoc.cli.utils.load import init_context
 from hexdoc.core import ModResourceLoader
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import Properties
@@ -24,8 +24,7 @@ def patch_session(monkeysession: MonkeyPatch):
 
 @pytest.fixture
 def pm(empty_pm: PluginManager):
-    empty_pm.inner.register(HexdocPlugin, "hexdoc")
-    empty_pm.init_mod_plugins()
+    empty_pm.register(HexdocPlugin, "hexdoc")
     return empty_pm
 
 
@@ -88,17 +87,28 @@ def book_and_context(pm: PluginManager, loader: ModResourceLoader):
     props = loader.props
     assert props.book_id
 
-    book_data = Book.load_book_json(loader, props.book_id)
+    book_plugin = pm.book_plugin(props.book_type)
 
-    i18n = I18n.load(loader, book_data, props.default_lang)
+    book_id, book_data = book_plugin.load_book_data(props.book_id, loader)
 
-    yield load_book(
+    i18n = I18n.load(
+        loader,
+        enabled=book_plugin.is_i18n_enabled(book_data),
+        lang=props.default_lang,
+    )
+
+    context = init_context(
+        book_id=book_id,
         book_data=book_data,
         pm=pm,
         loader=loader,
         i18n=i18n,
         all_metadata={},
     )
+
+    book = book_plugin.validate_book(book_data, context=context)
+
+    yield book, context
 
 
 def test_book_name(book_and_context: tuple[Book, dict[str, Any]]):

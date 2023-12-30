@@ -127,5 +127,5 @@ def test_files(
     assert app_file == path_snapshot
 
     # difficult to monkeypatch versions for subprocess, so this file will be different
-    if not filename.endswith(".sitemap-marker.json"):
+    if not any(filename.endswith(s) for s in [".sitemap-marker.json", "index.js"]):
         assert app_file.read_bytes() == subprocess_file.read_bytes()

@@ -7,6 +7,7 @@ import pluggy
 
 from hexdoc.utils import ValidationContext
 
+from .book_plugin import BookPlugin
 from .mod_plugin import ModPlugin
 from .types import HookReturn, HookReturns
 
@@ -23,7 +24,12 @@ hookspec = pluggy.HookspecMarker(HEXDOC_PROJECT_NAME)
 class PluginSpec(Protocol):
     @staticmethod
     @hookspec
-    def hexdoc_mod_plugin(branch: str, props: Properties) -> list[ModPlugin]:
+    def hexdoc_book_plugin() -> HookReturns[BookPlugin[Any]]:
+        ...
+
+    @staticmethod
+    @hookspec
+    def hexdoc_mod_plugin(branch: str, props: Properties) -> HookReturns[ModPlugin]:
         ...
 
     @staticmethod
@@ -67,9 +73,17 @@ class PluginImpl(Protocol):
     """
 
 
+class BookPluginImpl(PluginImpl, Protocol):
+    @staticmethod
+    def hexdoc_book_plugin() -> HookReturn[BookPlugin[Any]]:
+        """If your plugin represents a book system (like Patchouli), this must return an
+        instance of a subclass of `BookPlugin` with all abstract methods implemented."""
+        ...
+
+
 class ModPluginImpl(PluginImpl, Protocol):
     @staticmethod
-    def hexdoc_mod_plugin(branch: str) -> ModPlugin:
+    def hexdoc_mod_plugin(branch: str) -> HookReturn[ModPlugin]:
         """If your plugin represents a Minecraft mod, this must return an instance of a
         subclass of `ModPlugin` or `ModPluginWithBook`, with all abstract methods
         implemented."""
@@ -78,7 +92,7 @@ class ModPluginImpl(PluginImpl, Protocol):
 
 class ModPluginImplWithProps(PluginImpl, Protocol):
     @staticmethod
-    def hexdoc_mod_plugin(branch: str, props: Properties) -> ModPlugin:
+    def hexdoc_mod_plugin(branch: str, props: Properties) -> HookReturn[ModPlugin]:
         """If your plugin represents a Minecraft mod, this must return an instance of a
         subclass of `ModPlugin` or `ModPluginWithBook`, with all abstract methods
         implemented."""

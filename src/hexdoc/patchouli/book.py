@@ -1,10 +1,9 @@
 from collections import defaultdict
-from typing import Any, Literal, Mapping, Self
+from typing import Any, Literal
 
 from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
 from hexdoc.core import (
-    IsVersion,
     ItemStack,
     ModResourceLoader,
     ResLoc,
@@ -13,12 +12,12 @@ from hexdoc.core import (
 from hexdoc.core.compat import AtLeast_1_20, Before_1_20
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
-from hexdoc.utils import sorted_dict
+from hexdoc.utils import ContextSource, cast_context, sorted_dict
 
 from .book_context import BookContext
 from .category import Category
 from .entry import Entry
-from .text import BookLinkBases, FormattingContext, FormatTree
+from .text import FormattingContext, FormatTree
 
 
 class Book(HexdocModel):
@@ -34,9 +33,6 @@ class Book(HexdocModel):
     """
 
     # not in book.json
-    id: ResourceLocation
-
-    _link_bases: BookLinkBases = PrivateAttr(default_factory=dict)
     _categories: dict[ResourceLocation, Category] = PrivateAttr(default_factory=dict)
 
     # required
@@ -77,51 +73,16 @@ class Book(HexdocModel):
     pause_game: bool = False
     text_overflow_mode: Literal["overflow", "resize", "truncate"] | None = None
 
-    @classmethod
-    def load_book_json(cls, loader: ModResourceLoader, id: ResourceLocation):
-        data = cls._load_book_resource(loader, id)
-
-        if IsVersion("<1.20") and "extend" in data:
-            id = ResourceLocation.model_validate(data["extend"])
-            return cls._load_book_resource(loader, id)
-
-        return data
-
-    @classmethod
-    def load_all_from_data(
-        cls,
-        data: Mapping[str, Any],
-        *,
-        context: dict[str, Any],
-    ) -> Self:
-        book_ctx = BookContext.of(context)
-        loader = ModResourceLoader.of(context)
-
-        book = cls.model_validate(data, context=context)
-        book._load_categories(context, book_ctx)
-        book._load_entries(context, book_ctx, loader)
-
-        return book
-
-    @classmethod
-    def _load_book_resource(
-        cls,
-        loader: ModResourceLoader,
-        id: ResourceLocation,
-    ) -> dict[str, Any]:
-        _, data = loader.load_resource("data", "patchouli_books", id / "book")
-        return data | {"id": id}
-
     @property
     def categories(self):
         return self._categories
 
-    @property
-    def link_bases(self):
-        return self._link_bases
-
-    def _load_categories(self, context: dict[str, Any], book_ctx: BookContext):
-        categories = Category.load_all(context, self.id, self.use_resource_pack)
+    def _load_categories(self, context: ContextSource, book_ctx: BookContext):
+        categories = Category.load_all(
+            cast_context(context),
+            book_ctx.book_id,
+            self.use_resource_pack,
+        )
 
         if not categories:
             raise ValueError(
@@ -130,11 +91,13 @@ class Book(HexdocModel):
 
         for id, category in categories.items():
             self._categories[id] = category
-            self._link_bases[(id, None)] = book_ctx.get_link_base(category.resource_dir)
+            book_ctx.link_bases[(id, None)] = book_ctx.get_link_base(
+                category.resource_dir
+            )
 
     def _load_entries(
         self,
-        context: dict[str, Any],
+        context: ContextSource,
         book_ctx: BookContext,
         loader: ModResourceLoader,
     ):
@@ -142,11 +105,11 @@ class Book(HexdocModel):
         spoilered_categories = dict[ResLoc, bool]()
 
         for resource_dir, id, data in loader.load_book_assets(
-            parent_book_id=self.id,
+            parent_book_id=book_ctx.book_id,
             folder="entries",
             use_resource_pack=self.use_resource_pack,
         ):
-            entry = Entry.load(resource_dir, id, data, context)
+            entry = Entry.load(resource_dir, id, data, cast_context(context))
 
             spoilered_categories[entry.category_id] = (
                 entry.is_spoiler and spoilered_categories.get(entry.category_id, True)
@@ -157,14 +120,14 @@ class Book(HexdocModel):
                 internal_entries[entry.category_id][entry.id] = entry
 
             link_base = book_ctx.get_link_base(resource_dir)
-            self._link_bases[(id, None)] = link_base
+            book_ctx.link_bases[(id, None)] = link_base
             for page in entry.pages:
                 if page.anchor is not None:
-                    self._link_bases[(id, page.anchor)] = link_base
+                    book_ctx.link_bases[(id, page.anchor)] = link_base
 
         if not internal_entries:
             raise ValueError(
-                f"No internal entries found for book {self.id}, is this the correct id?"
+                f"No internal entries found for book {book_ctx.book_id}, is this the correct id?"
             )
 
         for category_id, new_entries in internal_entries.items():

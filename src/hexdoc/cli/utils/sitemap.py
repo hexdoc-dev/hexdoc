@@ -3,10 +3,11 @@ from collections import defaultdict
 from pathlib import Path
 
 from packaging.version import Version
-from pydantic import Field, TypeAdapter
+from pydantic import Field
 from pydantic.alias_generators import to_camel
 
-from hexdoc.model import DEFAULT_CONFIG, HexdocModel
+from hexdoc.model import HexdocModel
+from hexdoc.model.base import HexdocTypeAdapter
 from hexdoc.utils import write_to_path
 
 MARKER_NAME = ".sitemap-marker.json"
@@ -86,18 +87,26 @@ class SitemapItem(HexdocModel, alias_generator=to_camel):
 
 
 Sitemap = dict[str, SitemapItem]
+MinecraftSitemap = dict[str, Sitemap]
 
 
-def delete_updated_books(*, src: Path, dst: Path):
+def delete_updated_books(*, src: Path, dst: Path, release: bool):
     src_markers = src.rglob(MARKER_NAME)
     for marker in src_markers:
-        src_dir = marker.parent
+        # eg. /v/latest/main/en_us/.sitemap-marker.json -> /v/latest/main
+        src_dir = marker.parent.parent
         dst_dir = dst / src_dir.relative_to(src)
-        shutil.rmtree(dst_dir, ignore_errors=True)
+        if dst_dir.exists():
+            if release:
+                raise ValueError(
+                    f"Tried to overwrite book directory in release mode: {dst_dir}"
+                )
+            shutil.rmtree(dst_dir)
 
 
-def load_sitemap(root: Path) -> Sitemap:
+def load_sitemap(root: Path):
     sitemap: Sitemap = defaultdict(SitemapItem)
+    minecraft_sitemap: MinecraftSitemap = defaultdict(lambda: defaultdict(SitemapItem))
 
     # crawl the new tree to rebuild the sitemap
     for marker_path in root.rglob(MARKER_NAME):
@@ -106,15 +115,22 @@ def load_sitemap(root: Path) -> Sitemap:
         except ValueError:
             marker = LatestSitemapMarker.load(marker_path)
         sitemap[marker.version].add_marker(marker)
+        # TODO: ew.
+        minecraft_sitemap[marker.minecraft_version or "???"][marker.version].add_marker(
+            marker
+        )
 
-    return sitemap
+    return sitemap, minecraft_sitemap
 
 
-def dump_sitemap(root: Path, sitemap: Sitemap):
-    # dump the sitemap using a TypeAdapter so it serializes the items properly
-    ta = TypeAdapter(Sitemap, config=DEFAULT_CONFIG)
-
+def dump_sitemap(root: Path, sitemap: Sitemap, minecraft_sitemap: MinecraftSitemap):
+    # dump the sitemaps using a TypeAdapter so they serialize the items properly
     write_to_path(
         root / "meta" / "sitemap.json",
-        ta.dump_json(sitemap, by_alias=True),
+        HexdocTypeAdapter(Sitemap).dump_json(sitemap, by_alias=True),
+    )
+
+    write_to_path(
+        root / "meta" / "sitemap-minecraft.json",
+        HexdocTypeAdapter(MinecraftSitemap).dump_json(minecraft_sitemap, by_alias=True),
     )

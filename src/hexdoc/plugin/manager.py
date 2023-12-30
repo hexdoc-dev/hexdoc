@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
+from .book_plugin import BookPlugin
 from .mod_plugin import ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
 from .types import HookReturns
@@ -99,24 +100,45 @@ class PluginManager(ValidationContext):
         self.props = props
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)
         self.mod_plugins: dict[str, ModPlugin] = {}
+        self.book_plugins: dict[str, BookPlugin[Any]] = {}
 
         self.inner.add_hookspecs(PluginSpec)
         if load:
             self.init_entrypoints()
-            self.init_mod_plugins()
+            self.init_plugins()
 
     def init_entrypoints(self):
         self.inner.load_setuptools_entrypoints(HEXDOC_PROJECT_NAME)
         self.inner.check_pending()
 
-    def init_mod_plugins(self):
+    def init_plugins(self):
+        self._init_book_plugins()
+        self._init_mod_plugins()
+
+    def _init_book_plugins(self):
+        caller = self._hook_caller(PluginSpec.hexdoc_book_plugin)
+        for plugin in flatten(caller.try_call()):
+            self.book_plugins[plugin.modid] = plugin
+
+    def _init_mod_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_mod_plugin)
-        for plugin in caller.try_call(branch=self.branch, props=self.props) or []:
+        for plugin in flatten(
+            caller.try_call(
+                branch=self.branch,
+                props=self.props,
+            )
+        ):
             self.mod_plugins[plugin.modid] = plugin
 
     def register(self, plugin: Any, name: str | None = None):
         self.inner.register(plugin, name)
-        self.init_mod_plugins()
+        self.init_plugins()
+
+    def book_plugin(self, modid: str):
+        plugin = self.book_plugins.get(modid)
+        if plugin is None:
+            raise ValueError(f"No BookPlugin registered for modid: {modid}")
+        return plugin
 
     @overload
     def mod_plugin(self, modid: str, book: Literal[True]) -> ModPluginWithBook:
@@ -268,8 +290,8 @@ class PluginManager(ValidationContext):
         return TypedHookCaller(None, caller)
 
 
-def flatten(values: list[list[_T] | _T]) -> Iterator[_T]:
-    for value in values:
+def flatten(values: list[list[_T] | _T] | None) -> Iterator[_T]:
+    for value in values or []:
         if isinstance(value, list):
             yield from value
         else:

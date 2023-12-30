@@ -1,4 +1,4 @@
-exclude: '\{\{.+\}\}|__snapshots__|^vendor/'
+exclude: '__snapshots__|^vendor/'
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -17,8 +17,13 @@ repos:
     hooks:
       - id: ruff
       - id: ruff-format
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.334
+  - repo: local
     hooks:
       - id: pyright
-        args: ["--warnings"]
+        name: pyright
+        entry: nox -s precommit_pyright --
+        language: python
+        language_version: '3.11'
+        additional_dependencies: [nox]
+        types_or: [python, pyi]
+        require_serial: true

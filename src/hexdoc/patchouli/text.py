@@ -12,13 +12,12 @@ from jinja2.runtime import Context
 from pydantic import ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
-from yarl import URL
 
 from hexdoc.core import Properties, ResourceLocation
 from hexdoc.minecraft import I18n, LocalizedStr
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import TryGetEnum, classproperty
+from hexdoc.utils import PydanticURL, TryGetEnum, classproperty
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",
@@ -62,7 +61,7 @@ _COLORS = {
     "f": "fff",
 }
 
-BookLinkBases = dict[tuple[ResourceLocation, str | None], URL]
+BookLinkBases = dict[tuple[ResourceLocation, str | None], PydanticURL]
 
 
 class FormattingContext(ValidationContextModel):

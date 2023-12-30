@@ -1,5 +1,6 @@
 __all__ = [
     "ContextSource",
+    "FieldOrProperty",
     "IProperty",
     "Inherit",
     "InheritType",
@@ -17,6 +18,7 @@ __all__ = [
     "TryGetEnum",
     "ValidationContext",
     "add_to_context",
+    "cast_context",
     "cast_or_raise",
     "clamping_validator",
     "classproperty",
@@ -38,7 +40,7 @@ __all__ = [
 
 from .cd import RelativePath, relative_path_root
 from .classproperties import classproperty
-from .context import ContextSource, ValidationContext, add_to_context
+from .context import ContextSource, ValidationContext, add_to_context, cast_context
 from .contextmanagers import set_contextvar
 from .deserialize import (
     JSONDict,
@@ -57,6 +59,7 @@ from .logging import TRACE, setup_logging
 from .path import replace_suffixes, strip_suffixes, write_to_path
 from .singletons import Inherit, InheritType, NoValue, NoValueType
 from .types import (
+    FieldOrProperty,
     IProperty,
     PydanticOrderedSet,
     PydanticURL,

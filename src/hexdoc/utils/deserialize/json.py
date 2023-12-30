@@ -2,14 +2,13 @@ import re
 from typing import TypeVar
 
 import pyjson5
+from pydantic import JsonValue as JSONValue
 
 from .assertions import isinstance_or_raise
 
 _T_co = TypeVar("_T_co", covariant=True)
 
-JSONDict = dict[str, "JSONValue"]
-
-JSONValue = JSONDict | list["JSONValue"] | str | int | float | bool | None
+JSONDict = dict[str, JSONValue]
 
 
 def decode_json_dict(data: str | bytes) -> JSONDict:

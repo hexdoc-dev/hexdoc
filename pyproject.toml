@@ -52,7 +52,7 @@ dependencies = [
     "typer[all]~=0.9",
     "typing_extensions~=4.6",
     "yarl~=1.9",
-    "hatch~=1.7",
+    "hatch~=1.9",
 
     # Favicons deps, because it's vendored
     "pillow~=9.5.0",
@@ -94,10 +94,11 @@ hexdoc = "hexdoc.cli.app:app"
 
 [project.entry-points.hexdoc]
 hexdoc = "hexdoc._hooks:HexdocPlugin"
+modonomicon = "hexdoc_modonomicon._hooks:ModonomiconPlugin"  # TODO: remove
 
 [tool.hatch.build]
 artifacts = [
-    "/src/hexdoc/_export/generated",
+    "_export/generated",
 ]
 
 [tool.hatch.build.targets.sdist]
@@ -109,6 +110,7 @@ only-include = [
 [tool.hatch.build.targets.wheel]
 packages = [
     "src/hexdoc",
+    "src/hexdoc_modonomicon",  # TODO: remove
     "vendor/_hexdoc_favicons",
 ]
 
@@ -162,9 +164,6 @@ combine-as-imports = true
 pythonVersion = "3.11"
 pythonPlatform = "All"
 
-venvPath = "."
-venv = "venv"
-
 include = [
     "src",
     "test",
@@ -179,7 +178,6 @@ exclude = [
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
-    "**/template",
 ]
 
 typeCheckingMode = "basic"

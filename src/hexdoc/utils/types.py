@@ -43,6 +43,9 @@ class IProperty(Protocol[_T_covariant]):
         ...
 
 
+FieldOrProperty = _T_covariant | IProperty[_T_covariant]
+
+
 @unique
 class TryGetEnum(Enum):
     @classmethod

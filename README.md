@@ -64,8 +64,8 @@ pytest  # fast, skips Cookiecutter
 nox  # slow, full test suite in an isolated venv
 nox --no-install  # after the first Nox run, use this to skip reinstalling everything
 
-# update test snapshots
-nox -- --snapshot-update
+# update test snapshots (only running sessions with the tag "test")
+nox -t test -- --snapshot-update
 
 # run hexdoc commands in an isolated environment to ensure it works on its own
 nox -s hexdoc -- build

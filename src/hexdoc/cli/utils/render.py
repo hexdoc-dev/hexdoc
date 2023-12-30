@@ -18,7 +18,7 @@ from jinja2 import (
 )
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.core import MinecraftVersion, Properties
+from hexdoc.core import MinecraftVersion, Properties, ResourceLocation
 from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
 from hexdoc.jinja import (
     IncludeRawExtension,
@@ -28,7 +28,6 @@ from hexdoc.jinja import (
     hexdoc_wrap,
 )
 from hexdoc.minecraft import I18n
-from hexdoc.patchouli import Book
 from hexdoc.plugin import ModPluginWithBook, PluginManager
 from hexdoc.utils import write_to_path
 
@@ -119,8 +118,9 @@ def render_book(
     pm: PluginManager,
     plugin: ModPluginWithBook,
     lang: str,
-    book: Book,
+    book_id: ResourceLocation,
     i18n: I18n,
+    macros: dict[str, str],
     env: Environment,
     templates: dict[Path, Template],
     output_dir: Path,
@@ -155,8 +155,9 @@ def render_book(
 
     lang_name = i18n.localize_lang()
 
+    minecraft_version = MinecraftVersion.get()
+
     template_args |= {
-        "book": book,
         "props": props,
         "i18n": i18n,
         "site_url": str(props.env.github_pages_url),
@@ -165,26 +166,29 @@ def render_book(
         "lang": lang,
         "lang_name": lang_name,
         "is_bleeding_edge": version.startswith("latest"),
-        "link_bases": book.link_bases,
         "favicons_html": favicons_html,
         "favicons_formats": favicons_formats,
         "icon_href": icon_href,
         "safari_pinned_tab_href": "https://raw.githubusercontent.com/hexdoc-dev/hexdoc/main/media/safari-pinned-tab.svg",
         "safari_pinned_tab_color": "#332233",
+        "minecraft_version": minecraft_version or "???",
+        "full_version": plugin.full_version,
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,
             do_format=False,
             props=props,
-            book=book,
+            book_id=book_id,
             i18n=i18n,
+            macros=macros,
             pm=pm,
         ),
         "_f": lambda key: hexdoc_localize(  # i18n helper with patchi formatting
             key,
             do_format=True,
             props=props,
-            book=book,
+            book_id=book_id,
             i18n=i18n,
+            macros=macros,
             pm=pm,
         ),
         **props.template.args,
@@ -212,7 +216,6 @@ def render_book(
     # this feels scuffed but it does work
     marker_path = "/" + "/".join(site_path.parts)
     is_default_lang = lang == props.default_lang
-    minecraft_version = MinecraftVersion.get()
 
     if versioned:
         marker = VersionedSitemapMarker(

@@ -1,4 +1,6 @@
 __all__ = [
+    "BookPlugin",
+    "BookPluginImpl",
     "HEXDOC_PROJECT_NAME",
     "HookReturn",
     "LoadTaggedUnionsImpl",
@@ -17,6 +19,7 @@ __all__ = [
 
 import pluggy
 
+from .book_plugin import BookPlugin
 from .manager import (
     PluginManager,
     PluginNotFoundError,
@@ -28,6 +31,7 @@ from .mod_plugin import (
 )
 from .specs import (
     HEXDOC_PROJECT_NAME,
+    BookPluginImpl,
     LoadTaggedUnionsImpl,
     ModPluginImpl,
     ModPluginImplWithProps,

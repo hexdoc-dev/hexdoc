@@ -3,13 +3,14 @@ from typing import Any
 
 import pytest
 from hexdoc._hooks import HexdocPlugin
-from hexdoc.cli.utils.load import load_book
+from hexdoc.cli.utils.load import init_context
 from hexdoc.core import ModResourceLoader, PathResourceDir, PluginResourceDir
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import EnvironmentVariableProps, Properties, TexturesProps
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
+from hexdoc.patchouli.book_context import BookContext
 from hexdoc.patchouli.text import FormattingContext
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
@@ -25,8 +26,7 @@ def patch_session(monkeysession: MonkeyPatch):
 
 @pytest.fixture
 def pm(empty_pm: PluginManager):
-    empty_pm.inner.register(HexdocPlugin, "hexdoc")
-    empty_pm.init_mod_plugins()
+    empty_pm.register(HexdocPlugin, "hexdoc")
     return empty_pm
 
 
@@ -154,11 +154,18 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
     parent_props = parent_loader.props
     assert parent_props.book_id
 
-    book_data = Book.load_book_json(parent_loader, parent_props.book_id)
+    book_plugin = pm.book_plugin(parent_props.book_type)
 
-    i18n = I18n.load(parent_loader, book_data, parent_props.default_lang)
+    book_id, book_data = book_plugin.load_book_data(parent_props.book_id, parent_loader)
 
-    return load_book(
+    i18n = I18n.load(
+        parent_loader,
+        enabled=book_plugin.is_i18n_enabled(book_data),
+        lang=parent_props.default_lang,
+    )
+
+    context = init_context(
+        book_id=book_id,
         book_data=book_data,
         pm=pm,
         loader=parent_loader,
@@ -166,17 +173,28 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
         all_metadata={},
     )
 
+    book = book_plugin.validate_book(book_data, context=context)
+
+    return book, context
+
 
 @pytest.fixture
 def child_book(pm: PluginManager, child_loader: ModResourceLoader):
     child_props = child_loader.props
     assert child_props.book_id
 
-    book_data = Book.load_book_json(child_loader, child_props.book_id)
+    book_plugin = pm.book_plugin(child_props.book_type)
 
-    i18n = I18n.load(child_loader, book_data, child_props.default_lang)
+    book_id, book_data = book_plugin.load_book_data(child_props.book_id, child_loader)
 
-    return load_book(
+    i18n = I18n.load(
+        child_loader,
+        enabled=book_plugin.is_i18n_enabled(book_data),
+        lang=child_props.default_lang,
+    )
+
+    context = init_context(
+        book_id=book_id,
         book_data=book_data,
         pm=pm,
         loader=child_loader,
@@ -184,29 +202,35 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
         all_metadata={},
     )
 
+    book = book_plugin.validate_book(book_data, context=context)
+
+    return book, context
+
 
 def test_parent_ids(parent_book: tuple[Book, dict[str, Any]]):
-    book, context = parent_book
-
     want_id = ResourceLocation("parent", "parentbook")
+
+    _, context = parent_book
+    book_ctx = BookContext.of(context)
 
     assert want_id == Properties.of(context).book_id
     assert want_id == FormattingContext.of(context).book_id
-    assert want_id == book.id
+    assert want_id == book_ctx.book_id
 
 
 def test_child_parent_ids(child_book: tuple[Book, dict[str, Any]]):
-    book, context = child_book
-
     want_id = ResourceLocation("parent", "parentbook")
 
+    _, context = child_book
+    book_ctx = BookContext.of(context)
+
     assert want_id == FormattingContext.of(context).book_id
-    assert want_id == book.id
+    assert want_id == book_ctx.book_id
 
 
 def test_child_child_ids(child_book: tuple[Book, dict[str, Any]]):
-    _, context = child_book
-
     want_id = ResourceLocation("child", "childbook")
+
+    _, context = child_book
 
     assert want_id == Properties.of(context).book_id
