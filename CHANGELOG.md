@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+* The new version dropdown now only uses a submenu if there are at least 2 branches in a given version.
+* Refactored `render` and `sitemap` out of `hexdoc.cli.utils` to more appropriate places.
+
+### Removed
+
+* Removed separators between versions in the new version dropdown to reduce visual clutter.
+
+### Fixed
+
+* Overflowing text with long item names in the new dropdown submenus.
+* Incorrect logic for deciding which dropdown items to disable (ie. the current book version being viewed).
+* "Unhandled tag" error for page types without a namespace (Patchouli adds `patchouli:` if unspecified, but hexdoc didn't).
+
 ## `1!0.1.0a8`
 
 ### New Features
