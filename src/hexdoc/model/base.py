@@ -42,6 +42,7 @@ class HexdocModel(BaseModel):
     """
 
     model_config = DEFAULT_CONFIG
+    """@private"""
 
     __hexdoc_before_validator__: ClassVar[ModelBeforeValidator | None] = None
 

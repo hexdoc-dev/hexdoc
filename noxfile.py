@@ -124,6 +124,8 @@ def pdoc(session: nox.Session):
     session.run(
         "pdoc",
         "hexdoc",
+        "--template-directory",
+        "./docs/pdoc",
         "--favicon",
         PDOC_FAVICON,
         "--logo-link",
