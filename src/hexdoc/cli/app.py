@@ -21,7 +21,7 @@ from hexdoc.data.sitemap import (
     dump_sitemap,
     load_sitemap,
 )
-from hexdoc.jinja.render import create_jinja_env, render_book
+from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
@@ -226,26 +226,22 @@ def build(
         logger.info("Setting up Jinja template environment.")
         env = create_jinja_env(pm, props.template.include, props_file)
 
-        if props.template.override_default_render:
-            template_names = props.template.render
-        else:
-            template_names = pm.default_rendered_templates(props.template.include)
-
-        template_names |= props.template.extend_render
-
-        templates = {
-            Path(path): env.get_template(template_name)
-            for path, template_name in template_names.items()
-        }
-        if not templates:
-            raise RuntimeError(
-                "No templates to render, check your props.template configuration "
-                f"(in {props_file.as_posix()})"
-            )
-
         logger.info(f"Rendering book for {len(books)} language(s).")
         for book_info in books:
             try:
+                templates = get_templates(
+                    props=props,
+                    pm=pm,
+                    book=book_info.book,
+                    context=book_info.context,
+                    env=env,
+                )
+                if not templates:
+                    raise RuntimeError(
+                        "No templates to render, check your props.template configuration "
+                        f"(in {props_file.as_posix()})"
+                    )
+
                 book_ctx = BookContext.of(book_info.context)
                 formatting_ctx = FormattingContext.of(book_info.context)
                 texture_ctx = TextureContext.of(book_info.context)

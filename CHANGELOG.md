@@ -6,10 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## Unreleased
 
+### New Features
+
+* Added `ModPlugin.default_rendered_templates_v2`, which works the same as `default_rendered_templates` but gets the book and context as arguments.
+  * This is meant to allow generating multi-file book structures instead of a single HTML document.
+
 ### Changed
 
 * The new version dropdown now only uses a submenu if there are at least 2 branches in a given version.
 * Refactored `render` and `sitemap` out of `hexdoc.cli.utils` to more appropriate places.
+* `ModPlugin.default_rendered_templates` (and `_v2`) may now return `tuple[str, dict[str, Any]]` as the dict value, where the string is the template to render and the dict contains extra arguments to pass to that template.
 
 ### Removed
 

@@ -4,17 +4,24 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from importlib.resources import Package
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Mapping
 
 from jinja2.sandbox import SandboxedEnvironment
 from typing_extensions import override
 from yarl import URL
+
+from hexdoc.utils import ContextSource
 
 from .types import HookReturn
 
 if TYPE_CHECKING:
     from hexdoc.core import ModResourceLoader, Properties
     from hexdoc.minecraft.assets import HexdocAssetLoader
+
+RawRenderedTemplates = Mapping[
+    str | Path,
+    str | tuple[str, Mapping[str, Any]],
+]
 
 
 @dataclass(kw_only=True)
@@ -103,13 +110,26 @@ class ModPlugin(ABC):
         """
         return None
 
-    def default_rendered_templates(self) -> dict[str | Path, str]:
+    def default_rendered_templates(self) -> RawRenderedTemplates:
         """Extra templates to be rendered by default when your plugin is active.
 
         The key is the output path, and the value is the template to import and render.
+        It may also be a tuple where the first item is the template and the second is
+        a dict to be merged with the arguments for that template.
 
         This hook is not called if `props.template.render` is set, since that option
         overrides all default templates.
+        """
+        return {}
+
+    def default_rendered_templates_v2(
+        self,
+        book: Any,
+        context: ContextSource,
+    ) -> RawRenderedTemplates:
+        """Like `default_rendered_templates`, but gets access to the book and context.
+
+        This is useful for dynamically generating multi-file output structures.
         """
         return {}
 

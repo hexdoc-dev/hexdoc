@@ -4,7 +4,7 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Mapping, Sequence
 
 from _hexdoc_favicons import Favicons
 from jinja2 import (
@@ -23,7 +23,7 @@ from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
 from hexdoc.data.sitemap import MARKER_NAME, LatestSitemapMarker, VersionedSitemapMarker
 from hexdoc.minecraft import I18n
 from hexdoc.plugin import ModPluginWithBook, PluginManager
-from hexdoc.utils import write_to_path
+from hexdoc.utils import ContextSource, write_to_path
 
 from .extensions import IncludeRawExtension
 from .filters import (
@@ -112,6 +112,33 @@ def create_jinja_env_with_loader(loader: BaseLoader):
     return env
 
 
+def get_templates(
+    *,
+    props: Properties,
+    pm: PluginManager,
+    book: Any,
+    context: ContextSource,
+    env: Environment,
+) -> dict[Path, tuple[Template, Mapping[str, Any]]]:
+    assert props.template is not None
+
+    if props.template.override_default_render:
+        template_names = {k: (v, {}) for k, v in props.template.render.items()}
+    else:
+        template_names = pm.default_rendered_templates(
+            modids=props.template.include,
+            book=book,
+            context=context,
+        )
+
+    template_names |= {k: (v, {}) for k, v in props.template.extend_render.items()}
+
+    return {
+        Path(path): (env.get_template(template_name), args)
+        for path, (template_name, args) in template_names.items()
+    }
+
+
 def render_book(
     *,
     props: Properties,
@@ -122,7 +149,7 @@ def render_book(
     i18n: I18n,
     macros: dict[str, str],
     env: Environment,
-    templates: dict[Path, Template],
+    templates: dict[Path, tuple[Template, Mapping[str, Any]]],
     output_dir: Path,
     site_path: Path,
     version: str,
@@ -195,8 +222,8 @@ def render_book(
     }
     pm.update_template_args(template_args)
 
-    for filename, template in templates.items():
-        file = template.render(template_args)
+    for filename, (template, extra_args) in templates.items():
+        file = template.render(template_args | dict(extra_args))
         stripped_file = strip_empty_lines(file)
         write_to_path(output_dir / filename, stripped_file)
 
