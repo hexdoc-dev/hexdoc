@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from hexdoc.core import ModResourceLoader, Properties
     from hexdoc.minecraft.assets import HexdocAssetLoader
 
-RawRenderedTemplates = Mapping[
+DefaultRenderedTemplates = Mapping[
     str | Path,
     str | tuple[str, Mapping[str, Any]],
 ]
@@ -110,7 +110,7 @@ class ModPlugin(ABC):
         """
         return None
 
-    def default_rendered_templates(self) -> RawRenderedTemplates:
+    def default_rendered_templates(self) -> DefaultRenderedTemplates:
         """Extra templates to be rendered by default when your plugin is active.
 
         The key is the output path, and the value is the template to import and render.
@@ -126,7 +126,7 @@ class ModPlugin(ABC):
         self,
         book: Any,
         context: ContextSource,
-    ) -> RawRenderedTemplates:
+    ) -> DefaultRenderedTemplates:
         """Like `default_rendered_templates`, but gets access to the book and context.
 
         This is useful for dynamically generating multi-file output structures.

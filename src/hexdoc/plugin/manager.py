@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from hexdoc.patchouli import FormatTree
 
 from .book_plugin import BookPlugin
-from .mod_plugin import ModPlugin, ModPluginWithBook, RawRenderedTemplates
+from .mod_plugin import DefaultRenderedTemplates, ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
 from .types import HookReturns
 
@@ -267,7 +267,7 @@ class PluginManager(ValidationContext):
         book: Any,
         context: ContextSource,
     ):
-        templates: RawRenderedTemplates = {}
+        templates: DefaultRenderedTemplates = {}
         for modid in modids:
             plugin = self.mod_plugin(modid)
             templates |= plugin.default_rendered_templates()

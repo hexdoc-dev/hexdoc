@@ -1,6 +1,7 @@
 __all__ = [
     "BookPlugin",
     "BookPluginImpl",
+    "DefaultRenderedTemplates",
     "HEXDOC_PROJECT_NAME",
     "HookReturn",
     "LoadTaggedUnionsImpl",
@@ -25,6 +26,7 @@ from .manager import (
     PluginNotFoundError,
 )
 from .mod_plugin import (
+    DefaultRenderedTemplates,
     ModPlugin,
     ModPluginWithBook,
     VersionedModPlugin,
