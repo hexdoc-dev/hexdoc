@@ -1242,7 +1242,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Amethyst Dust"
@@ -1260,7 +1260,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Amethyst Shard"
@@ -1278,7 +1278,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Charged Amethyst"
@@ -1325,7 +1325,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1374,7 +1374,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Oak Staff"
       alt="Oak Staff"
@@ -1390,7 +1390,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1439,7 +1439,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Spruce Staff"
       alt="Spruce Staff"
@@ -1455,7 +1455,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1504,7 +1504,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Birch Staff"
       alt="Birch Staff"
@@ -1520,7 +1520,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1569,7 +1569,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Jungle Staff"
       alt="Jungle Staff"
@@ -1585,7 +1585,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1634,7 +1634,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Acacia Staff"
       alt="Acacia Staff"
@@ -1650,7 +1650,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1699,7 +1699,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Dark Oak Staff"
       alt="Dark Oak Staff"
@@ -1715,7 +1715,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1764,7 +1764,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Crimson Staff"
       alt="Crimson Staff"
@@ -1780,7 +1780,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1829,7 +1829,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Warped Staff"
       alt="Warped Staff"
@@ -1845,7 +1845,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1894,7 +1894,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Mangrove Staff"
       alt="Mangrove Staff"
@@ -1910,7 +1910,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1959,7 +1959,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Staff"
       alt="Edified Staff"
@@ -2007,7 +2007,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2056,7 +2056,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Scrying Lens"
       alt="Scrying Lens"
@@ -2106,7 +2106,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2128,7 +2128,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Thought-Knot"
       alt="Thought-Knot"
@@ -2178,7 +2178,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2291,7 +2291,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Focus"
       alt="Focus"
@@ -2339,7 +2339,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2508,7 +2508,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Abacus"
       alt="Abacus"
@@ -2556,7 +2556,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2662,7 +2662,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Spellbook"
       alt="Spellbook"
@@ -2710,7 +2710,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2732,7 +2732,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Small Scroll"
       alt="Small Scroll"
@@ -2748,7 +2748,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2797,7 +2797,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Medium Scroll"
       alt="Medium Scroll"
@@ -2813,7 +2813,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2898,7 +2898,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Large Scroll"
       alt="Large Scroll"
@@ -2946,7 +2946,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2986,14 +2986,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Blank Slate"
       alt="Blank Slate"
       src="DEBUG_GITHUBUSERCONTENT/doc/../Common/src/main/resources/assets/hexcasting/textures/item/slate_blank.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">6</div>
+    ><div class="badge item-texture-count">6</div>
             </div>
           </div>
         </div>
@@ -3043,7 +3043,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3120,7 +3120,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Cypher"
       alt="Cypher"
@@ -3136,7 +3136,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3213,7 +3213,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Trinket"
       alt="Trinket"
@@ -3240,7 +3240,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3310,7 +3310,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Artifact"
       alt="Artifact"
@@ -3354,7 +3354,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Phial of Media"
@@ -3399,7 +3399,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3448,7 +3448,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="White Pigment"
@@ -3463,7 +3463,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3512,7 +3512,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Orange Pigment"
@@ -3527,7 +3527,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3576,7 +3576,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Magenta Pigment"
@@ -3591,7 +3591,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3640,7 +3640,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Light Blue Pigment"
@@ -3655,7 +3655,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3704,7 +3704,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Yellow Pigment"
@@ -3719,7 +3719,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3768,7 +3768,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Lime Pigment"
@@ -3783,7 +3783,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3832,7 +3832,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Pink Pigment"
@@ -3847,7 +3847,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3896,7 +3896,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Gray Pigment"
@@ -3911,7 +3911,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3960,7 +3960,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Light Gray Pigment"
@@ -3975,7 +3975,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4024,7 +4024,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Cyan Pigment"
@@ -4039,7 +4039,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4088,7 +4088,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Purple Pigment"
@@ -4103,7 +4103,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4152,7 +4152,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Blue Pigment"
@@ -4167,7 +4167,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4216,7 +4216,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Brown Pigment"
@@ -4231,7 +4231,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4280,7 +4280,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Green Pigment"
@@ -4295,7 +4295,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4344,7 +4344,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Red Pigment"
@@ -4369,7 +4369,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4418,7 +4418,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Agender Pigment"
@@ -4433,7 +4433,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4482,7 +4482,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Aroace Pigment"
@@ -4497,7 +4497,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4546,7 +4546,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Aromantic Pigment"
@@ -4561,7 +4561,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4610,7 +4610,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Asexual Pigment"
@@ -4625,7 +4625,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4674,7 +4674,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Bisexual Pigment"
@@ -4689,7 +4689,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4738,7 +4738,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Demiboy Pigment"
@@ -4753,7 +4753,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4802,7 +4802,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Demigirl Pigment"
@@ -4817,7 +4817,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4866,7 +4866,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Gay Pigment"
@@ -4881,7 +4881,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4930,7 +4930,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Genderfluid Pigment"
@@ -4945,7 +4945,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4994,7 +4994,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Genderqueer Pigment"
@@ -5009,7 +5009,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5058,7 +5058,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Intersex Pigment"
@@ -5073,7 +5073,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5122,7 +5122,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Lesbian Pigment"
@@ -5137,7 +5137,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5186,7 +5186,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Non-Binary Pigment"
@@ -5201,7 +5201,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5257,7 +5257,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Pansexual Pigment"
@@ -5272,7 +5272,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5321,7 +5321,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Plural Pigment"
@@ -5336,7 +5336,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5385,7 +5385,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Transgender Pigment"
@@ -5411,7 +5411,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5496,7 +5496,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Soulglimmer Pigment"
@@ -5511,7 +5511,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5596,7 +5596,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       role="img"
       title="Vacant Pigment"
@@ -5642,7 +5642,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5711,14 +5711,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Planks"
       alt="Edified Planks"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_planks.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -5727,7 +5727,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5911,14 +5911,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Stairs"
       alt="Edified Stairs"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_stairs.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -5927,7 +5927,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6021,14 +6021,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Slab"
       alt="Edified Slab"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_slab.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">6</div>
+    ><div class="badge item-texture-count">6</div>
             </div>
           </div>
         </div>
@@ -6037,7 +6037,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6281,14 +6281,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Panel"
       alt="Edified Panel"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_panel.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -6297,7 +6297,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6481,14 +6481,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Tile"
       alt="Edified Tile"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_tile.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">6</div>
+    ><div class="badge item-texture-count">6</div>
             </div>
           </div>
         </div>
@@ -6497,7 +6497,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6681,14 +6681,14 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Door"
       alt="Edified Door"
       src="DEBUG_GITHUBUSERCONTENT/doc/../Common/src/main/resources/assets/hexcasting/textures/item/edified_door.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">3</div>
+    ><div class="badge item-texture-count">3</div>
             </div>
           </div>
         </div>
@@ -6697,7 +6697,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6881,14 +6881,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Trapdoor"
       alt="Edified Trapdoor"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_trapdoor_bottom.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">2</div>
+    ><div class="badge item-texture-count">2</div>
             </div>
           </div>
         </div>
@@ -6897,7 +6897,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6931,7 +6931,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Button"
       alt="Edified Button"
@@ -6947,7 +6947,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7011,7 +7011,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Edified Pressure Plate"
       alt="Edified Pressure Plate"
@@ -7058,7 +7058,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7135,7 +7135,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Jeweler&#39;s Hammer"
       alt="Jeweler&#39;s Hammer"
@@ -7181,7 +7181,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7266,14 +7266,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Block of Slate"
       alt="Block of Slate"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/slate_block.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -7282,7 +7282,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7304,7 +7304,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Block of Slate"
       alt="Block of Slate"
@@ -7320,7 +7320,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7405,14 +7405,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Scroll Paper"
       alt="Scroll Paper"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/scroll_paper.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -7421,7 +7421,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7520,14 +7520,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Ancient Scroll Paper"
       alt="Ancient Scroll Paper"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/ancient_scroll_paper.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -7536,7 +7536,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7558,7 +7558,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Paper Lantern"
       alt="Paper Lantern"
@@ -7574,7 +7574,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7596,7 +7596,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Ancient Paper Lantern"
       alt="Ancient Paper Lantern"
@@ -7612,7 +7612,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7711,14 +7711,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Ancient Paper Lantern"
       alt="Ancient Paper Lantern"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/ancient_scroll_paper_lantern.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -7737,7 +7737,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7822,14 +7822,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Amethyst Tiles"
       alt="Amethyst Tiles"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/deco/amethyst_tiles.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">8</div>
+    ><div class="badge item-texture-count">8</div>
             </div>
           </div>
         </div>
@@ -7848,7 +7848,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7888,7 +7888,7 @@
     >
                   </div>
                   <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Block of Amethyst Dust"
       alt="Block of Amethyst Dust"
@@ -7904,7 +7904,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7917,14 +7917,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Amethyst Dust"
       alt="Amethyst Dust"
       src="DEBUG_GITHUBUSERCONTENT/doc/../Common/src/main/resources/assets/hexcasting/textures/item/amethyst_dust.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -7933,7 +7933,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7962,14 +7962,14 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Amethyst Sconce"
       alt="Amethyst Sconce"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/amethyst_sconce.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -8182,7 +8182,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -8267,7 +8267,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Empty Impetus"
       alt="Empty Impetus"
@@ -8475,7 +8475,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -8560,7 +8560,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Empty Directrix"
       alt="Empty Directrix"
@@ -8714,7 +8714,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9065,7 +9065,7 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Akashic Bookshelf"
       alt="Akashic Bookshelf"
@@ -9081,7 +9081,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9432,14 +9432,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Akashic Ligature"
       alt="Akashic Ligature"
       src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/akashic_ligature.png"
       loading="lazy"
       class="item-texture  texture "
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -9569,7 +9569,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <div
       class="texture item-texture multi-textures gaslight-textures "
@@ -9617,7 +9617,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9664,14 +9664,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Amethyst Dust"
       alt="Amethyst Dust"
       src="DEBUG_GITHUBUSERCONTENT/doc/../Common/src/main/resources/assets/hexcasting/textures/item/amethyst_dust.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">31</div>
+    ><div class="badge item-texture-count">31</div>
             </div>
           </div>
         </div>
@@ -9690,7 +9690,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9737,14 +9737,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Amethyst Shard"
       alt="Amethyst Shard"
       src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">7</div>
+    ><div class="badge item-texture-count">7</div>
             </div>
           </div>
         </div>
@@ -9753,7 +9753,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9800,14 +9800,14 @@
     >
                   </div>
             </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Charged Amethyst"
       alt="Charged Amethyst"
       src="DEBUG_GITHUBUSERCONTENT/doc/../Common/src/main/resources/assets/hexcasting/textures/item/charged_amethyst.png"
       loading="lazy"
       class="item-texture  texture pixelated"
-    ><div class="badge">4</div>
+    ><div class="badge item-texture-count">4</div>
             </div>
           </div>
         </div>
@@ -9847,7 +9847,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -9921,7 +9921,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <div
       class="texture item-texture multi-textures gaslight-textures "
     >
@@ -9962,7 +9962,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -10046,7 +10046,7 @@
     >
                   </div>
                   <div></div>                  <div></div>            </div>
-            <div class="crafting-table-result">
+            <div class="crafting-table-result recipe-item-slot">
               <img
       title="Mindsplice Staff"
       alt="Mindsplice Staff"
