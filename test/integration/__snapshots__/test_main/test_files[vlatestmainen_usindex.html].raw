@@ -1242,7 +1242,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Amethyst Dust"
@@ -1260,7 +1260,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Amethyst Shard"
@@ -1278,7 +1278,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Charged Amethyst"
@@ -1325,7 +1325,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1390,7 +1390,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1455,7 +1455,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1520,7 +1520,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1585,7 +1585,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1650,7 +1650,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1715,7 +1715,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1780,7 +1780,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1845,7 +1845,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -1910,7 +1910,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2007,7 +2007,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2106,7 +2106,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2178,7 +2178,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2339,7 +2339,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2556,7 +2556,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2710,7 +2710,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2748,7 +2748,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -2813,7 +2813,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -2946,7 +2946,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3043,7 +3043,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3136,7 +3136,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3240,7 +3240,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3354,7 +3354,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <img
       title="Phial of Media"
@@ -3399,7 +3399,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3463,7 +3463,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3527,7 +3527,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3591,7 +3591,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3655,7 +3655,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3719,7 +3719,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3783,7 +3783,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3847,7 +3847,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3911,7 +3911,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -3975,7 +3975,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4039,7 +4039,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4103,7 +4103,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4167,7 +4167,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4231,7 +4231,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4295,7 +4295,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4369,7 +4369,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4433,7 +4433,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4497,7 +4497,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4561,7 +4561,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4625,7 +4625,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4689,7 +4689,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4753,7 +4753,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4817,7 +4817,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4881,7 +4881,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -4945,7 +4945,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5009,7 +5009,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5073,7 +5073,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5137,7 +5137,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5201,7 +5201,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5272,7 +5272,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5336,7 +5336,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -5411,7 +5411,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5511,7 +5511,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5642,7 +5642,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5727,7 +5727,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -5927,7 +5927,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6037,7 +6037,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6297,7 +6297,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6497,7 +6497,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6697,7 +6697,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6897,7 +6897,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -6947,7 +6947,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7058,7 +7058,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7181,7 +7181,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7282,7 +7282,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7320,7 +7320,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7421,7 +7421,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7536,7 +7536,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7574,7 +7574,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7612,7 +7612,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7737,7 +7737,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7848,7 +7848,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7904,7 +7904,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -7933,7 +7933,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -8182,7 +8182,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -8475,7 +8475,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -8714,7 +8714,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9081,7 +9081,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9569,7 +9569,7 @@
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
-      src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/spotlight.png"
     >
     <div
       class="texture item-texture multi-textures gaslight-textures "
@@ -9617,7 +9617,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9690,7 +9690,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9753,7 +9753,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div class="texture item-texture multi-textures cycle-textures">
@@ -9847,7 +9847,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
@@ -9962,7 +9962,7 @@
           <div class="crafting-table">
             <img
               alt="Crafting table"
-              src="http://localhost:8001/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
+              src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/hexdoc/textures/gui/crafting_table.png"
             >
             <div class="crafting-table-grid">
                   <div></div>                  <div class="texture item-texture multi-textures cycle-textures">
