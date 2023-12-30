@@ -180,7 +180,7 @@ function dropdownItem(text, href) {
 
 function versionDropdownItem(sitemap, versionKey) {
   const {defaultPath, langPaths, markers, defaultLang} = sitemap[versionKey];
-  const {version, full_version} = markers[LANG] ?? markers[defaultLang];
+  const {version, full_version, minecraft_version} = markers[LANG] ?? markers[defaultLang];
 
   // link to the current language if available, else link to the default language
   let path;
@@ -191,7 +191,7 @@ function versionDropdownItem(sitemap, versionKey) {
   }
 
   const li = dropdownItem(version, BOOK_URL + path);
-  if (full_version === FULL_VERSION) {
+  if (full_version === FULL_VERSION && versionKey == VERSION && minecraft_version == MINECRAFT_VERSION) {
     li.classList.add("disabled");
   }
   return li;
