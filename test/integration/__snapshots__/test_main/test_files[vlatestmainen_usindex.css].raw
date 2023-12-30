@@ -270,6 +270,7 @@ p.todo-note {
   -webkit-border-radius: 0 6px 6px 6px;
   -moz-border-radius: 0 6px 6px;
   border-radius: 0 6px 6px 6px;
+  width: max-content;
 }
 .dropdown-submenu:hover > .dropdown-menu {
   display: block;

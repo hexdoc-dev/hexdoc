@@ -13,6 +13,7 @@ from typing import (
     Iterable,
     Iterator,
     Literal,
+    Mapping,
     Never,
     ParamSpec,
     Sequence,
@@ -24,7 +25,7 @@ import pluggy
 from jinja2 import BaseLoader, ChoiceLoader, PackageLoader
 from jinja2.sandbox import SandboxedEnvironment
 
-from hexdoc.utils import ValidationContext
+from hexdoc.utils import ContextSource, ValidationContext
 
 if TYPE_CHECKING:
     from hexdoc.core import Properties, ResourceLocation
@@ -32,7 +33,7 @@ if TYPE_CHECKING:
     from hexdoc.patchouli import FormatTree
 
 from .book_plugin import BookPlugin
-from .mod_plugin import ModPlugin, ModPluginWithBook
+from .mod_plugin import ModPlugin, ModPluginWithBook, RawRenderedTemplates
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
 from .types import HookReturns
 
@@ -260,12 +261,28 @@ class PluginManager(ValidationContext):
 
         return loaders
 
-    def default_rendered_templates(self, modids: Iterable[str]) -> dict[Path, str]:
-        templates = dict[str | Path, str]()
+    def default_rendered_templates(
+        self,
+        modids: Iterable[str],
+        book: Any,
+        context: ContextSource,
+    ):
+        templates: RawRenderedTemplates = {}
         for modid in modids:
             plugin = self.mod_plugin(modid)
             templates |= plugin.default_rendered_templates()
-        return {Path(path): template for path, template in templates.items()}
+            templates |= plugin.default_rendered_templates_v2(book, context)
+
+        result = dict[Path, tuple[str, Mapping[str, Any]]]()
+        for path, value in templates.items():
+            match value:
+                case str(template):
+                    args = dict[str, Any]()
+                case (template, args):
+                    pass
+            result[Path(path)] = (template, args)
+
+        return result
 
     def _import_from_hook(
         self,

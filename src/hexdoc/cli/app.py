@@ -14,20 +14,23 @@ from packaging.version import Version
 from typer import Option, Typer
 from yarl import URL
 
-from hexdoc.core import ModResourceLoader
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
+from hexdoc.data.sitemap import (
+    delete_updated_books,
+    dump_sitemap,
+    load_sitemap,
+)
+from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
     PNGTexture,
+    TextureContext,
 )
-from hexdoc.minecraft.assets.textures import TextureContext
-from hexdoc.patchouli.book_context import BookContext
-from hexdoc.patchouli.text import FormattingContext
-from hexdoc.plugin.mod_plugin import ModPluginWithBook
-from hexdoc.utils import git_root, setup_logging, write_to_path
-from hexdoc.utils.context import ContextSource
+from hexdoc.patchouli import BookContext, FormattingContext
+from hexdoc.plugin import ModPluginWithBook
+from hexdoc.utils import ContextSource, git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
 
 from . import ci, render_block
@@ -44,12 +47,6 @@ from .utils.load import (
     init_context,
     load_common_data,
     render_textures_and_export_metadata,
-)
-from .utils.render import create_jinja_env, render_book
-from .utils.sitemap import (
-    delete_updated_books,
-    dump_sitemap,
-    load_sitemap,
 )
 
 logger = logging.getLogger(__name__)
@@ -229,26 +226,22 @@ def build(
         logger.info("Setting up Jinja template environment.")
         env = create_jinja_env(pm, props.template.include, props_file)
 
-        if props.template.override_default_render:
-            template_names = props.template.render
-        else:
-            template_names = pm.default_rendered_templates(props.template.include)
-
-        template_names |= props.template.extend_render
-
-        templates = {
-            Path(path): env.get_template(template_name)
-            for path, template_name in template_names.items()
-        }
-        if not templates:
-            raise RuntimeError(
-                "No templates to render, check your props.template configuration "
-                f"(in {props_file.as_posix()})"
-            )
-
         logger.info(f"Rendering book for {len(books)} language(s).")
         for book_info in books:
             try:
+                templates = get_templates(
+                    props=props,
+                    pm=pm,
+                    book=book_info.book,
+                    context=book_info.context,
+                    env=env,
+                )
+                if not templates:
+                    raise RuntimeError(
+                        "No templates to render, check your props.template configuration "
+                        f"(in {props_file.as_posix()})"
+                    )
+
                 book_ctx = BookContext.of(book_info.context)
                 formatting_ctx = FormattingContext.of(book_info.context)
                 texture_ctx = TextureContext.of(book_info.context)

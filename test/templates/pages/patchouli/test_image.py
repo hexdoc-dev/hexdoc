@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
-from hexdoc.cli.utils.render import create_jinja_env_with_loader
 from hexdoc.core.resource import ResourceLocation
+from hexdoc.jinja.render import create_jinja_env_with_loader
 from hexdoc.minecraft.assets.textures import PNGTexture
 from hexdoc.patchouli.page.pages import ImagePage
 from jinja2 import PackageLoader

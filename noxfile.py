@@ -32,6 +32,7 @@ nox.options.sessions = [
 
 @nox.session
 def pyright(session: nox.Session):
+    session.install("--upgrade", "pyright")
     session.install("-e", ".[test]")
 
     if os.getenv("RUNNER_DEBUG") == "1" or "--verbose" in session.posargs:
@@ -98,6 +99,7 @@ def test_copier(session: nox.Session):
 
 @nox.session(python=False)
 def precommit_pyright(session: nox.Session):
+    session.run("pip", "install", "--upgrade", "pyright")
     session.run("pip", "install", "-e", ".[test]")
 
     session.run("pyright", "--warnings", *session.posargs)

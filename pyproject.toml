@@ -65,7 +65,7 @@ pdoc = [
     "pdoc~=14.1",
 ]
 test = [
-    "pyright~=1.1.338",
+    "pyright~=1.1.343,!=1.1.344",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
