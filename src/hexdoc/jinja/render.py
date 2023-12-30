@@ -20,18 +20,18 @@ from jinja2.sandbox import SandboxedEnvironment
 
 from hexdoc.core import MinecraftVersion, Properties, ResourceLocation
 from hexdoc.core.properties import JINJA_NAMESPACE_ALIASES
-from hexdoc.jinja import (
-    IncludeRawExtension,
+from hexdoc.data.sitemap import MARKER_NAME, LatestSitemapMarker, VersionedSitemapMarker
+from hexdoc.minecraft import I18n
+from hexdoc.plugin import ModPluginWithBook, PluginManager
+from hexdoc.utils import write_to_path
+
+from .extensions import IncludeRawExtension
+from .filters import (
     hexdoc_item,
     hexdoc_localize,
     hexdoc_texture,
     hexdoc_wrap,
 )
-from hexdoc.minecraft import I18n
-from hexdoc.plugin import ModPluginWithBook, PluginManager
-from hexdoc.utils import write_to_path
-
-from .sitemap import MARKER_NAME, LatestSitemapMarker, VersionedSitemapMarker
 
 logger = logging.getLogger(__name__)
 

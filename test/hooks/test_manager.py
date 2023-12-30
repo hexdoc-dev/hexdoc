@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import pytest
-from hexdoc.cli.utils.render import create_jinja_env
+from hexdoc.jinja.render import create_jinja_env
 from hexdoc.plugin import (
     ModPlugin,
     ModPluginImpl,

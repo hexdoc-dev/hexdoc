@@ -14,20 +14,23 @@ from packaging.version import Version
 from typer import Option, Typer
 from yarl import URL
 
-from hexdoc.core import ModResourceLoader
-from hexdoc.core.resource import ResourceLocation
+from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
+from hexdoc.data.sitemap import (
+    delete_updated_books,
+    dump_sitemap,
+    load_sitemap,
+)
+from hexdoc.jinja.render import create_jinja_env, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
     PNGTexture,
+    TextureContext,
 )
-from hexdoc.minecraft.assets.textures import TextureContext
-from hexdoc.patchouli.book_context import BookContext
-from hexdoc.patchouli.text import FormattingContext
-from hexdoc.plugin.mod_plugin import ModPluginWithBook
-from hexdoc.utils import git_root, setup_logging, write_to_path
-from hexdoc.utils.context import ContextSource
+from hexdoc.patchouli import BookContext, FormattingContext
+from hexdoc.plugin import ModPluginWithBook
+from hexdoc.utils import ContextSource, git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
 
 from . import ci, render_block
@@ -44,12 +47,6 @@ from .utils.load import (
     init_context,
     load_common_data,
     render_textures_and_export_metadata,
-)
-from .utils.render import create_jinja_env, render_book
-from .utils.sitemap import (
-    delete_updated_books,
-    dump_sitemap,
-    load_sitemap,
 )
 
 logger = logging.getLogger(__name__)
