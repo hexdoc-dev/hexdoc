@@ -105,6 +105,7 @@ class PNGTextureOverride(StripHiddenModel):
 
 class TextureTextureOverride(StripHiddenModel):
     texture: ResourceLocation
+    """The id of an image texture (eg. `minecraft:textures/item/stick.png`)."""
 
 
 class TexturesProps(StripHiddenModel):
