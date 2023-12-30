@@ -42,8 +42,16 @@ class Page(TypeTaggedTemplate, type=None):
     @model_validator(mode="wrap")
     @classmethod
     def _pre_root(cls, value: str | Any, handler: ModelWrapValidatorHandler[Self]):
-        if isinstance(value, str):
-            return handler({"type": "patchouli:text", "text": value})
+        match value:
+            case str(text):
+                # treat a plain string as a text page
+                value = {"type": "patchouli:text", "text": text}
+            case {"type": str(raw_type)} if ":" not in raw_type:
+                # default to the patchouli namespace if not specified
+                # see: https://github.com/VazkiiMods/Patchouli/blob/b87e91a5a08d/Xplat/src/main/java/vazkii/patchouli/client/book/ClientBookRegistry.java#L110
+                value["type"] = f"patchouli:{raw_type}"
+            case _:
+                pass
         return handler(value)
 
     @classproperty
