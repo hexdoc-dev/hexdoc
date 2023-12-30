@@ -88,8 +88,8 @@
             <div class="smelting-result recipe-item-slot">
               {{ texture_macros.render_item(recipe.result) }}
             </div>
-            {{ extra_info("minecraft:lava_bucket", _("hexdoc.recipe.smelting.cooktime").format(recipe.cookingtime / 20)) }}
-            {{ extra_info("minecraft:experience_bottle", _("hexdoc.recipe.smelting.exp").format(recipe.experience)) }}
+            {{ extra_info("minecraft:lava_bucket", _("hexdoc.recipe.smelting.cooktime").format(("<span class='cooktime-highlight'>"~(recipe.cookingtime / 20)~"</span>")|safe)) }}
+            {{ extra_info("minecraft:experience_bottle", _("hexdoc.recipe.smelting.exp").format(("<span class='exp-highlight'> "~recipe.experience~" </span>")|safe)) }}
           </div>
         </div>
       {% endfor %}

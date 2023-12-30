@@ -25,8 +25,8 @@
       show: "Click to show recipes",
       hide: "Click to hide recipes",
       smelting: {
-        cooktime: "<span class='cooktime-highlight'>{}</span> Seconds",
-        exp: "<span class='exp-highlight'>{}</span> XP"
+        cooktime: "{} Seconds",
+        exp: "{} XP"
       }
     },
 
