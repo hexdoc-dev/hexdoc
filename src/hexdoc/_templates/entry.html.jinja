@@ -1,4 +1,4 @@
-{% import "macros/formatting.html.jinja" as fmt -%}
+{% import "macros/formatting.html.jinja" as fmt with context -%}
 
 <div id="{{ entry.id.path }}" class="entry">
   {% call fmt.maybe_spoilered(entry) %}

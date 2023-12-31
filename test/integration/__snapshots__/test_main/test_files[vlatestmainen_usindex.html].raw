@@ -1316,9 +1316,9 @@
   <h4>Staves</h4>
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Oak Staff</h5>
@@ -1998,9 +1998,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Scrying Lens</h5>
@@ -2097,9 +2097,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Thought-Knot</h5>
@@ -2169,9 +2169,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Focus</h5>
@@ -2330,9 +2330,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Abacus</h5>
@@ -2547,9 +2547,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Spellbook</h5>
@@ -2701,9 +2701,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Small Scroll</h5>
@@ -2937,9 +2937,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Blank Slate</h5>
@@ -3034,9 +3034,9 @@
   <div id="items/hexcasting@cypher_trinket">
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Cypher</h5>
@@ -3231,9 +3231,9 @@
   <div id="items/hexcasting@artifact">
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Artifact</h5>
@@ -3390,9 +3390,9 @@
   <h4>Chromatic Pigments</h4>
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>White Pigment</h5>
@@ -4360,9 +4360,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Agender Pigment</h5>
@@ -5402,9 +5402,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Soulglimmer Pigment</h5>
@@ -5633,9 +5633,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Edified Planks</h5>
@@ -7049,9 +7049,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Jeweler&#39;s Hammer</h5>
@@ -7172,9 +7172,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Block of Slate</h5>
@@ -7728,9 +7728,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Amethyst Tiles</h5>
@@ -7839,9 +7839,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Block of Amethyst Dust</h5>
@@ -8173,9 +8173,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Empty Impetus</h5>
@@ -8466,9 +8466,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Empty Directrix</h5>
@@ -8705,9 +8705,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Akashic Bookshelf</h5>
@@ -9608,9 +9608,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Amethyst Dust</h5>
@@ -9681,9 +9681,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Amethyst Shard</h5>
@@ -9838,9 +9838,9 @@
 <br />
   <details class="details-collapsible crafting-table-details">
     <summary class="collapse-details">
-      <span class="collapse-recipe-show">Click to show recipes</span>
-      <span class="collapse-recipe-hide">Click to hide recipes</span>
-    </summary>
+    <span class="collapse-recipe-show">Click to show recipes</span>
+    <span class="collapse-recipe-hide">Click to hide recipes</span>
+  </summary>
     <div class="crafting-tables">
         <div>
           <h5>Quenched Shard Staff</h5>

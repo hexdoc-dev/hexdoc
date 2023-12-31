@@ -60,3 +60,11 @@
     {%- endcall -%}
   {%- endif -%}
 {%- endmacro %}
+
+{# dropdown(base_key: str) #}
+{% macro dropdown(base_key) -%}
+  <summary class="collapse-details">
+    <span class="collapse-recipe-show">{{ _(base_key~".show") }}</span>
+    <span class="collapse-recipe-hide">{{ _(base_key~".hide") }}</span>
+  </summary>
+{%- endmacro %}

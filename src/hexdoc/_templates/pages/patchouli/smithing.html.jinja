@@ -1,13 +1,11 @@
 {% extends "pages/patchouli/text.html.jinja" %}
 {% import "macros/recipes.html.jinja" as recipe_macros with context %}
 {% import "macros/textures.html.jinja" as texture_macros with context -%}
+{% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {% block inner_body %}
   <details class="details-collapsible smithing-details">
-    <summary class="collapse-details">
-      <span class="collapse-recipe-show">{{ _('hexdoc.recipe.show') }}</span>
-      <span class="collapse-recipe-hide">{{ _('hexdoc.recipe.hide') }}</span>
-    </summary>
+    {{ fmt.dropdown("hexdoc.recipe") }}
     <div class="smithing-recipes">
       {% for recipe in page.recipes %}
         <div>

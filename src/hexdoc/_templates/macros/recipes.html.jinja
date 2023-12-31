@@ -1,4 +1,5 @@
 {% import "macros/textures.html.jinja" as texture_macros with context -%}
+{% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {# show the names of all the recipe results in a list of recipes #}
 {% macro generic(recipes, result_attribute, description, separator) -%}
@@ -28,10 +29,7 @@
 {# render a crafting table for each recipe #}
 {% macro crafting_table(recipes) -%}
   <details class="details-collapsible crafting-table-details">
-    <summary class="collapse-details">
-      <span class="collapse-recipe-show">{{ _('hexdoc.recipe.show') }}</span>
-      <span class="collapse-recipe-hide">{{ _('hexdoc.recipe.hide') }}</span>
-    </summary>
+    {{ fmt.dropdown("hexdoc.recipe") }}
     <div class="crafting-tables">
       {% for recipe in recipes %}
         <div>
@@ -67,10 +65,7 @@
 {# render a smelting interface for each recipe #}
 {% macro smelting(recipes, type="_default") -%}
   <details class="details-collapsible smelting-details">
-    <summary class="collapse-details">
-      <span class="collapse-recipe-show">{{ _('hexdoc.recipe.show') }}</span>
-      <span class="collapse-recipe-hide">{{ _('hexdoc.recipe.hide') }}</span>
-    </summary>
+    {{ fmt.dropdown("hexdoc.recipe") }}
     <div class="smelting-recipes">
       {% for recipe in recipes %}
         <div>

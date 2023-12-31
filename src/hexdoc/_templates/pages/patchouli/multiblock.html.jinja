@@ -1,5 +1,6 @@
 {% extends "pages/patchouli/text.html.jinja" %}
 {% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {% block inner_body %}
   {% if page.multiblock is defined %}
@@ -7,10 +8,7 @@
     {{ page.name }}
   </h5>
   <details class="details-collapsible multiblock-details">
-    <summary class="collapse-details">
-      <span class="collapse-recipe-show">{{ _('hexdoc.multiblock.show') }}</span>
-      <span class="collapse-recipe-hide">{{ _('hexdoc.multiblock.hide') }}</span>
-    </summary>
+    {{ fmt.dropdown("hexdoc.multiblock") }}
     {% for item, count in page.multiblock.bill_of_materials() %}
       <div class="multiblock-ingredient">
         <div class="item-slot">
