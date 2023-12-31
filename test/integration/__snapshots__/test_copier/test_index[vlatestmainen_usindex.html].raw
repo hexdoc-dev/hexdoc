@@ -166,7 +166,7 @@
     </details>
 </nav>
   <main class="book-body">
-<section id="basics">
+<section id="basics" class="">
     <h2 class="category-title page-header">
     <img
       title="Amethyst Shard"
@@ -184,7 +184,8 @@
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h2>
     <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
-<div id="baz" class="entry">
+<div id="baz" class="entry
+">
     <div class="spoilered">
       <h3 class="entry-title page-header">
     <img
@@ -207,7 +208,7 @@
     </div>
 </div>
 </section>
-<section id="foo">
+<section id="foo" class="">
     <div class="spoilered">
       <h2 class="category-title page-header">
     <img
@@ -227,7 +228,8 @@
   ><i class="bi bi-link-45deg"></i></a></h2>
     <p>The practitioners of this art would cast their so-called <span style="color: #b38ef3">Hexes</span> by drawing strange patterns in the air with a <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/staff"><span style="color: #b0b">Staff</span></a> -- or craft <a href="GITHUB_PAGES_URL/v/latest/main/en_us#items/hexcasting"><span style="color: #b0b">powerful magical items</span></a> to do the casting for them. How might I do the same?</p>
     </div>
-<div id="bar" class="entry">
+<div id="bar" class="entry
+">
     <div class="spoilered">
       <h3 class="entry-title page-header">
     <img
