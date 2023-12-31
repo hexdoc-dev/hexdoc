@@ -47,7 +47,7 @@ class FlagExpression(HexdocModel):
         return data
 
     def css_classnames(self) -> str:
-        flagclasses = " ".join(map(lambda f: f.css_classname(), self.flags))
+        flagclasses = " ".join(flag.css_classname() for flag in self.flags)
         if self.conjuctive:
             return "flagall " + flagclasses
         return "flagany " + flagclasses
