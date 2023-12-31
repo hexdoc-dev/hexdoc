@@ -1,4 +1,4 @@
-{% import "macros/styles.html.jinja" as styles with context -%}
+{% import "macros/styles.html.jinja" as html_styles with context -%}
 {% import "macros/textures.html.jinja" as texture_macros with context -%}
 
 {# jump to top icon in section headers #}
@@ -46,11 +46,11 @@
 {%- endmacro %}
 
 {# FormatTree handler #}
-{% macro styled(value) -%}
+{% macro styled(value, separator="<br />", styles=html_styles) -%}
   {%- if value is string -%}
     {%- for line in value.splitlines() -%}
       {{- line -}}
-      {%- if not loop.last -%}<br />{%- endif -%}
+      {%- if not loop.last -%}{{ separator|safe }}{%- endif -%}
     {%- endfor -%}
   {%- elif value is not none -%}
     {%- call styles[value.style.macro](value.style) -%}
