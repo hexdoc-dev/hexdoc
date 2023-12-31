@@ -36,5 +36,7 @@
     },
 
     when_clicked: "When clicked, would execute: {}",
+
+    any_block:  "Any Block",
   },
 }

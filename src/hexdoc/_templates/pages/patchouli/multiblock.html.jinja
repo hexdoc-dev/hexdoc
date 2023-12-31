@@ -11,7 +11,7 @@
       <span class="collapse-recipe-show">{{ _('hexdoc.multiblock.show') }}</span>
       <span class="collapse-recipe-hide">{{ _('hexdoc.multiblock.hide') }}</span>
     </summary>
-    {% for item, count in page.multiblock.bill_of_materials %}
+    {% for item, count in page.multiblock.bill_of_materials() %}
       <div class="multiblock-ingredient">
         <div class="item-slot">
           <img

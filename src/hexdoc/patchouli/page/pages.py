@@ -1,11 +1,11 @@
 from collections import defaultdict
 from typing import Self
 
-from pydantic import model_validator
+from pydantic import ValidationInfo, field_validator, model_validator
 
-from hexdoc.core import Entity, ResourceLocation
-from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, TagWithTexture, Texture
+from hexdoc.core import Entity, ItemStack, ResourceLocation
+from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.minecraft.assets import ItemWithTexture, PNGTexture, TagWithTexture, Texture
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -79,18 +79,51 @@ class Multiblock(HexdocModel):
     symmetrical: bool = False
     offset: tuple[int, int, int] | None = None
 
-    @property
-    def bill_of_materials(self) -> list[tuple[ItemWithTexture | TagWithTexture, int]]:
-        bom = defaultdict[str, int](int)
+    def bill_of_materials(self):
+        character_counts = defaultdict[str, int](int)
+
         for layer in self.pattern:
             for row in layer:
-                for item in row:
-                    if item in self.mapping:
-                        bom[item] += 1
-        bom_list = list[tuple[ItemWithTexture | TagWithTexture, int]]()
-        for item_key, count in bom.items():
-            bom_list.append((self.mapping[item_key], count))
-        return bom_list
+                for character in row:
+                    match character:
+                        case str() if character in self.mapping:
+                            character_counts[character] += 1
+                        case " " | "0":  # air
+                            pass
+                        case _:
+                            raise ValueError(
+                                f"Character not found in multiblock mapping: `{character}`"
+                            )
+
+        materials = [
+            (self.mapping[character], count)
+            for character, count in character_counts.items()
+        ]
+
+        # sort by descending count, break ties by ascending name
+        materials.sort(key=lambda v: v[0].name.value)
+        materials.sort(key=lambda v: v[1], reverse=True)
+
+        return materials
+
+    @field_validator("mapping", mode="after")
+    @classmethod
+    def _add_default_mapping(
+        cls,
+        mapping: dict[str, ItemWithTexture | TagWithTexture],
+        info: ValidationInfo,
+    ):
+        i18n = I18n.of(info)
+        return {
+            "_": ItemWithTexture(
+                id=ItemStack("hexdoc", "any"),
+                name=i18n.localize("hexdoc.any_block"),
+                texture=PNGTexture.load_id(
+                    ResourceLocation("hexdoc", "textures/gui/any_block.png"),
+                    context=info,
+                ),
+            ),
+        } | mapping
 
 
 class MultiblockPage(PageWithText, type="patchouli:multiblock"):
