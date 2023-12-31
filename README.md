@@ -14,6 +14,14 @@ A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based documentation gener
 
 This is the library that powers [Hex Casting](https://github.com/gamma-delta/HexMod)'s web book.
 
+## IMPORTANT: Version incompatibilities
+
+There are issues related to installing hexdoc with the following dependency versions:
+* Python 3.12+ on Windows: https://github.com/aio-libs/multidict/issues/887
+* Node.js 20+: https://github.com/stackgl/headless-gl/issues/268
+
+hexdoc is known to work with Python 3.11 and Node.js 18.
+
 ## Plugins
 
 See [hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting-template) for instructions to set up a hexdoc plugin for a pre-existing Hex Casting addon.
