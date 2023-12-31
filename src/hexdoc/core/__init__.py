@@ -2,6 +2,7 @@ __all__ = [
     "AssumeTag",
     "BaseProperties",
     "BaseResourceDir",
+    "BaseResourceLocation",
     "BookFolder",
     "Entity",
     "ExportFn",
@@ -40,6 +41,7 @@ from .loader import (
 from .properties import BaseProperties, Properties
 from .resource import (
     AssumeTag,
+    BaseResourceLocation,
     Entity,
     ItemStack,
     ResLoc,

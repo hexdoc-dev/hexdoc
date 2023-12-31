@@ -1,0 +1,22 @@
+{% extends "recipes/base.html.jinja" %}
+{% import "macros/recipes.html.jinja" as recipe_macros with context %}
+
+{% block recipe_class %}crafting-table{% endblock %}
+
+{% block content %}
+  <div class="crafting-table-grid">
+    {% for cell_ingredients in recipe.ingredients %}
+      {% if cell_ingredients is none %}
+        <div></div> {#- empty slot / air #}
+      {% else %}
+        <div class="texture item-texture multi-textures cycle-textures">
+          {{ recipe_macros.render_ingredients(cell_ingredients) }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="crafting-table-result recipe-item-slot">
+    {{ texture_macros.render_item(recipe.result.item, count=recipe.result.count) }}
+  </div>
+{% endblock content %}

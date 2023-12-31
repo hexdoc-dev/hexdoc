@@ -442,6 +442,19 @@ def dummy_setup(session: nox.Session):
                     show_landing_text = true
                     """
                 ),
+                "nodemon.json": {
+                    "watch": [
+                        "doc/src",
+                        "doc/resources",
+                        "doc/hexdoc.toml",
+                        "src/main/resources/assets/*/lang",
+                        "src/main/resources/assets/dummy/patchouli_books",
+                        "../../src",
+                    ],
+                    "ignore": ["**/generated/**"],
+                    "ext": "jinja,html,css,js,ts,toml,json,json5,py",
+                    "exec": "hexdoc serve",
+                },
             },
             "gradle.properties": (
                 """\

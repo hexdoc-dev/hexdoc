@@ -16,6 +16,7 @@ __all__ = [
     "TextureContext",
     "TextureLookup",
     "TextureLookups",
+    "validate_texture",
 ]
 
 from .animated import (
@@ -32,6 +33,7 @@ from .load_assets import (
     HexdocAssetLoader,
     HexdocPythonResourceLoader,
     Texture,
+    validate_texture,
 )
 from .models import ModelItem
 from .textures import (

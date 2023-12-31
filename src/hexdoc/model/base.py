@@ -79,9 +79,13 @@ _T = TypeVar("_T")
 
 
 class HexdocTypeAdapter(TypeAdapter[_T]):
-    def __init__(self, type: _T, *, config: ConfigDict | None = None):
-        if config is None and not isinstance(type, BaseModel):
-            config = DEFAULT_CONFIG
+    """Subclass of `pydantic.TypeAdapter` that sets `config` to the default hexdoc
+    model config.
+
+    Do not use this with Pydantic models, as it won't work.
+    """
+
+    def __init__(self, type: _T, *, config: ConfigDict = DEFAULT_CONFIG):
         return super().__init__(type, config=config)
 
 

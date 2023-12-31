@@ -11,6 +11,7 @@ from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
     ItemWithTexture,
     PNGTexture,
+    validate_texture,
 )
 from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
@@ -84,8 +85,11 @@ def hexdoc_localize(
 @pass_context
 @make_jinja_exceptions_suck_a_bit_less
 def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
-    id = ResourceLocation.model_validate(id)
-    texture = PNGTexture.load_id(id, context)
+    texture = validate_texture(
+        id,
+        context=context,
+        model_type=PNGTexture,
+    )
     return str(texture.url)
 
 

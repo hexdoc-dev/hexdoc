@@ -6,11 +6,11 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro render_texture(name, texture, class_names=[], lazy=true) -%}
+{% macro render_texture(name, texture, class_names=[], lazy=true, title=true) -%}
   {% if texture.meta is defined -%}
     <div
       role="img"
-      title="{{ name }}"
+      {{ ('title="'~name~'"')|safe if title }}
       aria-label="{{ name }} (animated)"
       class="{{
         (class_names + [
@@ -23,7 +23,7 @@
     ></div>
   {%- else -%}
     <img
-      title="{{ name }}"
+      {{ ('title="'~name~'"')|safe if title }}
       alt="{{ name }}"
       src="{{ texture.url }}"
       {{ 'loading="lazy"'|safe if lazy }}
@@ -73,4 +73,14 @@
   {% if count > 1 -%}
     <div class="badge item-texture-count">{{ count }}</div>
   {%- endif %}
+{%- endmacro %}
+
+{% macro render_recipe_gui(recipe, class_names=[]) -%}
+  {{ render_texture(
+    name=recipe.gui_name,
+    texture=recipe.gui_texture,
+    class_names=class_names,
+    lazy=false,
+    title=false,
+  ) }}
 {%- endmacro %}

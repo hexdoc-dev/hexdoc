@@ -57,7 +57,7 @@ class Page(TypeTaggedTemplate, type=None):
     @classproperty
     @classmethod
     def template(cls) -> str:
-        return f"pages/{cls.template_id.namespace}/{cls.template_id.path}"
+        return cls.template_id.template_path("pages")
 
 
 class PageWithText(Page, type=None):

@@ -1,7 +1,3 @@
-{% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/recipes.html.jinja" as recipe_macros with context %}
+{% extends "pages/patchouli/recipes.html.jinja" %}
 
-{% block inner_body %}
-  {{ recipe_macros.crafting_table(page.recipes) }}
-  {{ super() }}
-{% endblock inner_body %}
+{% block recipes_class %}crafting-tables{% endblock %}

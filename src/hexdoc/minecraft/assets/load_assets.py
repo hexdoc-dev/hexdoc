@@ -4,11 +4,12 @@ from collections.abc import Set
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Iterable, Iterator
+from typing import Any, Iterable, Iterator, TypeVar, cast
 
 from minecraft_render import ResourcePath, js
 from minecraft_render.types.dataset.RenderClass import IRenderClass
 from minecraft_render.types.dataset.types import IResourceLoader
+from pydantic import TypeAdapter
 from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
@@ -18,6 +19,7 @@ from hexdoc.core.properties import (
 )
 from hexdoc.model import HexdocModel
 from hexdoc.utils import PydanticURL
+from hexdoc.utils.context import ContextSource
 
 from ..tags import Tag
 from .animated import AnimatedTexture, AnimationMeta
@@ -36,6 +38,21 @@ from .textures import (
 logger = logging.getLogger(__name__)
 
 Texture = ImageTexture | ItemTexture
+
+_T_Texture = TypeVar("_T_Texture", bound=Texture)
+
+
+def validate_texture(
+    value: Any,
+    *,
+    context: ContextSource,
+    model_type: type[_T_Texture] = Texture,
+) -> _T_Texture:
+    ta = TypeAdapter(model_type)
+    return ta.validate_python(
+        value,
+        context=cast(dict[str, Any], context),  # lie
+    )
 
 
 class TextureNotFoundError(FileNotFoundError):

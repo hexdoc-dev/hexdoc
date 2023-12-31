@@ -1,0 +1,17 @@
+{% import "macros/textures.html.jinja" as texture_macros with context -%}
+
+<div>
+  {% block title %}
+    <h5>{% block title_value %}{{ recipe.result.item.name }}{% endblock %}</h5>
+  {% endblock title %}
+
+  {% block recipe %}
+    <div class="{% block recipe_class %}{% endblock %}">
+      {% block gui %}
+        {{ texture_macros.render_recipe_gui(recipe) }}
+      {% endblock%}
+
+      {% block content %}{% endblock %}
+    </div>
+  {% endblock recipe %}
+</div>

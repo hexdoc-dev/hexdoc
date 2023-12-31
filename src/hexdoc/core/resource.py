@@ -162,9 +162,12 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
     def match(self, pattern: Self) -> bool:
         return fnmatch(str(self), str(pattern))
 
+    def template_path(self, type: str, folder: str = "") -> str:
+        return self.file_path_stub(type, folder, assume_json=False).as_posix()
+
     def file_path_stub(
         self,
-        type: ResourceType,
+        type: ResourceType | str,
         folder: str | Path = "",
         assume_json: bool = True,
     ) -> Path:

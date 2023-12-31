@@ -26,42 +26,6 @@
   {% endfor %}
 {%- endmacro %}
 
-{# render a crafting table for each recipe #}
-{% macro crafting_table(recipes) -%}
-  <details class="details-collapsible crafting-table-details">
-    {{ fmt.dropdown("hexdoc.recipe") }}
-    <div class="crafting-tables">
-      {% for recipe in recipes %}
-        <div>
-          <h5>{{ recipe.result.item.name }}</h5>
-          <div class="crafting-table">
-            <img
-              alt="Crafting table"
-              src="{{ 'hexdoc:textures/gui/crafting_table.png'|hexdoc_texture }}"
-            >
-
-            <div class="crafting-table-grid">
-              {% for cell_ingredients in recipe.ingredients %}
-                {% if cell_ingredients is none %}
-                  <div></div> {#- empty slot / air #}
-                {% else %}
-                  <div class="texture item-texture multi-textures cycle-textures">
-                    {{ render_ingredients(cell_ingredients) }}
-                  </div>
-                {% endif %}
-              {% endfor %}
-            </div>
-
-            <div class="crafting-table-result recipe-item-slot">
-              {{ texture_macros.render_item(recipe.result.item, count=recipe.result.count) }}
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  </details>
-{%- endmacro %}
-
 {# render a smelting interface for each recipe #}
 {% macro smelting(recipes, type="_default") -%}
   <details class="details-collapsible smelting-details">
