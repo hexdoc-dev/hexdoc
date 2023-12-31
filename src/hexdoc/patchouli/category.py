@@ -10,6 +10,7 @@ from hexdoc.model import IDModel
 from hexdoc.utils import Sortable, sorted_dict
 
 from .entry import Entry
+from .flag import FlagExpression
 from .text import FormatTree
 
 
@@ -30,7 +31,7 @@ class Category(IDModel, Sortable):
     # optional
     parent_id: ResourceLocation | None = Field(default=None, alias="parent")
     _parent_cmp_key: tuple[int, ...] | None = None
-    flag: str | None = None
+    flag: FlagExpression | None = None
     sortnum: int = 0
     secret: bool = False
 

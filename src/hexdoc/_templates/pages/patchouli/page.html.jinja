@@ -3,7 +3,9 @@
   {% set page_anchor_id = entry.id.path ~ "@" ~ page.anchor %}
 
   {#- page content (not required because EmptyPage uses this template directly) #}
-  <div id="{{ page_anchor_id }}">
+  <div id="{{ page_anchor_id }}" class="{% if entry.flag is not none %}
+    {{ entry.flag.css_classnames() }}
+  {% endif %}">
     {% block body scoped %}{% endblock %}
   </div>
 {% else %}

@@ -10,6 +10,7 @@ from hexdoc.model import Color, IDModel
 from hexdoc.utils import Sortable
 
 from .book_context import BookContext
+from .flag import FlagExpression
 from .page import CraftingPage, Page, PageWithTitle
 from .text import FormatTree
 
@@ -30,7 +31,7 @@ class Entry(IDModel, Sortable):
 
     # optional (entry.json)
     advancement: ResourceLocation | None = None
-    flag: str | None = None
+    flag: FlagExpression | None = None
     priority: bool = False
     secret: bool = False
     read_by_default: bool = False

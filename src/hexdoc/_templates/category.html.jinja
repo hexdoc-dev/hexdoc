@@ -1,6 +1,8 @@
 {% import "macros/formatting.html.jinja" as fmt with context %}
 
-<section id="{{ category.id.path }}">
+<section id="{{ category.id.path }}" class="{% if category.flag is not none %}
+    {{ category.flag.css_classnames() }}
+  {% endif %}">
   {% call fmt.maybe_spoilered(category) %}
     {{- fmt.section_header(category, "h2", "category-title") }}
     {{ fmt.styled(category.description) }}

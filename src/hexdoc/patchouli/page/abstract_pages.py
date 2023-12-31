@@ -9,6 +9,7 @@ from hexdoc.minecraft.recipe import Recipe
 from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
+from ..flag import FlagExpression
 from ..text import FormatTree
 
 _T_Recipe = TypeVar("_T_Recipe", bound=Recipe)
@@ -21,7 +22,7 @@ class Page(TypeTaggedTemplate, type=None):
     """
 
     advancement: ResourceLocation | None = None
-    flag: str | None = None
+    flag: FlagExpression | None = None
     anchor: str | None = None
 
     def __init_subclass__(
