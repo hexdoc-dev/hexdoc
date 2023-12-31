@@ -31,8 +31,8 @@
     },
 
     multiblock: {
-      show: "Click to show material list",
-      hide: "Click to hide material list",
+      show: "Click to show multiblock",
+      hide: "Click to hide multiblock",
     },
 
     when_clicked: "When clicked, would execute: {}",
