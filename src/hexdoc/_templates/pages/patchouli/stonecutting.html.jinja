@@ -1,32 +1,3 @@
-{% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/recipes.html.jinja" as recipe_macros with context %}
-{% import "macros/textures.html.jinja" as texture_macros with context -%}
-{% import "macros/formatting.html.jinja" as fmt with context -%}
+{% extends "pages/patchouli/recipes.html.jinja" %}
 
-{% block inner_body %}
-  <details class="details-collapsible stonecutting-details">
-    {{ fmt.dropdown("hexdoc.recipe") }}
-    <div class="stonecutting-recipes">
-      {% for recipe in page.recipes %}
-        <div>
-          <h5>{{ recipe.result.name }}</h5>
-          <div class="stonecutting-recipe recipe pixelated">
-            <img
-              alt="stonecutting interface"
-              src="{{ 'hexdoc:textures/gui/stonecutting.png'|hexdoc_texture }}"
-            >
-
-            <div class="stonecutting-input recipe-item-slot">
-              {{ recipe_macros.render_ingredients(recipe.ingredient) }}
-            </div>
-
-            <div class="stonecutting-result recipe-item-slot">
-              {{ texture_macros.render_item(recipe.result, count=recipe.count) }}
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  </details>
-  {{ super() }}
-{% endblock inner_body %}
+{% block recipes_class %}stonecutting-recipes{% endblock %}

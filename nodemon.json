@@ -9,6 +9,6 @@
         "submodules/HexMod/Common/src/main/resources/assets/*/lang"
     ],
     "ignore": ["**/generated/**"],
-    "ext": "jinja,html,css,js,ts,toml,json,json5,py",
+    "ext": "jinja,html,css,js,ts,toml,json,json5,py,png,mcmeta",
     "exec": "hexdoc build && hexdoc --quiet-lang ru_ru --quiet-lang zh_cn serve --props submodules/HexMod/doc/hexdoc.toml"
 }

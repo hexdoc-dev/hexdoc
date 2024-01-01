@@ -1,0 +1,29 @@
+{% extends "recipes/base.html.jinja" %}
+
+{% import "macros/recipes.html.jinja" as recipe_macros with context %}
+{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/formatting.html.jinja" as fmt with context %}
+
+{% block recipe_class -%}
+  smithing-recipe recipe pixelated
+{%- endblock %}
+
+{% block title_value -%}
+  {{ recipe.result_item.name }}
+{%- endblock %}
+
+{% block content %}
+  <div class="smithing-base recipe-item-slot">
+    {{ texture_macros.render_item(recipe.base.item) }}
+  </div>
+  <div class="smithing-addition recipe-item-slot">
+    {{ texture_macros.render_item(recipe.addition.item) }}
+  </div>
+  <div class="smithing-template recipe-item-slot">
+    {{ texture_macros.render_item(recipe.template_ingredient.item) }}
+  </div>
+
+  <div class="smithing-result recipe-item-slot">
+    {{ texture_macros.render_item(recipe.result_item) }}
+  </div>
+{% endblock content %}

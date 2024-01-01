@@ -23,13 +23,15 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
     https://minecraft.wiki/w/Recipe
     """
 
-    _workstation: ClassVar[ResourceLocation | None] = None
-
     category: str | None = None
     group: str | None = None
     show_notification: AtLeast_1_20[bool] | Before_1_20[None] = Field(
-        default_factory=lambda: ValueIfVersion(">=1.20", True, None)()
+        default_factory=ValueIfVersion(">=1.20", True, None)
     )
+
+    # not in the actual model
+
+    _workstation: ClassVar[ResourceLocation | None] = None
 
     _gui_name: LocalizedStr | None = PrivateAttr(None)
     _gui_texture: ImageTexture | None = PrivateAttr(None)
@@ -137,37 +139,65 @@ class CookingRecipe(Recipe):
     cookingtime: int
 
 
-class BlastingRecipe(CookingRecipe, type="minecraft:blasting"):
+class BlastingRecipe(
+    CookingRecipe,
+    type="minecraft:blasting",
+    workstation="minecraft:blast_furnace",
+):
     cookingtime: int = 100
 
 
-class CampfireCookingRecipe(CookingRecipe, type="minecraft:campfire_cooking"):
+class CampfireCookingRecipe(
+    CookingRecipe,
+    type="minecraft:campfire_cooking",
+    workstation="minecraft:campfire",
+):
     cookingtime: int = 100
 
 
-class SmeltingRecipe(CookingRecipe, type="minecraft:smelting"):
+class SmeltingRecipe(
+    CookingRecipe,
+    type="minecraft:smelting",
+    workstation="minecraft:furnace",
+):
     cookingtime: int = 200
 
 
-class SmokingRecipe(CookingRecipe, type="minecraft:smoking"):
+class SmokingRecipe(
+    CookingRecipe,
+    type="minecraft:smoking",
+    workstation="minecraft:smoker",
+):
     cookingtime: int = 100
 
 
-class SmithingRecipe(Recipe):
+class SmithingRecipe(Recipe, workstation="minecraft:smithing_table"):
     base: ItemIngredient
     addition: ItemIngredient
-    template_item: ItemIngredient = Field(alias="template")
+    template_ingredient: ItemIngredient = Field(alias="template")
+
+    @property
+    def result_item(self):
+        return self.base.item
 
 
 class SmithingTransformRecipe(SmithingRecipe, type="minecraft:smithing_transform"):
     result: ItemWithTexture
+
+    @property
+    def result_item(self):
+        return self.result
 
 
 class SmithingTrimRecipe(SmithingRecipe, type="minecraft:smithing_trim"):
     pass
 
 
-class StonecuttingRecipe(Recipe, type="minecraft:stonecutting"):
+class StonecuttingRecipe(
+    Recipe,
+    type="minecraft:stonecutting",
+    workstation="minecraft:stonecutter",
+):
     ingredient: ItemIngredientList
     result: ItemWithTexture
     count: int

@@ -2,7 +2,9 @@
 
 <div>
   {% block title %}
-    <h5>{% block title_value %}{{ recipe.result.item.name }}{% endblock %}</h5>
+    <h5>{% block title_value -%}
+      {{ recipe.result.item.name }}
+    {%- endblock title_value %}</h5>
   {% endblock title %}
 
   {% block recipe %}

@@ -1,8 +1,10 @@
+from abc import ABC
 from typing import Annotated, Any, Iterator
 
 from pydantic import (
     AfterValidator,
     BeforeValidator,
+    Field,
     ValidationError,
     ValidationInfo,
 )
@@ -17,12 +19,18 @@ from ..assets import ItemWithTexture, TagWithTexture
 from ..tags import Tag
 
 
-class ItemIngredient(TypeTaggedUnion):
-    pass
+class ItemIngredient(TypeTaggedUnion, ABC):
+    @property
+    def item(self) -> ItemWithTexture | TagWithTexture:
+        ...
 
 
 class MinecraftItemIdIngredient(ItemIngredient, type=NoValue):
-    item: ItemWithTexture
+    item_: ItemWithTexture = Field(alias="item")
+
+    @property
+    def item(self):
+        return self.item_
 
 
 class MinecraftItemTagIngredient(ItemIngredient, type=NoValue):
