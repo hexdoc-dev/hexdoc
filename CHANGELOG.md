@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## `1!0.1.0a9`
 
 ### New Features
 
+* Support for the rest of the default Patchouli page types, implemented by [@SamsTheNerd](https://github.com/SamsTheNerd) in [#53](https://github.com/hexdoc-dev/hexdoc/pull/53)!
+* Refactored recipe rendering for better reusability - see the default recipe page types for more details.
 * Added `ModPlugin.default_rendered_templates_v2`, which works the same as `default_rendered_templates` but gets the book and context as arguments.
   * This is meant to allow generating multi-file book structures instead of a single HTML document.
 * `hexdoc.toml`: Added `template.render_from`, which is a list of modids to include default rendered templates from, defaulting to `template.include`.
