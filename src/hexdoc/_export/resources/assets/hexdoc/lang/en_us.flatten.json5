@@ -19,6 +19,12 @@
       toggle_all: "Toggle all",
     },
 
+    nav: {
+      dropdown: {
+        minecraft: "Minecraft {version}",
+      },
+    },
+
     linkout: "Link: ",
 
     recipe: {

@@ -9,6 +9,17 @@ const MINECRAFT_VERSION = "{{ minecraft_version }}";
 const FULL_VERSION = "{{ full_version }}";
 const LANG = "{{ lang }}";
 const SHOW_DROPDOWN_MINECRAFT_VERSION = "{{ 'true' if hide_dropdown_minecraft_version is not defined or not hide_dropdown_minecraft_version }}" === "true";
+const DROPDOWN_MINECRAFT_TEMPLATE = "{{ _('hexdoc.nav.dropdown.minecraft') }}";
+
+// https://stackoverflow.com/a/61634647
+function replaceTemplate(template, replacements) {
+  return template.replace(
+    /{(\w+)}/g,
+    (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
+    replacements.hasOwnProperty(placeholderWithoutDelimiters) ?
+      replacements[placeholderWithoutDelimiters] : placeholderWithDelimiters
+  );
+}
 
 let cycleNodes = [];
 
@@ -275,7 +286,10 @@ function addDropdowns(sitemap) {
       const [branches, versions] = sortSitemapVersions(Object.keys(subSitemap));
 
       dropdownItems.push(
-        dropdownHeader(minecraftVersion),
+        dropdownHeader(replaceTemplate(
+          DROPDOWN_MINECRAFT_TEMPLATE,
+          {version: minecraftVersion},
+        )),
         ...versionDropdownItems(subSitemap, versions),
       );
 
