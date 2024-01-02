@@ -7,6 +7,16 @@ const MINECRAFT_VERSION = "1.20.1";
 const FULL_VERSION = "FULL_VERSION";
 const LANG = "en_us";
 const SHOW_DROPDOWN_MINECRAFT_VERSION = "true" === "true";
+const DROPDOWN_MINECRAFT_TEMPLATE = "Minecraft {version}";
+// https://stackoverflow.com/a/61634647
+function replaceTemplate(template, replacements) {
+  return template.replace(
+    /{(\w+)}/g,
+    (placeholderWithDelimiters, placeholderWithoutDelimiters) =>
+    replacements.hasOwnProperty(placeholderWithoutDelimiters) ?
+      replacements[placeholderWithoutDelimiters] : placeholderWithDelimiters
+  );
+}
 let cycleNodes = [];
 function hookLoad(elem) {
   elem.addEventListener("toggle", () => {
@@ -222,7 +232,10 @@ function addDropdowns(sitemap) {
       const subSitemap = sitemap[minecraftVersion];
       const [branches, versions] = sortSitemapVersions(Object.keys(subSitemap));
       dropdownItems.push(
-        dropdownHeader(minecraftVersion),
+        dropdownHeader(replaceTemplate(
+          DROPDOWN_MINECRAFT_TEMPLATE,
+          {version: minecraftVersion},
+        )),
         ...versionDropdownItems(subSitemap, versions),
       );
       // honestly, i shouldn't be allowed to write javascript
