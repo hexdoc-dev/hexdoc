@@ -2,6 +2,11 @@
 
 {% import page.template~".html.jinja" as page_template with context %}
 
+{% block opengraph %}
+  {{ super() }}
+  {{ page_template.redirect_extra_opengraph() }}
+{% endblock opengraph%}
+
 {% block title -%}
   {{ page_template.redirect_title() }}
 {%- endblock title %}

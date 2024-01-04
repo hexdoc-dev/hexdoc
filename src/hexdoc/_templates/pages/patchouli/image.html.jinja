@@ -16,3 +16,11 @@
   </p>
   {{ super() }}
 {% endblock inner_body %}
+
+{% defaultmacro redirect_image() -%}
+  {{ texture_macros.texture_url(page.images|first) }}
+{%- enddefaultmacro %}
+
+{% defaultmacro redirect_extra_opengraph() %}
+  <meta name="twitter:card" content="summary_large_image">
+{% enddefaultmacro %}
