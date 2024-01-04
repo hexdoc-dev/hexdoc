@@ -63,6 +63,10 @@ class Page(TypeTaggedTemplate, type=None):
         if self.anchor is not None:
             return f"{entry_raw_link}#{self.anchor}"
 
+    def raw_link_path(self, entry_raw_link: str):
+        if self.anchor is not None:
+            return f"{entry_raw_link}/{self.anchor}"
+
     def fragment(self, entry_fragment: str):
         if self.anchor is not None:
             return f"{entry_fragment}@{self.anchor}"

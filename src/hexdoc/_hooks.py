@@ -1,5 +1,6 @@
 # pyright: reportPrivateUsage=false
 
+import platform
 from importlib.resources import Package
 from pathlib import Path
 from typing import Any, Mapping
@@ -22,7 +23,16 @@ from hexdoc.plugin import (
     ModPluginImpl,
     hookimpl,
 )
+from hexdoc.plugin.mod_plugin import DefaultRenderedTemplates
 from hexdoc.utils import ContextSource, JSONDict, cast_context
+
+
+def redirect_path(raw_link: str):
+    # colon is forbidden in filenames on Windows
+    if platform.system() == "Windows":
+        raw_link = raw_link.replace(":", "-")
+
+    return f"{raw_link}/index.html"
 
 
 class HexdocPlugin(LoadTaggedUnionsImpl, ModPluginImpl, BookPluginImpl):
@@ -74,6 +84,49 @@ class HexdocModPlugin(ModPlugin):
             "textures.css": "textures.jcss.jinja",
             "index.js": "index.js.jinja",
         }
+
+    def default_rendered_templates_v2(
+        self,
+        book: Any,
+        context: ContextSource,
+    ) -> DefaultRenderedTemplates:
+        assert isinstance(book, Book)
+
+        templates: DefaultRenderedTemplates = {}
+
+        for category in book.categories.values():
+            templates[redirect_path(category.raw_link)] = (
+                "redirects/category.html.jinja",
+                {
+                    "category": category,
+                    "fragment": category.fragment,
+                },
+            )
+
+            for entry in category.entries.values():
+                templates[redirect_path(entry.raw_link)] = (
+                    "redirects/entry.html.jinja",
+                    {
+                        "category": category,
+                        "entry": entry,
+                        "fragment": entry.fragment,
+                    },
+                )
+
+                for page in entry.pages:
+                    page_path = page.raw_link_path(entry.raw_link)
+                    if page_path is not None:
+                        templates[redirect_path(page_path)] = (
+                            "redirects/page.html.jinja",
+                            {
+                                "category": category,
+                                "entry": entry,
+                                "page": page,
+                                "fragment": page.fragment(entry.fragment),
+                            },
+                        )
+
+        return templates
 
 
 class PatchouliBookPlugin(BookPlugin[Book]):

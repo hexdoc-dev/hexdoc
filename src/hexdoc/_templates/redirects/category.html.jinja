@@ -1,0 +1,16 @@
+{% extends "redirects/base.html.jinja" %}
+
+{% import "macros/formatting.md.jinja" as md_fmt with context %}
+
+{% block target -%}
+  {{ page_url }}#{{ fragment }}
+{%- endblock target %}
+
+{% block opengraph %}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="{{ mod_name }} ({{ version }})" />
+  <meta property="og:title" content="Category: {{ category.name }}" />
+  <meta property="og:url" content="{{ self.target() }}" />
+  <meta property="og:description" content="{{ md_fmt.styled(category.description)|safe }}" />
+  {% if icon_href %}<meta property="og:image" content="{{ page_url }}/{{ icon_href }}" />{% endif +%}
+{% endblock opengraph %}
