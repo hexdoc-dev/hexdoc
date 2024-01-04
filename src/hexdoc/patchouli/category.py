@@ -75,6 +75,14 @@ class Category(IDModel, Sortable):
         return sorted_dict(categories)
 
     @property
+    def raw_link(self):
+        return self.id.path
+
+    @property
+    def fragment(self):
+        return self.id.path
+
+    @property
     def _is_cmp_key_ready(self) -> bool:
         return self.parent_id is None or self._parent_cmp_key is not None
 

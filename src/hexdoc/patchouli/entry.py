@@ -51,6 +51,14 @@ class Entry(IDModel, Sortable):
             if page.anchor is not None:
                 yield page.anchor
 
+    @property
+    def raw_link(self):
+        return self.id.path
+
+    @property
+    def fragment(self):
+        return self.id.path
+
     def preprocess_pages(self) -> Iterator[Page]:
         """Combines adjacent CraftingPage recipes as much as possible."""
         accumulator = _CraftingPageAccumulator.blank()

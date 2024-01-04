@@ -61,7 +61,7 @@ _COLORS = {
     "f": "fff",
 }
 
-BookLinkBases = dict[tuple[ResourceLocation, str | None], PydanticURL]
+BookLinks = dict[str, PydanticURL]
 
 
 class FormattingContext(ValidationContextModel):
@@ -79,8 +79,14 @@ class BookLink(HexdocModel):
         # anchor
         if "#" in raw_value:
             id_str, anchor = raw_value.split("#", 1)
+
+            # id should be case-insensitive, so lowercase it and update raw_value
+            # TODO: this is pretty gross
+            id_str = id_str.lower()
+            raw_value = f"{id_str}#{anchor}"
         else:
-            id_str, anchor = raw_value, None
+            id_str, anchor = raw_value.lower(), None
+            raw_value = id_str
 
         # id of category or entry being linked to
         if ":" in id_str:
@@ -300,15 +306,15 @@ class LinkStyle(Style, frozen=True):
         return cls(value=value, external=external)
 
     @pass_context
-    def href(self, context: Context | dict[{"link_bases": BookLinkBases}]):  # noqa
+    def href(self, context: Context | dict[{"book_links": BookLinks}]):  # noqa
         match self.value:
             case str(href):
                 return href
-            case BookLink(as_tuple=key) as book_link:
-                link_bases: BookLinkBases = context["link_bases"]
-                if key not in link_bases:
+            case BookLink(raw_value=key) as book_link:
+                book_links: BookLinks = context["book_links"]
+                if key not in book_links:
                     raise ValueError(f"broken link: {book_link}")
-                return str(link_bases[key]) + book_link.fragment
+                return str(book_links[key])
 
 
 # intentionally not inheriting from Style, because this is basically an implementation

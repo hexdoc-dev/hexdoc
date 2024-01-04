@@ -91,8 +91,10 @@ class Book(HexdocModel):
 
         for id, category in categories.items():
             self._categories[id] = category
-            book_ctx.link_bases[(id, None)] = book_ctx.get_link_base(
-                category.resource_dir
+
+            link_base = book_ctx.get_link_base(category.resource_dir)
+            book_ctx.book_links[category.raw_link] = link_base.with_fragment(
+                category.fragment
             )
 
     def _load_entries(
@@ -120,10 +122,17 @@ class Book(HexdocModel):
                 internal_entries[entry.category_id][entry.id] = entry
 
             link_base = book_ctx.get_link_base(resource_dir)
-            book_ctx.link_bases[(id, None)] = link_base
+            book_ctx.book_links[entry.raw_link] = link_base.with_fragment(
+                entry.fragment
+            )
+
             for page in entry.pages:
-                if page.anchor is not None:
-                    book_ctx.link_bases[(id, page.anchor)] = link_base
+                page_raw_link = page.raw_link(entry.raw_link)
+                page_fragment = page.fragment(entry.fragment)
+                if page_raw_link is not None and page_fragment is not None:
+                    book_ctx.book_links[page_raw_link] = link_base.with_fragment(
+                        page_fragment
+                    )
 
         if not internal_entries:
             raise ValueError(

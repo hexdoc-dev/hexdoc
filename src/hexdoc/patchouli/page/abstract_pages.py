@@ -59,6 +59,14 @@ class Page(TypeTaggedTemplate, type=None):
     def template(cls) -> str:
         return cls.template_id.template_path("pages")
 
+    def raw_link(self, entry_raw_link: str):
+        if self.anchor is not None:
+            return f"{entry_raw_link}#{self.anchor}"
+
+    def fragment(self, entry_fragment: str):
+        if self.anchor is not None:
+            return f"{entry_fragment}@{self.anchor}"
+
 
 class PageWithText(Page, type=None):
     """Base class for a `Page` with optional text.

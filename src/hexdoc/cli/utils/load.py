@@ -147,7 +147,6 @@ def init_context(
                 loader
             ).value_ids_set,
             all_metadata=all_metadata,
-            link_bases={},
         ),
     ]:
         item.add_to_context(context)

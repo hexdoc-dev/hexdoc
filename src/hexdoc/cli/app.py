@@ -261,7 +261,7 @@ def build(
                         key=lambda t: t.css_class,
                     ),
                     "book": book_info.book,
-                    "link_bases": book_ctx.link_bases,
+                    "book_links": book_ctx.book_links,
                 }
                 for ctx in [props, book_info.i18n, texture_ctx]:
                     ctx.add_to_context(template_args)

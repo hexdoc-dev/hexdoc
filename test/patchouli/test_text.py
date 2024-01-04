@@ -17,6 +17,7 @@ from hexdoc.patchouli.text import (
 )
 from hexdoc.plugin import PluginManager
 from jinja2 import Environment, PackageLoader
+from yarl import URL
 
 
 class MockPluginManager:
@@ -233,7 +234,7 @@ def test_broken_link_fails_without_override():
     )
 
     with pytest.raises(ValueError):
-        style.href({"link_bases": {}})
+        style.href({"book_links": {}})
 
 
 def test_broken_link_uses_override():
@@ -243,7 +244,7 @@ def test_broken_link_uses_override():
         link_overrides={"link": "https://example.com"},
     )
 
-    href = style.href({"link_bases": {}})
+    href = style.href({"book_links": {}})
 
     assert href == "https://example.com"
 
@@ -255,7 +256,7 @@ def test_wildcard_link_override():
         link_overrides={"foo*": "https://example.com"},
     )
 
-    href = style.href({"link_bases": {}})
+    href = style.href({"book_links": {}})
 
     assert href == "https://example.com"
 
@@ -267,6 +268,41 @@ def test_wildcard_link_override_not_matching():
         link_overrides={"foo*": "https://example.com"},
     )
 
-    href = style.href({"link_bases": {}})
+    href = style.href({"book_links": {}})
 
     assert href == "https://example.ca"
+
+
+def test_case_insensitive_entry_id():
+    style = LinkStyle.from_str(
+        "items/Staff",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={},
+    )
+
+    href = style.href({"book_links": {"items/staff": URL("link")}})
+
+    assert href == "link"
+
+
+def test_case_sensitive_page_anchor_match():
+    style = LinkStyle.from_str(
+        "items/staff#anchor",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={},
+    )
+
+    href = style.href({"book_links": {"items/staff#anchor": URL("link")}})
+
+    assert href == "link"
+
+
+def test_case_sensitive_page_anchor_broken():
+    style = LinkStyle.from_str(
+        "items/staff#Anchor",
+        book_id=ResourceLocation("namespace", "path"),
+        link_overrides={},
+    )
+
+    with pytest.raises(ValueError):
+        style.href({"book_links": {"items/staff#anchor": URL("link")}})
