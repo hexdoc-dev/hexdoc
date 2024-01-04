@@ -4,6 +4,10 @@
   {{ page_url }}
 {%- endblock target %}
 
+{% block opengraph %}
+  {% include "components/opengraph.html.jinja" %}
+{% endblock opengraph %}
+
 {% block title %}{% endblock %}
 {% block description %}{% endblock %}
 {% block image %}{% endblock %}

@@ -1,5 +1,6 @@
 # pyright: reportPrivateUsage=false
 
+import os
 import platform
 from importlib.resources import Package
 from pathlib import Path
@@ -29,7 +30,7 @@ from hexdoc.utils import ContextSource, JSONDict, cast_context
 
 def redirect_path(raw_link: str):
     # colon is forbidden in filenames on Windows
-    if platform.system() == "Windows":
+    if platform.system() == "Windows" or os.getenv("MOCK_PLATFORM") == "Windows":
         raw_link = raw_link.replace(":", "-")
 
     return f"{raw_link}/index.html"

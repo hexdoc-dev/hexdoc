@@ -15,6 +15,7 @@ MOCK_ENV = {
     "GITHUB_SHA": "GITHUB_SHA",
     "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
     "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
+    "MOCK_PLATFORM": "Windows",
 }
 
 DUMMY_PATH = Path(".hexdoc/dummy_book")
@@ -90,7 +91,13 @@ def test_hexcasting(session: nox.Session, branch: str):
             env=MOCK_ENV,
         )
 
-        session.run("pytest", "-m", "hexcasting", *session.posargs)
+        session.run(
+            "pytest",
+            "-m",
+            "hexcasting",
+            *session.posargs,
+            env={"MOCK_PLATFORM": "Windows"},
+        )
     finally:
         with session.cd("submodules/HexMod"):
             session.run("git", "checkout", original_branch, external=True)
@@ -107,7 +114,13 @@ def test_copier(session: nox.Session):
     session.run("ctt", "--base-dir", str(template_repo))
     session.run("git", "init", str(rendered_template), external=True)
 
-    session.run("pytest", "-m", "copier", *session.posargs)
+    session.run(
+        "pytest",
+        "-m",
+        "copier",
+        *session.posargs,
+        env={"MOCK_PLATFORM": "Windows"},
+    )
 
 
 # pre-commit
