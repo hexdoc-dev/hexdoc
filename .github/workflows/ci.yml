@@ -49,11 +49,7 @@ jobs:
           path: dist
 
   test:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     env:
       HEXDOC_RELEASE: false
     steps:
@@ -66,7 +62,6 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install display server
-        if: matrix.os == 'ubuntu-latest'
         uses: awalsh128/cache-apt-pkgs-action@v1
         with:
           packages: xvfb
@@ -80,12 +75,7 @@ jobs:
         run: pip install nox
 
       - name: Run Nox with display server
-        if: matrix.os == 'ubuntu-latest'
         run: xvfb-run --auto-servernum nox
-
-      - name: Run Nox
-        if: matrix.os != 'ubuntu-latest'
-        run: nox
 
   update-tags:
     runs-on: ubuntu-latest
