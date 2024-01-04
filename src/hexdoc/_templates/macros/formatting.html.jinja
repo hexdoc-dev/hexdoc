@@ -55,7 +55,7 @@
   {%- elif value is not none -%}
     {%- call styles[value.style.macro](value.style) -%}
       {%- for child in value.children -%}
-        {{- styled(child) -}}
+        {{- styled(child, separator, styles) -}}
       {%- endfor -%}
     {%- endcall -%}
   {%- endif -%}
