@@ -72,6 +72,9 @@ def test_hexcasting(session: nox.Session, branch: str):
         original_branch = run_silent_external(
             session, "git", "rev-parse", "--abbrev-ref", "HEAD"
         )
+        if original_branch == "HEAD":  # properly handle detached HEAD
+            original_branch = run_silent_external(session, "git", "rev-parse", "HEAD")
+
         session.run("git", "checkout", branch, external=True)
 
     try:
