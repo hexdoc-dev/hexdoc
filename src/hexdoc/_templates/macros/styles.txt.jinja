@@ -1,0 +1,55 @@
+{# CommandStyle #}
+
+{% macro command_obfuscated(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro command_bold(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro command_strikethrough(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro command_underline(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro command_italic(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro special_base(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{# FunctionStyle #}
+
+{% macro function_tooltip(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro function_cmd_click(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro special_color(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{# LinkStyle #}
+
+{% macro special_link(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{# ParagraphStyle #}
+
+{% macro paragraph_paragraph(style) -%}
+  {{ caller() }}
+{%- endmacro %}
+
+{% macro paragraph_list_item(style) -%}
+  {{ caller() }}
+{%- endmacro %}
