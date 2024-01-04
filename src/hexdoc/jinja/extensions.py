@@ -55,7 +55,6 @@ class DefaultMacroExtension(Extension):
     def parse(self, parser: Parser) -> nodes.Node | list[nodes.Node]:
         m = nodes.Macro(lineno=next(parser.stream).lineno)
         name = parser.parse_assign_target(name_only=True).name
-        m.name = f"default_{name}"
         parser.parse_signature(m)
         m.body = parser.parse_statements(("name:enddefaultmacro",), drop_needle=True)
 
@@ -67,4 +66,4 @@ class DefaultMacroExtension(Extension):
             [],
             [],
         )
-        return [m, if_stmt]
+        return if_stmt
