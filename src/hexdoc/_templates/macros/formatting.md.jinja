@@ -1,7 +1,12 @@
-{% import "macros/formatting.html.jinja" as fmt_html with context %}
+{% import "macros/formatting.jinja" as fmt_base with context %}
 {% import "macros/styles.md.jinja" as styles_md with context %}
 
 {# FormatTree handler #}
-{% macro styled(value) -%}
-  {{ fmt_html.styled(value, separator="\\n", styles=styles_md) }}
+{% macro styled(value, safe=false) -%}
+  {{ fmt_base.styled(
+    value,
+    safe=safe,
+    separator="\\n"|safe,
+    styles=styles_md,
+  ) }}
 {%- endmacro %}

@@ -1,0 +1,19 @@
+{# FormatTree handler #}
+{% macro styled(value, safe, separator, styles) -%}
+  {%- if value is string -%}
+    {%- for line in value.splitlines() -%}
+      {{- line|safe if safe else line -}}
+      {%- if not loop.last -%}{{ separator }}{%- endif -%}
+    {%- endfor -%}
+  {%- elif value is not none -%}
+    {%- call styles[value.style.macro](value.style) -%}
+      {%- for child in value.children -%}
+        {{-
+          styled(child, safe, separator, styles)|safe
+          if safe
+          else styled(child, safe, separator, styles)
+        -}}
+      {%- endfor -%}
+    {%- endcall -%}
+  {%- endif -%}
+{%- endmacro %}
