@@ -13,6 +13,6 @@
   {{ super() }}
 {% endblock inner_body %}
 
-{% defaultmacro redirect_image() -%}
+{% block redirect_image -%}
   {{ texture_macros.item_url(page.item) }}
-{%- enddefaultmacro %}
+{%- endblock redirect_image %}

@@ -8,7 +8,7 @@
 {% endblock opengraph%}
 
 {% block title -%}
-  {{ page_template.redirect_title() }}
+  {{ _("hexdoc.redirect.page.title").format(page_template.redirect_title()) }}
 {%- endblock title %}
 
 {% block description -%}

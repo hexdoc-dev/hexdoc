@@ -11,15 +11,20 @@
 {% endif %}
 <br />
 
-{%- defaultmacro redirect_title() -%}
-  {{ _("hexdoc.redirect.page.title").format(page.anchor) }}
-{%- enddefaultmacro -%}
+{%- macro redirect_title() -%}
+  {%- block redirect_title -%}
+    {{ page.anchor }}
+  {%- endblock redirect_title -%}
+{%- endmacro -%}
 
-{%- defaultmacro redirect_description() -%}
-{%- enddefaultmacro -%}
+{%- macro redirect_description() -%}
+  {%- block redirect_description %}{% endblock -%}
+{%- endmacro -%}
 
-{%- defaultmacro redirect_image() -%}
-{%- enddefaultmacro -%}
+{%- macro redirect_image() -%}
+  {%- block redirect_image %}{% endblock -%}
+{%- endmacro -%}
 
-{%- defaultmacro redirect_extra_opengraph() %}
-{% enddefaultmacro -%}
+{%- macro redirect_extra_opengraph() %}
+  {% block redirect_extra_opengraph %}{% endblock %}
+{% endmacro -%}

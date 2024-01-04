@@ -2,7 +2,6 @@
 
 {% import "macros/formatting.html.jinja" as fmt with context %}
 {% import "macros/formatting.txt.jinja" as fmt_txt with context %}
-{% from "pages/patchouli/page.html.jinja" import redirect_title as default_redirect_title with context %}
 
 {% block body %}
   {% if page.title is defined and page.title is not none %}
@@ -22,14 +21,14 @@
   {% endblock inner_body %}
 {% endblock body %}
 
-{% defaultmacro redirect_title() -%}
-  {%- if page.title is defined and page.title -%}
-    {{ _("hexdoc.redirect.page.title").format(page.title) }}
-  {%- else -%}
-    {{ default_redirect_title() }}
-  {%- endif -%}
-{%- enddefaultmacro %}
+{% block redirect_title -%}
+  {{
+    page.title
+    if page.title is defined and page.title
+    else super()
+  }}
+{%- endblock redirect_title %}
 
-{% defaultmacro redirect_description() -%}
+{% block redirect_description -%}
   {{ fmt_txt.styled(page.text) }}
-{%- enddefaultmacro %}
+{%- endblock redirect_description %}
