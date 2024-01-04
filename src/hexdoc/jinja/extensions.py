@@ -60,7 +60,9 @@ class DefaultMacroExtension(Extension):
         m.body = parser.parse_statements(("name:enddefaultmacro",), drop_needle=True)
 
         if_stmt = nodes.If(
-            nodes.Not(nodes.Name(name, "load")),
+            nodes.Not(
+                nodes.Test(nodes.Name(name, "load"), "defined", [], [], None, None)
+            ),
             [nodes.Macro(name, m.args, m.defaults, m.body)],
             [],
             [],
