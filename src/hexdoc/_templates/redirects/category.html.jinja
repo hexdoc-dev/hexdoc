@@ -1,16 +1,20 @@
 {% extends "redirects/base.html.jinja" %}
 
 {% import "macros/formatting.txt.jinja" as fmt_txt with context %}
+{% import "macros/textures.html.jinja" as texture_macros with context %}
 
 {% block target -%}
   {{ page_url }}#{{ fragment }}
 {%- endblock target %}
 
-{% block opengraph %}
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="{{ mod_name }} ({{ version }})" />
-  <meta property="og:title" content="Category: {{ category.name }}" />
-  <meta property="og:url" content="{{ self.target() }}" />
-  <meta property="og:description" content="{{ fmt_txt.styled(category.description)|safe }}" />
-  <meta property="og:image" content="{{ category.icon.texture.url }}" />
-{% endblock opengraph %}
+{% block title -%}
+  {{ _('hexdoc.opengraph.category').format(category.name) }}
+{%- endblock title %}
+
+{% block description -%}
+  {{ fmt_txt.styled(category.description) }}
+{%- endblock description %}
+
+{% block image -%}
+  {{ texture_macros.icon_url(category.icon) }}
+{%- endblock image %}

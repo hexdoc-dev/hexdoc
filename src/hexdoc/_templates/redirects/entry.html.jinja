@@ -1,0 +1,20 @@
+{% extends "redirects/base.html.jinja" %}
+
+{% import "macros/formatting.txt.jinja" as fmt_txt with context %}
+{% import "macros/textures.html.jinja" as texture_macros with context %}
+
+{% block target -%}
+  {{ page_url }}#{{ fragment }}
+{%- endblock target %}
+
+{% block title -%}
+  {{ _('hexdoc.opengraph.entry').format(entry.name) }}
+{%- endblock title %}
+
+{% block description -%}
+  {{ fmt_txt.styled(entry.first_text_page.text) }}
+{%- endblock description %}
+
+{% block image -%}
+  {{ texture_macros.icon_url(entry.icon) }}
+{%- endblock image %}

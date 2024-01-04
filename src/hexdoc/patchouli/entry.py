@@ -59,6 +59,12 @@ class Entry(IDModel, Sortable):
     def fragment(self):
         return self.id.path
 
+    @property
+    def first_text_page(self):
+        for page in self.pages:
+            if getattr(page, "text", None):
+                return page
+
     def preprocess_pages(self) -> Iterator[Page]:
         """Combines adjacent CraftingPage recipes as much as possible."""
         accumulator = _CraftingPageAccumulator.blank()

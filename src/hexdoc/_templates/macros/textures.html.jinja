@@ -83,3 +83,26 @@
     lazy=false,
   ) }}
 {%- endmacro %}
+
+{% macro icon_url(item_or_texture) -%}
+  {%- if item_or_texture.texture is defined -%}
+    {{ item_url(item_or_texture) }}
+  {%- else -%}
+    {{ texture_url(item_or_texture) }}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro item_url(item) -%}
+  {%- if item.image_textures is sequence -%}
+    {{ texture_url(item.image_textures|first) }}
+  {%- else -%}
+    {{ texture_url(item.image_texture) }}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro texture_url(texture) -%}
+  {#- TODO: replace when we implement gif rendering -#}
+  {% if texture.meta is not defined -%}
+    {{ texture.url }}
+  {%- endif %}
+{%- endmacro %}

@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; url={% block target %}{% endblock %}">
+    <meta http-equiv="refresh" content="0; url={% block target required %}{% endblock %}">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
     {% block opengraph %}
-      {% include "components/opengraph.html.jinja" %}
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="{{ mod_name }} ({{ version }})" />
+      <meta property="og:title" content="{% block title required %}{% endblock %}" />
+      <meta property="og:url" content="{{ self.target() }}" />
+      <meta property="og:description" content="{% block description required %}{% endblock %}" />
+      <meta property="og:image" content="{% block image required %}{% endblock %}" />
     {% endblock opengraph %}
 
     {% block styles %}
