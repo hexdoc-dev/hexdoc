@@ -25,7 +25,7 @@ from hexdoc.minecraft import I18n
 from hexdoc.plugin import ModPluginWithBook, PluginManager
 from hexdoc.utils import ContextSource, write_to_path
 
-from .extensions import IncludeRawExtension
+from .extensions import DefaultMacroExtension, IncludeRawExtension
 from .filters import (
     hexdoc_item,
     hexdoc_localize,
@@ -99,6 +99,7 @@ def create_jinja_env_with_loader(loader: BaseLoader):
         autoescape=True,
         extensions=[
             IncludeRawExtension,
+            DefaultMacroExtension,
         ],
     )
 
