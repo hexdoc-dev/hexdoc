@@ -26,6 +26,11 @@ CHECK_RENDERED_FILENAMES = [
 ]
 
 
+def rename_snapshot(snapshot: SnapshotAssertion, index: str):
+    location = snapshot.test_location
+    location.filepath = location.filepath.replace(".py", f"_{index}.py")  # TODO: hack
+
+
 @pytest.fixture(scope="session", autouse=True)
 def call_callback():
     callback(quiet_lang=["ru_ru", "zh_cn"])
@@ -65,7 +70,7 @@ def branch() -> str:
     )
 
     assert (branch := result.stdout.strip())
-    return branch.replace(".", "_")
+    return branch
 
 
 @pytest.mark.hexcasting
@@ -85,8 +90,7 @@ def test_render_app_release(
         branch="main",
     )
 
-    location = snapshot.test_location
-    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
+    rename_snapshot(snapshot, branch)
     assert list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB) == snapshot
 
 
@@ -126,8 +130,7 @@ def test_file_structure(
     app_list = list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB)
     subprocess_list = list_directory(subprocess_output_dir, exclude_glob=EXCLUDE_GLOB)
 
-    location = snapshot.test_location
-    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
+    rename_snapshot(snapshot, branch)
     assert app_list == subprocess_list
     assert app_list == snapshot
 
@@ -145,8 +148,7 @@ def test_files(
     app_file = app_output_dir / filename
     subprocess_file = subprocess_output_dir / filename
 
-    location = path_snapshot.test_location
-    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
+    rename_snapshot(path_snapshot, branch)
     assert app_file == path_snapshot
 
     # difficult to monkeypatch versions for subprocess, so this file will be different
