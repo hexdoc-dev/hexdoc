@@ -1,14 +1,10 @@
-{% extends "redirects/base.html.jinja" %}
+{% extends "redirects/book_link.html.jinja" %}
 
 {% import "macros/formatting.txt.jinja" as fmt_txt with context %}
 {% import "macros/textures.html.jinja" as texture_macros with context %}
 
-{% block target -%}
-  {{ page_url }}#{{ fragment }}
-{%- endblock target %}
-
 {% block title -%}
-  {{ _('hexdoc.opengraph.category').format(category.name) }}
+  {{ _('hexdoc.redirect.category.title').format(category.name) }}
 {%- endblock title %}
 
 {% block description -%}

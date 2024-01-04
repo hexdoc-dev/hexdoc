@@ -10,3 +10,13 @@
   {{ self.body() }}
 {% endif %}
 <br />
+
+{%- defaultmacro redirect_title() -%}
+  {{ _("hexdoc.redirect.page.title").format(page.anchor) }}
+{%- enddefaultmacro -%}
+
+{%- defaultmacro redirect_description() -%}
+{%- enddefaultmacro -%}
+
+{%- defaultmacro redirect_image() -%}
+{%- enddefaultmacro -%}

@@ -1,0 +1,5 @@
+{% extends "redirects/base.html.jinja" %}
+
+{% block target -%}
+  {{ page_url }}#{{ fragment }}
+{%- endblock target %}

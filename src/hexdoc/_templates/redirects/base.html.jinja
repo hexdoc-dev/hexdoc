@@ -12,7 +12,7 @@
       <meta property="og:title" content="{% block title required %}{% endblock %}" />
       <meta property="og:url" content="{{ self.target() }}" />
       <meta property="og:description" content="{% block description required %}{% endblock %}" />
-      <meta property="og:image" content="{% block image required %}{% endblock %}" />
+      <meta property="og:image" content="{% block image %}{{ page_url~'/'~icon_href if icon_href }}{% endblock %}" />
     {% endblock opengraph %}
 
     {% block styles %}

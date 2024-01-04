@@ -1,0 +1,15 @@
+{% extends "redirects/book_link.html.jinja" %}
+
+{% import page.template~".html.jinja" as page_template with context %}
+
+{% block title -%}
+  {{ page_template.redirect_title() }}
+{%- endblock title %}
+
+{% block description -%}
+  {{ page_template.redirect_description() }}
+{%- endblock description %}
+
+{% block image -%}
+  {{ page_template.redirect_image() or super() }}
+{%- endblock image %}

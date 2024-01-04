@@ -45,10 +45,10 @@
 
     any_block:  "Any Block",
 
-    opengraph: {
-      category: "Category: {}",
-      entry: "Entry: {}",
-      page: "Page: {}",
+    redirect: {
+      "category.title": "Category: {}",
+      "entry.title": "Entry: {}",
+      "page.title": "Page: {}",
     }
   },
 }
