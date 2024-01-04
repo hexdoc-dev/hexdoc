@@ -10,6 +10,13 @@ from typing import Any, Mapping
 
 import nox
 
+MOCK_ENV = {
+    "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
+    "GITHUB_SHA": "GITHUB_SHA",
+    "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
+    "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
+}
+
 DUMMY_PATH = Path(".hexdoc/dummy_book")
 
 PDOC_FAVICON = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png"
@@ -51,33 +58,39 @@ def test(session: nox.Session):
 
 @nox.session(tags=["test"])
 def test_build(session: nox.Session):
-    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+    session.install("-e", ".[test]")
 
-    env = {
-        "GITHUB_REPOSITORY": "GITHUB_REPOSITORY",
-        "GITHUB_SHA": "GITHUB_SHA",
-        "GITHUB_PAGES_URL": "GITHUB_PAGES_URL",
-        "DEBUG_GITHUBUSERCONTENT": "DEBUG_GITHUBUSERCONTENT",
-    }
-
-    session.run("hexdoc", "build", "--branch=main", env=env)
-
-    session.run(
-        "hexdoc",
-        "--quiet-lang=ru_ru",
-        "--quiet-lang=zh_cn",
-        "build",
-        "--branch=main",
-        "--props=submodules/HexMod/doc/hexdoc.toml",
-        env=env,
-    )
+    session.run("hexdoc", "build", "--branch=main", env=MOCK_ENV)
 
 
 @nox.session(tags=["test", "post_build"])
-def test_hexcasting(session: nox.Session):
-    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+@nox.parametrize(["branch"], ["1.19", "1.20"])
+def test_hexcasting(session: nox.Session, branch: str):
+    session.install("-e", ".[test]")
 
-    session.run("pytest", "-m", "hexcasting", *session.posargs)
+    with session.cd("submodules/HexMod"):
+        original_branch = run_silent_external(
+            session, "git", "rev-parse", "--abbrev-ref", "HEAD"
+        )
+        session.run("git", "checkout", branch, external=True)
+
+    try:
+        session.install("-e", "./submodules/HexMod")
+
+        session.run(
+            "hexdoc",
+            "--quiet-lang=ru_ru",
+            "--quiet-lang=zh_cn",
+            "build",
+            "--branch=main",
+            "--props=submodules/HexMod/doc/hexdoc.toml",
+            env=MOCK_ENV,
+        )
+
+        session.run("pytest", "-m", "hexcasting", *session.posargs)
+    finally:
+        with session.cd("submodules/HexMod"):
+            session.run("git", "checkout", original_branch, external=True)
 
 
 @nox.session(tags=["test", "post_build"])

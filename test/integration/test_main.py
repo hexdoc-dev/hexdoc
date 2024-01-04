@@ -1,4 +1,4 @@
-# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownMemberType=false, reportPrivateUsage=false
 
 import subprocess
 from pathlib import Path
@@ -54,12 +54,27 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
     return tmp_path_factory.mktemp("subprocess")
 
 
+@pytest.fixture
+def branch() -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+        cwd="submodules/HexMod",
+        stdout=subprocess.PIPE,
+        encoding="utf8",
+        check=True,
+    )
+
+    assert (branch := result.stdout.strip())
+    return branch.replace(".", "_")
+
+
 @pytest.mark.hexcasting
 @pytest.mark.dependency
 def test_render_app_release(
     tmp_path_factory: TempPathFactory,
     snapshot: SnapshotAssertion,
     hexcasting_props_file: Path,
+    branch: str,
 ):
     app_output_dir = tmp_path_factory.mktemp("app")
 
@@ -70,6 +85,8 @@ def test_render_app_release(
         branch="main",
     )
 
+    location = snapshot.test_location
+    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
     assert list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB) == snapshot
 
 
@@ -104,10 +121,13 @@ def test_file_structure(
     app_output_dir: Path,
     subprocess_output_dir: Path,
     snapshot: SnapshotAssertion,
+    branch: str,
 ):
     app_list = list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB)
     subprocess_list = list_directory(subprocess_output_dir, exclude_glob=EXCLUDE_GLOB)
 
+    location = snapshot.test_location
+    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
     assert app_list == subprocess_list
     assert app_list == snapshot
 
@@ -120,10 +140,13 @@ def test_files(
     app_output_dir: Path,
     subprocess_output_dir: Path,
     path_snapshot: SnapshotAssertion,
+    branch: str,
 ):
     app_file = app_output_dir / filename
     subprocess_file = subprocess_output_dir / filename
 
+    location = path_snapshot.test_location
+    location.filepath = location.filepath.replace(".py", f"_{branch}.py")  # TODO: hack
     assert app_file == path_snapshot
 
     # difficult to monkeypatch versions for subprocess, so this file will be different
