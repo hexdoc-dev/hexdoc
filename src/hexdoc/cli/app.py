@@ -30,7 +30,7 @@ from hexdoc.minecraft.assets import (
 )
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
-from hexdoc.utils import ContextSource, git_root, setup_logging, write_to_path
+from hexdoc.utils import git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
 
 from . import ci, render_block
@@ -140,7 +140,7 @@ def repl(*, props_file: PropsOption):
 class LoadedBookInfo:
     language: str
     i18n: I18n
-    context: ContextSource
+    context: dict[str, Any]
     book_id: ResourceLocation
     book: Any
 
@@ -253,7 +253,7 @@ def build(
                 if clean:
                     shutil.rmtree(output_dir / site_book_path, ignore_errors=True)
 
-                template_args: dict[str, Any] = {
+                template_args: dict[str, Any] = book_info.context | {
                     "all_metadata": all_metadata,
                     "png_textures": PNGTexture.get_lookup(texture_ctx.textures),
                     "animations": sorted(  # this MUST be sorted to avoid flaky tests
@@ -263,8 +263,6 @@ def build(
                     "book": book_info.book,
                     "book_links": book_ctx.book_links,
                 }
-                for ctx in [props, book_info.i18n, texture_ctx]:
-                    ctx.add_to_context(template_args)
 
                 render_book(
                     props=props,
