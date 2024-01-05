@@ -122,7 +122,9 @@ jobs:
           name: hexdoc-pages
 
       - name: Unzip web book
-        run: unzip site.zip -d _site/src/docs
+        run: |
+          mkdir -p _site/src
+          unzip site.zip -d _site/src/docs
 
       - name: Checkout current Pages
         uses: actions/checkout@v3
