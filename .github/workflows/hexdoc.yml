@@ -71,31 +71,19 @@ jobs:
       - name: Install Python packages
         run: pip install -e .${{ inputs.pip-extras }} hatch
 
-      - name: Checkout current Pages
-        uses: actions/checkout@v3
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: _site/dst
-
       - name: Build web book
         id: export
         run: xvfb-run --auto-servernum hexdoc ci build
 
-      - name: Merge web book
-        env:
-          GITHUB_PAGES_URL: ${{ steps.export.outputs.pages-url }}
-        run: hexdoc ci merge
-
       - name: Zip web book
-        working-directory: _site/dst/docs
+        working-directory: _site/src/docs
         run: zip site.zip ./* -r
 
-      - name: Upload Pages artifact
+      - name: Upload intermediate Pages artifact
         uses: actions/upload-artifact@v3
         with:
           name: hexdoc-pages
-          path: _site/dst/docs/site.zip
+          path: _site/src/docs/site.zip
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v3
@@ -115,9 +103,18 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
+    env:
+      GITHUB_PAGES_URL: ${{ needs.build.outputs.pages-url }}
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: pip
+
+      - name: Install Python packages
+        run: pip install -e .${{ inputs.pip-extras }}
 
       - name: Download Pages artifact
         uses: actions/download-artifact@v3
@@ -125,12 +122,22 @@ jobs:
           name: hexdoc-pages
 
       - name: Unzip web book
-        run: unzip site.zip -d _site
+        run: unzip site.zip -d _site/src/docs
+
+      - name: Checkout current Pages
+        uses: actions/checkout@v3
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: _site/dst
+
+      - name: Merge web book
+        run: hexdoc ci merge
 
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: _site
+          folder: _site/dst/docs
           target-folder: docs
           clean: true
           clean-exclude: |
