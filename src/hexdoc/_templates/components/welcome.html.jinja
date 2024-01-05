@@ -2,16 +2,18 @@
 
 <div class="container" style="margin-top: 3em;">
   <blockquote>
-    <h1>{{ fmt.styled(_f("hexdoc.welcome.header")).format(mod_name) }}</h1>
-    {% if is_bleeding_edge %}
-      {{ fmt.styled(_f("hexdoc.welcome.bleeding_edge")) }}
-    {% endif %}
-    {{ fmt.styled(_f("hexdoc.welcome.spoilers")) }}
+    {% block content %}
+      <h1>{{ fmt.styled(_f("hexdoc.welcome.header")).format(mod_name) }}</h1>
+      {% if is_bleeding_edge %}
+        {{ fmt.styled(_f("hexdoc.welcome.bleeding_edge")) }}
+      {% endif %}
+      {{ fmt.styled(_f("hexdoc.welcome.spoilers")) }}
 
-    {# conditionally revealed using js #}
-    <span id="old-version-notice" class="hidden">
-      <br />
-      {{ fmt.styled(_f("hexdoc.welcome.old_version")) }}
-    </span>
+      {# conditionally revealed using js #}
+      <span id="old-version-notice" class="hidden">
+        <br />
+        {{ fmt.styled(_f("hexdoc.welcome.old_version")) }}
+      </span>
+    {% endblock content %}
   </blockquote>
 </div>
