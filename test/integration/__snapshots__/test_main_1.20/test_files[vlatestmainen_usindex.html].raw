@@ -735,13 +735,6 @@
       loading="lazy"
       class="item-texture  texture pixelated"
     > Create Lava</a></li>
-          <li><a href="#patterns/great_spells/zeniths" class="toc-elem "><img
-      title="Potion"
-      alt="Potion"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/potion_overlay.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    > Zeniths</a></li>
           <li><a href="#patterns/great_spells/weather_manip" class="toc-elem "><img
       title="Levitation"
       alt="Levitation"
@@ -763,6 +756,13 @@
       loading="lazy"
       class="item-texture  texture pixelated"
     > Greater Teleport</a></li>
+          <li><a href="#patterns/great_spells/zeniths" class="toc-elem "><img
+      title="Potion"
+      alt="Potion"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/potion_overlay.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    > Zeniths</a></li>
           <li><a href="#patterns/great_spells/greater_sentinel" class="toc-elem "><img
       title="Beacon"
       alt="Beacon"
@@ -5776,6 +5776,63 @@
       loading="lazy"
       class="item-texture  texture "
     ><div class="badge item-texture-count">4</div>
+  </div>
+    </div>
+</div><div>
+    <h5>Edified Wood</h5>
+    <div class="crafting-table">
+        <img
+      title="Crafting Table"
+      alt="Crafting Table"
+      src="DEBUG_GITHUBUSERCONTENT/src/hexdoc/_export/resources/assets/minecraft/textures/gui/hexdoc/crafting_table.png"
+      class="texture pixelated"
+    >
+  <div class="crafting-table-grid">
+        <div class="texture item-texture multi-textures cycle-textures">
+                <img
+      title="Edified Log"
+      alt="Edified Log"
+      src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_log.png"
+      loading="lazy"
+      class="item-texture multi-texture-active texture "
+    >
+        </div>
+        <div class="texture item-texture multi-textures cycle-textures">
+                <img
+      title="Edified Log"
+      alt="Edified Log"
+      src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_log.png"
+      loading="lazy"
+      class="item-texture multi-texture-active texture "
+    >
+        </div>
+        <div></div>        <div class="texture item-texture multi-textures cycle-textures">
+                <img
+      title="Edified Log"
+      alt="Edified Log"
+      src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_log.png"
+      loading="lazy"
+      class="item-texture multi-texture-active texture "
+    >
+        </div>
+        <div class="texture item-texture multi-textures cycle-textures">
+                <img
+      title="Edified Log"
+      alt="Edified Log"
+      src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_log.png"
+      loading="lazy"
+      class="item-texture multi-texture-active texture "
+    >
+        </div>
+        <div></div>  </div>
+  <div class="crafting-table-result recipe-item-slot">
+    <img
+      title="Edified Wood"
+      alt="Edified Wood"
+      src="GITHUB_PAGES_URL/v/latest/main/assets/hexcasting/textures/block/edified_wood.png"
+      loading="lazy"
+      class="item-texture  texture "
+    ><div class="badge item-texture-count">3</div>
   </div>
     </div>
 </div><div>
@@ -14569,126 +14626,6 @@
     <p>It may be advisable to keep my knowledge of this spell secret. A certain faction of botanists get... touchy about it, or so I&#39;ve heard.</p><p>Well, no one said tracing the deep secrets of the universe was going to be an easy time.</p>
 <br />
 </div>
-<div id="patterns/great_spells/zeniths" class="entry">
-    <h3 class="entry-title page-header">
-    <img
-      title="Potion"
-      alt="Potion"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/potion_overlay.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    >Zeniths<a
-    href="#table-of-contents"
-    class="permalink small"
-    title="Jump to top"
-  ><i class="bi bi-box-arrow-up"></i></a><a
-    href="#patterns/great_spells/zeniths"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h3>
-    <p>This family of spells all impart a positive potion effect upon an entity, similar to the <a href="#patterns/spells/nadirs"><span style="color: #fc77be">Nadirs</span></a>. However, these have their <span style="color: #74b3f2">media</span> costs increase with the <i>cube</i> of the potency.</p>
-<br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/regeneration">
-<h4 class="pattern-title">White Sun&#39;s Zenith (entity, number, number →)<a
-    href="#patterns/great_spells/zeniths@hexcasting:potion/regeneration"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h4>
-  <details class="details-collapsible">
-    <summary class="collapse-details collapse-spell"></summary>
-      <canvas
-        class="spell-viz"
-        width="216"
-        height="216"
-        data-string="qqqqaawawaedd"
-        data-start="north_west"
-        data-per-world="True"
-      >Your browser does not support visualizing patterns. Pattern code: qqqqaawawaedd</canvas>
-  </details>
-      <p>Bestows <span style="color: #8d6acc">regeneration</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
-  </div>
-<br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/night_vision">
-<h4 class="pattern-title">Blue Sun&#39;s Zenith (entity, number →)<a
-    href="#patterns/great_spells/zeniths@hexcasting:potion/night_vision"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h4>
-  <details class="details-collapsible">
-    <summary class="collapse-details collapse-spell"></summary>
-      <canvas
-        class="spell-viz"
-        width="216"
-        height="216"
-        data-string="qqqaawawaeqdd"
-        data-start="west"
-        data-per-world="True"
-      >Your browser does not support visualizing patterns. Pattern code: qqqaawawaeqdd</canvas>
-  </details>
-      <p>Bestows <span style="color: #8d6acc">night vision</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 5 seconds.</p>
-  </div>
-<br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/absorption">
-<h4 class="pattern-title">Black Sun&#39;s Zenith (entity, number, number →)<a
-    href="#patterns/great_spells/zeniths@hexcasting:potion/absorption"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h4>
-  <details class="details-collapsible">
-    <summary class="collapse-details collapse-spell"></summary>
-      <canvas
-        class="spell-viz"
-        width="216"
-        height="216"
-        data-string="qqaawawaeqqdd"
-        data-start="south_west"
-        data-per-world="True"
-      >Your browser does not support visualizing patterns. Pattern code: qqaawawaeqqdd</canvas>
-  </details>
-      <p>Bestows <span style="color: #8d6acc">absorption</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
-  </div>
-<br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/haste">
-<h4 class="pattern-title">Red Sun&#39;s Zenith (entity, number, number →)<a
-    href="#patterns/great_spells/zeniths@hexcasting:potion/haste"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h4>
-  <details class="details-collapsible">
-    <summary class="collapse-details collapse-spell"></summary>
-      <canvas
-        class="spell-viz"
-        width="216"
-        height="216"
-        data-string="qaawawaeqqqdd"
-        data-start="south_east"
-        data-per-world="True"
-      >Your browser does not support visualizing patterns. Pattern code: qaawawaeqqqdd</canvas>
-  </details>
-      <p>Bestows <span style="color: #8d6acc">haste</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
-  </div>
-<br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/strength">
-<h4 class="pattern-title">Green Sun&#39;s Zenith (entity, number, number →)<a
-    href="#patterns/great_spells/zeniths@hexcasting:potion/strength"
-    class="permalink small"
-    title="Permalink"
-  ><i class="bi bi-link-45deg"></i></a></h4>
-  <details class="details-collapsible">
-    <summary class="collapse-details collapse-spell"></summary>
-      <canvas
-        class="spell-viz"
-        width="216"
-        height="216"
-        data-string="aawawaeqqqqdd"
-        data-start="east"
-        data-per-world="True"
-      >Your browser does not support visualizing patterns. Pattern code: aawawaeqqqqdd</canvas>
-  </details>
-      <p>Bestows <span style="color: #8d6acc">strength</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
-  </div>
-<br />
-</div>
 <div id="patterns/great_spells/weather_manip" class="entry">
     <h3 class="entry-title page-header">
     <img
@@ -14845,6 +14782,126 @@
   </div>
 <br />
     <p>The entity will be teleported by the given vector, which is an offset from its given position. No matter the distance, it always seems to cost about ten <a href="#items/amethyst"><span style="color: #b0b">Charged Amethyst</span></a>.</p><p>The transference is not perfect, and it seems when teleporting something as complex as a player, their inventory doesn&#39;t <i>quite</i> stay attached, and tends to splatter everywhere at the destination. In addition, the target will be forcibly removed from anything inanimate they are riding or sitting on ... but I&#39;ve read scraps that suggest animals can come along for the ride, so to speak.</p>
+<br />
+</div>
+<div id="patterns/great_spells/zeniths" class="entry">
+    <h3 class="entry-title page-header">
+    <img
+      title="Potion"
+      alt="Potion"
+      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/potion_overlay.png"
+      loading="lazy"
+      class="item-texture  texture pixelated"
+    >Zeniths<a
+    href="#table-of-contents"
+    class="permalink small"
+    title="Jump to top"
+  ><i class="bi bi-box-arrow-up"></i></a><a
+    href="#patterns/great_spells/zeniths"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h3>
+    <p>This family of spells all impart a positive potion effect upon an entity, similar to the <a href="#patterns/spells/nadirs"><span style="color: #fc77be">Nadirs</span></a>. However, these have their <span style="color: #74b3f2">media</span> costs increase with the <i>cube</i> of the potency.</p>
+<br />
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/regeneration">
+<h4 class="pattern-title">White Sun&#39;s Zenith (entity, number, number →)<a
+    href="#patterns/great_spells/zeniths@hexcasting:potion/regeneration"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
+  <details class="details-collapsible">
+    <summary class="collapse-details collapse-spell"></summary>
+      <canvas
+        class="spell-viz"
+        width="216"
+        height="216"
+        data-string="qqqqaawawaedd"
+        data-start="north_west"
+        data-per-world="True"
+      >Your browser does not support visualizing patterns. Pattern code: qqqqaawawaedd</canvas>
+  </details>
+      <p>Bestows <span style="color: #8d6acc">regeneration</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
+  </div>
+<br />
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/night_vision">
+<h4 class="pattern-title">Blue Sun&#39;s Zenith (entity, number →)<a
+    href="#patterns/great_spells/zeniths@hexcasting:potion/night_vision"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
+  <details class="details-collapsible">
+    <summary class="collapse-details collapse-spell"></summary>
+      <canvas
+        class="spell-viz"
+        width="216"
+        height="216"
+        data-string="qqqaawawaeqdd"
+        data-start="west"
+        data-per-world="True"
+      >Your browser does not support visualizing patterns. Pattern code: qqqaawawaeqdd</canvas>
+  </details>
+      <p>Bestows <span style="color: #8d6acc">night vision</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 5 seconds.</p>
+  </div>
+<br />
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/absorption">
+<h4 class="pattern-title">Black Sun&#39;s Zenith (entity, number, number →)<a
+    href="#patterns/great_spells/zeniths@hexcasting:potion/absorption"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
+  <details class="details-collapsible">
+    <summary class="collapse-details collapse-spell"></summary>
+      <canvas
+        class="spell-viz"
+        width="216"
+        height="216"
+        data-string="qqaawawaeqqdd"
+        data-start="south_west"
+        data-per-world="True"
+      >Your browser does not support visualizing patterns. Pattern code: qqaawawaeqqdd</canvas>
+  </details>
+      <p>Bestows <span style="color: #8d6acc">absorption</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
+  </div>
+<br />
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/haste">
+<h4 class="pattern-title">Red Sun&#39;s Zenith (entity, number, number →)<a
+    href="#patterns/great_spells/zeniths@hexcasting:potion/haste"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
+  <details class="details-collapsible">
+    <summary class="collapse-details collapse-spell"></summary>
+      <canvas
+        class="spell-viz"
+        width="216"
+        height="216"
+        data-string="qaawawaeqqqdd"
+        data-start="south_east"
+        data-per-world="True"
+      >Your browser does not support visualizing patterns. Pattern code: qaawawaeqqqdd</canvas>
+  </details>
+      <p>Bestows <span style="color: #8d6acc">haste</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
+  </div>
+<br />
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/strength">
+<h4 class="pattern-title">Green Sun&#39;s Zenith (entity, number, number →)<a
+    href="#patterns/great_spells/zeniths@hexcasting:potion/strength"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
+  <details class="details-collapsible">
+    <summary class="collapse-details collapse-spell"></summary>
+      <canvas
+        class="spell-viz"
+        width="216"
+        height="216"
+        data-string="aawawaeqqqqdd"
+        data-start="east"
+        data-per-world="True"
+      >Your browser does not support visualizing patterns. Pattern code: aawawaeqqqqdd</canvas>
+  </details>
+      <p>Bestows <span style="color: #8d6acc">strength</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
+  </div>
 <br />
 </div>
 <div id="patterns/great_spells/greater_sentinel" class="entry">
