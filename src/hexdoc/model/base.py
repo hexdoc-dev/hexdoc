@@ -7,7 +7,7 @@ from typing import (
     dataclass_transform,
 )
 
-from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
+from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelBeforeValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
@@ -76,3 +76,7 @@ class HexdocSettings(BaseSettings):
 
 class ValidationContextModel(HexdocModel, ValidationContext):
     pass
+
+
+HexdocTypeAdapter = TypeAdapter
+"""DEPRECATED: Use `pydantic.TypeAdapter` instead."""
