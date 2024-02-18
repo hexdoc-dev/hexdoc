@@ -91,7 +91,8 @@ class HexdocModPlugin(ModPlugin):
         book: Any,
         context: ContextSource,
     ) -> DefaultRenderedTemplates:
-        assert isinstance(book, Book)
+        if not isinstance(book, Book):
+            return {}
 
         templates: DefaultRenderedTemplates = {}
 
