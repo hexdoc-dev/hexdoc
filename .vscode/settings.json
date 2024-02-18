@@ -31,8 +31,8 @@
         "*.css[].].raw": "css",
         "*.js[].].raw": "javascript",
     },
-    "python.analysis.packageIndexDepths": [
-        {"name": "syrupy", "depth": 2},
-        {"name": "pydantic", "depth": 2},
-    ],
+    // "python.analysis.packageIndexDepths": [
+    //     {"name": "syrupy", "depth": 2},
+    //     {"name": "pydantic", "depth": 2},
+    // ],
 }
