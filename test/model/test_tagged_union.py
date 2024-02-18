@@ -2,9 +2,10 @@ from typing import Any, cast
 
 import pytest
 from hexdoc.core.properties import Properties
-from hexdoc.model import HexdocModel, HexdocTypeAdapter, TypeTaggedUnion
+from hexdoc.model import HexdocModel, TypeTaggedUnion
 from hexdoc.plugin import PluginManager
 from hexdoc.utils.singletons import NoValue
+from pydantic import TypeAdapter
 
 
 class _TaggedUnion(TypeTaggedUnion, type=NoValue):
@@ -45,7 +46,7 @@ def test_union_with_other_type(
     want_type: type[_TaggedUnion | _OtherType],
     context: Any,
 ):
-    ta = HexdocTypeAdapter(union)
+    ta = TypeAdapter(union)
 
     result = ta.validate_python(data, context=context)
 

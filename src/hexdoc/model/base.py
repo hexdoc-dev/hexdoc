@@ -4,11 +4,10 @@ from contextvars import ContextVar
 from typing import (
     Any,
     ClassVar,
-    TypeVar,
     dataclass_transform,
 )
 
-from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
+from pydantic import BaseModel, ConfigDict, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelBeforeValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
@@ -73,20 +72,6 @@ class HexdocSettings(BaseSettings):
     @classmethod
     def model_getenv(cls, defaults: Any = None):
         return cls.model_validate(defaults or {})
-
-
-_T = TypeVar("_T")
-
-
-class HexdocTypeAdapter(TypeAdapter[_T]):
-    """Subclass of `pydantic.TypeAdapter` that sets `config` to the default hexdoc
-    model config.
-
-    Do not use this with Pydantic models, as it won't work.
-    """
-
-    def __init__(self, type: _T, *, config: ConfigDict = DEFAULT_CONFIG):
-        return super().__init__(type, config=config)
 
 
 class ValidationContextModel(HexdocModel, ValidationContext):

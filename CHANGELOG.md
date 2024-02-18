@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Changed
+
+* Updated minimum Pydantic version to `2.6.1`.
+* Updated internal Pyright version from `1.1.343` to `1.1.345`.
+  * We have not updated to `1.1.346` or higher because that version and `1.1.350` both introduce some type errors related to the lack of a `TypeForm` type in Python. The new versions enforce that types like `Union` and `Annotated` should not count as `type`, which is something that Pydantic and hexdoc are currently doing.
+
+### Removed
+
+* ⚠️ BREAKING: Removed `HexdocTypeAdapter` because `TypeAdapter` is now marked as final (and it never really worked properly anyway).
+
 ## `1!0.1.0a9`
 
 ### New Features

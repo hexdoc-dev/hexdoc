@@ -13,10 +13,11 @@ from typing import Literal, TypedDict, TypeVar, Unpack
 
 from github import Auth, Github
 from github.Repository import Repository
+from pydantic import TypeAdapter
 from typer import Typer
 
 from hexdoc.cli.utils.args import PropsOption, ReleaseOption
-from hexdoc.model import HexdocModel, HexdocSettings, HexdocTypeAdapter
+from hexdoc.model import HexdocModel, HexdocSettings
 from hexdoc.utils import setup_logging
 
 app = Typer(name="ci")
@@ -127,7 +128,7 @@ class CIEnvironment(HexdocSettings):
             case str():
                 pass
             case (data_type, data):
-                ta = HexdocTypeAdapter(data_type)
+                ta = TypeAdapter(data_type)
                 value = ta.dump_json(data).decode()
 
         with open(self.github_output, "a") as f:

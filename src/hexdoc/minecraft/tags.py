@@ -71,8 +71,7 @@ class Tag(HexdocModel):
                 registry=registry,
                 raw_data=raw_data,
             ),
-            # TODO: i have no idea why pyright doesn't like this.
-            export=cls._export,  # pyright: ignore[reportGeneralTypeIssues]
+            export=cls._export,
         ):
             if tag.replace:
                 values.clear()
@@ -109,7 +108,7 @@ class Tag(HexdocModel):
             return x.id in self.value_ids_set
         return NotImplemented
 
-    def _export(self, current: Self | None):
+    def _export(self: Tag, current: Tag | None):
         if self.replace or current is None:
             tag = self
         else:

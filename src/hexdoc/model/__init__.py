@@ -3,7 +3,6 @@ __all__ = [
     "DEFAULT_CONFIG",
     "HexdocModel",
     "HexdocSettings",
-    "HexdocTypeAdapter",
     "IDModel",
     "InlineItemModel",
     "InlineModel",
@@ -23,7 +22,6 @@ from .base import (
     DEFAULT_CONFIG,
     HexdocModel,
     HexdocSettings,
-    HexdocTypeAdapter,
     ValidationContextModel,
     init_context,
 )

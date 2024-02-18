@@ -3,11 +3,10 @@ from collections import defaultdict
 from pathlib import Path
 
 from packaging.version import Version
-from pydantic import Field
+from pydantic import Field, TypeAdapter
 from pydantic.alias_generators import to_camel
 
 from hexdoc.model import HexdocModel
-from hexdoc.model.base import HexdocTypeAdapter
 from hexdoc.utils import write_to_path
 
 MARKER_NAME = ".sitemap-marker.json"
@@ -127,10 +126,10 @@ def dump_sitemap(root: Path, sitemap: Sitemap, minecraft_sitemap: MinecraftSitem
     # dump the sitemaps using a TypeAdapter so they serialize the items properly
     write_to_path(
         root / "meta" / "sitemap.json",
-        HexdocTypeAdapter(Sitemap).dump_json(sitemap, by_alias=True),
+        TypeAdapter(Sitemap).dump_json(sitemap, by_alias=True),
     )
 
     write_to_path(
         root / "meta" / "sitemap-minecraft.json",
-        HexdocTypeAdapter(MinecraftSitemap).dump_json(minecraft_sitemap, by_alias=True),
+        TypeAdapter(MinecraftSitemap).dump_json(minecraft_sitemap, by_alias=True),
     )
