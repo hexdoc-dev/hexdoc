@@ -90,10 +90,12 @@ nox -s dummy_clean
 
 ## Badges
 
+### Shields.io
+
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1" alt="powered by hexdoc" style="max-width:100%;"></a>
 
-### Markdown
+#### Markdown
 
 ```md
 [![hexdoc](https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc)](https://github.com/hexdoc-dev/hexdoc)
@@ -101,7 +103,7 @@ nox -s dummy_clean
 [![powered by hexdoc](https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1)](https://github.com/hexdoc-dev/hexdoc)
 ```
 
-### HTML
+#### HTML
 
 ```html
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
@@ -109,7 +111,7 @@ nox -s dummy_clean
 <a href="https://github.com/hexdoc-dev/hexdoc"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1" alt="powered by hexdoc" style="max-width:100%;"></a>
 ```
 
-### reStructuredText
+#### reStructuredText
 
 ```rst
 .. image:: https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc
@@ -119,4 +121,19 @@ nox -s dummy_clean
 .. image:: https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc?label=1
     :target: https://github.com/hexdoc-dev/hexdoc
     :alt: powered by hexdoc
+```
+
+### Devin's Badges
+
+<a target="_blank" href="https://hexcasting.hexxy.media"><img src="https://github.com/SamsTheNerd/HexGloop/blob/73ea39b3becd/externalassets/hexdoc-badgecozy.svg?raw=true" alt="A badge for hexdoc in the style of Devins Badges" width=225></a>
+<a target="_blank" href="https://addons.hexxy.media" height=75><img src="https://github.com/SamsTheNerd/HexGloop/blob/73ea39b3becd/externalassets/addon-badge-cozy.svg?raw=true" alt="A badge for addons.hexxy.media in the style of Devins Badges" width=200></a>
+
+Thanks to [Sam](https://github.com/SamsTheNerd) for making these!
+
+#### HTML
+
+```html
+<a target="_blank" href="INSERT_YOUR_BOOK_LINK_HERE"><img src="https://github.com/SamsTheNerd/HexGloop/blob/73ea39b3becd/externalassets/hexdoc-badgecozy.svg?raw=true" alt="A badge for hexdoc in the style of Devins Badges" width=225></a>
+
+<a target="_blank" href="https://addons.hexxy.media" height=75><img src="https://github.com/SamsTheNerd/HexGloop/blob/73ea39b3becd/externalassets/addon-badge-cozy.svg?raw=true" alt="A badge for addons.hexxy.media in the style of Devins Badges" width=200></a>
 ```
