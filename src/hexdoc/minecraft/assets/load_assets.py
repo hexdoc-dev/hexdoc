@@ -23,6 +23,7 @@ from hexdoc.utils.context import ContextSource
 
 from ..tags import Tag
 from .animated import AnimatedTexture, AnimationMeta
+from .constants import MISSING_TEXTURE_URL
 from .items import (
     ImageTexture,
     ItemTexture,
@@ -30,10 +31,7 @@ from .items import (
     SingleItemTexture,
 )
 from .models import FoundNormalTexture, ModelItem
-from .textures import (
-    MISSING_TEXTURE_URL,
-    PNGTexture,
-)
+from .textures import PNGTexture
 
 logger = logging.getLogger(__name__)
 
@@ -356,4 +354,7 @@ def render_block(
 
     # blocks look better if antialiased
     logger.debug(f"Rendered {id} to {out_path} (in {out_root})")
+
+    # TODO: ideally we shouldn't be using site_url here, in case the site is moved
+    # but I'm not sure what else we could do...
     return SingleItemTexture.from_url(site_url / out_path, pixelated=False)

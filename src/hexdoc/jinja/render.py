@@ -163,6 +163,9 @@ def render_book(
     output_dir /= site_path
     page_url = props.env.github_pages_url.joinpath(*site_path.parts)
 
+    # eg. `/v/latest/main/en_us` -> `../../../..`, `/` -> `.`
+    relative_site_url = "/".join(".." for _ in site_path.parts) or "."
+
     logger.info(f"Rendering {output_dir}.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -189,6 +192,7 @@ def render_book(
         "props": props,
         "i18n": i18n,
         "site_url": str(props.env.github_pages_url),
+        "relative_site_url": relative_site_url,
         "page_url": str(page_url),
         "version": version,
         "lang": lang,
