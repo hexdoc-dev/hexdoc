@@ -161,6 +161,9 @@ def build(
 
     props, pm, book_plugin, plugin = load_common_data(props_file, branch)
 
+    if props.env.hexdoc_subdirectory:
+        output_dir /= props.env.hexdoc_subdirectory
+
     logger.info("Exporting resources.")
     with ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader:
         site_path = plugin.site_path(versioned=release)
@@ -300,6 +303,10 @@ def merge(
     props, _, _, plugin = load_common_data(props_file, branch="", book=True)
     if not props.template:
         raise ValueError("Expected a value for props.template, got None")
+
+    if props.env.hexdoc_subdirectory:
+        src /= props.env.hexdoc_subdirectory
+        dst /= props.env.hexdoc_subdirectory
 
     dst.mkdir(parents=True, exist_ok=True)
 

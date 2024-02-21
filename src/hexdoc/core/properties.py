@@ -39,6 +39,9 @@ class EnvironmentVariableProps(HexdocSettings):
     # set by CI
     github_pages_url: PydanticURL
 
+    # for putting books somewhere other than the site root
+    hexdoc_subdirectory: str | None = None
+
     # optional for debugging
     debug_githubusercontent: PydanticURL | None = None
 
@@ -66,6 +69,12 @@ class EnvironmentVariableProps(HexdocSettings):
     def _github_repository_parts(self):
         owner, repo_name = self.github_repository.split("/", maxsplit=1)
         return owner, repo_name
+
+    @model_validator(mode="after")
+    def _append_subdirectory(self) -> Self:
+        if self.hexdoc_subdirectory:
+            self.github_pages_url /= self.hexdoc_subdirectory
+        return self
 
 
 class TemplateProps(StripHiddenModel, validate_assignment=True):

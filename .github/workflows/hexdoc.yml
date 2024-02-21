@@ -23,6 +23,10 @@ on:
         description: If the workflow should deploy to GitHub Pages
         type: boolean
         default: true
+      subdirectory:
+        description: Subdirectory to deploy the book to
+        type: string
+        required: false
       bump-version-segment:
         description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
         type: string
@@ -44,6 +48,7 @@ permissions:
 env:
   HEXDOC_PROPS: ${{ inputs.props }}
   HEXDOC_RELEASE: ${{ inputs.release }}
+  HEXDOC_SUBDIRECTORY: ${{ inputs.subdirectory }}
 
 jobs:
   build:
@@ -139,8 +144,8 @@ jobs:
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: _site/dst/docs
-          target-folder: docs
+          folder: _site/dst/docs/${{ inputs.subdirectory }}
+          target-folder: docs/${{ inputs.subdirectory }}
           clean: true
           clean-exclude: |
             CNAME
