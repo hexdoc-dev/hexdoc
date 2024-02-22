@@ -1,0 +1,70 @@
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: main
+
+permissions:
+  contents: read
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Nox
+        run: pip install nox
+
+      - name: Generate pdoc website
+        timeout-minutes: 1
+        run: nox --session pdoc -- --output-directory docs/api/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hexdoc-docs
+          path: docs/
+
+  hexdoc:
+    uses: ./.github/workflows/hexdoc.yml
+    permissions:
+      contents: write
+      pages: read
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      python-version: '3.11'
+      release: false
+      subdirectory: demo
+
+  deploy-docs:
+    needs: [build-docs, hexdoc]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+    concurrency:
+      group: hexdoc-deploy-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Pages artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: hexdoc-docs
+          path: docs/
+
+      - name: Deploy to Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/
+          target-folder: docs/
+          clean: true
+          clean-exclude: |
+            CNAME
+            .gitignore
+            demo/
