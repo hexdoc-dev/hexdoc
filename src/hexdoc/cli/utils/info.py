@@ -24,7 +24,6 @@ def get_header(
 ):
     python_version = platform.python_version()
     plugins = ", ".join(_plugins(pm))
-    resource_dirs = ", ".join(_resource_dirs(mod_plugin))
     jinja_template_roots = ", ".join(_jinja_template_roots(mod_plugin))
 
     return dedent(
@@ -35,7 +34,6 @@ def get_header(
         mod_plugin:     {mod_plugin.modid}-{mod_plugin.full_version}
         cwd:            {Path.cwd()}
         props_dir:      {_relative_path(props.props_dir)}
-        mod_resources:  {resource_dirs}
         mod_templates:  {jinja_template_roots}
         """
     ).rstrip()
@@ -51,11 +49,6 @@ def _plugins(pm: PluginManager):
         if plugin_name not in seen:
             seen.add(plugin_name)
             yield plugin_name
-
-
-def _resource_dirs(mod_plugin: ModPlugin):
-    for package in flatten([mod_plugin.resource_dirs()]):
-        yield _relative_path(_get_package_path(package))
 
 
 def _jinja_template_roots(mod_plugin: ModPlugin):
