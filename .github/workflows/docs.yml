@@ -21,18 +21,7 @@ jobs:
 
       - name: Run pdoc
         timeout-minutes: 1
-        run: nox --session pdoc -- --output-directory docs/api/
-
-      # TODO: move this into a separate repo or something, and use the actual hexdoc.yml action
-      - name: Generate demo book
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          nox --session hexdoc -- ci build --no-release
-          nox --session dummy_setup
-          nox --session dummy_hexdoc -- build
-          nox --session dummy_hexdoc -- merge
-          mv .hexdoc/dummy_book/_site/dst/docs docs/demo
+        run: nox --session pdoc -- --output-directory docs/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
