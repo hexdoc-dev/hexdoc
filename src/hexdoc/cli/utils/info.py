@@ -75,4 +75,10 @@ def _relative_path(path: Path):
     cwd = Path.cwd()
     if path == cwd:
         return "."
-    return f".{os.sep}{path.relative_to(cwd)}"
+
+    try:
+        path = path.relative_to(cwd)
+    except ValueError:
+        return str(path)
+
+    return f".{os.sep}{path}"
