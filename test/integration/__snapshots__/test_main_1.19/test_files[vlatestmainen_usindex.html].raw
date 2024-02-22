@@ -71,7 +71,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="GITHUB_PAGES_URL">Hex Book</a>
+      <a class="navbar-brand" href="../../../..">Hex Book</a>
     </div>
     <!-- content -->
     <div class="collapse navbar-collapse" id="navbar-collapse">
