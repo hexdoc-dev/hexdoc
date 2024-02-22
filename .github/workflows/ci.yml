@@ -92,7 +92,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Nox
-        run: pip install nox
+        run: pip install nox packaging
 
       - name: Run Nox
         run: nox --session tag

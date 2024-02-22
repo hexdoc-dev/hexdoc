@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import logging
 import os
 import shutil
 import stat
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -142,11 +142,7 @@ def pdoc(session: nox.Session):
     # docs for the docs!
     session.install("-e", ".[pdoc]")
 
-    sys.path.insert(0, "src")
-
-    from hexdoc.__version__ import VERSION
-
-    sys.path.pop(0)
+    hexdoc_version = get_hexdoc_version()
 
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
@@ -164,27 +160,21 @@ def pdoc(session: nox.Session):
         "--edit-url",
         f"hexdoc={PDOC_EDIT_URL}",
         "--footer-text",
-        f"Version: {VERSION} ({commit})",
+        f"Version: {hexdoc_version} ({commit})",
         *session.posargs,
     )
 
 
+# IMPORTANT: must install packaging alongside Nox to use this session!
 @nox.session
 def tag(session: nox.Session):
-    session.install("packaging")
-
-    sys.path.insert(0, "src")
-
-    from hexdoc.__version__ import VERSION
-
-    sys.path.pop(0)
-
     from packaging.version import Version
 
     message = "Automatic PEP 440 release tag"
 
     # validate some assumptions to make this simpler
-    version = Version(VERSION)
+    raw_version = get_hexdoc_version()
+    version = Version(raw_version)
     assert version.epoch != 0
     assert len(version.release) == 3
 
@@ -216,26 +206,19 @@ def hexdoc(session: nox.Session):
 def dummy_setup(session: nox.Session):
     session.install("copier", "hatch")
 
-    from copier import run_copy  # type: ignore
+    with prepend_sys_path("."):
+        from test.tree import write_file_tree
 
-    sys.path.insert(0, ".")
-
-    from test.tree import write_file_tree
-
-    sys.path.pop(0)
-
-    logging.getLogger("plumbum.local").setLevel(logging.WARNING)
-    run_copy(
+    session.run(
+        "copier",
+        "copy",
         "gh:hexdoc-dev/hexdoc-mod-template",
-        DUMMY_PATH,
-        cleanup_on_error=False,
-        defaults=True,
-        overwrite=True,
-        data=dict(
-            modid="dummy",
-            author="author",
-            multiloader=False,
-        ),
+        str(DUMMY_PATH),
+        "--no-cleanup",
+        "--force",
+        "--data=modid=dummy",
+        "--data=author=author",
+        "--data=multiloader=false",
     )
 
     session.log(f"write_file_tree({DUMMY_PATH}, ...)")
@@ -579,3 +562,24 @@ def on_rm_error(func: Any, path: str, exc_info: Any):
     path_ = Path(path)
     path_.chmod(stat.S_IWRITE)
     path_.unlink()
+
+
+def get_hexdoc_version():
+    with prepend_sys_path("src"):
+        from hexdoc.__version__ import VERSION
+
+    return VERSION
+
+
+@contextmanager
+def prepend_sys_path(value: str):
+    sys.path.insert(0, value)
+    yield
+    sys.path.pop(0)
+
+
+# @contextmanager
+# def activate_venv(session: nox.Session):
+#     venv_dir = session.virtualenv.location
+#     site_packages =
+#     with prepend_sys_path()
