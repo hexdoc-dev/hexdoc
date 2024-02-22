@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from textwrap import indent
 from typing import Any, Literal, overload
 
 from hexdoc.core import (
@@ -21,6 +22,8 @@ from hexdoc.minecraft.assets import (
 from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
 from hexdoc.plugin import BookPlugin, ModPlugin, ModPluginWithBook, PluginManager
+
+from .info import get_header
 
 logger = logging.getLogger(__name__)
 
@@ -57,14 +60,12 @@ def load_common_data(
     book_plugin = pm.book_plugin(props.book_type)
     mod_plugin = pm.mod_plugin(props.modid, book=book)
 
-    logging.getLogger(__name__).info(
-        f"Loading hexdoc with {book_plugin.modid}"
-        + f" for {props.modid} {mod_plugin.full_version}."
-    )
+    header = get_header(props, pm, mod_plugin)
+    logger.info(f"Loading hexdoc.\n{indent(header, '  ')}")
 
     minecraft_version = MinecraftVersion.MINECRAFT_VERSION = pm.minecraft_version()
     if minecraft_version is None:
-        logging.getLogger(__name__).warning(
+        logger.warning(
             "No plugins implement minecraft_version. All versions may be used."
         )
 
