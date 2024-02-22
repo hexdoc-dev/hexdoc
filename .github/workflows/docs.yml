@@ -28,7 +28,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          nox --session hexdoc -- build
+          nox --session hexdoc -- ci build --no-release
           nox --session dummy_setup
           nox --session dummy_hexdoc -- build
           nox --session dummy_hexdoc -- merge
