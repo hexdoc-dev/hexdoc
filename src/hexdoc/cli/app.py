@@ -10,10 +10,12 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Annotated, Any, Optional
 
+import typer
 from packaging.version import Version
 from typer import Option, Typer
 from yarl import URL
 
+from hexdoc.__version__ import VERSION
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import (
@@ -62,10 +64,20 @@ app.add_typer(render_block.app)
 app.add_typer(ci.app)
 
 
+def version_callback(value: bool):
+    if value:
+        print(f"hexdoc {VERSION}")
+        raise typer.Exit()
+
+
 @app.callback()
 def callback(
     verbosity: VerbosityOption = 0,
     quiet_lang: Optional[list[str]] = None,
+    version: Annotated[
+        bool,
+        Option("--version", "-V", callback=version_callback, is_eager=True),
+    ] = False,
 ):
     setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
 

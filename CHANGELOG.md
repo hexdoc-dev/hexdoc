@@ -13,12 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * Added template variable `relative_site_url`, which is a relative path to the root of the website from the current page.
   * For example, on the page `/v/latest/main/en_us`, `relative_site_url` would be `../../../..` .
 * Added `HEXDOC_SUBDIRECTORY` environment variable and `subdirectory` GitHub Actions option, for deploying a hexdoc book alongside other sites/pages.
+* Added the ability to print the installed hexdoc version with `hexdoc --version`.
 
 ### Changed
 
 * ⚠️ BREAKING: Replaced the `link_bases` system with `book_links` to simplify/improve the link system.
   * This is what we use for constructing hrefs to internal and external categories/entries/pages. It's mostly only used internally, so this change hopefully won't have a big impact.
 * Changed the Minecraft version in the dropdown to look like `Minecraft 1.19.2` instead of just `1.19.2`.
+* Added more information to the hexdoc startup message, similar to what pytest prints.
 * Updated minimum Pydantic version to `2.6.1`.
 * Updated internal Pyright version from `1.1.343` to `1.1.345`.
   * We have not updated to `1.1.346` or higher because that version and `1.1.350` both introduce some type errors related to the lack of a `TypeForm` type in Python. The new versions enforce that types like `Union` and `Annotated` should not count as `type`, which is something that Pydantic and hexdoc are currently doing.
