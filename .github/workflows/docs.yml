@@ -1,4 +1,4 @@
-name: Deploy docs to GitHub Pages
+name: Deploy docs
 
 on:
   push:
@@ -26,6 +26,8 @@ jobs:
       # TODO: move this into a separate repo or something, and use the actual hexdoc.yml action
       - name: Generate demo book
         run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           nox --session dummy_setup
           nox --session dummy_hexdoc -- build
           nox --session dummy_hexdoc -- merge
