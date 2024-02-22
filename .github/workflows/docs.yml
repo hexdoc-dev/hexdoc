@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build-docs:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,52 +19,32 @@ jobs:
       - name: Install Nox
         run: pip install nox
 
-      - name: Generate pdoc website
+      - name: Run pdoc
         timeout-minutes: 1
         run: nox --session pdoc -- --output-directory docs/api/
 
+      # TODO: move this into a separate repo or something, and use the actual hexdoc.yml action
+      - name: Generate demo book
+        run: |
+          nox --session dummy_setup
+          nox --session dummy_hexdoc -- build
+          nox --session dummy_hexdoc -- merge
+          mv .hexdoc/dummy_book/_site/dst/docs docs/demo
+
       - name: Upload Pages artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: hexdoc-docs
           path: docs/
 
-  hexdoc:
-    uses: ./.github/workflows/hexdoc.yml
-    permissions:
-      contents: write
-      pages: read
-    secrets:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      python-version: '3.11'
-      release: false
-      subdirectory: demo
-
-  deploy-docs:
-    needs: [build-docs, hexdoc]
+  deploy:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       pages: write
-    concurrency:
-      group: hexdoc-deploy-pages
-      cancel-in-progress: false
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Download Pages artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: hexdoc-docs
-          path: docs/
-
-      - name: Deploy to Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs/
-          target-folder: docs/
-          clean: true
-          clean-exclude: |
-            CNAME
-            .gitignore
-            demo/
+      - id: deploy-pages
+        uses: actions/deploy-pages@v3
