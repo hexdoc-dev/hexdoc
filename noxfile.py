@@ -146,7 +146,7 @@ def docs(session: nox.Session):
         "hexdoc",
         "--template-directory=web/pdoc",
         "--favicon=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png",
-        "--logo-link=..",
+        "--logo-link=https://hexdoc.hexxy.media",
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
         "--edit-url=hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/",
         f"--footer-text=Version: {hexdoc_version} ({commit})",
