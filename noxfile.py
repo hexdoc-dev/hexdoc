@@ -154,6 +154,7 @@ def docs(session: nox.Session):
     )
 
     with session.cd("web/docusaurus"):
+        session.run_always("npm", "install", external=True)
         if "build" in session.posargs:
             session.run("npm", "run", "build", external=True)
         else:
