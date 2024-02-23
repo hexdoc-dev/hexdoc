@@ -153,7 +153,7 @@ def docs(session: nox.Session):
         "--output-directory=web/docusaurus/static-generated/api",
     )
 
-    shutil.copytree("media", "web/docusaurus/static-generated/img")
+    shutil.copytree("media", "web/docusaurus/static-generated/img", dirs_exist_ok=True)
 
     with session.cd("web/docusaurus"):
         session.run_always("npm", "install", external=True)
