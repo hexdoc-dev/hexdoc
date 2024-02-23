@@ -28,7 +28,7 @@ const config: Config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           editUrl:
-            "https://github.com/hexdoc-dev/hexdoc/tree/main/docs/docusaurus/",
+            "https://github.com/hexdoc-dev/hexdoc/tree/main/web/docusaurus/",
         },
         blog: false,
         theme: {
