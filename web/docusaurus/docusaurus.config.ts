@@ -39,11 +39,12 @@ const config: Config = {
   ],
 
   themeConfig: {
+    image: "img/hexdoc.png",
     navbar: {
       title: "hexdoc",
       logo: {
         alt: "hexdoc logo",
-        src: "img/logo.svg",
+        src: "img/hexdoc.svg",
       },
       items: [
         {
@@ -81,6 +82,8 @@ const config: Config = {
       defaultMode: "dark",
     },
   } satisfies Preset.ThemeConfig,
+
+  staticDirectories: ["static", "static-generated"],
 };
 
 export default config;

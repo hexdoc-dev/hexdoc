@@ -150,11 +150,14 @@ def docs(session: nox.Session):
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
         '--edit-url="hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"',
         f'--footer-text="Version: {hexdoc_version} ({commit})"',
-        "--output-directory=web/docusaurus/static/api",
+        "--output-directory=web/docusaurus/static-generated/api",
     )
+
+    shutil.copytree("media", "web/docusaurus/static-generated/img")
 
     with session.cd("web/docusaurus"):
         session.run_always("npm", "install", external=True)
+
         if "build" in session.posargs:
             session.run("npm", "run", "build", external=True)
         else:
