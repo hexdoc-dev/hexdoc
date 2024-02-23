@@ -148,8 +148,8 @@ def docs(session: nox.Session):
         "--favicon=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png",
         "--logo-link=..",
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
-        '--edit-url="hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"',
-        f'--footer-text="Version: {hexdoc_version} ({commit})"',
+        "--edit-url=hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/",
+        f"--footer-text=Version: {hexdoc_version} ({commit})",
         "--output-directory=web/docusaurus/static-generated/api",
     )
 
