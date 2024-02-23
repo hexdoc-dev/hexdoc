@@ -82,6 +82,12 @@ const config: Config = {
     colorMode: {
       defaultMode: "dark",
     },
+    metadata: [
+      {
+        name: "twitter:card",
+        content: "summary",
+      },
+    ],
   } satisfies Preset.ThemeConfig,
 
   staticDirectories: ["static", "static-generated"],
