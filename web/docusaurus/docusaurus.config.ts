@@ -57,6 +57,8 @@ const config: Config = {
           label: "API",
           to: "pathname:///api",
           position: "left",
+          target: null, // disable opening in a new tab by default
+          rel: null,
         },
         {
           label: "PyPI",
