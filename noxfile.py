@@ -150,7 +150,7 @@ def docs(session: nox.Session):
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
         "--edit-url=hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/",
         f"--footer-text=Version: {hexdoc_version} ({commit})",
-        "--output-directory=web/docusaurus/static-generated/api",
+        "--output-directory=web/docusaurus/static-generated/docs/api",
     )
 
     shutil.copytree("media", "web/docusaurus/static-generated/img", dirs_exist_ok=True)

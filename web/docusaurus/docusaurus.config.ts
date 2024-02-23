@@ -25,7 +25,6 @@ const config: Config = {
       "classic",
       {
         docs: {
-          routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           editUrl:
             "https://github.com/hexdoc-dev/hexdoc/tree/main/web/docusaurus/",
@@ -55,7 +54,7 @@ const config: Config = {
         },
         {
           label: "API",
-          to: "pathname:///api",
+          to: "pathname:///docs/api/",
           position: "left",
           target: null, // disable opening in a new tab by default
           rel: null,
