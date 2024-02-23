@@ -19,12 +19,14 @@ jobs:
       - name: Install Nox
         run: pip install nox
 
-      - name: Run pdoc
+      - name: Generate docs
         timeout-minutes: 1
-        run: nox --session pdoc -- --output-directory _site
+        run: nox --session docs -- build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/docusaurus/build
 
   deploy:
     needs: build

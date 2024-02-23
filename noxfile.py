@@ -20,10 +20,6 @@ MOCK_ENV = {
 
 DUMMY_PATH = Path(".hexdoc/dummy_book")
 
-PDOC_FAVICON = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png"
-PDOC_LOGO_LINK = "https://pypi.org/project/hexdoc/"
-PDOC_LOGO = "https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg"
-PDOC_EDIT_URL = "https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"
 
 nox.options.reuse_existing_virtualenvs = True
 nox.options.sessions = [
@@ -137,32 +133,31 @@ def precommit_pyright(session: nox.Session):
 # CI/CD
 
 
+# docs for the docs!
 @nox.session
-def pdoc(session: nox.Session):
-    # docs for the docs!
+def docs(session: nox.Session):
     session.install("-e", ".[pdoc]")
 
     hexdoc_version = get_hexdoc_version()
-
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
     session.run(
         "pdoc",
         "hexdoc",
-        "--template-directory",
-        "./docs/pdoc",
-        "--favicon",
-        PDOC_FAVICON,
-        "--logo-link",
-        PDOC_LOGO_LINK,
-        "--logo",
-        PDOC_LOGO,
-        "--edit-url",
-        f"hexdoc={PDOC_EDIT_URL}",
-        "--footer-text",
-        f"Version: {hexdoc_version} ({commit})",
-        *session.posargs,
+        "--template-directory=web/pdoc",
+        "--favicon=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.png",
+        "--logo-link=..",
+        "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
+        '--edit-url="hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/"',
+        f'--footer-text="Version: {hexdoc_version} ({commit})"',
+        "--output-directory=web/docusaurus/static/api",
     )
+
+    with session.cd("web/docusaurus"):
+        if "build" in session.posargs:
+            session.run("npm", "run", "build", external=True)
+        else:
+            session.run("npm", "run", "start", external=True)
 
 
 # IMPORTANT: must install packaging alongside Nox to use this session!
@@ -477,7 +472,7 @@ def dummy_setup(session: nox.Session):
         },
     )
 
-    with session.chdir(DUMMY_PATH):
+    with session.cd(DUMMY_PATH):
         session.run("hatch", "version", silent=True)
 
         session.run("git", "init", ".", external=True)
@@ -496,7 +491,7 @@ def dummy_setup(session: nox.Session):
 def dummy_hexdoc(session: nox.Session):
     session.install("-e", ".", "-e", f"./{DUMMY_PATH.as_posix()}")
 
-    with session.chdir(DUMMY_PATH):
+    with session.cd(DUMMY_PATH):
         session.run("hexdoc", *session.posargs)
 
 
@@ -504,7 +499,7 @@ def dummy_hexdoc(session: nox.Session):
 def dummy_serve(session: nox.Session):
     session.install("-e", ".", "-e", f"./{DUMMY_PATH.as_posix()}")
 
-    with session.chdir(DUMMY_PATH):
+    with session.cd(DUMMY_PATH):
         session.run("nodemon", "--config", "./doc/nodemon.json", external=True)
 
 
