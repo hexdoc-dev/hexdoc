@@ -28,6 +28,10 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           editUrl:
             "https://github.com/hexdoc-dev/hexdoc/tree/main/web/docusaurus/",
+          admonitions: {
+            keywords: ["hex-casting"],
+            extendDefaults: true,
+          },
         },
         blog: false,
         theme: {

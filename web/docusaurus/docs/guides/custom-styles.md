@@ -49,7 +49,7 @@ body {
 }
 ```
 
-:::note
+:::hex-casting
 
 If you're creating a book for a Hex Casting addon, use `hexcasting:index.css.jinja` instead of `hexdoc:index.css.jinja`.
 
