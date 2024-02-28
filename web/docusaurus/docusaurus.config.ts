@@ -82,7 +82,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ["css", "toml"],
+      additionalLanguages: ["css", "toml", "json"],
     },
     colorMode: {
       defaultMode: "dark",
