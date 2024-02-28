@@ -1,10 +1,3 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
-
-/* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -17,7 +10,21 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+.alert--hex-casting {
+  background-color: #ffebff;
+  --alert-hex-casting-border-color: #a02aa0;
+  --alert-hex-casting-foreground-color: #510f51;
+
+  color: var(--alert-hex-casting-foreground-color);
+  fill: var(--alert-hex-casting-foreground-color);
+  --ifm-alert-foreground-color: var(--alert-hex-casting-foreground-color);
+  --ifm-link-color: var(--alert-hex-casting-foreground-color);
+  --ifm-link-hover-color: var(--alert-hex-casting-foreground-color);
+
+  border-color: var(--alert-hex-casting-border-color);
+  --ifm-alert-border-color: var(--alert-hex-casting-border-color);
+}
+
 [data-theme="dark"] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
@@ -27,4 +34,10 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  .alert--hex-casting {
+    background-color: #362136;
+    border-color: #b770b7;
+    --alert-hex-casting-foreground-color: #ffffff;
+  }
 }

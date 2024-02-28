@@ -4,7 +4,7 @@ import AdmonitionLayout from "@theme/Admonition/Layout";
 import IconHexCasting from "@site/static/img/hexxy.svg";
 import type { Props } from "@theme/Admonition";
 
-const infimaClassName = "alert alert--secondary";
+const infimaClassName = "alert alert--secondary alert--hex-casting";
 
 const defaultProps = {
   icon: <IconHexCasting />,
