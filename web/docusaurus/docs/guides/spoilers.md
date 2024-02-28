@@ -35,6 +35,6 @@ Because [`fnmatch.fnmatch`](https://docs.python.org/3/library/fnmatch.html#fnmat
 
 :::hex-casting
 
-As seen in this screenshot, Hex Casting's hexdoc plugin [adds several advancements](https://github.com/object-Object/HexMod/blob/3c7d0e88707a13a6e2c7d4cc75472a8763e6253c/doc/resources/data/hexdoc/tags/advancements/spoilered.json) to `hexdoc:spoilered` which can be used by addons.
+As seen in this screenshot, Hex Casting's hexdoc plugin [adds several advancements](https://github.com/object-Object/HexMod/blob/3c7d0e88707a13a6e2c7d4cc75472a8763e6253c/doc/resources/data/hexdoc/tags/advancements/spoilered.json) to `#hexdoc:spoilered` which can be used by addons.
 
 :::
