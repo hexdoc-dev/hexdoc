@@ -1,3 +1,5 @@
+/* light mode */
+
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -25,6 +27,8 @@
   --ifm-alert-border-color: var(--alert-hex-casting-border-color);
 }
 
+/* dark mode */
+
 [data-theme="dark"] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
@@ -34,10 +38,10 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
 
-  .alert--hex-casting {
-    background-color: #362136;
-    border-color: #b770b7;
-    --alert-hex-casting-foreground-color: #ffffff;
-  }
+[data-theme="dark"] .alert--hex-casting {
+  background-color: #362136;
+  border-color: #b770b7;
+  --alert-hex-casting-foreground-color: #ffffff;
 }
