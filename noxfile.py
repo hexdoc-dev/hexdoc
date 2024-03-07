@@ -156,7 +156,7 @@ def docs(session: nox.Session):
     shutil.copytree("media", "web/docusaurus/static-generated/img", dirs_exist_ok=True)
 
     with session.cd("web/docusaurus"):
-        session.run_always("npm", "install", external=True)
+        session.run_always("npm", ("ci" if is_ci() else "install"), external=True)
 
         match session.posargs:
             case ["build", *args]:
@@ -519,6 +519,10 @@ def dummy_clean(session: nox.Session):
 
 
 # utils (not sessions)
+
+
+def is_ci():
+    return os.getenv("CI") == "true"
 
 
 def run_silent_external(
