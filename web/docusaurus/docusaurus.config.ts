@@ -2,15 +2,22 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
+const SITE_URL = "https://hexdoc.hexxy.media";
+
+const GITHUB_ORG = "hexdoc-dev";
+const GITHUB_REPO = "hexdoc";
+const GITHUB_ORG_URL = `https://github.com/${GITHUB_ORG}`;
+const GITHUB_REPO_URL = `${GITHUB_ORG_URL}/${GITHUB_REPO}`;
+
 const config: Config = {
   title: "hexdoc",
   favicon: "favicon.ico",
 
-  url: "https://hexdoc.hexxy.media",
+  url: SITE_URL,
   baseUrl: "/",
 
-  organizationName: "hexdoc-dev",
-  projectName: "hexdoc",
+  organizationName: GITHUB_ORG,
+  projectName: GITHUB_REPO,
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -26,8 +33,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
-          editUrl:
-            "https://github.com/hexdoc-dev/hexdoc/tree/main/web/docusaurus/",
+          editUrl: `${GITHUB_REPO_URL}/tree/main/web/docusaurus/`,
           admonitions: {
             keywords: ["hex-casting"],
             extendDefaults: true,
@@ -43,26 +49,27 @@ const config: Config = {
 
   themeConfig: {
     image: "img/hexdoc.png",
+
     navbar: {
       title: "hexdoc",
-      logo: {
-        alt: "hexdoc logo",
-        src: "img/hexdoc.svg",
-      },
+      logo: { alt: "hexdoc logo", src: "img/hexdoc.svg" },
       items: [
+        // left
         {
-          type: "docSidebar",
           label: "Docs",
+          type: "docSidebar",
           sidebarId: "sidebar",
           position: "left",
         },
         {
           label: "API",
           to: "pathname:///docs/api/",
-          position: "left",
           target: null, // disable opening in a new tab by default
           rel: null,
+          position: "left",
         },
+
+        // right
         {
           label: "PyPI",
           href: "https://pypi.org/project/hexdoc",
@@ -70,23 +77,28 @@ const config: Config = {
         },
         {
           label: "GitHub",
-          href: "https://github.com/hexdoc-dev/hexdoc",
+          href: GITHUB_REPO_URL,
           position: "right",
         },
       ],
     },
+
     footer: {
       style: "dark",
-      copyright: `Copyright © ${new Date().getFullYear()} hexdoc-dev. Built with Docusaurus.`,
+      // TODO: target blank etc etc (Link no worky)
+      copyright: `Copyright © ${new Date().getFullYear()} <a href="${GITHUB_ORG_URL}" target="_blank">hexdoc-dev</a>. Built with <a href="https://docusaurus.io" target="_blank">Docusaurus</a>.`,
     },
+
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
       additionalLanguages: ["css", "toml", "json"],
     },
+
     colorMode: {
       defaultMode: "dark",
     },
+
     metadata: [
       {
         name: "twitter:card",
