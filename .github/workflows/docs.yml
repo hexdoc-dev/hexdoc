@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+env:
+  ALGOLIA_APP_ID: 80YMFEUQR0
+  ALGOLIA_CONFIG_PATH: web/docusaurus/algolia.json
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,3 +44,22 @@ jobs:
     steps:
       - id: deploy-pages
         uses: actions/deploy-pages@v4
+
+  run-scraper:
+    needs: deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: algolia
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load Algolia config
+        id: config
+        run: echo "config=$(cat ${{ env.ALGOLIA_CONFIG_PATH }} | jq -r tostring)" >> $GITHUB_OUTPUT
+
+      - name: Run DocSearch scraper
+        uses: signcl/docsearch-scraper-action@master
+        env:
+          APPLICATION_ID: ${{ env.ALGOLIA_APP_ID }}
+          API_KEY: ${{ secrets.ALGOLIA_WRITE_API_KEY }}
+          CONFIG: ${{ steps.config.outputs.config }}

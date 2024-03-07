@@ -27,6 +27,8 @@ const config: Config = {
     locales: ["en"],
   },
 
+  staticDirectories: ["static", "static-generated"],
+
   presets: [
     [
       "classic",
@@ -105,9 +107,15 @@ const config: Config = {
         content: "summary",
       },
     ],
-  } satisfies Preset.ThemeConfig,
 
-  staticDirectories: ["static", "static-generated"],
+    algolia: {
+      appId: "80YMFEUQR0",
+      apiKey: "e343669523bbc4dff590247b05498ff2",
+      indexName: "hexdoc",
+      contextualSearch: true,
+      searchPagePath: "search",
+    },
+  } satisfies Preset.ThemeConfig,
 };
 
 export default config;
