@@ -158,10 +158,14 @@ def docs(session: nox.Session):
     with session.cd("web/docusaurus"):
         session.run_always("npm", "install", external=True)
 
-        if "build" in session.posargs:
-            session.run("npm", "run", "build", external=True)
-        else:
-            session.run("npm", "run", "start", external=True)
+        match session.posargs:
+            case ["build", *args]:
+                command = "build"
+            case args:
+                command = "start"
+                args = ["--no-open", *args]
+
+        session.run("npm", "run", command, "--", *args, external=True)
 
 
 # IMPORTANT: must install packaging alongside Nox to use this session!
