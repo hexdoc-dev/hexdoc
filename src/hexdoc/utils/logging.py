@@ -10,10 +10,21 @@ from logging import (
 )
 from typing import Any, Iterable, Literal, Mapping
 
+from .tracebacks import create_filtered_excepthook
+
 TRACE = 5
 """For even more verbose logs than `logging.DEBUG`."""
 
+TRACEBACK_HIDDEN_MODULES = {
+    "click.core",
+    "typer.core",
+    "typer.main",
+}
+
+
 logger = logging.getLogger(__name__)
+
+filtered_excepthook = create_filtered_excepthook(TRACEBACK_HIDDEN_MODULES)
 
 
 class RegexFilter(Filter):
@@ -89,6 +100,9 @@ def setup_logging(
     }
 
     if level >= logging.INFO:
+        # set this here so we don't clobber exceptions in verbose mode
+        sys.excepthook = filtered_excepthook
+
         formats |= {
             logging.INFO: log_format("levelname"),
             logging.WARNING: log_format("levelname", "name"),
