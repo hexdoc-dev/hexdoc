@@ -128,6 +128,9 @@ def setup_logging(
             handler.addFilter(RegexFilter(f"^No translation in {lang}"))
 
     root_logger.addHandler(handler)
+
+    logging.getLogger("PIL").setLevel(logging.INFO)
+
     logger.debug("Initialized logger.")
 
 
