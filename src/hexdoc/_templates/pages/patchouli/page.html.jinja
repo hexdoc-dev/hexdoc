@@ -1,10 +1,15 @@
+{# FIXME: hack #}
 {% if page.anchor %}
   {# set variable to allow children to use this value too #}
   {% set page_anchor_id = entry.id.path ~ "@" ~ page.anchor %}
 
   {#- page content (not required because EmptyPage uses this template directly) #}
-  <div id="{{ page_anchor_id }}">
+  <div id="{{ page_anchor_id }}" class="{{ 'spoilered' if page.is_spoiler }}">
     {% block body scoped %}{% endblock %}
+  </div>
+{% elif page.is_spoiler %}
+  <div class="spoilered">
+    {{ self.body() }}
   </div>
 {% else %}
   {{ self.body() }}

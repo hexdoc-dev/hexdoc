@@ -10,11 +10,12 @@ from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
 from ..text import FormatTree
+from ..utils import AdvancementSpoilered
 
 _T_Recipe = TypeVar("_T_Recipe", bound=Recipe)
 
 
-class Page(TypeTaggedTemplate, type=None):
+class Page(TypeTaggedTemplate, AdvancementSpoilered, type=None):
     """Base class for Patchouli page types.
 
     See: https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/page-types
@@ -70,6 +71,10 @@ class Page(TypeTaggedTemplate, type=None):
     def fragment(self, entry_fragment: str):
         if self.anchor is not None:
             return f"{entry_fragment}@{self.anchor}"
+
+    def _get_advancement(self):
+        # implements AdvancementSpoilered
+        return self.advancement
 
 
 class PageWithText(Page, type=None):

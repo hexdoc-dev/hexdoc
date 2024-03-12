@@ -331,6 +331,7 @@ def dummy_setup(session: nox.Session):
                                         "type": "patchouli:smithing",
                                         "recipe": "dummy:test_smithing_trim",
                                         "text": "Pretty armor!",
+                                        "advancement": "dummy:spoiler",
                                     },
                                     {
                                         "type": "patchouli:crafting",
@@ -428,6 +429,10 @@ def dummy_setup(session: nox.Session):
                                 "count": 9,
                             },
                         },
+                    },
+                    "data/hexdoc/tags/advancements/spoilered.json": {
+                        "replace": False,
+                        "values": ["dummy:spoiler"],
                     },
                 },
                 "hexdoc.toml": (
