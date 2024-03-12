@@ -1191,7 +1191,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="items/amethyst@dust">
+  <div id="items/amethyst@dust" class="">
   <h4 class="spotlight-title page-header">Amethyst Dust</h4>
   <div class="spotlight">
     <img
@@ -1209,7 +1209,7 @@
       <p>It seems that I&#39;ll find three different forms of amethyst when breaking a crystal inside a geode. The smallest denomination seems to be a small pile of shimmering dust, worth a relatively small amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-  <div id="items/amethyst@shard">
+  <div id="items/amethyst@shard" class="">
   <h4 class="spotlight-title page-header">Amethyst Shard</h4>
   <div class="spotlight">
     <img
@@ -1227,7 +1227,7 @@
       <p>The second is a whole shard of amethyst, of the type non-<span style="color: #b38ef3">Hexcasters</span> might be used to. This has about as much <span style="color: #74b3f2">media</span> inside as five <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="items/amethyst@charged">
+  <div id="items/amethyst@charged" class="">
   <h4 class="spotlight-title page-header">Charged Amethyst</h4>
   <div class="spotlight">
     <img
@@ -2865,7 +2865,7 @@
 <br />
     <p>Each infusion spell requires an entity and a list of patterns on the stack. The entity must be a <span style="color: #74b3f2">media</span>-holding item entity (i.e. <a href="#items/amethyst"><span style="color: #b0b">amethyst</span></a> crystals, dropped on the ground); the entity is consumed and forms the battery.</p><p>Usefully, it seems that the <span style="color: #74b3f2">media</span> in the battery is not consumed in chunks as it is when casting with a <a href="#items/staff"><span style="color: #b0b">Staff</span></a>-- rather, the <span style="color: #74b3f2">media</span> &#34;melts down&#34; into one continuous pool. Thus, if I store a <span style="color: #b38ef3">Hex</span> that only costs one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>&#39;s worth of media, a <a href="#items/amethyst"><span style="color: #b0b">Charged Crystal</span></a> used as the battery will allow me to cast it 10 times.</p>
 <br />
-  <div id="items/hexcasting@cypher_trinket">
+  <div id="items/hexcasting@cypher_trinket" class="">
   <details class="details-collapsible recipe-details">
       <summary class="collapse-details">
     <span class="collapse-recipe-show">Click to show recipes</span>
@@ -3064,7 +3064,7 @@
   </details>
   </div>
 <br />
-  <div id="items/hexcasting@artifact">
+  <div id="items/hexcasting@artifact" class="">
   <details class="details-collapsible recipe-details">
       <summary class="collapse-details">
     <span class="collapse-recipe-show">Click to show recipes</span>
@@ -9358,7 +9358,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>I have discovered actions to get and set an entity&#39;s gravity. I find them interesting, if slightly nauseating.</p><p>Interestingly, although <a href="#patterns/great_spells/flight"><span style="color: #fc77be">Flight</span></a> is a great spell, and manipulates gravity similarly, these are not. It baffles me why... Perhaps the mod developer wanted players to have fun, for once.</p>
 <br />
-  <div id="interop/gravity@hexcasting:interop/gravity/get">
+  <div id="interop/gravity@hexcasting:interop/gravity/get" class="">
 <h4 class="pattern-title">Gravitational Purification (entity → vector)<a
     href="#interop/gravity@hexcasting:interop/gravity/get"
     class="permalink small"
@@ -9378,7 +9378,7 @@
       <p>Get the main direction gravity pulls the given entity in, as a unit vector. For most entities, this will be down, &lt;0, -1, 0&gt;.</p>
   </div>
 <br />
-  <div id="interop/gravity@hexcasting:interop/gravity/set">
+  <div id="interop/gravity@hexcasting:interop/gravity/set" class="">
 <h4 class="pattern-title">Alter Gravity (entity, vector →)<a
     href="#interop/gravity@hexcasting:interop/gravity/set"
     class="permalink small"
@@ -9418,7 +9418,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>I have discovered methods of changing the size of entities, and querying how much larger or smaller they are than normal.</p>
 <br />
-  <div id="interop/pehkui@hexcasting:interop/pehkui/get">
+  <div id="interop/pehkui@hexcasting:interop/pehkui/get" class="">
 <h4 class="pattern-title">Gulliver&#39;s Purification (entity → double)<a
     href="#interop/pehkui@hexcasting:interop/pehkui/get"
     class="permalink small"
@@ -9438,7 +9438,7 @@
       <p>Get the scale of the entity, as a proportion of their normal size. For most entities, this will be 1.</p>
   </div>
 <br />
-  <div id="interop/pehkui@hexcasting:interop/pehkui/set">
+  <div id="interop/pehkui@hexcasting:interop/pehkui/set" class="">
 <h4 class="pattern-title">Alter Scale (entity, double →)<a
     href="#interop/pehkui@hexcasting:interop/pehkui/set"
     class="permalink small"
@@ -9521,7 +9521,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/basics@hexcasting:get_caster">
+  <div id="patterns/basics@hexcasting:get_caster" class="">
 <h4 class="pattern-title">Mind&#39;s Reflection (→ entity)<a
     href="#patterns/basics@hexcasting:get_caster"
     class="permalink small"
@@ -9541,7 +9541,7 @@
       <p>Adds me, the caster, to the stack.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:entity_pos/eye">
+  <div id="patterns/basics@hexcasting:entity_pos/eye" class="">
 <h4 class="pattern-title">Compass&#39; Purification (entity → vector)<a
     href="#patterns/basics@hexcasting:entity_pos/eye"
     class="permalink small"
@@ -9561,7 +9561,7 @@
       <p>Transforms an entity on the stack into the position of its eyes. I should probably use this on myself.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:entity_pos/foot">
+  <div id="patterns/basics@hexcasting:entity_pos/foot" class="">
 <h4 class="pattern-title">Compass&#39; Purification II (entity → vector)<a
     href="#patterns/basics@hexcasting:entity_pos/foot"
     class="permalink small"
@@ -9581,7 +9581,7 @@
       <p>Transforms an entity on the stack into the position it is standing. I should probably use this on other entities.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:get_entity_look">
+  <div id="patterns/basics@hexcasting:get_entity_look" class="">
 <h4 class="pattern-title">Alidade&#39;s Purification (entity → vector)<a
     href="#patterns/basics@hexcasting:get_entity_look"
     class="permalink small"
@@ -9601,7 +9601,7 @@
       <p>Transforms an entity on the stack into the direction it&#39;s looking in, as a unit vector.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:raycast">
+  <div id="patterns/basics@hexcasting:raycast" class="">
 <h4 class="pattern-title">Archer&#39;s Distillation (vector, vector → vector)<a
     href="#patterns/basics@hexcasting:raycast"
     class="permalink small"
@@ -9623,7 +9623,7 @@
 <br />
     <p>If it doesn&#39;t hit anything, the vectors will combine into <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a>.</p><p>A common sequence of patterns, the so-called &#34;raycast mantra,&#34; is <a href="#patterns/basics@hexcasting:get_caster"><span style="color: #fc77be">Mind&#39;s Reflection</span></a>, <a href="#patterns/basics@hexcasting:entity_pos/eye"><span style="color: #fc77be">Compass Purification</span></a>, <a href="#patterns/basics@hexcasting:get_caster"><span style="color: #fc77be">Mind&#39;s Reflection</span></a>, <a href="#patterns/basics@hexcasting:get_entity_look"><span style="color: #fc77be">Alidade Purification</span></a>, <a href="#patterns/basics@hexcasting:raycast"><span style="color: #fc77be">Archer&#39;s Distillation</span></a>. Together, they return the vector position of the block I am looking at.</p>
 <br />
-  <div id="patterns/basics@hexcasting:raycast/axis">
+  <div id="patterns/basics@hexcasting:raycast/axis" class="">
 <h4 class="pattern-title">Architect&#39;s Distillation (vector, vector → vector)<a
     href="#patterns/basics@hexcasting:raycast/axis"
     class="permalink small"
@@ -9645,7 +9645,7 @@
 <br />
     <p>More specifically, it returns the <i>normal vector</i> of the face hit, or a unit vector pointing perpendicular to the face.</p><p class="fake-li">If I am looking at a floor, it will return (0, 1, 0).</p><p class="fake-li">If I am looking at the south face of a block, it will return (0, 0, 1).</p>
 <br />
-  <div id="patterns/basics@hexcasting:raycast/entity">
+  <div id="patterns/basics@hexcasting:raycast/entity" class="">
 <h4 class="pattern-title">Scout&#39;s Distillation (vector, vector → entity)<a
     href="#patterns/basics@hexcasting:raycast/entity"
     class="permalink small"
@@ -9665,7 +9665,7 @@
       <p>Like <a href="#patterns/basics@hexcasting:raycast"><span style="color: #fc77be">Archer&#39;s Distillation</span></a>, but instead returns the <i>entity</i> I am looking at. Costs a negligible amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:print">
+  <div id="patterns/basics@hexcasting:print" class="">
 <h4 class="pattern-title">Reveal (any → any)<a
     href="#patterns/basics@hexcasting:print"
     class="permalink small"
@@ -9685,7 +9685,7 @@
       <p>Displays the top iota of the stack to me.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:get_entity_height">
+  <div id="patterns/basics@hexcasting:get_entity_height" class="">
 <h4 class="pattern-title">Stadiometer&#39;s Prfn. (entity → num)<a
     href="#patterns/basics@hexcasting:get_entity_height"
     class="permalink small"
@@ -9705,7 +9705,7 @@
       <p>Transforms an entity on the stack into its height.</p>
   </div>
 <br />
-  <div id="patterns/basics@hexcasting:get_entity_velocity">
+  <div id="patterns/basics@hexcasting:get_entity_velocity" class="">
 <h4 class="pattern-title">Pace Purification (entity → vector)<a
     href="#patterns/basics@hexcasting:get_entity_velocity"
     class="permalink small"
@@ -9743,7 +9743,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/numbers@Numbers">
+  <div id="patterns/numbers@Numbers" class="">
 <h4>Numerical Reflection (→ number)<a
     href="#patterns/numbers@Numbers"
     class="permalink small"
@@ -9852,7 +9852,7 @@
     <p>Many mathematical operations function on both numbers and vectors. Such arguments are written as &#34;num/vec&#34;.</p>
 <br />
 <br />
-  <div id="patterns/math@hexcasting:add">
+  <div id="patterns/math@hexcasting:add" class="">
 <h4 class="pattern-title">Additive Distillation (num/vec, num/vec → num/vec)<a
     href="#patterns/math@hexcasting:add"
     class="permalink small"
@@ -9874,7 +9874,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into their sum.</p><p class="fake-li">With a number and a vector, removes the number from the stack and adds it to each element of the vector.</p><p class="fake-li">With two vectors, combines them by summing corresponding components into a new vector (i.e. [1, 2, 3] + [0, 4, -1] = [1, 6, 2]).</p>
 <br />
-  <div id="patterns/math@hexcasting:sub">
+  <div id="patterns/math@hexcasting:sub" class="">
 <h4 class="pattern-title">Subtractive Distillation (num/vec, num/vec → num/vec)<a
     href="#patterns/math@hexcasting:sub"
     class="permalink small"
@@ -9896,7 +9896,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into their difference.</p><p class="fake-li">With a number and a vector, removes the number from the stack and subtracts it from each element of the vector.</p><p class="fake-li">With two vectors, combines them by subtracting each component.</p><p>In all cases, the top of the stack or its components are subtracted <i>from</i> the second-from-the-top.</p>
 <br />
-  <div id="patterns/math@hexcasting:mul_dot">
+  <div id="patterns/math@hexcasting:mul_dot" class="">
 <h4 class="pattern-title">Multiplicative Dstl. (num/vec, num/vec → num/vec)<a
     href="#patterns/math@hexcasting:mul_dot"
     class="permalink small"
@@ -9918,7 +9918,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers, combines them into their product.</p><p class="fake-li">With a number and a vector, removes the number from the stack and multiplies each component of the vector by that number.</p><p class="fake-li">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-dot-product.html" target="_blank">dot product</a>.</p>
 <br />
-  <div id="patterns/math@hexcasting:div_cross">
+  <div id="patterns/math@hexcasting:div_cross" class="">
 <h4 class="pattern-title">Division Dstl. (num/vec, num/vec → num/vec)<a
     href="#patterns/math@hexcasting:div_cross"
     class="permalink small"
@@ -9940,7 +9940,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers, combines them into their quotient.</p><p class="fake-li">With a number and a vector, removes the number and divides it by each element of the vector.</p><p class="fake-li">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-cross-product.html" target="_blank">cross product</a>.</p><p>In the first and second cases, the top of the stack or its components comprise the dividend, and the second-from-the-top or its components are the divisor.</p><p>WARNING: Never divide by zero!</p>
 <br />
-  <div id="patterns/math@hexcasting:abs_len">
+  <div id="patterns/math@hexcasting:abs_len" class="">
 <h4 class="pattern-title">Length Purification (num/vec → number)<a
     href="#patterns/math@hexcasting:abs_len"
     class="permalink small"
@@ -9962,7 +9962,7 @@
 <br />
     <p>Replaces a number with its absolute value, or a vector with its length.</p>
 <br />
-  <div id="patterns/math@hexcasting:pow_proj">
+  <div id="patterns/math@hexcasting:pow_proj" class="">
 <h4 class="pattern-title">Power Distillation (num/vec, num/vec → num/vec)<a
     href="#patterns/math@hexcasting:pow_proj"
     class="permalink small"
@@ -9984,7 +9984,7 @@
 <br />
     <p>With two numbers, combines them by raising the first to the power of the second.</p><p class="fake-li">With a number and a vector, removes the number and raises each component of the vector to the number&#39;s power.</p><p class="fake-li">With two vectors, combines them into the <a href="https://en.wikipedia.org/wiki/Vector_projection" target="_blank">vector projection</a> of the top of the stack onto the second-from-the-top.</p><p>In the first and second cases, the first argument or its components are the base, and the second argument or its components are the exponent.</p>
 <br />
-  <div id="patterns/math@hexcasting:floor">
+  <div id="patterns/math@hexcasting:floor" class="">
 <h4 class="pattern-title">Floor Purification (num → num)<a
     href="#patterns/math@hexcasting:floor"
     class="permalink small"
@@ -10004,7 +10004,7 @@
       <p>&#34;Floors&#34; a number, cutting off the fractional component and leaving an integer value.</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:ceil">
+  <div id="patterns/math@hexcasting:ceil" class="">
 <h4 class="pattern-title">Ceiling Purification (num → num)<a
     href="#patterns/math@hexcasting:ceil"
     class="permalink small"
@@ -10024,7 +10024,7 @@
       <p>&#34;Ceilings&#34; a number, raising it to the next integer value if it has a fractional component.</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:construct_vec">
+  <div id="patterns/math@hexcasting:construct_vec" class="">
 <h4 class="pattern-title">Vector Exaltation (num, num, num → vector)<a
     href="#patterns/math@hexcasting:construct_vec"
     class="permalink small"
@@ -10044,7 +10044,7 @@
       <p>Combine three numbers at the top of the stack into a vector&#39;s X, Y, and Z components (top to bottom).</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:deconstruct_vec">
+  <div id="patterns/math@hexcasting:deconstruct_vec" class="">
 <h4 class="pattern-title">Vector Disintegration (vector → num, num, num)<a
     href="#patterns/math@hexcasting:deconstruct_vec"
     class="permalink small"
@@ -10064,7 +10064,7 @@
       <p>Split a vector into its X, Y, and Z components (top to bottom).</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:modulo">
+  <div id="patterns/math@hexcasting:modulo" class="">
 <h4 class="pattern-title">Modulus Distillation (num, num → num)<a
     href="#patterns/math@hexcasting:modulo"
     class="permalink small"
@@ -10084,7 +10084,7 @@
       <p>Takes the modulus of two numbers. This is the amount <i>remaining</i> after division - for example, 5 % 2 is 1, and 5 % 3 is 2.</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:coerce_axial">
+  <div id="patterns/math@hexcasting:coerce_axial" class="">
 <h4 class="pattern-title">Axial Purification (vec → vec)<a
     href="#patterns/math@hexcasting:coerce_axial"
     class="permalink small"
@@ -10104,7 +10104,7 @@
       <p>Coerces a vector to its nearest axial direction, a unit vector. The zero vector is unaffected.</p>
   </div>
 <br />
-  <div id="patterns/math@hexcasting:random">
+  <div id="patterns/math@hexcasting:random" class="">
 <h4 class="pattern-title">Entropy Reflection (→ num)<a
     href="#patterns/math@hexcasting:random"
     class="permalink small"
@@ -10142,7 +10142,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/consts@hexcasting:const/true">
+  <div id="patterns/consts@hexcasting:const/true" class="">
 <h4 class="pattern-title">True Reflection (→ bool)<a
     href="#patterns/consts@hexcasting:const/true"
     class="permalink small"
@@ -10162,7 +10162,7 @@
       <p>Adds <span style="color: #8d6acc">True</span> to the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/false">
+  <div id="patterns/consts@hexcasting:const/false" class="">
 <h4 class="pattern-title">False Reflection (→ bool)<a
     href="#patterns/consts@hexcasting:const/false"
     class="permalink small"
@@ -10182,7 +10182,7 @@
       <p>Adds <span style="color: #8d6acc">False</span> to the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/null">
+  <div id="patterns/consts@hexcasting:const/null" class="">
 <h4 class="pattern-title">Nullary Reflection (→ influence)<a
     href="#patterns/consts@hexcasting:const/null"
     class="permalink small"
@@ -10202,7 +10202,7 @@
       <p>Adds the <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> influence to the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/vec/0">
+  <div id="patterns/consts@hexcasting:const/vec/0" class="">
 <h4 class="pattern-title">Vector Reflection Zero (→ vector)<a
     href="#patterns/consts@hexcasting:const/vec/0"
     class="permalink small"
@@ -10222,7 +10222,7 @@
       <p>Adds [0, 0, 0] to the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/vec/x">
+  <div id="patterns/consts@hexcasting:const/vec/x" class="">
 <h4>Vector Rfln. +X/-X (→ vector)<a
     href="#patterns/consts@hexcasting:const/vec/x"
     class="permalink small"
@@ -10250,7 +10250,7 @@
       <p>The left-hand counter-clockwise pattern adds [1, 0, 0] to the stack; the right-hand clockwise pattern adds [-1, 0, 0].</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/vec/y">
+  <div id="patterns/consts@hexcasting:const/vec/y" class="">
 <h4>Vector Rfln. +Y/-Y (→ vector)<a
     href="#patterns/consts@hexcasting:const/vec/y"
     class="permalink small"
@@ -10278,7 +10278,7 @@
       <p>The left-hand counter-clockwise pattern adds [0, 1, 0] to the stack; the right-hand clockwise pattern adds [0, -1, 0].</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/vec/z">
+  <div id="patterns/consts@hexcasting:const/vec/z" class="">
 <h4>Vector Rfln. +Z/-Z (→ vector)<a
     href="#patterns/consts@hexcasting:const/vec/z"
     class="permalink small"
@@ -10306,7 +10306,7 @@
       <p>The left-hand counter-clockwise pattern adds [0, 0, 1]; the right-hand clockwise pattern adds [0, 0, -1].</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/double/tau">
+  <div id="patterns/consts@hexcasting:const/double/tau" class="">
 <h4 class="pattern-title">Circle&#39;s Reflection (→ num)<a
     href="#patterns/consts@hexcasting:const/double/tau"
     class="permalink small"
@@ -10326,7 +10326,7 @@
       <p>Adds τ, the radial representation of a complete circle, to the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/double/pi">
+  <div id="patterns/consts@hexcasting:const/double/pi" class="">
 <h4 class="pattern-title">Arc&#39;s Reflection (→ num)<a
     href="#patterns/consts@hexcasting:const/double/pi"
     class="permalink small"
@@ -10346,7 +10346,7 @@
       <p>Adds π, the radial representation of half a circle, to the stack.</p>
   </div>
 <br />
-  <div id="patterns/consts@hexcasting:const/double/e">
+  <div id="patterns/consts@hexcasting:const/double/e" class="">
 <h4 class="pattern-title">Euler&#39;s Reflection (→ num)<a
     href="#patterns/consts@hexcasting:const/double/e"
     class="permalink small"
@@ -10384,7 +10384,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/stackmanip@hexcasting:pseudo-novice">
+  <div id="patterns/stackmanip@hexcasting:pseudo-novice" class="">
 <h4>Novice&#39;s Gambit (any →)<a
     href="#patterns/stackmanip@hexcasting:pseudo-novice"
     class="permalink small"
@@ -10404,7 +10404,7 @@
       <p>Removes the first iota from the stack.</p><p>This seems to be a special case of <a href="#patterns/stackmanip@hexcasting:mask"><span style="color: #fc77be">Bookkeeper&#39;s Gambit</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:swap">
+  <div id="patterns/stackmanip@hexcasting:swap" class="">
 <h4 class="pattern-title">Jester&#39;s Gambit (any, any → any, any)<a
     href="#patterns/stackmanip@hexcasting:swap"
     class="permalink small"
@@ -10424,7 +10424,7 @@
       <p>Swaps the top two iotas of the stack.</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:rotate">
+  <div id="patterns/stackmanip@hexcasting:rotate" class="">
 <h4 class="pattern-title">Rotation Gambit (any, any, any → any, any, any)<a
     href="#patterns/stackmanip@hexcasting:rotate"
     class="permalink small"
@@ -10444,7 +10444,7 @@
       <p>Yanks the iota third from the top of the stack to the top. [0, 1, 2] becomes [1, 2, 0].</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:rotate_reverse">
+  <div id="patterns/stackmanip@hexcasting:rotate_reverse" class="">
 <h4 class="pattern-title">Rotation Gambit II (any, any, any → any, any, any)<a
     href="#patterns/stackmanip@hexcasting:rotate_reverse"
     class="permalink small"
@@ -10464,7 +10464,7 @@
       <p>Yanks the top iota to the third position. [0, 1, 2] becomes [2, 0, 1].</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:duplicate">
+  <div id="patterns/stackmanip@hexcasting:duplicate" class="">
 <h4 class="pattern-title">Gemini Decomposition (any → any, any)<a
     href="#patterns/stackmanip@hexcasting:duplicate"
     class="permalink small"
@@ -10484,7 +10484,7 @@
       <p>Duplicates the top iota of the stack.</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:over">
+  <div id="patterns/stackmanip@hexcasting:over" class="">
 <h4 class="pattern-title">Prospector&#39;s Gambit (any, any → any, any, any)<a
     href="#patterns/stackmanip@hexcasting:over"
     class="permalink small"
@@ -10504,7 +10504,7 @@
       <p>Copy the second-to-last iota of the stack to the top. [0, 1] becomes [0, 1, 0].</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:tuck">
+  <div id="patterns/stackmanip@hexcasting:tuck" class="">
 <h4 class="pattern-title">Undertaker&#39;s Gambit (any, any → any, any, any)<a
     href="#patterns/stackmanip@hexcasting:tuck"
     class="permalink small"
@@ -10524,7 +10524,7 @@
       <p>Copy the top iota of the stack, then put it under the second iota. [0, 1] becomes [1, 0, 1].</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:duplicate_n">
+  <div id="patterns/stackmanip@hexcasting:duplicate_n" class="">
 <h4 class="pattern-title">Gemini Gambit (any, number → many)<a
     href="#patterns/stackmanip@hexcasting:duplicate_n"
     class="permalink small"
@@ -10544,7 +10544,7 @@
       <p>Removes the number at the top of the stack, then copies the top iota of the stack that number of times. (A count of 2 results in two of the iota on the stack, not three.)</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:2dup">
+  <div id="patterns/stackmanip@hexcasting:2dup" class="">
 <h4 class="pattern-title">Dioscuri Gambit (any, any → any, any, any, any)<a
     href="#patterns/stackmanip@hexcasting:2dup"
     class="permalink small"
@@ -10564,7 +10564,7 @@
       <p>Copy the top two iotas of the stack. [0, 1] becomes [0, 1, 0, 1].</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:stack_len">
+  <div id="patterns/stackmanip@hexcasting:stack_len" class="">
 <h4 class="pattern-title">Flock&#39;s Reflection (→ number)<a
     href="#patterns/stackmanip@hexcasting:stack_len"
     class="permalink small"
@@ -10584,7 +10584,7 @@
       <p>Pushes the size of the stack as a number to the top of the stack. (For example, a stack of [0, 1] will become [0, 1, 2].)</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:fisherman">
+  <div id="patterns/stackmanip@hexcasting:fisherman" class="">
 <h4 class="pattern-title">Fisherman&#39;s Gambit (number → any)<a
     href="#patterns/stackmanip@hexcasting:fisherman"
     class="permalink small"
@@ -10604,7 +10604,7 @@
       <p>Grabs the element in the stack indexed by the number and brings it to the top.</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:fisherman/copy">
+  <div id="patterns/stackmanip@hexcasting:fisherman/copy" class="">
 <h4 class="pattern-title">Fisherman&#39;s Gambit II (number → any)<a
     href="#patterns/stackmanip@hexcasting:fisherman/copy"
     class="permalink small"
@@ -10624,7 +10624,7 @@
       <p>Like <a href="#patterns/stackmanip@hexcasting:fisherman"><span style="color: #fc77be">Fisherman&#39;s Gambit</span></a>, but instead of moving the iota, copies it.</p>
   </div>
 <br />
-  <div id="patterns/stackmanip@hexcasting:mask">
+  <div id="patterns/stackmanip@hexcasting:mask" class="">
 <h4>Bookkeeper&#39;s Gambit (many → many)<a
     href="#patterns/stackmanip@hexcasting:mask"
     class="permalink small"
@@ -10662,7 +10662,7 @@
 <br />
     <p>Assuming that I draw a Bookkeeper&#39;s Gambit pattern left-to-right, the number of iotas the action will require is determined by the horizontal distance covered by the pattern. From deepest in the stack to shallowest, a flat line will keep the iota, whereas a triangle dipping down will remove it.</p><p>If my stack contains <i>0, 1, 2</i> from deepest to shallowest, drawing the first pattern opposite will give me <i>1</i>, the second will give me <i>0</i>, and the third will give me <i>0, 2</i> (the 0 at the bottom is left untouched).</p>
 <br />
-  <div id="patterns/stackmanip@hexcasting:swizzle">
+  <div id="patterns/stackmanip@hexcasting:swizzle" class="">
 <h4 class="pattern-title">Swindler&#39;s Gambit (many, number → many)<a
     href="#patterns/stackmanip@hexcasting:swizzle"
     class="permalink small"
@@ -10705,7 +10705,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/logic@hexcasting:not">
+  <div id="patterns/logic@hexcasting:not" class="">
 <h4 class="pattern-title">Negation Purification (any → number)<a
     href="#patterns/logic@hexcasting:not"
     class="permalink small"
@@ -10725,7 +10725,7 @@
       <p>If the argument is True, return False; if it is False, return True.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:bool_coerce">
+  <div id="patterns/logic@hexcasting:bool_coerce" class="">
 <h4 class="pattern-title">Augur&#39;s Purification (any → bool)<a
     href="#patterns/logic@hexcasting:bool_coerce"
     class="permalink small"
@@ -10745,7 +10745,7 @@
       <p>Convert an argument to a boolean. The number <span style="color: #8d6acc">0</span>, <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a>, and the empty list become False; everything else becomes True.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:or">
+  <div id="patterns/logic@hexcasting:or" class="">
 <h4 class="pattern-title">Disjunction Distillation (bool, bool → bool)<a
     href="#patterns/logic@hexcasting:or"
     class="permalink small"
@@ -10765,7 +10765,7 @@
       <p>Returns True if at least one of the arguments are True; otherwise returns False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:and">
+  <div id="patterns/logic@hexcasting:and" class="">
 <h4 class="pattern-title">Conjunction Distillation (bool, bool → bool)<a
     href="#patterns/logic@hexcasting:and"
     class="permalink small"
@@ -10785,7 +10785,7 @@
       <p>Returns True if both arguments are true; otherwise returns False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:xor">
+  <div id="patterns/logic@hexcasting:xor" class="">
 <h4 class="pattern-title">Exclusion Distillation (bool, bool → bool)<a
     href="#patterns/logic@hexcasting:xor"
     class="permalink small"
@@ -10805,7 +10805,7 @@
       <p>Returns True if exactly one of the arguments is true; otherwise returns False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:if">
+  <div id="patterns/logic@hexcasting:if" class="">
 <h4 class="pattern-title">Augur&#39;s Exaltation (bool, any, any → any)<a
     href="#patterns/logic@hexcasting:if"
     class="permalink small"
@@ -10825,7 +10825,7 @@
       <p>If the first argument is True, keeps the second and discards the third; otherwise discards the second and keeps the third.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:equals">
+  <div id="patterns/logic@hexcasting:equals" class="">
 <h4 class="pattern-title">Equality Distillation (any, any → number)<a
     href="#patterns/logic@hexcasting:equals"
     class="permalink small"
@@ -10845,7 +10845,7 @@
       <p>If the first argument equals the second (within a small tolerance), return True. Otherwise, return False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:not_equals">
+  <div id="patterns/logic@hexcasting:not_equals" class="">
 <h4 class="pattern-title">Inequality Distillation (any, any → number)<a
     href="#patterns/logic@hexcasting:not_equals"
     class="permalink small"
@@ -10865,7 +10865,7 @@
       <p>If the first argument does not equal the second (outside a small tolerance), return True. Otherwise, return False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:greater">
+  <div id="patterns/logic@hexcasting:greater" class="">
 <h4 class="pattern-title">Maximus Distillation (number, number → number)<a
     href="#patterns/logic@hexcasting:greater"
     class="permalink small"
@@ -10885,7 +10885,7 @@
       <p>If the first argument is greater than the second, return True. Otherwise, return False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:less">
+  <div id="patterns/logic@hexcasting:less" class="">
 <h4 class="pattern-title">Minimus Distillation (number, number → number)<a
     href="#patterns/logic@hexcasting:less"
     class="permalink small"
@@ -10905,7 +10905,7 @@
       <p>If the first argument is less than the second, return True. Otherwise, return False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:greater_eq">
+  <div id="patterns/logic@hexcasting:greater_eq" class="">
 <h4 class="pattern-title">Maximus Distillation II (number, number → number)<a
     href="#patterns/logic@hexcasting:greater_eq"
     class="permalink small"
@@ -10925,7 +10925,7 @@
       <p>If the first argument is greater than or equal to the second, return True. Otherwise, return False.</p>
   </div>
 <br />
-  <div id="patterns/logic@hexcasting:less_eq">
+  <div id="patterns/logic@hexcasting:less_eq" class="">
 <h4 class="pattern-title">Minimus Distillation II (number, number → number)<a
     href="#patterns/logic@hexcasting:less_eq"
     class="permalink small"
@@ -10963,7 +10963,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/entities@hexcasting:get_entity">
+  <div id="patterns/entities@hexcasting:get_entity" class="">
 <h4 class="pattern-title">Entity Purification (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity"
     class="permalink small"
@@ -10983,7 +10983,7 @@
       <p>Transform the position on the stack into the entity at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:get_entity/animal">
+  <div id="patterns/entities@hexcasting:get_entity/animal" class="">
 <h4 class="pattern-title">Entity Prfn.: Animal (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity/animal"
     class="permalink small"
@@ -11003,7 +11003,7 @@
       <p>Transform the position on the stack into the animal at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:get_entity/monster">
+  <div id="patterns/entities@hexcasting:get_entity/monster" class="">
 <h4 class="pattern-title">Entity Prfn.: Monster (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity/monster"
     class="permalink small"
@@ -11023,7 +11023,7 @@
       <p>Transform the position on the stack into the monster at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:get_entity/item">
+  <div id="patterns/entities@hexcasting:get_entity/item" class="">
 <h4 class="pattern-title">Entity Prfn.: Item (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity/item"
     class="permalink small"
@@ -11043,7 +11043,7 @@
       <p>Transform the position on the stack into the dropped item at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:get_entity/player">
+  <div id="patterns/entities@hexcasting:get_entity/player" class="">
 <h4 class="pattern-title">Entity Prfn.: Player (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity/player"
     class="permalink small"
@@ -11063,7 +11063,7 @@
       <p>Transform the position on the stack into the player at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:get_entity/living">
+  <div id="patterns/entities@hexcasting:get_entity/living" class="">
 <h4 class="pattern-title">Entity Prfn.: Living (vector → entity or null)<a
     href="#patterns/entities@hexcasting:get_entity/living"
     class="permalink small"
@@ -11083,7 +11083,7 @@
       <p>Transform the position on the stack into the living creature at that location (or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if there isn&#39;t one).</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/animal">
+  <div id="patterns/entities@hexcasting:zone_entity/animal" class="">
 <h4 class="pattern-title">Zone Dstl.: Animal (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/animal"
     class="permalink small"
@@ -11103,7 +11103,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of animals near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/not_animal">
+  <div id="patterns/entities@hexcasting:zone_entity/not_animal" class="">
 <h4 class="pattern-title">Zone Dstl.: Non-Animal (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/not_animal"
     class="permalink small"
@@ -11123,7 +11123,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of non-animal entities near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/monster">
+  <div id="patterns/entities@hexcasting:zone_entity/monster" class="">
 <h4 class="pattern-title">Zone Dstl.: Monster (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/monster"
     class="permalink small"
@@ -11143,7 +11143,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of monsters near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/not_monster">
+  <div id="patterns/entities@hexcasting:zone_entity/not_monster" class="">
 <h4 class="pattern-title">Zone Dstl.: Non-Monster (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/not_monster"
     class="permalink small"
@@ -11163,7 +11163,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of non-monster entities near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/item">
+  <div id="patterns/entities@hexcasting:zone_entity/item" class="">
 <h4 class="pattern-title">Zone Dstl.: Item (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/item"
     class="permalink small"
@@ -11183,7 +11183,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of dropped items near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/not_item">
+  <div id="patterns/entities@hexcasting:zone_entity/not_item" class="">
 <h4 class="pattern-title">Zone Dstl.: Non-Item (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/not_item"
     class="permalink small"
@@ -11203,7 +11203,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of non-dropped-item entities near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/player">
+  <div id="patterns/entities@hexcasting:zone_entity/player" class="">
 <h4 class="pattern-title">Zone Dstl.: Player (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/player"
     class="permalink small"
@@ -11223,7 +11223,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of players near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/not_player">
+  <div id="patterns/entities@hexcasting:zone_entity/not_player" class="">
 <h4 class="pattern-title">Zone Dstl.: Non-Player (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/not_player"
     class="permalink small"
@@ -11243,7 +11243,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of non-player characters near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/living">
+  <div id="patterns/entities@hexcasting:zone_entity/living" class="">
 <h4 class="pattern-title">Zone Dstl.: Living (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/living"
     class="permalink small"
@@ -11263,7 +11263,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of living creatures near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity/not_living">
+  <div id="patterns/entities@hexcasting:zone_entity/not_living" class="">
 <h4 class="pattern-title">Zone Dstl.: Non-Living (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity/not_living"
     class="permalink small"
@@ -11283,7 +11283,7 @@
       <p>Take a position and maximum distance on the stack, and combine them into a list of non-living entities near the position.</p>
   </div>
 <br />
-  <div id="patterns/entities@hexcasting:zone_entity">
+  <div id="patterns/entities@hexcasting:zone_entity" class="">
 <h4 class="pattern-title">Zone Dstl.: Any (vector, number → list)<a
     href="#patterns/entities@hexcasting:zone_entity"
     class="permalink small"
@@ -11321,7 +11321,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/lists@hexcasting:index">
+  <div id="patterns/lists@hexcasting:index" class="">
 <h4 class="pattern-title">Selection Distillation (list, number → any)<a
     href="#patterns/lists@hexcasting:index"
     class="permalink small"
@@ -11341,7 +11341,7 @@
       <p>Remove the number at the top of the stack, then replace the list at the top with the nth element of that list (where n is the number you removed). Replaces the list with <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if the number is out of bounds.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:slice">
+  <div id="patterns/lists@hexcasting:slice" class="">
 <h4 class="pattern-title">Selection Exaltation (list, num, num → list)<a
     href="#patterns/lists@hexcasting:slice"
     class="permalink small"
@@ -11361,7 +11361,7 @@
       <p>Remove the two numbers at the top of the stack, then take a sublist of the list at the top of the stack between those indices, lower bound inclusive, upper bound exclusive. For example, the 0, 2 sublist of [0, 1, 2, 3, 4] would be [0, 1].</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:append">
+  <div id="patterns/lists@hexcasting:append" class="">
 <h4 class="pattern-title">Integration Distillation (list, any → list)<a
     href="#patterns/lists@hexcasting:append"
     class="permalink small"
@@ -11381,7 +11381,7 @@
       <p>Remove the top of the stack, then add it to the end of the list at the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:concat">
+  <div id="patterns/lists@hexcasting:concat" class="">
 <h4 class="pattern-title">Combination Distillation (list, list → list)<a
     href="#patterns/lists@hexcasting:concat"
     class="permalink small"
@@ -11401,7 +11401,7 @@
       <p>Remove the list at the top of the stack, then add all its elements to the end of the list at the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:empty_list">
+  <div id="patterns/lists@hexcasting:empty_list" class="">
 <h4 class="pattern-title">Vacant Reflection (→ list)<a
     href="#patterns/lists@hexcasting:empty_list"
     class="permalink small"
@@ -11421,7 +11421,7 @@
       <p>Push an empty list to the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:singleton">
+  <div id="patterns/lists@hexcasting:singleton" class="">
 <h4 class="pattern-title">Single&#39;s Purification (any → list)<a
     href="#patterns/lists@hexcasting:singleton"
     class="permalink small"
@@ -11441,7 +11441,7 @@
       <p>Remove the top of the stack, then push a list containing only that element.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:list_size">
+  <div id="patterns/lists@hexcasting:list_size" class="">
 <h4 class="pattern-title">Abacus Purification (list → num)<a
     href="#patterns/lists@hexcasting:list_size"
     class="permalink small"
@@ -11461,7 +11461,7 @@
       <p>Remove the list at the top of the stack, then push the number of elements in the list to the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:reverse_list">
+  <div id="patterns/lists@hexcasting:reverse_list" class="">
 <h4 class="pattern-title">Retrograde Purification (list → list)<a
     href="#patterns/lists@hexcasting:reverse_list"
     class="permalink small"
@@ -11481,7 +11481,7 @@
       <p>Reverse the list at the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:index_of">
+  <div id="patterns/lists@hexcasting:index_of" class="">
 <h4 class="pattern-title">Locator&#39;s Distillation (list, any → num)<a
     href="#patterns/lists@hexcasting:index_of"
     class="permalink small"
@@ -11501,7 +11501,7 @@
       <p>Remove the iota at the top of the stack, then replace the list at the top with the first index of that iota within the list (starting from 0). Replaces the list with -1 if the iota doesn&#39;t exist in the list.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:list_remove">
+  <div id="patterns/lists@hexcasting:list_remove" class="">
 <h4 class="pattern-title">Excisor&#39;s Distillation (list, num → list)<a
     href="#patterns/lists@hexcasting:list_remove"
     class="permalink small"
@@ -11521,7 +11521,7 @@
       <p>Remove the number at the top of the stack, then remove the nth element of the list at the top of the stack (where n is the number you removed).</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:modify_in_place">
+  <div id="patterns/lists@hexcasting:modify_in_place" class="">
 <h4 class="pattern-title">Surgeon&#39;s Exaltation (list, num, any → list)<a
     href="#patterns/lists@hexcasting:modify_in_place"
     class="permalink small"
@@ -11541,7 +11541,7 @@
       <p>Remove the top iota of the stack and the number at the top, then set the nth element of the list at the top of the stack to that iota (where n is the number you removed). Does nothing if the number is out of bounds.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:last_n_list">
+  <div id="patterns/lists@hexcasting:last_n_list" class="">
 <h4 class="pattern-title">Flock&#39;s Gambit (many, num → list)<a
     href="#patterns/lists@hexcasting:last_n_list"
     class="permalink small"
@@ -11561,7 +11561,7 @@
       <p>Remove <i>num</i> elements from the stack, then add them to a list at the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:splat">
+  <div id="patterns/lists@hexcasting:splat" class="">
 <h4 class="pattern-title">Flock&#39;s Disintegration (list → many)<a
     href="#patterns/lists@hexcasting:splat"
     class="permalink small"
@@ -11581,7 +11581,7 @@
       <p>Remove the list at the top of the stack, then push its contents to the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:construct">
+  <div id="patterns/lists@hexcasting:construct" class="">
 <h4 class="pattern-title">Speaker&#39;s Distillation (list, any → list)<a
     href="#patterns/lists@hexcasting:construct"
     class="permalink small"
@@ -11601,7 +11601,7 @@
       <p>Remove the top iota, then add it as the first element to the list at the top of the stack.</p>
   </div>
 <br />
-  <div id="patterns/lists@hexcasting:deconstruct">
+  <div id="patterns/lists@hexcasting:deconstruct" class="">
 <h4 class="pattern-title">Speaker&#39;s Decomposition (list → list, any)<a
     href="#patterns/lists@hexcasting:deconstruct"
     class="permalink small"
@@ -11643,7 +11643,7 @@
 <br />
     <p>Fortunately, Nature has provided me with a set of <a href="#casting/influences">influences</a> that I can use to work with patterns directly.</p><p>In short, <a href="#patterns/patterns_as_iotas@hexcasting:escape"><span style="color: #fc77be">Consideration</span></a> lets me add one pattern to the stack, and <a href="#patterns/patterns_as_iotas@hexcasting:open_paren"><span style="color: #fc77be">Introspection</span></a> and <a href="#patterns/patterns_as_iotas@hexcasting:close_paren"><span style="color: #fc77be">Retrospection</span></a> let me add a whole list.</p>
 <br />
-  <div id="patterns/patterns_as_iotas@hexcasting:escape">
+  <div id="patterns/patterns_as_iotas@hexcasting:escape" class="">
 <h4>Consideration<a
     href="#patterns/patterns_as_iotas@hexcasting:escape"
     class="permalink small"
@@ -11665,7 +11665,7 @@
 <br />
     <p>One may find it helpful to think of this as &#34;escaping&#34; the pattern onto the stack, if they happen to be familiar with the science of computers.</p><p>The usual use for this is to copy the pattern to a <a href="#items/scroll"><span style="color: #b0b">Scroll</span></a> or <a href="#items/slate"><span style="color: #b0b">Slate</span></a> using <a href="#patterns/readwrite@hexcasting:write"><span style="color: #fc77be">Scribe&#39;s Gambit</span></a>, and then perhaps decorating with them.</p>
 <br />
-  <div id="patterns/patterns_as_iotas@hexcasting:open_paren">
+  <div id="patterns/patterns_as_iotas@hexcasting:open_paren" class="">
 <h4>Introspection<a
     href="#patterns/patterns_as_iotas@hexcasting:open_paren"
     class="permalink small"
@@ -11685,7 +11685,7 @@
       <p>Drawing <a href="#patterns/patterns_as_iotas@hexcasting:open_paren"><span style="color: #fc77be">Introspection</span></a> makes my drawing of patterns act differently, for a time. Until I draw <a href="#patterns/patterns_as_iotas@hexcasting:open_paren"><span style="color: #fc77be">Retrospection</span></a>, the patterns I draw are saved. Then, when I draw <a href="#patterns/patterns_as_iotas@hexcasting:close_paren"><span style="color: #fc77be">Retrospection</span></a>, they are added to the stack as a list iota.</p>
   </div>
 <br />
-  <div id="patterns/patterns_as_iotas@hexcasting:close_paren">
+  <div id="patterns/patterns_as_iotas@hexcasting:close_paren" class="">
 <h4>Retrospection<a
     href="#patterns/patterns_as_iotas@hexcasting:close_paren"
     class="permalink small"
@@ -11729,7 +11729,7 @@
 <br />
     <p>There may be other entities I can interact with in this way. For example, a <a href="#items/scroll"><span style="color: #b0b">Scroll</span></a> hung on the wall can have its pattern read off of it.</p><p>However, it seems I am unable to save a reference to another player, only me. I suppose an entity reference is similar to the idea of a True Name; perhaps Nature is helping to keep our Names out of the hands of enemies. If I want a friend to have my Name I can make a <a href="#items/focus"><span style="color: #b0b">Focus</span></a> for them.</p>
 <br />
-  <div id="patterns/readwrite@hexcasting:read">
+  <div id="patterns/readwrite@hexcasting:read" class="">
 <h4 class="pattern-title">Scribe&#39;s Reflection (→ any)<a
     href="#patterns/readwrite@hexcasting:read"
     class="permalink small"
@@ -11749,7 +11749,7 @@
       <p>Copy the iota stored in the item in my other hand and add it to the stack.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:write">
+  <div id="patterns/readwrite@hexcasting:write" class="">
 <h4 class="pattern-title">Scribe&#39;s Gambit (any →)<a
     href="#patterns/readwrite@hexcasting:write"
     class="permalink small"
@@ -11769,7 +11769,7 @@
       <p>Remove the top iota from the stack, and save it into the item in my other hand.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:read/entity">
+  <div id="patterns/readwrite@hexcasting:read/entity" class="">
 <h4 class="pattern-title">Chronicler&#39;s Prfn. (entity → any)<a
     href="#patterns/readwrite@hexcasting:read/entity"
     class="permalink small"
@@ -11789,7 +11789,7 @@
       <p>Like <a href="#patterns/readwrite@hexcasting:read"><span style="color: #fc77be">Scribe&#39;s Reflection</span></a>, but the iota is read out of an entity instead of my other hand.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:write/entity">
+  <div id="patterns/readwrite@hexcasting:write/entity" class="">
 <h4 class="pattern-title">Chronicler&#39;s Gambit (entity, any →)<a
     href="#patterns/readwrite@hexcasting:write/entity"
     class="permalink small"
@@ -11809,7 +11809,7 @@
       <p>Like <a href="#patterns/readwrite@hexcasting:read"><span style="color: #fc77be">Scribe&#39;s Gambit</span></a>, but the iota is written to an entity instead of my other hand.</p><p>Interestingly enough, it looks like I cannot write my own Name using this spell. I get a sense that I might be endangered if I could.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:readable">
+  <div id="patterns/readwrite@hexcasting:readable" class="">
 <h4 class="pattern-title">Auditor&#39;s Reflection (→ bool)<a
     href="#patterns/readwrite@hexcasting:readable"
     class="permalink small"
@@ -11829,7 +11829,7 @@
       <p>If the item in my other hand holds an iota I can read, returns True. Otherwise, returns False.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:readable/entity">
+  <div id="patterns/readwrite@hexcasting:readable/entity" class="">
 <h4 class="pattern-title">Auditor&#39;s Purification (entity → bool)<a
     href="#patterns/readwrite@hexcasting:readable/entity"
     class="permalink small"
@@ -11849,7 +11849,7 @@
       <p>Like <a href="#patterns/readwrite@hexcasting:readable"><span style="color: #fc77be">Auditor&#39;s Reflection</span></a>, but the readability of an entity is checked instead of my other hand.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:writable">
+  <div id="patterns/readwrite@hexcasting:writable" class="">
 <h4 class="pattern-title">Assessor&#39;s Reflection (→ bool)<a
     href="#patterns/readwrite@hexcasting:writable"
     class="permalink small"
@@ -11869,7 +11869,7 @@
       <p>If I could save an iota into the item in my other hand, returns True. Otherwise, returns False.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:writable/entity">
+  <div id="patterns/readwrite@hexcasting:writable/entity" class="">
 <h4 class="pattern-title">Assessor&#39;s Purification (entity → bool)<a
     href="#patterns/readwrite@hexcasting:writable/entity"
     class="permalink small"
@@ -11889,7 +11889,7 @@
       <p>Like <a href="#patterns/readwrite@hexcasting:writable"><span style="color: #fc77be">Assessor&#39;s Reflection</span></a>, but the writability of an entity is checked instead of my other hand.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:local">
+  <div id="patterns/readwrite@hexcasting:local" class="">
 <h4>The Ravenmind<a
     href="#patterns/readwrite@hexcasting:local"
     class="permalink small"
@@ -11898,7 +11898,7 @@
     <p>Items are not the only places I can store information, however. I am also able to store that information in the <span style="color: #74b3f2">media</span> of the <span style="color: #b38ef3">Hex</span> itself, much like the stack, but separate. Texts refer to this as the <a href="#patterns/readwrite@hexcasting:local"><span style="color: #8d6acc">ravenmind</span></a>. It holds a single iota, much like a <a href="#items/focus"><span style="color: #b0b">Focus</span></a>, and begins with <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> like the same. It is preserved between iterations of <a href="#patterns/meta@hexcasting:for_each"><span style="color: #fc77be">Thoth&#39;s Gambit</span></a>, but only lasts as long as the <span style="color: #b38ef3">Hex</span> it&#39;s a part of. Once I stop casting, the value will be lost.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:write/local">
+  <div id="patterns/readwrite@hexcasting:write/local" class="">
 <h4 class="pattern-title">Huginn&#39;s Gambit (any →)<a
     href="#patterns/readwrite@hexcasting:write/local"
     class="permalink small"
@@ -11918,7 +11918,7 @@
       <p>Removes the top iota from the stack, and saves it to my <a href="#patterns/readwrite@hexcasting:local"><span style="color: #8d6acc">ravenmind</span></a>, storing it there until I stop casting the <span style="color: #b38ef3">Hex</span>.</p>
   </div>
 <br />
-  <div id="patterns/readwrite@hexcasting:read/local">
+  <div id="patterns/readwrite@hexcasting:read/local" class="">
 <h4 class="pattern-title">Muninn&#39;s Reflection (→ any)<a
     href="#patterns/readwrite@hexcasting:read/local"
     class="permalink small"
@@ -11956,7 +11956,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/advanced_math@hexcasting:sin">
+  <div id="patterns/advanced_math@hexcasting:sin" class="">
 <h4 class="pattern-title">Sine Purification (num → num)<a
     href="#patterns/advanced_math@hexcasting:sin"
     class="permalink small"
@@ -11976,7 +11976,7 @@
       <p>Takes the sine of an angle in radians, yielding the vertical component of that angle drawn on a unit circle. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:cos">
+  <div id="patterns/advanced_math@hexcasting:cos" class="">
 <h4 class="pattern-title">Cosine Purification (num → num)<a
     href="#patterns/advanced_math@hexcasting:cos"
     class="permalink small"
@@ -11996,7 +11996,7 @@
       <p>Takes the cosine of an angle in radians, yielding the horizontal component of that angle drawn on a unit circle. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:tan">
+  <div id="patterns/advanced_math@hexcasting:tan" class="">
 <h4 class="pattern-title">Tangent Purification (num → num)<a
     href="#patterns/advanced_math@hexcasting:tan"
     class="permalink small"
@@ -12016,7 +12016,7 @@
       <p>Takes the tangent of an angle in radians, yielding the slope of that angle drawn on a circle. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:arcsin">
+  <div id="patterns/advanced_math@hexcasting:arcsin" class="">
 <h4 class="pattern-title">Inverse Sine Prfn. (num → num)<a
     href="#patterns/advanced_math@hexcasting:arcsin"
     class="permalink small"
@@ -12036,7 +12036,7 @@
       <p>Takes the inverse sine of a value with absolute value 1 or less, yielding the angle whose sine is that value. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:arccos">
+  <div id="patterns/advanced_math@hexcasting:arccos" class="">
 <h4 class="pattern-title">Inverse Cosine Prfn. (num → num)<a
     href="#patterns/advanced_math@hexcasting:arccos"
     class="permalink small"
@@ -12056,7 +12056,7 @@
       <p>Takes the inverse cosine of a value with absolute value 1 or less, yielding the angle whose cosine is that value. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:arctan">
+  <div id="patterns/advanced_math@hexcasting:arctan" class="">
 <h4 class="pattern-title">Inverse Tangent Prfn. (num → num)<a
     href="#patterns/advanced_math@hexcasting:arctan"
     class="permalink small"
@@ -12076,7 +12076,7 @@
       <p>Takes the inverse tangent of a value, yielding the angle whose tangent is that value. Related to the values of <a href="#patterns/consts@hexcasting:const/double/pi"><span style="color: #8d6acc">π</span></a> and <a href="#patterns/consts@hexcasting:const/double/tau"><span style="color: #8d6acc">τ</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/advanced_math@hexcasting:logarithm">
+  <div id="patterns/advanced_math@hexcasting:logarithm" class="">
 <h4 class="pattern-title">Logarithmic Distillation (num, num → num)<a
     href="#patterns/advanced_math@hexcasting:logarithm"
     class="permalink small"
@@ -12117,7 +12117,7 @@
     <p>Set operations are odd, in that some of them can accept two numbers or two lists, but not a combination thereof. Such arguments will be written as &#34;num, num/list, list&#34;.</p><p>When numbers are used in those operations, they are being used as so-called binary &#34;bitsets&#34;, lists of 1 and 0, true and false, &#34;on&#34; and &#34;off&#34;.</p>
 <br />
 <br />
-  <div id="patterns/sets@hexcasting:or_bit">
+  <div id="patterns/sets@hexcasting:or_bit" class="">
 <h4 class="pattern-title">Unifying Distillation (num, num/list, list → num/list)<a
     href="#patterns/sets@hexcasting:or_bit"
     class="permalink small"
@@ -12139,7 +12139,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit in either bitset.</p><p class="fake-li">With two lists, this creates a list of every element from the first list, plus every element from the second list that is not in the first list. This is similar to <a href="#patterns/lists@hexcasting:concat"><span style="color: #fc77be">Combination Distillation</span></a>.</p>
 <br />
-  <div id="patterns/sets@hexcasting:and_bit">
+  <div id="patterns/sets@hexcasting:and_bit" class="">
 <h4 class="pattern-title">Intersection Distillation (num, num/list, list → num/list)<a
     href="#patterns/sets@hexcasting:and_bit"
     class="permalink small"
@@ -12161,7 +12161,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>both</i> bitsets.</p><p class="fake-li">With two lists, this creates a list of every element from the first list that is also in the second list.</p>
 <br />
-  <div id="patterns/sets@hexcasting:xor_bit">
+  <div id="patterns/sets@hexcasting:xor_bit" class="">
 <h4 class="pattern-title">Exclusionary Distillation (num, num/list, list → num/list)<a
     href="#patterns/sets@hexcasting:xor_bit"
     class="permalink small"
@@ -12183,7 +12183,7 @@
 <br />
     <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>exactly one</i> of the bitsets.</p><p class="fake-li">With two lists, this creates a list of every element in both lists that is <i>not</i> in the other list.</p>
 <br />
-  <div id="patterns/sets@hexcasting:not_bit">
+  <div id="patterns/sets@hexcasting:not_bit" class="">
 <h4 class="pattern-title">Inversion Purification (num → num)<a
     href="#patterns/sets@hexcasting:not_bit"
     class="permalink small"
@@ -12203,7 +12203,7 @@
       <p>Takes the inversion of a bitset, changing all &#34;on&#34; bits to &#34;off&#34; and vice versa. In my experience, this will take the form of that number negated and decreased by one. For example, 0 will become -1, and -100 will become 99.</p>
   </div>
 <br />
-  <div id="patterns/sets@hexcasting:to_set">
+  <div id="patterns/sets@hexcasting:to_set" class="">
 <h4 class="pattern-title">Uniqueness Purification (list → list)<a
     href="#patterns/sets@hexcasting:to_set"
     class="permalink small"
@@ -12241,7 +12241,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/meta@hexcasting:eval">
+  <div id="patterns/meta@hexcasting:eval" class="">
 <h4 class="pattern-title">Hermes&#39; Gambit ([pattern] | pattern → many)<a
     href="#patterns/meta@hexcasting:eval"
     class="permalink small"
@@ -12263,7 +12263,7 @@
 <br />
     <p>This can be <i>very</i> powerful in tandem with <a href="#items/focus"><span style="color: #b0b">Foci</span></a>.</p><p>It also makes the bureaucracy of Nature a &#34;Turing-complete&#34; system, according to one esoteric scroll I found.</p><p>However, it seems there&#39;s a limit to how many times a <span style="color: #b38ef3">Hex</span> can cast itself-- Nature doesn&#39;t look kindly on runaway spells!</p><p>In addition, with the energies of the patterns occurring without me to guide them, any mishap will cause the remaining actions to become too unstable and immediately unravel.</p>
 <br />
-  <div id="patterns/meta@hexcasting:for_each">
+  <div id="patterns/meta@hexcasting:for_each" class="">
 <h4 class="pattern-title">Thoth&#39;s Gambit (list of patterns, list → list)<a
     href="#patterns/meta@hexcasting:for_each"
     class="permalink small"
@@ -12285,7 +12285,7 @@
 <br />
     <p>More specifically, for each element in the second list, it will:</p><p class="fake-li">Create a new stack, with everything on the current stack plus that element</p><p class="fake-li">Draw all the patterns in the first list</p><p class="fake-li">Save all the iotas remaining on the stack to a list<br />Then, after all is said and done, pushes the list of saved iotas onto the main stack.</p><p>No wonder all the practitioners of this art go mad.</p>
 <br />
-  <div id="patterns/meta@hexcasting:halt">
+  <div id="patterns/meta@hexcasting:halt" class="">
 <h4 class="pattern-title">Charon&#39;s Gambit<a
     href="#patterns/meta@hexcasting:halt"
     class="permalink small"
@@ -12328,7 +12328,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>These patterns must be cast from a <a href="#greatwork/spellcircles"><span style="color: #b0b">Spell Circle</span></a>; trying to cast them through a <a href="#items/staff"><span style="color: #b0b">Staff</span></a> will fail rather spectacularly.</p>
 <br />
-  <div id="patterns/circle@hexcasting:circle/impetus_pos">
+  <div id="patterns/circle@hexcasting:circle/impetus_pos" class="">
 <h4 class="pattern-title">Waystone Reflection (→ vector)<a
     href="#patterns/circle@hexcasting:circle/impetus_pos"
     class="permalink small"
@@ -12348,7 +12348,7 @@
       <p>Returns the position of the <a href="#greatwork/impetus"><span style="color: #b0b">Impetus</span></a> of this spell circle.</p>
   </div>
 <br />
-  <div id="patterns/circle@hexcasting:circle/impetus_dir">
+  <div id="patterns/circle@hexcasting:circle/impetus_dir" class="">
 <h4 class="pattern-title">Lodestone Reflection (→ vector)<a
     href="#patterns/circle@hexcasting:circle/impetus_dir"
     class="permalink small"
@@ -12368,7 +12368,7 @@
       <p>Returns the direction the <a href="#greatwork/impetus"><span style="color: #b0b">Impetus</span></a> of this spell circle is facing as a unit vector.</p>
   </div>
 <br />
-  <div id="patterns/circle@hexcasting:circle/bounds/min">
+  <div id="patterns/circle@hexcasting:circle/bounds/min" class="">
 <h4 class="pattern-title">Lesser Fold Reflection (→ vector)<a
     href="#patterns/circle@hexcasting:circle/bounds/min"
     class="permalink small"
@@ -12388,7 +12388,7 @@
       <p>Returns the position of the lower-north-west corner of the bounds of this spell circle.</p>
   </div>
 <br />
-  <div id="patterns/circle@hexcasting:circle/bounds/max">
+  <div id="patterns/circle@hexcasting:circle/bounds/max" class="">
 <h4 class="pattern-title">Greater Fold Reflection (→ vector)<a
     href="#patterns/circle@hexcasting:circle/bounds/max"
     class="permalink small"
@@ -12428,7 +12428,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/akashic_patterns@hexcasting:akashic/read">
+  <div id="patterns/akashic_patterns@hexcasting:akashic/read" class="">
 <h4 class="pattern-title">Akasha&#39;s Distillation (vector, pattern → any)<a
     href="#patterns/akashic_patterns@hexcasting:akashic/read"
     class="permalink small"
@@ -12448,7 +12448,7 @@
       <p>Read the iota associated with the given pattern out of the <a href="#greatwork/akashiclib"><span style="color: #b0b">Akashic Library</span></a> with its <a href="#greatwork/akashiclib"><span style="color: #b0b">Record</span></a> at the given position. This has no range limit. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/akashic_patterns@hexcasting:akashic/write">
+  <div id="patterns/akashic_patterns@hexcasting:akashic/write" class="">
 <h4 class="pattern-title">Akasha&#39;s Gambit (vector, pattern, any →)<a
     href="#patterns/akashic_patterns@hexcasting:akashic/write"
     class="permalink small"
@@ -12530,7 +12530,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/spells/basic@hexcasting:explode">
+  <div id="patterns/spells/basic@hexcasting:explode" class="">
 <h4 class="pattern-title">Explosion (vector, number →)<a
     href="#patterns/spells/basic@hexcasting:explode"
     class="permalink small"
@@ -12552,7 +12552,7 @@
 <br />
     <p>A power of 3 is about as much as a Creeper&#39;s blast; 4 is about as much as a TNT blast. Nature refuses to give me a blast of more than 10 power, though.</p><p>Strangely, this explosion doesn&#39;t seem to harm me. Perhaps it&#39;s because <i>I</i> am the one exploding?</p><p>Costs a negligible amount at power 0, plus 3 extra <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per point of explosion power.</p>
 <br />
-  <div id="patterns/spells/basic@hexcasting:explode/fire">
+  <div id="patterns/spells/basic@hexcasting:explode/fire" class="">
 <h4 class="pattern-title">Fireball (vector, number →)<a
     href="#patterns/spells/basic@hexcasting:explode/fire"
     class="permalink small"
@@ -12574,7 +12574,7 @@
 <br />
     <p>Costs one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>, plus about 3 extra <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>s per point of explosion power. Otherwise, the same as <a href="#patterns/spells/basic@hexcasting:explode"><span style="color: #fc77be">Explosion</span></a>, except with fire.</p>
 <br />
-  <div id="patterns/spells/basic@hexcasting:add_motion">
+  <div id="patterns/spells/basic@hexcasting:add_motion" class="">
 <h4 class="pattern-title">Impulse (entity, vector →)<a
     href="#patterns/spells/basic@hexcasting:add_motion"
     class="permalink small"
@@ -12594,7 +12594,7 @@
       <p>Remove an entity and direction from the stack, then give a shove to the given entity in the given direction. The strength of the impulse is determined by the length of the vector.<br />Costs units of <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> equal to the square of the length of the vector, plus one for every Impulse except the first targeting an entity.</p>
   </div>
 <br />
-  <div id="patterns/spells/basic@hexcasting:blink">
+  <div id="patterns/spells/basic@hexcasting:blink" class="">
 <h4 class="pattern-title">Blink (entity, number →)<a
     href="#patterns/spells/basic@hexcasting:blink"
     class="permalink small"
@@ -12614,7 +12614,7 @@
       <p>Remove an entity and length from the stack, then teleport the given entity along its look vector by the given length.<br />Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Shard</span></a> per two blocks travelled.</p>
   </div>
 <br />
-  <div id="patterns/spells/basic@hexcasting:beep">
+  <div id="patterns/spells/basic@hexcasting:beep" class="">
 <h4 class="pattern-title">Make Note (vector, number, number →)<a
     href="#patterns/spells/basic@hexcasting:beep"
     class="permalink small"
@@ -12654,7 +12654,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/spells/blockworks@hexcasting:place_block">
+  <div id="patterns/spells/blockworks@hexcasting:place_block" class="">
 <h4 class="pattern-title">Place Block (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:place_block"
     class="permalink small"
@@ -12674,7 +12674,7 @@
       <p>Remove a location from the stack, then pick a block item and place it at the given location.<br />Costs a negligible amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:break_block">
+  <div id="patterns/spells/blockworks@hexcasting:break_block" class="">
 <h4 class="pattern-title">Break Block (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:break_block"
     class="permalink small"
@@ -12694,7 +12694,7 @@
       <p>Remove a location from the stack, then break the block at the given location. This spell can break nearly anything a Diamond Pickaxe can break.<br />Costs a bit more than one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:create_water">
+  <div id="patterns/spells/blockworks@hexcasting:create_water" class="">
 <h4 class="pattern-title">Create Water (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:create_water"
     class="permalink small"
@@ -12714,7 +12714,7 @@
       <p>Summon a block of water (or insert up to a bucket&#39;s worth) into a block at the given position. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:destroy_water">
+  <div id="patterns/spells/blockworks@hexcasting:destroy_water" class="">
 <h4 class="pattern-title">Destroy Liquid (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:destroy_water"
     class="permalink small"
@@ -12734,7 +12734,7 @@
       <p>Drains either a liquid container at, or a body of liquid around, the given position. Costs about two <a href="#items/amethyst"><span style="color: #b0b">Charged Amethyst</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:conjure_block">
+  <div id="patterns/spells/blockworks@hexcasting:conjure_block" class="">
 <h4 class="pattern-title">Conjure Block (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:conjure_block"
     class="permalink small"
@@ -12754,7 +12754,7 @@
       <p>Conjure an ethereal, but solid, block that sparkles with my pigment at the given position. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:conjure_light">
+  <div id="patterns/spells/blockworks@hexcasting:conjure_light" class="">
 <h4 class="pattern-title">Conjure Light (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:conjure_light"
     class="permalink small"
@@ -12774,7 +12774,7 @@
       <p>Conjure a magical light that softly glows with my pigment at the given position. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:bonemeal">
+  <div id="patterns/spells/blockworks@hexcasting:bonemeal" class="">
 <h4 class="pattern-title">Overgrow (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:bonemeal"
     class="permalink small"
@@ -12794,7 +12794,7 @@
       <p>Encourage a plant or sapling at the target position to grow, as if <span style="color: #b0b">Bonemeal</span> was applied. Costs a bit more than one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:edify">
+  <div id="patterns/spells/blockworks@hexcasting:edify" class="">
 <h4 class="pattern-title">Edify Sapling (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:edify"
     class="permalink small"
@@ -12814,7 +12814,7 @@
       <p>Forcibly infuse <span style="color: #74b3f2">media</span> into the sapling at the target position, causing it to grow into an <a href="#items/edified"><span style="color: #8d6acc">Edified Tree</span></a>. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Charged Amethyst</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:ignite">
+  <div id="patterns/spells/blockworks@hexcasting:ignite" class="">
 <h4 class="pattern-title">Ignite Block (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:ignite"
     class="permalink small"
@@ -12834,7 +12834,7 @@
       <p>Start a fire on top of the given location, as if a <span style="color: #b0b">Fire Charge</span> was applied. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/blockworks@hexcasting:extinguish">
+  <div id="patterns/spells/blockworks@hexcasting:extinguish" class="">
 <h4 class="pattern-title">Extinguish Area (vector →)<a
     href="#patterns/spells/blockworks@hexcasting:extinguish"
     class="permalink small"
@@ -12876,7 +12876,7 @@
 <br />
     <p>According to certain legends, these spells and their sisters, the <a href="#patterns/great_spells/zeniths"><span style="color: #fc77be">Zeniths</span></a>, were &#34;[...] inspired by a world near to this one, where powerful wizards would gather magic from the land and hold duels to the death. Unfortunately, much was lost in translation...&#34;</p><p>Perhaps that is the reason for their peculiar names.</p>
 <br />
-  <div id="patterns/spells/nadirs@hexcasting:potion/weakness">
+  <div id="patterns/spells/nadirs@hexcasting:potion/weakness" class="">
 <h4 class="pattern-title">White Sun&#39;s Nadir (entity, number, number →)<a
     href="#patterns/spells/nadirs@hexcasting:potion/weakness"
     class="permalink small"
@@ -12896,7 +12896,7 @@
       <p>Inflicts <span style="color: #8d6acc">weakness</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 10 seconds.</p>
   </div>
 <br />
-  <div id="patterns/spells/nadirs@hexcasting:potion/levitation">
+  <div id="patterns/spells/nadirs@hexcasting:potion/levitation" class="">
 <h4 class="pattern-title">Blue Sun&#39;s Nadir (entity, number →)<a
     href="#patterns/spells/nadirs@hexcasting:potion/levitation"
     class="permalink small"
@@ -12916,7 +12916,7 @@
       <p>Inflicts <span style="color: #8d6acc">levitation</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 5 seconds.</p>
   </div>
 <br />
-  <div id="patterns/spells/nadirs@hexcasting:potion/wither">
+  <div id="patterns/spells/nadirs@hexcasting:potion/wither" class="">
 <h4 class="pattern-title">Black Sun&#39;s Nadir (entity, number, number →)<a
     href="#patterns/spells/nadirs@hexcasting:potion/wither"
     class="permalink small"
@@ -12936,7 +12936,7 @@
       <p>Inflicts <span style="color: #8d6acc">withering</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
   </div>
 <br />
-  <div id="patterns/spells/nadirs@hexcasting:potion/poison">
+  <div id="patterns/spells/nadirs@hexcasting:potion/poison" class="">
 <h4 class="pattern-title">Red Sun&#39;s Nadir (entity, number, number →)<a
     href="#patterns/spells/nadirs@hexcasting:potion/poison"
     class="permalink small"
@@ -12956,7 +12956,7 @@
       <p>Inflicts <span style="color: #8d6acc">poison</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
   </div>
 <br />
-  <div id="patterns/spells/nadirs@hexcasting:potion/slowness">
+  <div id="patterns/spells/nadirs@hexcasting:potion/slowness" class="">
 <h4 class="pattern-title">Green Sun&#39;s Nadir (entity, number, number →)<a
     href="#patterns/spells/nadirs@hexcasting:potion/slowness"
     class="permalink small"
@@ -12996,7 +12996,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>These three spells each create an <a href="#items/hexcasting"><span style="color: #8d6acc">item that casts a </span><span style="color: #b38ef3">Hex</span></a>.<br />They all require me to hold the empty item in my off-hand, and require two things: the list of patterns to be cast, and an entity representing a dropped stack of <a href="#items/amethyst"><span style="color: #b0b">Amethyst</span></a> to form the item&#39;s battery.</p><p>See <a href="#items/hexcasting">this entry</a> for more information.</p>
 <br />
-  <div id="patterns/spells/hexcasting@hexcasting:craft/cypher">
+  <div id="patterns/spells/hexcasting@hexcasting:craft/cypher" class="">
 <h4 class="pattern-title">Craft Cypher (entity, list of patterns →)<a
     href="#patterns/spells/hexcasting@hexcasting:craft/cypher"
     class="permalink small"
@@ -13016,7 +13016,7 @@
       <p>Costs about one <a href="#items/amethyst"><span style="color: #b0b">Charged Amethyst</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/hexcasting@hexcasting:craft/trinket">
+  <div id="patterns/spells/hexcasting@hexcasting:craft/trinket" class="">
 <h4 class="pattern-title">Craft Trinket (entity, list of patterns →)<a
     href="#patterns/spells/hexcasting@hexcasting:craft/trinket"
     class="permalink small"
@@ -13036,7 +13036,7 @@
       <p>Costs about five <a href="#items/amethyst"><span style="color: #b0b">Charged Amethysts</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/hexcasting@hexcasting:craft/artifact">
+  <div id="patterns/spells/hexcasting@hexcasting:craft/artifact" class="">
 <h4 class="pattern-title">Craft Artifact (entity, list of patterns →)<a
     href="#patterns/spells/hexcasting@hexcasting:craft/artifact"
     class="permalink small"
@@ -13056,7 +13056,7 @@
       <p>Costs about ten <a href="#items/amethyst"><span style="color: #b0b">Charged Amethysts</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/hexcasting@hexcasting:recharge">
+  <div id="patterns/spells/hexcasting@hexcasting:recharge" class="">
 <h4 class="pattern-title">Recharge Item (entity →)<a
     href="#patterns/spells/hexcasting@hexcasting:recharge"
     class="permalink small"
@@ -13078,7 +13078,7 @@
 <br />
     <p>This spell is cast in a similar method to the crafting spells; an entity representing a dropped stack of <a href="#items/amethyst"><span style="color: #b0b">Amethyst</span></a> is provided, and recharges the <span style="color: #74b3f2">media</span> battery of the item in my other hand.</p><p>This spell <i>cannot</i> recharge the item farther than its original battery size.</p>
 <br />
-  <div id="patterns/spells/hexcasting@hexcasting:erase">
+  <div id="patterns/spells/hexcasting@hexcasting:erase" class="">
 <h4 class="pattern-title">Erase Item<a
     href="#patterns/spells/hexcasting@hexcasting:erase"
     class="permalink small"
@@ -13122,7 +13122,7 @@
 <br />
     <p>It has several interesting properties:</p><p class="fake-li">It does not appear to be tangible; no one can touch it.</p><p class="fake-li">Only my <span style="color: #b38ef3">Hexes</span> can interact with it.</p><p class="fake-li">Once summoned, it stays in place until banished.</p><p class="fake-li">I am always able to see it if I&#39;m close enough, even through solid objects.</p>
 <br />
-  <div id="patterns/spells/sentinels@hexcasting:sentinel/create">
+  <div id="patterns/spells/sentinels@hexcasting:sentinel/create" class="">
 <h4 class="pattern-title">Summon Sentinel (vector →)<a
     href="#patterns/spells/sentinels@hexcasting:sentinel/create"
     class="permalink small"
@@ -13142,7 +13142,7 @@
       <p>Summons my <a href="#patterns/spells/sentinels"><span style="color: #8d6acc">sentinel</span></a> at the given position. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/spells/sentinels@hexcasting:sentinel/destroy">
+  <div id="patterns/spells/sentinels@hexcasting:sentinel/destroy" class="">
 <h4 class="pattern-title">Banish Sentinel<a
     href="#patterns/spells/sentinels@hexcasting:sentinel/destroy"
     class="permalink small"
@@ -13162,7 +13162,7 @@
       <p>Banish my <a href="#patterns/spells/sentinels"><span style="color: #8d6acc">sentinel</span></a>, and remove it from the world. Costs a negligible amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-  <div id="patterns/spells/sentinels@hexcasting:sentinel/get_pos">
+  <div id="patterns/spells/sentinels@hexcasting:sentinel/get_pos" class="">
 <h4 class="pattern-title">Locate Sentinel (→ vector)<a
     href="#patterns/spells/sentinels@hexcasting:sentinel/get_pos"
     class="permalink small"
@@ -13182,7 +13182,7 @@
       <p>Add the position of my <a href="#patterns/spells/sentinels"><span style="color: #8d6acc">sentinel</span></a> to the stack, or <a href="#casting/influences"><span style="color: #8d6acc">Null</span></a> if it isn&#39;t summoned. Costs a negligible amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-  <div id="patterns/spells/sentinels@hexcasting:sentinel/wayfind">
+  <div id="patterns/spells/sentinels@hexcasting:sentinel/wayfind" class="">
 <h4 class="pattern-title">Wayfind Sentinel (vector → vector)<a
     href="#patterns/spells/sentinels@hexcasting:sentinel/wayfind"
     class="permalink small"
@@ -13219,7 +13219,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/spells/colorize@hexcasting:colorize">
+  <div id="patterns/spells/colorize@hexcasting:colorize" class="">
 <h4 class="pattern-title">Internalize Pigment<a
     href="#patterns/spells/colorize@hexcasting:colorize"
     class="permalink small"
@@ -13276,7 +13276,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/create_lava@hexcasting:create_lava">
+  <div id="patterns/great_spells/create_lava@hexcasting:create_lava" class="">
 <h4 class="pattern-title">Create Lava (vector →)<a
     href="#patterns/great_spells/create_lava@hexcasting:create_lava"
     class="permalink small"
@@ -13316,7 +13316,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/weather_manip@hexcasting:lightning">
+  <div id="patterns/great_spells/weather_manip@hexcasting:lightning" class="">
 <h4 class="pattern-title">Summon Lightning (vector →)<a
     href="#patterns/great_spells/weather_manip@hexcasting:lightning"
     class="permalink small"
@@ -13336,7 +13336,7 @@
       <p>I command the heavens! This spell will summon a bolt of lightning to strike the earth where I direct it. Costs about three <a href="#items/amethyst"><span style="color: #b0b">Amethyst Shards</span></a>.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/weather_manip@hexcasting:summon_rain">
+  <div id="patterns/great_spells/weather_manip@hexcasting:summon_rain" class="">
 <h4 class="pattern-title">Summon Rain<a
     href="#patterns/great_spells/weather_manip@hexcasting:summon_rain"
     class="permalink small"
@@ -13356,7 +13356,7 @@
       <p>I control the clouds! This spell will summon rain across the world I cast it upon. Costs about one <a href="#items/amethyst"><span style="color: #b0b">Charged Amethyst</span></a>. Does nothing if it is already raining.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/weather_manip@hexcasting:dispel_rain">
+  <div id="patterns/great_spells/weather_manip@hexcasting:dispel_rain" class="">
 <h4 class="pattern-title">Dispel Rain<a
     href="#patterns/great_spells/weather_manip@hexcasting:dispel_rain"
     class="permalink small"
@@ -13394,7 +13394,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/flight@hexcasting:flight">
+  <div id="patterns/great_spells/flight@hexcasting:flight" class="">
 <h4 class="pattern-title">Flight (entity, number, number →)<a
     href="#patterns/great_spells/flight@hexcasting:flight"
     class="permalink small"
@@ -13434,7 +13434,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/teleport@hexcasting:teleport">
+  <div id="patterns/great_spells/teleport@hexcasting:teleport" class="">
 <h4 class="pattern-title">Greater Teleport (entity, vector →)<a
     href="#patterns/great_spells/teleport@hexcasting:teleport"
     class="permalink small"
@@ -13476,7 +13476,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>This family of spells all impart a positive potion effect upon an entity, similar to the <a href="#patterns/spells/nadirs"><span style="color: #fc77be">Nadirs</span></a>. However, these have their <span style="color: #74b3f2">media</span> costs increase with the <i>cube</i> of the potency.</p>
 <br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/regeneration">
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/regeneration" class="">
 <h4 class="pattern-title">White Sun&#39;s Zenith (entity, number, number →)<a
     href="#patterns/great_spells/zeniths@hexcasting:potion/regeneration"
     class="permalink small"
@@ -13496,7 +13496,7 @@
       <p>Bestows <span style="color: #8d6acc">regeneration</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/night_vision">
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/night_vision" class="">
 <h4 class="pattern-title">Blue Sun&#39;s Zenith (entity, number →)<a
     href="#patterns/great_spells/zeniths@hexcasting:potion/night_vision"
     class="permalink small"
@@ -13516,7 +13516,7 @@
       <p>Bestows <span style="color: #8d6acc">night vision</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 5 seconds.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/absorption">
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/absorption" class="">
 <h4 class="pattern-title">Black Sun&#39;s Zenith (entity, number, number →)<a
     href="#patterns/great_spells/zeniths@hexcasting:potion/absorption"
     class="permalink small"
@@ -13536,7 +13536,7 @@
       <p>Bestows <span style="color: #8d6acc">absorption</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per second.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/haste">
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/haste" class="">
 <h4 class="pattern-title">Red Sun&#39;s Zenith (entity, number, number →)<a
     href="#patterns/great_spells/zeniths@hexcasting:potion/haste"
     class="permalink small"
@@ -13556,7 +13556,7 @@
       <p>Bestows <span style="color: #8d6acc">haste</span>. Base cost is one <a href="#items/amethyst"><span style="color: #b0b">Amethyst Dust</span></a> per 3 seconds.</p>
   </div>
 <br />
-  <div id="patterns/great_spells/zeniths@hexcasting:potion/strength">
+  <div id="patterns/great_spells/zeniths@hexcasting:potion/strength" class="">
 <h4 class="pattern-title">Green Sun&#39;s Zenith (entity, number, number →)<a
     href="#patterns/great_spells/zeniths@hexcasting:potion/strength"
     class="permalink small"
@@ -13594,7 +13594,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/greater_sentinel@hexcasting:sentinel/create/great">
+  <div id="patterns/great_spells/greater_sentinel@hexcasting:sentinel/create/great" class="">
 <h4 class="pattern-title">Summon Greater Sentinel (vector →)<a
     href="#patterns/great_spells/greater_sentinel@hexcasting:sentinel/create/great"
     class="permalink small"
@@ -13634,7 +13634,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/make_battery@hexcasting:craft/battery">
+  <div id="patterns/great_spells/make_battery@hexcasting:craft/battery" class="">
 <h4 class="pattern-title">Craft Phial (entity →)<a
     href="#patterns/great_spells/make_battery@hexcasting:craft/battery"
     class="permalink small"
@@ -13674,7 +13674,7 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-  <div id="patterns/great_spells/brainsweep@hexcasting:brainsweep">
+  <div id="patterns/great_spells/brainsweep@hexcasting:brainsweep" class="">
 <h4 class="pattern-title">Flay Mind (entity, vector →)<a
     href="#patterns/great_spells/brainsweep@hexcasting:brainsweep"
     class="permalink small"
