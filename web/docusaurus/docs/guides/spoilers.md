@@ -1,12 +1,6 @@
 # Spoilers
 
-Patchouli's [advancement locking system](https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/advancement-locking) can be used with hexdoc to automatically add a spoiler blur to late-game categories and entries.
-
-:::warning
-
-[Spoilering individual pages](https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/page-types#advancement-string) is **not yet supported** by hexdoc. The `advancement` field is allowed, but the value will be ignored.
-
-:::
+Patchouli's [advancement locking system](https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/advancement-locking) can be used with hexdoc to automatically add a spoiler blur to late-game categories, entries, and (as of `v1!0.1.0a11`) pages.
 
 ## Marking advancements as spoilers
 
