@@ -1,6 +1,6 @@
 from typing import Iterable, Iterator
 
-from pydantic import Field, ValidationInfo, model_validator
+from pydantic import Field
 
 from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
@@ -9,18 +9,16 @@ from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
 from hexdoc.utils import Sortable
 
-from .book_context import BookContext
 from .page import CraftingPage, Page, PageWithTitle
 from .text import FormatTree
+from .utils import AdvancementSpoilered
 
 
-class Entry(IDModel, Sortable):
+class Entry(IDModel, Sortable, AdvancementSpoilered):
     """Entry json file, with pages and localizations.
 
     See: https://vazkiimods.github.io/Patchouli/docs/reference/entry-json
     """
-
-    is_spoiler: bool = False
 
     # required (entry.json)
     name: LocalizedStr
@@ -109,17 +107,9 @@ class Entry(IDModel, Sortable):
         if accumulator.recipes:
             yield accumulator
 
-    @model_validator(mode="after")
-    def _check_is_spoiler(self, info: ValidationInfo):
-        if not info.context or self.advancement is None:
-            return self
-        book_ctx = BookContext.of(info)
-
-        self.is_spoiler = any(
-            self.advancement.match(spoiler)
-            for spoiler in book_ctx.spoilered_advancements
-        )
-        return self
+    def _get_advancement(self):
+        # implements AdvancementSpoilered
+        return self.advancement
 
 
 class _CraftingPageAccumulator(PageWithTitle, template_type="patchouli:crafting"):
