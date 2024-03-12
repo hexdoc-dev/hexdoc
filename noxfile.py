@@ -20,7 +20,7 @@ MOCK_ENV = {
 
 DUMMY_PATH = Path(".hexdoc/dummy_book")
 
-
+nox.options.default_venv_backend = "uv|virtualenv"
 nox.options.reuse_existing_virtualenvs = True
 nox.options.sessions = [
     "pyright",
@@ -48,7 +48,7 @@ def pyright(session: nox.Session):
 
 @nox.session(tags=["test"])
 def test(session: nox.Session):
-    session.install(".[test]")
+    session.install("-e", ".[test]")
 
     session.run("pytest", *session.posargs)
 
@@ -101,7 +101,7 @@ def test_hexcasting(session: nox.Session, branch: str):
 
 @nox.session(tags=["test", "post_build"])
 def test_copier(session: nox.Session):
-    session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod")
 
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"
@@ -156,7 +156,7 @@ def docs(session: nox.Session):
     shutil.copytree("media", "web/docusaurus/static-generated/img", dirs_exist_ok=True)
 
     with session.cd("web/docusaurus"):
-        session.run_always("npm", ("ci" if is_ci() else "install"), external=True)
+        session.run_install("npm", ("ci" if is_ci() else "install"), external=True)
 
         match session.posargs:
             case ["build", *args]:
@@ -201,7 +201,7 @@ def tag(session: nox.Session):
 
 @nox.session
 def hexdoc(session: nox.Session):
-    session.install(".")
+    session.install("-e", ".")
     session.run("hexdoc", *session.posargs)
 
 

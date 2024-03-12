@@ -76,7 +76,7 @@ dev = [
     "hexdoc[pdoc,test]",
     "ruff==0.1.4",
     "pre-commit",
-    "nox",
+    "nox[uv]",
 ]
 
 [project.urls]

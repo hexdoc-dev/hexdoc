@@ -72,7 +72,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
       - name: Install Nox
-        run: pip install nox
+        run: pip install nox[uv]
 
       - name: Run Nox with display server
         run: xvfb-run --auto-servernum nox
@@ -92,7 +92,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Nox
-        run: pip install nox packaging
+        run: pip install nox[uv] packaging
 
       - name: Run Nox
         run: nox --session tag
