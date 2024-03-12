@@ -15,8 +15,7 @@ from .base import HexdocModel
 class InlineModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
-        ...
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any: ...
 
     @model_validator(mode="wrap")
     @classmethod
@@ -48,8 +47,7 @@ class InlineModel(HexdocModel, ABC):
 class InlineItemModel(HexdocModel, ABC):
     @classmethod
     @abstractmethod
-    def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
-        ...
+    def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any: ...
 
     @model_validator(mode="wrap")
     @classmethod

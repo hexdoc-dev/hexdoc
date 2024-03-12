@@ -30,8 +30,7 @@ class BaseResourceDir(HexdocModel, ABC):
     def load(
         self,
         pm: PluginManager,
-    ) -> ContextManager[Iterable[PathResourceDir]]:
-        ...
+    ) -> ContextManager[Iterable[PathResourceDir]]: ...
 
     @property
     def internal(self):
@@ -77,8 +76,7 @@ class BasePathResourceDir(BaseResourceDir):
 
     @property
     @abstractmethod
-    def _paths(self) -> Iterable[Path]:
-        ...
+    def _paths(self) -> Iterable[Path]: ...
 
     @model_validator(mode="after")
     def _assert_path_exists(self):

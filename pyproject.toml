@@ -74,7 +74,7 @@ test = [
 ]
 dev = [
     "hexdoc[pdoc,test]",
-    "ruff==0.1.4",
+    "ruff~=0.3.2",
     "pre-commit",
     "nox[uv]",
 ]
@@ -139,21 +139,25 @@ include_namespace_packages = true
 # formatting
 
 [tool.ruff]
-extend-select = [
-    "I", # import sorting
-]
-extend-ignore = [
-    # covered by Pyright
-    "F821", # undefined variable
-    "F401", # imported but unused
-    "F841", # unused variable
-]
 extend-exclude = [
     "vendor",
     "venv",
     "**/.*",
     "**/node_modules",
     "**/__pycache__",
+]
+
+[tool.ruff.lint]
+preview = true
+extend-select = [
+    "I", # import sorting
+    "RUF022", # __all__ sorting
+]
+extend-ignore = [
+    # covered by Pyright
+    "F821", # undefined variable
+    "F401", # imported but unused
+    "F841", # unused variable
 ]
 
 [tool.ruff.lint.isort]

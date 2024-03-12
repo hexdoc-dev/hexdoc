@@ -24,13 +24,11 @@ hookspec = pluggy.HookspecMarker(HEXDOC_PROJECT_NAME)
 class PluginSpec(Protocol):
     @staticmethod
     @hookspec
-    def hexdoc_book_plugin() -> HookReturns[BookPlugin[Any]]:
-        ...
+    def hexdoc_book_plugin() -> HookReturns[BookPlugin[Any]]: ...
 
     @staticmethod
     @hookspec
-    def hexdoc_mod_plugin(branch: str, props: Properties) -> HookReturns[ModPlugin]:
-        ...
+    def hexdoc_mod_plugin(branch: str, props: Properties) -> HookReturns[ModPlugin]: ...
 
     @staticmethod
     @hookspec
@@ -41,25 +39,21 @@ class PluginSpec(Protocol):
         book_id: ResourceLocation,
         is_0_black: bool,
         link_overrides: dict[str, str],
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @staticmethod
     @hookspec
     def hexdoc_update_context(
-        context: dict[str, Any]
-    ) -> HookReturns[ValidationContext]:
-        ...
+        context: dict[str, Any],
+    ) -> HookReturns[ValidationContext]: ...
 
     @staticmethod
     @hookspec
-    def hexdoc_update_template_args(template_args: dict[str, Any]) -> None:
-        ...
+    def hexdoc_update_template_args(template_args: dict[str, Any]) -> None: ...
 
     @staticmethod
     @hookspec
-    def hexdoc_load_tagged_unions() -> HookReturns[Package]:
-        ...
+    def hexdoc_load_tagged_unions() -> HookReturns[Package]: ...
 
 
 # mmmmmm, interfaces

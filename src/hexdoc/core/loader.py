@@ -205,8 +205,7 @@ class ModResourceLoader(ValidationContext):
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
-    ) -> tuple[PathResourceDir, _T]:
-        ...
+    ) -> tuple[PathResourceDir, _T]: ...
 
     @overload
     def load_resource(
@@ -216,8 +215,7 @@ class ModResourceLoader(ValidationContext):
         *,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
-    ) -> tuple[PathResourceDir, _T]:
-        ...
+    ) -> tuple[PathResourceDir, _T]: ...
 
     def load_resource(
         self,
@@ -247,16 +245,14 @@ class ModResourceLoader(ValidationContext):
         type: ResourceType,
         folder: str | Path,
         id: ResourceLocation,
-    ) -> tuple[PathResourceDir, Path]:
-        ...
+    ) -> tuple[PathResourceDir, Path]: ...
 
     @overload
     def find_resource(
         self,
         path: Path,
         /,
-    ) -> tuple[PathResourceDir, Path]:
-        ...
+    ) -> tuple[PathResourceDir, Path]: ...
 
     def find_resource(
         self,
@@ -297,8 +293,7 @@ class ModResourceLoader(ValidationContext):
         internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
-        ...
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]: ...
 
     @overload
     def load_resources(
@@ -311,8 +306,7 @@ class ModResourceLoader(ValidationContext):
         internal_only: bool = False,
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
-        ...
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]: ...
 
     def load_resources(
         self,
@@ -342,8 +336,7 @@ class ModResourceLoader(ValidationContext):
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
         internal_only: bool = False,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
-        ...
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     @overload
     def find_resources(
@@ -354,8 +347,7 @@ class ModResourceLoader(ValidationContext):
         id: ResourceLocation,
         allow_missing: bool = False,
         internal_only: bool = False,
-    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
-        ...
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     def find_resources(
         self,
@@ -468,8 +460,7 @@ class ModResourceLoader(ValidationContext):
         return value
 
     @overload
-    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None:
-        ...
+    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None: ...
 
     @overload
     def export(
@@ -482,8 +473,7 @@ class ModResourceLoader(ValidationContext):
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | None = None,
         cache: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def export(
         self,

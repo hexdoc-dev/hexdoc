@@ -1,6 +1,6 @@
 __all__ = [
-    "Color",
     "DEFAULT_CONFIG",
+    "Color",
     "HexdocModel",
     "HexdocSettings",
     "HexdocTypeAdapter",

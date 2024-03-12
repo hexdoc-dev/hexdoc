@@ -49,5 +49,4 @@ class ResourceModel(IDModel, InlineModel, ABC):
         cls,
         id: ResourceLocation,
         loader: ModResourceLoader,
-    ) -> tuple[PathResourceDir, JSONDict]:
-        ...
+    ) -> tuple[PathResourceDir, JSONDict]: ...

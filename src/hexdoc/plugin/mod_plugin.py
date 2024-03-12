@@ -202,8 +202,7 @@ class VersionedModPlugin(ModPlugin):
     @property
     @abstractmethod
     @override
-    def mod_version(self) -> str:
-        ...
+    def mod_version(self) -> str: ...
 
     @property
     @override
@@ -222,8 +221,7 @@ class ModPluginWithBook(VersionedModPlugin):
 
     @abstractmethod
     @override
-    def resource_dirs(self) -> HookReturn[Package]:
-        ...
+    def resource_dirs(self) -> HookReturn[Package]: ...
 
     def site_book_path(self, lang: str, versioned: bool) -> Path:
         if versioned:

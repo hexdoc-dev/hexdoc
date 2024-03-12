@@ -20,8 +20,7 @@ class Sortable(ABC):
 
     @property
     @abstractmethod
-    def _cmp_key(self) -> Any:
-        ...
+    def _cmp_key(self) -> Any: ...
 
     def __lt__(self, other: Any) -> bool:
         if isinstance(other, Sortable):
@@ -39,8 +38,12 @@ def sorted_dict(d: Mapping[_T, _T_Sortable]) -> dict[_T, _T_Sortable]:
 
 
 class IProperty(Protocol[_T_covariant]):
-    def __get__(self, __instance: Any, __owner: type | None = None, /) -> _T_covariant:
-        ...
+    def __get__(
+        self,
+        __instance: Any,
+        __owner: type | None = None,
+        /,
+    ) -> _T_covariant: ...
 
 
 FieldOrProperty = _T_covariant | IProperty[_T_covariant]

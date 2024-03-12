@@ -320,11 +320,14 @@ class LinkStyle(Style, frozen=True):
 # intentionally not inheriting from Style, because this is basically an implementation
 # detail of the parser and should not be returned or exposed anywhere
 class _CloseTag(HexdocModel, frozen=True):
-    type: FunctionStyleType | Literal[
-        SpecialStyleType.link,
-        SpecialStyleType.base,
-        SpecialStyleType.color,
-    ]
+    type: (
+        FunctionStyleType
+        | Literal[
+            SpecialStyleType.link,
+            SpecialStyleType.base,
+            SpecialStyleType.color,
+        ]
+    )
 
 
 STYLE_REGEX = re.compile(r"\$\(([^)]*)\)")

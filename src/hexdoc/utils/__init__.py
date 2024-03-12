@@ -1,4 +1,5 @@
 __all__ = [
+    "TRACE",
     "ContextSource",
     "FieldOrProperty",
     "IProperty",
@@ -14,7 +15,6 @@ __all__ = [
     "Sortable",
     "TOMLDict",
     "TOMLValue",
-    "TRACE",
     "TryGetEnum",
     "ValidationContext",
     "add_to_context",

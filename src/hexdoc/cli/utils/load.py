@@ -34,8 +34,7 @@ def load_common_data(
     branch: str,
     *,
     book: Literal[True],
-) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPluginWithBook]:
-    ...
+) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPluginWithBook]: ...
 
 
 @overload
@@ -44,8 +43,7 @@ def load_common_data(
     branch: str,
     *,
     book: bool = False,
-) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPlugin]:
-    ...
+) -> tuple[Properties, PluginManager, BookPlugin[Any], ModPlugin]: ...
 
 
 def load_common_data(

@@ -1,4 +1,5 @@
 __all__ = [
+    "METADATA_SUFFIX",
     "AssumeTag",
     "BaseProperties",
     "BaseResourceDir",
@@ -8,7 +9,6 @@ __all__ = [
     "ExportFn",
     "IsVersion",
     "ItemStack",
-    "METADATA_SUFFIX",
     "MinecraftVersion",
     "ModResourceLoader",
     "PathResourceDir",

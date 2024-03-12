@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 class BaseTexture(InlineModel, ABC):
     @classmethod
     @abstractmethod
-    def from_url(cls, url: URL, pixelated: bool) -> Self:
-        ...
+    def from_url(cls, url: URL, pixelated: bool) -> Self: ...
 
     @override
     @classmethod

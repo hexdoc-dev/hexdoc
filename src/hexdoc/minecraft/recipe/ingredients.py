@@ -21,8 +21,7 @@ from ..tags import Tag
 
 class ItemIngredient(TypeTaggedUnion, ABC):
     @property
-    def item(self) -> ItemWithTexture | TagWithTexture:
-        ...
+    def item(self) -> ItemWithTexture | TagWithTexture: ...
 
 
 class MinecraftItemIdIngredient(ItemIngredient, type=NoValue):

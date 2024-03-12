@@ -84,8 +84,7 @@ class _NoCallTypedHookCaller(TypedHookCaller[_P, None]):
     """Represents a TypedHookCaller which returns None. This will always raise, so the
     return type of __call__ is set to Never."""
 
-    def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> Never:
-        ...
+    def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> Never: ...
 
 
 # TODO: convert to dataclass
@@ -142,12 +141,10 @@ class PluginManager(ValidationContext):
         return plugin
 
     @overload
-    def mod_plugin(self, modid: str, book: Literal[True]) -> ModPluginWithBook:
-        ...
+    def mod_plugin(self, modid: str, book: Literal[True]) -> ModPluginWithBook: ...
 
     @overload
-    def mod_plugin(self, modid: str, book: bool = False) -> ModPlugin:
-        ...
+    def mod_plugin(self, modid: str, book: bool = False) -> ModPlugin: ...
 
     def mod_plugin(self, modid: str, book: bool = False):
         plugin = self.mod_plugins.get(modid)
@@ -295,12 +292,12 @@ class PluginManager(ValidationContext):
             yield import_package(package)
 
     @overload
-    def _hook_caller(self, spec: Callable[_P, None]) -> _NoCallTypedHookCaller[_P]:
-        ...
+    def _hook_caller(self, spec: Callable[_P, None]) -> _NoCallTypedHookCaller[_P]: ...
 
     @overload
-    def _hook_caller(self, spec: Callable[_P, _R | None]) -> TypedHookCaller[_P, _R]:
-        ...
+    def _hook_caller(
+        self, spec: Callable[_P, _R | None]
+    ) -> TypedHookCaller[_P, _R]: ...
 
     def _hook_caller(self, spec: Callable[_P, _R | None]) -> TypedHookCaller[_P, _R]:
         caller = self.inner.hook.__dict__[spec.__name__]

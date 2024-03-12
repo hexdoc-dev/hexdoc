@@ -18,18 +18,15 @@ class ValidationContext:
 
     @overload
     @classmethod
-    def of(cls, info: ValidationInfo, /) -> Self:
-        ...
+    def of(cls, info: ValidationInfo, /) -> Self: ...
 
     @overload
     @classmethod
-    def of(cls, context: dict[str, Any] | Context, /) -> Self:
-        ...
+    def of(cls, context: dict[str, Any] | Context, /) -> Self: ...
 
     @overload
     @classmethod
-    def of(cls, source: ContextSource, /) -> Self:
-        ...
+    def of(cls, source: ContextSource, /) -> Self: ...
 
     @classmethod
     def of(cls, source: ContextSource, /) -> Self:

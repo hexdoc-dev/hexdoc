@@ -1,8 +1,8 @@
 __all__ = [
+    "HEXDOC_PROJECT_NAME",
     "BookPlugin",
     "BookPluginImpl",
     "DefaultRenderedTemplates",
-    "HEXDOC_PROJECT_NAME",
     "HookReturn",
     "LoadTaggedUnionsImpl",
     "ModPlugin",

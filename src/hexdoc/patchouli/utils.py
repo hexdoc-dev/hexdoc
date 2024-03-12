@@ -16,8 +16,7 @@ class AdvancementSpoilered(HexdocModel, ABC):
         return self._is_spoiler
 
     @abstractmethod
-    def _get_advancement(self) -> ResourceLocation | None:
-        ...
+    def _get_advancement(self) -> ResourceLocation | None: ...
 
     @model_validator(mode="after")
     def _check_is_spoiler(self, info: ValidationInfo):
