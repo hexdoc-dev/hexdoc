@@ -53,6 +53,7 @@
       </noscript>
         <script type="module" src="index.js"></script>
   <script type="module" src="hexcasting.js"></script>
+  <script type="module" src="hexcasting_render.js"></script>
   </head>
   <body>
 <nav class="navbar navbar-default navbar-static-top">

@@ -61,7 +61,7 @@ def test_build(session: nox.Session):
 
 
 @nox.session(tags=["test", "post_build"])
-@nox.parametrize(["branch"], ["1.19", "1.20"])
+@nox.parametrize(["branch"], ["1.19", "main"])
 def test_hexcasting(session: nox.Session, branch: str):
     session.install("-e", ".[test]")
 
