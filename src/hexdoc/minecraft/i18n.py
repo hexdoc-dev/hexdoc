@@ -240,11 +240,15 @@ class I18n(ValidationContextModel):
         else:
             log_level = logging.WARNING
 
-        logger.log(
-            log_level,
-            f"No translation in {self.lang} for "
-            + (f"key {keys[0]}" if len(keys) == 1 else f"keys {keys}"),
-        )
+        log_keys = set(keys) - self._logged_missing_keys
+        if log_keys:
+            self._logged_missing_keys.update(log_keys)
+            match list(log_keys):
+                case [key]:
+                    message = f"key {key}"
+                case _:
+                    message = "keys " + ", ".join(log_keys)
+            logger.log(log_level, f"No translation in {self.lang} for {message}")
 
         if default is not None:
             return LocalizedStr.skip_i18n(default)
@@ -345,3 +349,8 @@ class I18n(ValidationContextModel):
         name = self.localize("language.name", silent=silent)
         region = self.localize("language.region", silent=silent)
         return f"{name} ({region})"
+
+    @model_validator(mode="after")
+    def _init_logger_cache(self):
+        self._logged_missing_keys = set[str]()
+        return self

@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * Adding spoilers to individual pages with the `advancement` field is now supported.
 * Use [`uv`](https://github.com/astral-sh/uv) instead of `pip` for all reusable workflows.
 * `hexdoc ci build` now attempts to read the site url from `HEXDOC_SITE_URL` and `GITHUB_PAGES_URL` environment variables before querying the GitHub API.
+* "No translation in {lang} for key {key}" warnings are now only printed once per key for each language to reduce log spam.
 
 ## `1!0.1.0a10`
 
