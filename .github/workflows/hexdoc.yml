@@ -27,6 +27,10 @@ on:
         description: Subdirectory to deploy the book to
         type: string
         required: false
+      site-url:
+        description: Set the base site url instead of looking up the current repo's GitHub Pages url
+        type: string
+        required: false
       bump-version-segment:
         description: DEPRECATED - This value no longer does anything and is only kept for backwards compatibility.
         type: string
@@ -49,6 +53,7 @@ env:
   HEXDOC_PROPS: ${{ inputs.props }}
   HEXDOC_RELEASE: ${{ inputs.release }}
   HEXDOC_SUBDIRECTORY: ${{ inputs.subdirectory }}
+  GITHUB_PAGES_URL: ${{ inputs.site-url }}
 
 jobs:
   build:

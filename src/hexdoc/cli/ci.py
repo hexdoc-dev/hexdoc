@@ -34,9 +34,17 @@ def build(
     env = CIEnvironment.model_getenv()
     setup_logging(env.verbosity, ci=True)
 
-    if not (pages_url := os.getenv("MOCK_GITHUB_PAGES_URL")):
+    # FIXME: scuffed. why are we setting environment variables here :/
+    for key in [
+        "MOCK_GITHUB_PAGES_URL",  # highest priority so tests work correctly
+        "HEXDOC_SITE_URL",  # TODO: this should be supported in more places
+        "GITHUB_PAGES_URL",
+    ]:
+        if pages_url := os.getenv(key):
+            break
+    else:
         pages_url = get_pages_url(env.repo)
-        os.environ["GITHUB_PAGES_URL"] = pages_url
+    os.environ["GITHUB_PAGES_URL"] = pages_url
 
     site_path = hexdoc_app.build(
         Path("_site/src/docs"),
