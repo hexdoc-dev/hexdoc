@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### Changed
 
 * Adding spoilers to individual pages with the `advancement` field is now supported.
+* Use [`uv`](https://github.com/astral-sh/uv) instead of `pip` for all reusable workflows.
 
 ## `1!0.1.0a10`
 
