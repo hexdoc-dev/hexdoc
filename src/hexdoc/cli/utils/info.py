@@ -35,6 +35,7 @@ def get_header(
         cwd:            {Path.cwd()}
         props_dir:      {_relative_path(props.props_dir)}
         mod_templates:  {jinja_template_roots}
+        site_url:       {props.env.github_pages_url}
         """
     ).rstrip()
 
