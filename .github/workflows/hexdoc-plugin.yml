@@ -54,6 +54,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           cache: pip
+      - uses: yezz123/setup-uv@v4
 
       - name: Install display server
         uses: awalsh128/cache-apt-pkgs-action@v1
@@ -61,7 +62,7 @@ jobs:
           packages: xvfb
 
       - name: Install Python packages
-        run: pip install -e .${{ inputs.pip-extras }}
+        run: uv pip install --system -e .${{ inputs.pip-extras }}
 
       - name: Build web book
         id: export
