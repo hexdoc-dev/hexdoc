@@ -63,8 +63,6 @@ def test_build(session: nox.Session):
 @nox.session(tags=["test", "post_build"])
 @nox.parametrize(["branch"], ["1.19", "main"])
 def test_hexcasting(session: nox.Session, branch: str):
-    session.install("-e", ".[test]")
-
     with session.cd("submodules/HexMod"):
         original_branch = run_silent_external(
             session, "git", "rev-parse", "--abbrev-ref", "HEAD"
@@ -75,7 +73,7 @@ def test_hexcasting(session: nox.Session, branch: str):
         session.run("git", "checkout", branch, external=True)
 
     try:
-        session.install("-e", "./submodules/HexMod")
+        session.install("-e", ".[test]", "-e", "./submodules/HexMod")
 
         session.run(
             "hexdoc",
