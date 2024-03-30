@@ -6,7 +6,7 @@ import stat
 import sys
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import nox
 
@@ -104,7 +104,7 @@ def test_copier(session: nox.Session):
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"
 
-    shutil.rmtree(rendered_template, ignore_errors=True)
+    rmtree(session, rendered_template, ignore_errors=True)
     session.run("ctt", "--base-dir", str(template_repo))
     session.run("git", "init", str(rendered_template), external=True)
 
@@ -195,6 +195,29 @@ def tag(session: nox.Session):
 
 
 # development helpers
+
+
+@nox.session
+def setup(session: nox.Session):
+    session.install("uv", "pre-commit")
+
+    if not Path("submodules/HexMod/pyproject.toml").exists():
+        session.run("git", "submodule", "update", "--init")
+
+    rmtree(session, "venv", onerror=on_rm_error)
+    session.run("uv", "venv", "venv", "--seed")
+
+    session.run(
+        *("uv", "pip", "install"),
+        "--quiet",
+        "-e=.[dev]",
+        "-e=./submodules/HexMod",
+        env={
+            "VIRTUAL_ENV": str(Path.cwd() / "venv"),
+        },
+    )
+
+    session.run("pre-commit", "install")
 
 
 @nox.session
@@ -516,9 +539,7 @@ def dummy_serve(session: nox.Session):
 
 @nox.session(python=False)
 def dummy_clean(session: nox.Session):
-    if DUMMY_PATH.is_dir():
-        session.log(f"Removing directory: {DUMMY_PATH}")
-        shutil.rmtree(DUMMY_PATH, onerror=on_rm_error)
+    rmtree(session, DUMMY_PATH)
 
 
 # utils (not sessions)
@@ -567,11 +588,22 @@ def update_git_tag(session: nox.Session, *, tag: str, message: str):
     )
 
 
-def on_rm_error(func: Any, path: str, exc_info: Any):
+def on_rm_error(func: Callable[..., Any], path: str, exc_info: Any):
     # from: https://stackoverflow.com/questions/4829043/how-to-remove-read-only-attrib-directory-with-python-in-windows
     path_ = Path(path)
     path_.chmod(stat.S_IWRITE)
     path_.unlink()
+
+
+def rmtree(
+    session: nox.Session,
+    path: str | Path,
+    ignore_errors: bool = False,
+    onerror: Callable[[Callable[..., Any], str, Any], object] | None = on_rm_error,
+):
+    if Path(path).is_dir():
+        session.log(f"Removing directory: {path}")
+        shutil.rmtree(path, ignore_errors, onerror)
 
 
 def get_hexdoc_version():

@@ -30,6 +30,18 @@ See [hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting
 
 ### Setup
 
+Automatically set up a development environment with Nox:
+
+```sh
+pipx install nox  # pipx (recommended)
+python3 -m pip install nox  # pip
+
+nox -s setup
+# next, run the venv activation command printed by uv
+```
+
+Manual setup:
+
 ```sh
 git submodule update --init
 
