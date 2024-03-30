@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum, unique
-from typing import Annotated, Any, Mapping, Protocol, TypeVar, get_args
+from typing import Annotated, Any, Mapping, Protocol, get_args
 
 from ordered_set import OrderedSet, OrderedSetInitializer
 from pydantic import (
@@ -10,9 +10,17 @@ from pydantic import (
     HttpUrl,
 )
 from pydantic_core import core_schema
+from typing_extensions import TypeVar
 from yarl import URL
 
 _T = TypeVar("_T")
+
+_T_float = TypeVar("_T_float", default=float)
+
+
+Vec2 = tuple[_T_float, _T_float]
+Vec3 = tuple[_T_float, _T_float, _T_float]
+Vec4 = tuple[_T_float, _T_float, _T_float, _T_float]
 
 
 class Sortable(ABC):
@@ -137,8 +145,14 @@ PydanticURL = Annotated[
 ]
 
 
-def clamping_validator(lower: float, upper: float):
+def clamping_validator(lower: float | None, upper: float | None):
     def validator(value: float):
-        return max(lower, min(upper, value))
+        lower_ = lower if lower is not None else value
+        upper_ = upper if upper is not None else value
+        return max(lower_, min(upper_, value))
 
     return AfterValidator(validator)
+
+
+# short alias for convenience
+clamped = clamping_validator
