@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from abc import ABC, abstractmethod
 from typing import Annotated, Literal, Self
@@ -115,9 +116,16 @@ class DisplayPosition(HexdocModel):
     If the value is greater than 4, it is displayed as 4.
     """
 
+    @property
+    def eulers(self) -> Vec3:
+        """Euler rotation vector, in radians."""
+        rotation = tuple(math.radians(v) for v in self.rotation)
+        assert len(rotation) == 3
+        return rotation
+
 
 class ModelElement(HexdocModel):
-    """An element of a block/item model.
+    """An element of a block/item model. Must be cubic.
 
     https://minecraft.wiki/w/Tutorials/Models
     """
@@ -157,6 +165,18 @@ class ElementRotation(HexdocModel):
     """
     rescale: bool = False
     """Specifies whether or not to scale the faces across the whole block."""
+
+    @property
+    def eulers(self) -> Vec3:
+        """Euler rotation vector, in radians."""
+        angle = math.radians(self.angle)
+        match self.axis:
+            case "x":
+                return (angle, 0, 0)
+            case "y":
+                return (0, angle, 0)
+            case "z":
+                return (0, 0, angle)
 
 
 FaceName = Literal["down", "up", "north", "south", "west", "east"]
