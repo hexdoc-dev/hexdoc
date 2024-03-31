@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import importlib_resources as resources
+import moderngl
 import moderngl_window as mglw
 import numpy as np
 from moderngl import Context, Uniform
@@ -28,8 +30,7 @@ from hexdoc.minecraft.models.load import load_model
 LIGHT_UP = 0.98
 LIGHT_LEFT = 0.8
 LIGHT_RIGHT = 0.608
-
-FACE_ORDER = list[FaceName](["south", "east", "down", "west", "north", "up"])
+LIGHT_BACK = 0.25
 
 
 @dataclass
@@ -37,10 +38,13 @@ class BlockRenderer:
     loader: ModResourceLoader
 
     def __post_init__(self):
-        self.window = HeadlessWindow()
-        self.config = BlockRendererConfig(ctx=self.window.ctx, wnd=self.window)
+        self.window = HeadlessWindow(
+            size=(300, 300),
+        )
 
+        self.config = BlockRendererConfig(ctx=self.window.ctx, wnd=self.window)
         self.window.config = self.config
+
         self.window.swap_buffers()
         self.window.set_default_viewport()
 
@@ -110,12 +114,7 @@ class BlockRendererConfig(WindowConfig):
         )
         self.uniform("m_proj").write(self.projection)
 
-        self.camera = Matrix44.look_at(
-            eye=(256, 64, 16),
-            target=(0, 0, 16),
-            up=(0, 1, 0),
-            dtype="f4",
-        )
+        self.camera = pitch_yaw_camera(30, -135)
         self.uniform("m_camera").write(self.camera)
 
         # TODO: implement animations
@@ -134,13 +133,15 @@ class BlockRendererConfig(WindowConfig):
         textures = dict[str, int]()
         for i, (name, info) in enumerate(texture_vars.items()):
             textures[name] = i
-            self.load_texture_array(
+            texture = self.load_texture_array(
                 path=str(info.image_path),
                 layers=info.layers,
-            ).use(i)
+            )
+            texture.filter = (moderngl.NEAREST, moderngl.NEAREST)
+            texture.use(i)
 
         model_transform = Matrix44.identity(dtype="f4")
-        # model_transform *= Matrix44.from_translation((-8, -8, -8))
+        model_transform *= Matrix44.from_translation((-8, -8, -8))
 
         # TODO: order??? (see docstring)
         # if gui := model.display.get("gui"):
@@ -158,25 +159,28 @@ class BlockRendererConfig(WindowConfig):
 
             self.uniform("m_model").write(element_transform)
 
-            for direction in FACE_ORDER:
-                if not (face := element.faces.get(direction)):
+            # TODO: face order stuff...
+            for direction in ["down", "west", "north", "south", "east", "up"]:
+                # TODO: face.rotation
+                if direction not in element.faces:
                     continue
 
-                # TODO: face.rotation
+                face = element.faces[direction]
 
                 match direction:
-                    case "up" | "down":
+                    case "up":
                         light = LIGHT_UP
-                    case "north" | "south":
-                        light = LIGHT_LEFT
-                    case "east" | "west":
+                    case "south":
                         light = LIGHT_RIGHT
+                    case "east":
+                        light = LIGHT_LEFT
+                    case _:
+                        light = LIGHT_BACK
 
                 self.uniform("light").value = light
                 self.uniform("texture0").value = textures[face.texture.lstrip("#")]
 
                 vao = get_element_face_vao(element, direction)
-
                 vao.render(self.prog)
 
         self.ctx.finish()
@@ -185,7 +189,7 @@ class BlockRendererConfig(WindowConfig):
             mode="RGBA",
             size=self.wnd.fbo.size,
             data=self.wnd.fbo.read(components=4),
-        ).transpose(Image.FLIP_TOP_BOTTOM)
+        )
 
         image.save("out.png", format="png")
 
@@ -365,4 +369,33 @@ def get_default_uv(element: ModelElement, direction: FaceName):
         min(v_from, v_to),
         max(u_from, u_to),
         max(v_from, v_to),
+    )
+
+
+def pitch_yaw_camera(pitch: float, yaw: float):
+    """Both values are in degrees."""
+
+    eye = np.matmul(
+        (-64, 0, 0, 1),
+        (
+            Matrix44.identity(dtype="f4")
+            * Matrix44.from_y_rotation(math.radians(yaw))
+            * Matrix44.from_z_rotation(math.radians(pitch))
+        ),
+    )[:3]
+
+    up = np.matmul(
+        (-1, 0, 0, 1),
+        (
+            Matrix44.identity(dtype="f4")
+            * Matrix44.from_y_rotation(math.radians(yaw))
+            * Matrix44.from_z_rotation(math.radians(90 - pitch))
+        ),
+    )[:3]
+
+    return Matrix44.look_at(
+        eye=eye,
+        target=(0, 0, 0),
+        up=up,
+        dtype="f4",
     )

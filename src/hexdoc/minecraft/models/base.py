@@ -130,12 +130,12 @@ class ModelElement(HexdocModel):
     https://minecraft.wiki/w/Tutorials/Models
     """
 
-    from_: Vec3[Annotated[float, clamped(16, 32)]] = Field(alias="from")
+    from_: Vec3[Annotated[float, clamped(-16, 32)]] = Field(alias="from")
     """Start point of a cuboid according to the scheme [x, y, z].
 
     Values must be between -16 and 32.
     """
-    to: Vec3[Annotated[float, clamped(16, 32)]]
+    to: Vec3[Annotated[float, clamped(-16, 32)]]
     """Stop point of a cuboid according to the scheme [x, y, z].
 
     Values must be between -16 and 32.
