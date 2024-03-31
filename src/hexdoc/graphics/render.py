@@ -171,9 +171,9 @@ class BlockRendererConfig(WindowConfig):
                     case "up":
                         light = LIGHT_UP
                     case "south":
-                        light = LIGHT_RIGHT
-                    case "east":
                         light = LIGHT_LEFT
+                    case "east":
+                        light = LIGHT_RIGHT
                     case _:
                         light = LIGHT_BACK
 
