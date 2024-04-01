@@ -5,12 +5,5 @@ default_branch = "main"
 _export_root = "src/hexdoc/_export"
 resource_dirs = [  # top takes priority
     { path="{^_export_root}/resources", reexport=false },
-    { path="../hexdoc-minecraft/.hexdoc_minecraft/1.20.2/resources", reexport=false },
-    { path="submodules/HexMod/Common/src/generated/resources", reexport=false },
-    { path="submodules/HexMod/Common/src/main/resources", reexport=false },
-    { path="submodules/HexMod/Fabric/src/generated/resources", reexport=false },
-    { path="submodules/HexMod/Fabric/src/main/resources", reexport=false },
-    { path="submodules/HexMod/Forge/src/generated/resources", reexport=false },
-    { path="submodules/HexMod/Forge/src/main/resources", reexport=false },
 ]
 export_dir = "{_export_root}/generated"

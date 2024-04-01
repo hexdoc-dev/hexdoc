@@ -11,7 +11,7 @@ MODEL_ID = "minecraft:block/lectern"
 
 
 def main():
-    props_file = Path("hexdoc.toml")
+    props_file = Path("hexdoc_textures.toml")
     props, pm, *_ = load_common_data(props_file, branch="")
 
     with ModResourceLoader.load_all(props, pm, export=False) as loader:
