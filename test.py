@@ -6,6 +6,7 @@ from hexdoc.graphics.render import BlockRenderer
 from hexdoc.minecraft.models import load_model
 from hexdoc.minecraft.models.item import ItemModel
 
+# MODEL_ID = "minecraft:block/oak_stairs"
 MODEL_ID = "minecraft:block/lectern"
 
 

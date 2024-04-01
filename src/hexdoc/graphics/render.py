@@ -214,6 +214,9 @@ class BlockRendererConfig(WindowConfig):
 
             # render each face of the element
             for direction, face in element.faces.items():
+                rotation = Matrix44.from_y_rotation(math.radians(face.rotation), "f4")
+                self.uniform("m_texture").write(rotation)
+
                 self.uniform("light").value = get_face_light(direction)
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
 
@@ -410,15 +413,15 @@ def get_face_light(direction: FaceName):
         case "up":
             return LIGHT_UP
         case "down":
-            return LIGHT_UP / 2
+            return LIGHT_UP / 4
         case "south":
             return LIGHT_LEFT
         case "north":
-            return LIGHT_LEFT / 2
+            return LIGHT_LEFT / 4
         case "east":
             return LIGHT_RIGHT
         case "west":
-            return LIGHT_RIGHT / 2
+            return LIGHT_RIGHT / 4
 
 
 def get_default_uv(element: ModelElement, direction: FaceName):
