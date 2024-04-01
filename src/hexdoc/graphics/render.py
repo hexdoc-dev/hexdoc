@@ -5,10 +5,10 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import importlib_resources as resources
-import moderngl
+import moderngl as mgl
 import moderngl_window as mglw
 import numpy as np
 from moderngl import Context, Uniform
@@ -23,14 +23,18 @@ from hexdoc.graphics import glsl
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.assets.animated import AnimationMetaFrame
 from hexdoc.minecraft.models import BlockModel
-from hexdoc.minecraft.models.base import FaceName, ModelElement
+from hexdoc.minecraft.models.base import (
+    DisplayPosition,
+    ElementFace,
+    FaceName,
+    ModelElement,
+)
 from hexdoc.minecraft.models.load import load_model
 
 # https://minecraft.wiki/w/Help:Isometric_renders#Preferences
 LIGHT_UP = 0.98
 LIGHT_LEFT = 0.8
 LIGHT_RIGHT = 0.608
-LIGHT_BACK = 0.25
 
 
 @dataclass
@@ -96,29 +100,35 @@ class BlockRendererConfig(WindowConfig):
     def __init__(self, ctx: Context, wnd: HeadlessWindow):
         super().__init__(ctx, wnd)
 
-        files = resources.files(glsl)
-        self.prog = self.ctx.program(
-            vertex_shader=(files / "block_vertex.glsl").read_text("utf-8"),
-            fragment_shader=(files / "block_fragment.glsl").read_text("utf-8"),
+        # ensure faces are displayed in the correct order
+        self.ctx.enable(mgl.DEPTH_TEST)
+
+        self.face_prog = self.ctx.program(
+            vertex_shader=read_shader("block_face", "vertex"),
+            fragment_shader=read_shader("block_face", "fragment"),
         )
 
-        camera_size = 32  # TODO: value?
+        # self.debug_prog = self.ctx.program(
+        #     vertex_shader=read_shader("debug", "vertex"),
+        #     fragment_shader=read_shader("debug", "fragment"),
+        # )
+
+        view_size = 16  # TODO: value?
         self.projection = Matrix44.orthogonal_projection(
-            left=-camera_size / 2,
-            right=camera_size / 2,
-            top=camera_size / 2,
-            bottom=-camera_size / 2,
+            left=-view_size / 2,
+            right=view_size / 2,
+            top=view_size / 2,
+            bottom=-view_size / 2,
             near=0.01,
             far=20_000,
             dtype="f4",
         )
+
+        self.camera = orbit_camera(yaw=90, pitch=0)
+
         self.uniform("m_proj").write(self.projection)
-
-        self.camera = pitch_yaw_camera(30, -135)
         self.uniform("m_camera").write(self.camera)
-
-        # TODO: implement animations
-        self.uniform("layer").value = 0
+        self.uniform("layer").value = 0  # TODO: implement animations
 
     def render_block(
         self,
@@ -130,25 +140,41 @@ class BlockRendererConfig(WindowConfig):
 
         self.wnd.clear()
 
-        textures = dict[str, int]()
+        # load textures
+
+        texture_locs = dict[str, int]()
         for i, (name, info) in enumerate(texture_vars.items()):
-            textures[name] = i
+            texture_locs[name] = i
             texture = self.load_texture_array(
                 path=str(info.image_path),
                 layers=info.layers,
             )
-            texture.filter = (moderngl.NEAREST, moderngl.NEAREST)
+            texture.filter = (mgl.NEAREST, mgl.NEAREST)
             texture.use(i)
 
+        # transform entire model
+
         model_transform = Matrix44.identity(dtype="f4")
+
+        gui = model.display.get("gui") or DisplayPosition(
+            rotation=(30, 225, 0),
+            translation=(0, 0, 0),
+            scale=(0.625, 0.625, 0.625),
+        )
+
+        model_transform *= (
+            Matrix44.from_translation(gui.translation)
+            * Matrix44.from_x_rotation(gui.eulers[0])
+            * Matrix44.from_y_rotation(gui.eulers[1])
+            * Matrix44.from_z_rotation(gui.eulers[2])
+            * Matrix44.from_scale(gui.scale)
+        )
+
         model_transform *= Matrix44.from_translation((-8, -8, -8))
 
-        # TODO: order??? (see docstring)
-        # if gui := model.display.get("gui"):
-        #     model_transform *= Matrix44.from_eulers(gui.eulers)
-        #     model_transform *= Matrix44.from_translation(gui.translation)
-
         for element in model.elements:
+            # transform element
+
             element_transform = model_transform.copy()
             # if rotation := element.rotation:
             #     # TODO: rescale??
@@ -159,29 +185,11 @@ class BlockRendererConfig(WindowConfig):
 
             self.uniform("m_model").write(element_transform)
 
-            # TODO: face order stuff...
-            for direction in ["down", "west", "north", "south", "east", "up"]:
-                # TODO: face.rotation
-                if direction not in element.faces:
-                    continue
-
-                face = element.faces[direction]
-
-                match direction:
-                    case "up":
-                        light = LIGHT_UP
-                    case "south":
-                        light = LIGHT_LEFT
-                    case "east":
-                        light = LIGHT_RIGHT
-                    case _:
-                        light = LIGHT_BACK
-
-                self.uniform("light").value = light
-                self.uniform("texture0").value = textures[face.texture.lstrip("#")]
-
-                vao = get_element_face_vao(element, direction)
-                vao.render(self.prog)
+            # render each face of the element
+            for direction, face in element.faces.items():
+                self.uniform("light").value = get_face_light(direction)
+                self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
+                get_face_vao(element, direction, face).render(self.face_prog)
 
         self.ctx.finish()
 
@@ -194,7 +202,7 @@ class BlockRendererConfig(WindowConfig):
         image.save("out.png", format="png")
 
     def uniform(self, name: str):
-        uniform = self.prog[name]
+        uniform = self.face_prog[name]
         assert isinstance(uniform, Uniform)
         return uniform
 
@@ -223,11 +231,10 @@ class BlockTextureInfo:
         return max_index + 1
 
 
-def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
+def get_face_vao(element: ModelElement, direction: FaceName, face: ElementFace):
     x1, y1, z1 = element.from_
     x2, y2, z2 = element.to
 
-    face = element.faces[direction]
     if face.uv:
         u1, v1, u2, v2 = face.uv
     else:
@@ -237,12 +244,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
     match direction:
         case "south":
             verts = [
-                x1 + x2, y1,      z1 + z2,
-                x1 + x2, y1 + y2, z1 + z2,
-                x1,      y1,      z1 + z2,
-                x1 + x2, y1 + y2, z1 + z2,
-                x1,      y1 + y2, z1 + z2,
-                x1,      y1,      z1 + z2,
+                x2, y1, z2,
+                x2, y2, z2,
+                x1, y1, z2,
+                x2, y2, z2,
+                x1, y2, z2,
+                x1, y1, z2,
             ]
             uvs = [
                 u2, v1,
@@ -254,12 +261,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
             ]
         case "east":
             verts = [
-                x1 + x2, y1,      z1,
-                x1 + x2, y1 + y2, z1,
-                x1 + x2, y1,      z1 + z2,
-                x1 + x2, y1 + y2, z1,
-                x1 + x2, y1 + y2, z1 + z2,
-                x1 + x2, y1,      z1 + z2,
+                x2, y1, z1,
+                x2, y2, z1,
+                x2, y1, z2,
+                x2, y2, z1,
+                x2, y2, z2,
+                x2, y1, z2,
             ]
             uvs = [
                 u2, v1,
@@ -271,12 +278,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
             ]
         case "down":
             verts = [
-                x1 + x2, y1,      z1,
-                x1 + x2, y1,      z1 + z2,
-                x1,      y1,      z1 + z2,
-                x1 + x2, y1,      z1,
-                x1,      y1,      z1 + z2,
-                x1,      y1,      z1,
+                x2, y1, z1,
+                x2, y1, z2,
+                x1, y1, z2,
+                x2, y1, z1,
+                x1, y1, z2,
+                x1, y1, z1,
             ]
             uvs = [
                 u2, v2,
@@ -288,12 +295,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
             ]
         case "west":
             verts = [
-                x1,      y1,      z1 + z2,
-                x1,      y1 + y2, z1 + z2,
-                x1,      y1 + y2, z1,
-                x1,      y1,      z1 + z2,
-                x1,      y1 + y2, z1,
-                x1,      y1,      z1,
+                x1, y1, z2,
+                x1, y2, z2,
+                x1, y2, z1,
+                x1, y1, z2,
+                x1, y2, z1,
+                x1, y1, z1,
             ]
             uvs = [
                 u1, v2,
@@ -305,12 +312,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
             ]
         case "north":
             verts = [
-                x1 + x2, y1 + y2, z1,
-                x1 + x2, y1,      z1,
-                x1,      y1,      z1,
-                x1 + x2, y1 + y2, z1,
-                x1,      y1,      z1,
-                x1,      y1 + y2, z1,
+                x2, y2, z1,
+                x2, y1, z1,
+                x1, y1, z1,
+                x2, y2, z1,
+                x1, y1, z1,
+                x1, y2, z1,
             ]
             uvs = [
                 u2, v1,
@@ -322,12 +329,12 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
             ]
         case "up":
             verts = [
-                x1 + x2, y1 + y2, z1,
-                x1,      y1 + y2, z1,
-                x1 + x2, y1 + y2, z1 + z2,
-                x1,      y1 + y2, z1,
-                x1,      y1 + y2, z1 + z2,
-                x1 + x2, y1 + y2, z1 + z2,
+                x2, y2, z1,
+                x1, y2, z1,
+                x2, y2, z2,
+                x1, y2, z1,
+                x1, y2, z2,
+                x2, y2, z2,
             ]
             uvs = [
                 u2, v2,
@@ -340,11 +347,25 @@ def get_element_face_vao(element: ModelElement, direction: FaceName) -> VAO:
     # fmt: on
 
     vao = VAO()
-
     vao.buffer(np.array(verts, dtype=np.float32), "3f", ["in_position"])
     vao.buffer(np.array(uvs, dtype=np.float32) / 16, "2f", ["in_texcoord_0"])
-
     return vao
+
+
+def get_face_light(direction: FaceName):
+    match direction:
+        case "up":
+            return LIGHT_UP
+        case "down":
+            return LIGHT_UP / 2
+        case "south":
+            return LIGHT_LEFT
+        case "north":
+            return LIGHT_LEFT / 2
+        case "east":
+            return LIGHT_RIGHT
+        case "west":
+            return LIGHT_RIGHT / 2
 
 
 def get_default_uv(element: ModelElement, direction: FaceName):
@@ -372,7 +393,7 @@ def get_default_uv(element: ModelElement, direction: FaceName):
     )
 
 
-def pitch_yaw_camera(pitch: float, yaw: float):
+def orbit_camera(pitch: float, yaw: float):
     """Both values are in degrees."""
 
     eye = np.matmul(
@@ -399,3 +420,8 @@ def pitch_yaw_camera(pitch: float, yaw: float):
         up=up,
         dtype="f4",
     )
+
+
+def read_shader(path: str, type: Literal["fragment", "vertex"]):
+    file = resources.files(glsl) / path / f"{type}.glsl"
+    return file.read_text("utf-8")
