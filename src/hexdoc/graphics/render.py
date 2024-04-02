@@ -123,7 +123,7 @@ class BlockRendererConfig(WindowConfig):
             near=0.01,
             far=20_000,
             dtype="f4",
-        )
+        ) * Matrix44.from_scale((1, -1, 1), "f4")
 
         self.camera = direction_camera(pos="south")
 
@@ -221,9 +221,7 @@ class BlockRendererConfig(WindowConfig):
         )
 
         model_transform = (
-            1
-            * Matrix44.from_scale((1, -1, 1), "f4")
-            * Matrix44.from_scale(gui.scale, "f4")
+            Matrix44.from_scale(gui.scale, "f4")
             * get_rotation_matrix(gui.eulers)
             * Matrix44.from_translation(gui.translation, "f4")
             * Matrix44.from_translation((-8, -8, -8), "f4")
