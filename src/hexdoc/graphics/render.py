@@ -11,7 +11,7 @@ import importlib_resources as resources
 import moderngl as mgl
 import moderngl_window as mglw
 import numpy as np
-from moderngl import Context, Uniform
+from moderngl import Context, Program, Uniform
 from moderngl_window import WindowConfig
 from moderngl_window.context.headless import Window as HeadlessWindow
 from moderngl_window.opengl.vao import VAO
@@ -139,16 +139,16 @@ class BlockRendererConfig(WindowConfig):
             self.uniform(f"lights[{i}].direction").value = direction
             self.uniform(f"lights[{i}].diffuse").value = diffuse
 
-        # debugging, eg. axis planes
+        # axis planes
 
-        self.debug_prog = self.ctx.program(
-            vertex_shader=read_shader("debug", "vertex"),
-            fragment_shader=read_shader("debug", "fragment"),
+        self.debug_plane_prog = self.ctx.program(
+            vertex_shader=read_shader("debug/plane", "vertex"),
+            fragment_shader=read_shader("debug/plane", "fragment"),
         )
 
-        self.uniform("m_proj", "debug").write(self.projection)
-        self.uniform("m_camera", "debug").write(self.camera)
-        self.uniform("m_model", "debug").write(Matrix44.identity("f4"))
+        self.uniform("m_proj", self.debug_plane_prog).write(self.projection)
+        self.uniform("m_camera", self.debug_plane_prog).write(self.camera)
+        self.uniform("m_model", self.debug_plane_prog).write(Matrix44.identity("f4"))
 
         self.debug_axes = list[tuple[VAO, Vec4]]()
 
@@ -163,6 +163,20 @@ class BlockRendererConfig(WindowConfig):
             verts = get_face_verts(from_, to, direction)
             vao.buffer(np.array(verts, np.float32), "3f", ["in_position"])
             self.debug_axes.append((vao, color))
+
+        # vertex normal vectors
+
+        self.debug_normal_prog = self.ctx.program(
+            vertex_shader=read_shader("debug/normal", "vertex"),
+            geometry_shader=read_shader("debug/normal", "geometry"),
+            fragment_shader=read_shader("debug/normal", "fragment"),
+        )
+
+        self.uniform("m_proj", self.debug_normal_prog).write(self.projection)
+        self.uniform("m_camera", self.debug_normal_prog).write(self.camera)
+        self.uniform("lineSize", self.debug_normal_prog).value = 4
+
+        self.ctx.line_width = 3
 
     def render_block(
         self,
@@ -180,11 +194,11 @@ class BlockRendererConfig(WindowConfig):
         texture_locs = dict[str, int]()
         for i, (name, info) in enumerate(texture_vars.items()):
             texture_locs[name] = i
-            texture = self.load_texture_array(
-                path=str(info.image_path),
-                layers=info.layers,
-                flip_x=False,
-                flip_y=False,
+            image = Image.open(info.image_path).convert("RGBA")
+            texture = self.ctx.texture_array(
+                size=(image.width, image.width, info.layers),
+                components=4,
+                data=image.tobytes(),
             )
             texture.filter = (mgl.NEAREST, mgl.NEAREST)
             texture.use(i)
@@ -225,16 +239,21 @@ class BlockRendererConfig(WindowConfig):
 
             self.uniform("m_model").write(element_transform)
 
+            if debug:
+                self.uniform("m_model", self.debug_normal_prog).write(element_transform)
+
             # render each face of the element
             for direction, face in element.faces.items():
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
                 vao = get_face_vao(element, direction, face)
                 vao.render(self.face_prog)
+                if debug:
+                    vao.render(self.debug_normal_prog)
 
         if debug:
             for axis, color in self.debug_axes:
-                self.uniform("color", "debug").value = color
-                axis.render(self.debug_prog)
+                self.uniform("color", self.debug_plane_prog).value = color
+                axis.render(self.debug_plane_prog)
 
         self.ctx.finish()
 
@@ -248,14 +267,9 @@ class BlockRendererConfig(WindowConfig):
 
         image.save("out.png", format="png")
 
-    def uniform(self, name: str, prog_name: Literal["face", "debug"] = "face"):
-        match prog_name:
-            case "face":
-                prog = self.face_prog
-            case "debug":
-                prog = self.debug_prog
-
-        assert isinstance(uniform := prog[name], Uniform)
+    def uniform(self, name: str, program: Program | None = None):
+        program = program or self.face_prog
+        assert isinstance(uniform := program[name], Uniform)
         return uniform
 
 

@@ -25,7 +25,7 @@ def main():
         if isinstance(model, ItemModel):
             raise ValueError(f"Invalid block id: {MODEL_ID}")
 
-        with BlockRenderer(loader, debug=False) as renderer:
+        with BlockRenderer(loader, debug=True) as renderer:
             renderer.render_block_model(model)
 
 
