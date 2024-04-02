@@ -7,8 +7,9 @@ from hexdoc.minecraft.models import load_model
 from hexdoc.minecraft.models.item import ItemModel
 
 # MODEL_ID = "minecraft:block/oak_log"
-MODEL_ID = "minecraft:block/lectern"
+# MODEL_ID = "minecraft:block/lectern"
 # MODEL_ID = "minecraft:block/oak_stairs"
+MODEL_ID = "minecraft:item/oak_trapdoor"
 # MODEL_ID = "minecraft:block/dropper"
 
 

@@ -217,7 +217,6 @@ class BlockRendererConfig(WindowConfig):
             # TODO: rescale??
             if rotation := element.rotation:
                 origin = np.array(rotation.origin)
-
                 element_transform *= (
                     Matrix44.from_translation(origin)
                     * get_rotation_matrix(rotation.eulers)
@@ -229,7 +228,6 @@ class BlockRendererConfig(WindowConfig):
             # render each face of the element
             for direction, face in element.faces.items():
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
-
                 vao = get_face_vao(element, direction, face)
                 vao.render(self.face_prog)
 
