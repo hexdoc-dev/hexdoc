@@ -33,7 +33,6 @@ from hexdoc.minecraft.models.base_model import (
     FaceName,
     ModelElement,
 )
-from hexdoc.minecraft.models.load import load_model
 from hexdoc.utils.types import Vec3, Vec4
 
 logger = logging.getLogger(__name__)
@@ -81,10 +80,12 @@ class BlockRenderer:
         output_path: str | Path,
     ):
         if isinstance(model, ResourceLocation):
-            _, item_or_block_model = load_model(self.loader, model)
-            if not isinstance(item_or_block_model, BlockModel):
-                raise ValueError(f"Expected block model, got item: {model}")
-            model = item_or_block_model
+            _, model = self.loader.load_resource(
+                type="assets",
+                folder="models",
+                id=model,
+                decode=BlockModel.model_validate_json,
+            )
 
         model.load_parents_and_apply(self.loader)
 

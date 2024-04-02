@@ -30,6 +30,7 @@ class BlockModel(BaseMinecraftModel):
     def apply_parent(self, parent: Self):
         super().apply_parent(parent)
         self.ambientocclusion = parent.ambientocclusion
+        self.render_type = self.render_type or parent.render_type
 
     def load_parents_and_apply(self, loader: ModResourceLoader):
         while self.parent:

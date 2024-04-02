@@ -100,7 +100,7 @@ class HexdocAssetLoader:
                 )
             yield texture_id, path
 
-    def load_item_models(self) -> Iterable[tuple[ResourceLocation, ModelItem]]:
+    def load_item_models(self):
         for _, item_id, data in self.loader.load_resources(
             "assets",
             namespace="*",
@@ -110,16 +110,6 @@ class HexdocAssetLoader:
         ):
             model = ModelItem.load_data("item" / item_id, data)
             yield item_id, model
-
-    def load_blockstates(self) -> Iterable[ResourceLocation]:
-        for _, block_id, _ in self.loader.load_resources(
-            "assets",
-            namespace="*",
-            folder="blockstates",
-            internal_only=True,
-            allow_missing=True,
-        ):
-            yield block_id
 
     @cached_property
     def renderer(self):
@@ -181,18 +171,6 @@ class HexdocAssetLoader:
                 yield item_id, result
             else:
                 missing_items.add(item_id)
-
-        # blocks that didn't get covered by the items
-        for block_id in self.load_blockstates():
-            if block_id not in missing_items:
-                continue
-
-            try:
-                yield block_id, render_block(block_id, self.renderer, self.site_url)
-            except TextureNotFoundError:
-                pass
-            else:
-                missing_items.remove(block_id)
 
         for item_id in list(missing_items):
             if result := self.fallback_texture(item_id):
@@ -299,12 +277,14 @@ def render_block(
     renderer: BlockRenderer,
     site_url: URL,
 ) -> SingleItemTexture:
+    # FIXME: hack
+    id_out_path = id.path
     if id.path.startswith("item/"):
-        raise ValueError(f"render_block cannot be used to render items: {id}")
+        id_out_path = "block/" + id.path.removeprefix("item/")
     elif not id.path.startswith("block/"):
         id = "block" / id
 
-    out_path = f"assets/{id.namespace}/textures/{id.path}.png"
+    out_path = f"assets/{id.namespace}/textures/{id_out_path}.png"
 
     renderer.render_block_model(id, out_path)
     logger.debug(f"Rendered {id} to {out_path}")

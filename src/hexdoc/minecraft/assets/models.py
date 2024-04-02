@@ -140,15 +140,18 @@ class ModelItem(HexdocModel, extra="allow"):
             ):
                 return result
 
-        # try the parent id
-        # we only do this for blocks in the same namespace because most other parents
-        # are generic "base class"-type models which won't actually represent the item
-        if (
-            self.parent
-            and self.parent.namespace == self.id.namespace
-            and self.parent.path.startswith("block/")
-        ):
-            return "block_model", self.parent
+        if self.parent and self.parent.path.startswith("block/"):
+            # try the parent id
+            # we only do this for blocks in the same namespace because most other
+            # parents are generic "base class"-type models which won't actually
+            # represent the item
+            if self.parent.namespace == self.id.namespace:
+                return "block_model", self.parent
+
+            # FIXME: hack
+            # this entire selection process needs to be redone, but the idea here is to
+            # try rendering item models as blocks in certain cases (eg. edified button)
+            return "block_model", self.id
 
         return None
 
