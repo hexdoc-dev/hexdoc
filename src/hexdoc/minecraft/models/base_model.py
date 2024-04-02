@@ -9,6 +9,7 @@ from pydantic import AfterValidator, Field, model_validator
 
 from hexdoc.core import ResourceLocation
 from hexdoc.model import HexdocModel
+from hexdoc.model.base import IGNORE_EXTRA_CONFIG
 from hexdoc.utils.types import Vec3, Vec4, clamped
 
 
@@ -17,6 +18,8 @@ class BaseMinecraftModel(HexdocModel, ABC):
 
     https://minecraft.wiki/w/Tutorials/Models
     """
+
+    model_config = IGNORE_EXTRA_CONFIG
 
     parent: ResourceLocation | None = None
     """Loads a different model from the given path, in form of a resource location.
@@ -129,6 +132,8 @@ class ModelElement(HexdocModel):
 
     https://minecraft.wiki/w/Tutorials/Models
     """
+
+    model_config = IGNORE_EXTRA_CONFIG
 
     from_: Vec3[Annotated[float, clamped(-16, 32)]] = Field(alias="from")
     """Start point of a cuboid according to the scheme [x, y, z].
