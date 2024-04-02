@@ -2,7 +2,7 @@ from pathlib import Path
 
 from hexdoc.cli.utils.load import load_common_data
 from hexdoc.core import ModResourceLoader, ResourceLocation
-from hexdoc.graphics.render import BlockRenderer
+from hexdoc.graphics.render import BlockRenderer, DebugType
 from hexdoc.minecraft.models import load_model
 from hexdoc.minecraft.models.item import ItemModel
 
@@ -25,7 +25,7 @@ def main():
         if isinstance(model, ItemModel):
             raise ValueError(f"Invalid block id: {MODEL_ID}")
 
-        with BlockRenderer(loader, debug=True) as renderer:
+        with BlockRenderer(loader, debug=DebugType.NONE) as renderer:
             renderer.render_block_model(model)
 
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from enum import Flag, auto
 from pathlib import Path
 from typing import Any, Literal
 
@@ -39,10 +40,16 @@ LIGHT_LEFT = 0.8
 LIGHT_RIGHT = 0.608
 
 
+class DebugType(Flag):
+    NONE = 0
+    AXES = auto()
+    NORMALS = auto()
+
+
 @dataclass
 class BlockRenderer:
     loader: ModResourceLoader
-    debug: bool = False
+    debug: DebugType = DebugType.NONE
 
     def __post_init__(self):
         self.window = HeadlessWindow(
@@ -102,8 +109,10 @@ class BlockRendererConfig(WindowConfig):
     def __init__(self, ctx: Context, wnd: HeadlessWindow):
         super().__init__(ctx, wnd)
 
-        # ensure faces are displayed in the correct order
-        self.ctx.enable(mgl.DEPTH_TEST | mgl.BLEND)
+        # depth test: ensure faces are displayed in the correct order
+        # blend: handle translucency
+        # cull face: remove back faces, eg. for trapdoors
+        self.ctx.enable(mgl.DEPTH_TEST | mgl.BLEND | mgl.CULL_FACE)
 
         view_size = 16
         self.projection = Matrix44.orthogonal_projection(
@@ -182,7 +191,7 @@ class BlockRendererConfig(WindowConfig):
         self,
         model: BlockModel,
         texture_vars: dict[str, BlockTextureInfo],
-        debug: bool = False,
+        debug: DebugType = DebugType.NONE,
     ):
         if not model.elements:
             raise ValueError("Unable to render model, no elements found")
@@ -205,19 +214,19 @@ class BlockRendererConfig(WindowConfig):
 
         # transform entire model
 
-        model_transform = Matrix44.identity(dtype="f4")
-
         gui = model.display.get("gui") or DisplayPosition(
             rotation=(30, 225, 0),
             translation=(0, 0, 0),
             scale=(0.625, 0.625, 0.625),
         )
 
-        model_transform *= (
-            Matrix44.from_scale(gui.scale)
+        model_transform = (
+            1
+            * Matrix44.from_scale((1, -1, 1), "f4")
+            * Matrix44.from_scale(gui.scale, "f4")
             * get_rotation_matrix(gui.eulers)
-            * Matrix44.from_translation(gui.translation)
-            * Matrix44.from_translation((-8, -8, -8))
+            * Matrix44.from_translation(gui.translation, "f4")
+            * Matrix44.from_translation((-8, -8, -8), "f4")
         )
 
         normals_transform = Matrix44.from_y_rotation(-gui.eulers[1], "f4")
@@ -232,14 +241,14 @@ class BlockRendererConfig(WindowConfig):
             if rotation := element.rotation:
                 origin = np.array(rotation.origin)
                 element_transform *= (
-                    Matrix44.from_translation(origin)
+                    Matrix44.from_translation(origin, "f4")
                     * get_rotation_matrix(rotation.eulers)
-                    * Matrix44.from_translation(-origin)
+                    * Matrix44.from_translation(-origin, "f4")
                 )
 
             self.uniform("m_model").write(element_transform)
 
-            if debug:
+            if DebugType.NORMALS in debug:
                 self.uniform("m_model", self.debug_normal_prog).write(element_transform)
 
             # render each face of the element
@@ -247,13 +256,15 @@ class BlockRendererConfig(WindowConfig):
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
                 vao = get_face_vao(element, direction, face)
                 vao.render(self.face_prog)
-                if debug:
+                if DebugType.NORMALS in debug:
                     vao.render(self.debug_normal_prog)
 
-        if debug:
+        if DebugType.AXES in debug:
+            self.ctx.disable(mgl.CULL_FACE)
             for axis, color in self.debug_axes:
                 self.uniform("color", self.debug_plane_prog).value = color
                 axis.render(self.debug_plane_prog)
+            self.ctx.enable(mgl.CULL_FACE)
 
         self.ctx.finish()
 
@@ -263,7 +274,7 @@ class BlockRendererConfig(WindowConfig):
             mode="RGBA",
             size=self.wnd.fbo.size,
             data=self.wnd.fbo.read(components=4),
-        )
+        ).transpose(Image.FLIP_TOP_BOTTOM)
 
         image.save("out.png", format="png")
 
@@ -465,7 +476,7 @@ def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):
 
 def get_rotation_matrix(eulers: Vec3):
     return (
-        Matrix44.from_x_rotation(-eulers[0])
-        * Matrix44.from_y_rotation(-eulers[1])
-        * Matrix44.from_z_rotation(-eulers[2])
+        Matrix44.from_x_rotation(-eulers[0], "f4")
+        * Matrix44.from_y_rotation(-eulers[1], "f4")
+        * Matrix44.from_z_rotation(-eulers[2], "f4")
     )
