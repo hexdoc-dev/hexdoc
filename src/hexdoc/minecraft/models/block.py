@@ -20,6 +20,11 @@ class BlockModel(BaseMinecraftModel):
 
     Note: only works on parent file.
     """
+    render_type: ResourceLocation | None = None
+    """Sets the rendering type for this model.
+
+    https://docs.minecraftforge.net/en/latest/rendering/modelextensions/rendertypes/
+    """
 
     @override
     def apply_parent(self, parent: Self):

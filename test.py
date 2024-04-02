@@ -5,15 +5,19 @@ from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.graphics.render import BlockRenderer, DebugType
 from hexdoc.minecraft.models import load_model
 from hexdoc.minecraft.models.item import ItemModel
+from hexdoc.utils.logging import setup_logging
 
 # MODEL_ID = "minecraft:block/oak_log"
 # MODEL_ID = "minecraft:block/lectern"
 # MODEL_ID = "minecraft:block/oak_stairs"
-MODEL_ID = "minecraft:item/oak_trapdoor"
+# MODEL_ID = "minecraft:item/oak_trapdoor"
 # MODEL_ID = "minecraft:block/dropper"
+MODEL_ID = "hexcasting:block/akashic_record"
 
 
 def main():
+    setup_logging(1, False)
+
     props_file = Path("hexdoc_textures.toml")
     props, pm, *_ = load_common_data(props_file, branch="")
 

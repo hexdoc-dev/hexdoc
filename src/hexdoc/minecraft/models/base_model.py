@@ -240,6 +240,11 @@ class ElementFace(HexdocModel):
             return None
         return ElementFaceUV(uvs=self.raw_uv, rotation=self.rotation)
 
+    @property
+    def texture_name(self):
+        """Returns `self.texture` without the leading `#`."""
+        return self.texture.lstrip("#")
+
 
 class ElementFaceUV(HexdocModel):
     uvs: Vec4[Annotated[float, Field(ge=0, le=16)]]

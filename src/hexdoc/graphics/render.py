@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import logging
 import math
 from dataclasses import dataclass
 from enum import Flag, auto
+from functools import cached_property
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import importlib_resources as resources
 import moderngl as mgl
@@ -33,6 +35,9 @@ from hexdoc.minecraft.models.base_model import (
 )
 from hexdoc.minecraft.models.load import load_model
 from hexdoc.utils.types import Vec3, Vec4
+
+logger = logging.getLogger(__name__)
+
 
 # https://minecraft.wiki/w/Help:Isometric_renders#Preferences
 LIGHT_TOP = 0.98
@@ -136,7 +141,7 @@ class BlockRendererConfig(WindowConfig):
             dtype="f4",
         ) * Matrix44.from_scale((1, -1, 1), "f4")
 
-        self.camera = direction_camera(pos="south")
+        self.camera, self.eye = direction_camera(pos="south")
 
         self.lights = [
             ((0, -1, 0), LIGHT_TOP),
@@ -220,9 +225,18 @@ class BlockRendererConfig(WindowConfig):
 
         # load textures
         texture_locs = dict[str, int]()
+        transparent_textures = set[str]()
+
         for i, (name, info) in enumerate(texture_vars.items()):
             texture_locs[name] = i
+
             image = Image.open(info.image_path).convert("RGBA")
+
+            min_alpha, _ = cast(tuple[int, int], image.getextrema()[3])
+            if min_alpha < 255:
+                logger.debug(f"Transparent texture: {name} ({min_alpha=})")
+                transparent_textures.add(name)
+
             texture = self.ctx.texture_array(
                 size=(image.width, image.width, info.layers),
                 components=4,
@@ -251,6 +265,8 @@ class BlockRendererConfig(WindowConfig):
 
         # render elements
 
+        baked_faces = list[BakedFace]()
+
         for element in model.elements:
             element_transform = model_transform.copy()
 
@@ -263,18 +279,30 @@ class BlockRendererConfig(WindowConfig):
                     * Matrix44.from_translation(-origin, "f4")
                 )
 
-            self.uniform("m_model").write(element_transform)
+            # prepare each face of the element for rendering
+            for direction, face in element.faces.items():
+                baked_face = BakedFace(
+                    element=element,
+                    direction=direction,
+                    face=face,
+                    m_model=element_transform,
+                    texture0=texture_locs[face.texture_name],
+                    is_opaque=face.texture_name not in transparent_textures,
+                )
+                baked_faces.append(baked_face)
+
+        # TODO: use a map if this is actually slow
+        baked_faces.sort(key=lambda face: face.sortkey(self.eye))
+
+        for face in baked_faces:
+            self.uniform("m_model").write(face.m_model)
+            self.uniform("texture0").value = face.texture0
+
+            face.vao.render(self.face_prog)
 
             if DebugType.NORMALS in debug:
-                self.uniform("m_model", self.debug_normal_prog).write(element_transform)
-
-            # render each face of the element
-            for direction, face in element.faces.items():
-                self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
-                vao = get_face_vao(element, direction, face)
-                vao.render(self.face_prog)
-                if DebugType.NORMALS in debug:
-                    vao.render(self.debug_normal_prog)
+                self.uniform("m_model", self.debug_normal_prog).write(face.m_model)
+                face.vao.render(self.debug_normal_prog)
 
         if DebugType.AXES in debug:
             self.ctx.disable(mgl.CULL_FACE)
@@ -324,6 +352,48 @@ class BlockTextureInfo:
             max_index = max(max_index, index)
 
         return max_index + 1
+
+
+@dataclass(kw_only=True)
+class BakedFace:
+    element: ModelElement
+    direction: FaceName
+    face: ElementFace
+    m_model: Matrix44
+    texture0: float
+    is_opaque: bool
+
+    def __post_init__(self):
+        self.verts = get_face_verts(self.element.from_, self.element.to, self.direction)
+
+        self.normals = get_face_normals(self.direction)
+
+        face_uv = self.face.uv or ElementFaceUV.default(self.element, self.direction)
+        self.uvs = [
+            value
+            for index in get_face_uv_indices(self.direction)
+            for value in face_uv.get_uv(index)
+        ]
+
+        self.vao = VAO()
+        self.vao.buffer(np.array(self.verts, np.float32), "3f", ["in_position"])
+        self.vao.buffer(np.array(self.normals, np.float32), "3f", ["in_normal"])
+        self.vao.buffer(np.array(self.uvs, np.float32) / 16, "2f", ["in_texcoord_0"])
+
+    @cached_property
+    def position(self):
+        x, y, z, n = 0, 0, 0, 0
+        for i in range(0, len(self.verts), 3):
+            x += self.verts[i]
+            y += self.verts[i + 1]
+            z += self.verts[i + 2]
+            n += 1
+        return (x / n, y / n, z / n)
+
+    def sortkey(self, eye: Vec3):
+        if self.is_opaque:
+            return 0
+        return sum((a - b) ** 2 for a, b in zip(eye, self.position))
 
 
 def get_face_verts(from_: Vec3, to: Vec3, direction: FaceName):
@@ -409,25 +479,6 @@ def get_face_uv_indices(direction: FaceName):
             return (3, 0, 2, 0, 1, 2)
 
 
-def get_face_vao(element: ModelElement, direction: FaceName, face: ElementFace):
-    verts = get_face_verts(element.from_, element.to, direction)
-
-    normals = get_face_normals(direction)
-
-    face_uv = face.uv or ElementFaceUV.default(element, direction)
-    uvs = [
-        value
-        for index in get_face_uv_indices(direction)
-        for value in face_uv.get_uv(index)
-    ]
-
-    vao = VAO()
-    vao.buffer(np.array(verts, np.float32), "3f", ["in_position"])
-    vao.buffer(np.array(normals, np.float32), "3f", ["in_normal"])
-    vao.buffer(np.array(uvs, np.float32) / 16, "2f", ["in_texcoord_0"])
-    return vao
-
-
 def orbit_camera(pitch: float, yaw: float):
     """Both values are in degrees."""
 
@@ -454,7 +505,7 @@ def orbit_camera(pitch: float, yaw: float):
         target=(0, 0, 0),
         up=up,
         dtype="f4",
-    )
+    ), eye
 
 
 def transform_vec(vec: Vec3, matrix: Matrix44) -> Vec3:
@@ -463,12 +514,13 @@ def transform_vec(vec: Vec3, matrix: Matrix44) -> Vec3:
 
 def direction_camera(pos: FaceName, up: FaceName = "up"):
     """eg. north -> camera is placed to the north of the model, looking south"""
+    eye = get_direction_vec(pos, 64)
     return Matrix44.look_at(
-        eye=get_direction_vec(pos, 64),
+        eye=eye,
         target=(0, 0, 0),
         up=get_direction_vec(up),
         dtype="f4",
-    )
+    ), eye
 
 
 def get_direction_vec(direction: FaceName, magnitude: float = 1):
