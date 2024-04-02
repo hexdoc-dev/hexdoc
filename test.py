@@ -7,8 +7,8 @@ from hexdoc.minecraft.models import load_model
 from hexdoc.minecraft.models.item import ItemModel
 
 # MODEL_ID = "minecraft:block/oak_log"
-# MODEL_ID = "minecraft:block/tnt"
 MODEL_ID = "minecraft:block/lectern"
+# MODEL_ID = "minecraft:block/oak_stairs"
 # MODEL_ID = "minecraft:block/dropper"
 
 
@@ -24,7 +24,7 @@ def main():
         if isinstance(model, ItemModel):
             raise ValueError(f"Invalid block id: {MODEL_ID}")
 
-        with BlockRenderer(loader, debug=True) as renderer:
+        with BlockRenderer(loader, debug=False) as renderer:
             renderer.render_block_model(model)
 
 

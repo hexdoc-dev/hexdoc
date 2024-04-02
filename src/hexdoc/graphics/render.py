@@ -116,8 +116,7 @@ class BlockRendererConfig(WindowConfig):
             dtype="f4",
         )
 
-        # self.camera = direction_camera(pos="east")
-        self.camera = orbit_camera(yaw=45, pitch=30)
+        self.camera = direction_camera(pos="south")
 
         # block faces
 
@@ -191,9 +190,10 @@ class BlockRendererConfig(WindowConfig):
         )
 
         model_transform *= (
-            Matrix44.from_translation(gui.translation)
-            # * get_rotation_matrix(gui.eulers)
-            * Matrix44.from_scale(gui.scale)
+            Matrix44.from_scale(gui.scale)
+            * get_rotation_matrix(gui.eulers)
+            * Matrix44.from_translation(gui.translation)
+            * Matrix44.from_translation((-8, -8, -8))
         )
 
         # render elements
@@ -203,15 +203,13 @@ class BlockRendererConfig(WindowConfig):
 
             # TODO: rescale??
             if rotation := element.rotation:
-                center = np.add(element.to, element.from_) / 2
                 origin = np.array(rotation.origin)
-                element_transform *= (
-                    Matrix44.from_translation(center - origin)
-                    * get_rotation_matrix(rotation.eulers)
-                    * Matrix44.from_translation(origin - center)
-                )
 
-            element_transform *= Matrix44.from_translation((-8, -8, -8))
+                element_transform *= (
+                    Matrix44.from_translation(origin)
+                    * get_rotation_matrix(rotation.eulers)
+                    * Matrix44.from_translation(-origin)
+                )
 
             self.uniform("m_model").write(element_transform)
 
@@ -448,7 +446,7 @@ def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):
 
 def get_rotation_matrix(eulers: Vec3):
     return (
-        Matrix44.from_x_rotation(eulers[0])
-        * Matrix44.from_y_rotation(eulers[1])
-        * Matrix44.from_z_rotation(eulers[2])
+        Matrix44.from_x_rotation(-eulers[0])
+        * Matrix44.from_y_rotation(-eulers[1])
+        * Matrix44.from_z_rotation(-eulers[2])
     )
