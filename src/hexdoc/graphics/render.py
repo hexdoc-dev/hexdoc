@@ -39,6 +39,8 @@ LIGHT_TOP = 0.98
 LIGHT_LEFT = 0.8
 LIGHT_RIGHT = 0.608
 
+LIGHT_FLAT = 0.98
+
 
 class DebugType(Flag):
     NONE = 0
@@ -198,8 +200,15 @@ class BlockRendererConfig(WindowConfig):
 
         self.wnd.clear()
 
-        # load textures
+        # enable/disable flat item lighting
+        match model.gui_light:
+            case "front":
+                flatLighting = LIGHT_FLAT
+            case "side":
+                flatLighting = 0
+        self.uniform("flatLighting").value = flatLighting
 
+        # load textures
         texture_locs = dict[str, int]()
         for i, (name, info) in enumerate(texture_vars.items()):
             texture_locs[name] = i

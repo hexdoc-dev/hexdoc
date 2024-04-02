@@ -164,7 +164,10 @@ class ElementRotation(HexdocModel):
     Can be 45 through -45 degrees in 22.5 degree increments.
     """
     rescale: bool = False
-    """Specifies whether or not to scale the faces across the whole block."""
+    """Specifies whether or not to scale the faces across the whole block.
+
+    (TODO: implement)
+    """
 
     @property
     def eulers(self) -> Vec3:
@@ -207,7 +210,9 @@ class ElementFace(HexdocModel):
     touching it in the specified position.
 
     It also determines the side of the block to use the light level from for lighting
-    the face, and if unset, defaults to the side. (TODO: not sure what this means)
+    the face, and if unset, defaults to the side.
+
+    (TODO: implement; not sure what this means)
     """
     rotation: Literal[0, 90, 180, 270] = 0
     """Rotates the texture clockwise by the specified number of degrees.
@@ -225,6 +230,8 @@ class ElementFace(HexdocModel):
     no vanilla block currently uses multiple tint values, and thus the tint index value
     is ignored (as long as it is set to something other than -1); it could be used for
     modded blocks that need multiple distinct tint values in the same block though.
+
+    (TODO: implement)
     """
 
     @property
