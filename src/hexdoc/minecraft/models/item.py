@@ -7,7 +7,7 @@ from typing_extensions import override
 from hexdoc.core import ResourceLocation
 from hexdoc.model import HexdocModel
 
-from .base import BaseMinecraftModel
+from .base_model import BaseMinecraftModel
 
 
 class ItemModel(BaseMinecraftModel):

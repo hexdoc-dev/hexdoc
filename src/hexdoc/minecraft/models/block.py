@@ -6,7 +6,7 @@ from typing_extensions import override
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 
-from .base import BaseMinecraftModel
+from .base_model import BaseMinecraftModel
 
 
 class BlockModel(BaseMinecraftModel):

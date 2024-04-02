@@ -23,7 +23,7 @@ from hexdoc.graphics import glsl
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.assets.animated import AnimationMetaFrame
 from hexdoc.minecraft.models import BlockModel
-from hexdoc.minecraft.models.base import (
+from hexdoc.minecraft.models.base_model import (
     DisplayPosition,
     ElementFace,
     ElementFaceUV,
