@@ -48,9 +48,10 @@ class DebugType(Flag):
     NORMALS = auto()
 
 
-@dataclass
+@dataclass(kw_only=True)
 class BlockRenderer:
     loader: ModResourceLoader
+    output_dir: Path | None = None
     debug: DebugType = DebugType.NONE
 
     def __post_init__(self):
@@ -69,7 +70,11 @@ class BlockRenderer:
     def ctx(self):
         return self.window.ctx
 
-    def render_block_model(self, model: BlockModel | ResourceLocation):
+    def render_block_model(
+        self,
+        model: BlockModel | ResourceLocation,
+        output_path: str | Path,
+    ):
         if isinstance(model, ResourceLocation):
             _, item_or_block_model = load_model(self.loader, model)
             if not isinstance(item_or_block_model, BlockModel):
@@ -83,7 +88,11 @@ class BlockRenderer:
             for name, texture_id in model.resolve_texture_variables().items()
         }
 
-        self.config.render_block(model, textures, self.debug)
+        output_path = Path(output_path)
+        if self.output_dir and not output_path.is_absolute():
+            output_path = self.output_dir / output_path
+
+        self.config.render_block(model, textures, output_path, self.debug)
 
     def load_texture(self, texture_id: ResourceLocation):
         _, path = self.loader.find_resource("assets", "textures", texture_id + ".png")
@@ -193,6 +202,7 @@ class BlockRendererConfig(WindowConfig):
         self,
         model: BlockModel,
         texture_vars: dict[str, BlockTextureInfo],
+        output_path: Path,
         debug: DebugType = DebugType.NONE,
     ):
         if not model.elements:
@@ -283,7 +293,8 @@ class BlockRendererConfig(WindowConfig):
             data=self.wnd.fbo.read(components=4),
         ).transpose(Image.FLIP_TOP_BOTTOM)
 
-        image.save("out.png", format="png")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        image.save(output_path, format="png")
 
     def uniform(self, name: str, program: Program | None = None):
         program = program or self.face_prog

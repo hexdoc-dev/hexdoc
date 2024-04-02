@@ -35,7 +35,7 @@ from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
 
-from . import ci, render_block
+from . import ci
 from .utils.args import (
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
@@ -60,7 +60,6 @@ app = Typer(
     },
     add_completion=False,
 )
-app.add_typer(render_block.app)
 app.add_typer(ci.app)
 
 

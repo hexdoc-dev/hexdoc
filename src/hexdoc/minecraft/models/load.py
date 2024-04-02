@@ -21,5 +21,5 @@ def load_model(loader: ModResourceLoader, model_id: ResourceLocation):
             decode=model_type.model_validate_json,
         )
     except Exception as e:
-        e.add_note(f"model_id: {model_id}")
+        e.add_note(f"  note: {model_id=}")
         raise

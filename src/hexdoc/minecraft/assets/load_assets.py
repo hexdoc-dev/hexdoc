@@ -1,4 +1,3 @@
-import base64
 import logging
 from collections.abc import Set
 from dataclasses import dataclass
@@ -6,9 +5,6 @@ from functools import cached_property
 from pathlib import Path
 from typing import Any, Iterable, Iterator, TypeVar, cast
 
-from minecraft_render import ResourcePath, js
-from minecraft_render.types.dataset.RenderClass import IRenderClass
-from minecraft_render.types.dataset.types import IResourceLoader
 from pydantic import TypeAdapter
 from yarl import URL
 
@@ -17,7 +13,7 @@ from hexdoc.core.properties import (
     PNGTextureOverride,
     TextureTextureOverride,
 )
-from hexdoc.model import HexdocModel
+from hexdoc.graphics.render import BlockRenderer
 from hexdoc.utils import PydanticURL
 from hexdoc.utils.context import ContextSource
 
@@ -57,32 +53,6 @@ class TextureNotFoundError(FileNotFoundError):
     def __init__(self, id_type: str, id: ResourceLocation):
         self.message = f"No texture found for {id_type} id: {id}"
         super().__init__(self.message)
-
-
-class HexdocPythonResourceLoader(HexdocModel):
-    loader: ModResourceLoader
-
-    def loadJSON(self, resource_path: ResourcePath) -> str:
-        path = self._convert_resource_path(resource_path)
-        _, json_str = self.loader.load_resource(path, decode=lambda v: v)
-        return json_str
-
-    def loadTexture(self, resource_path: ResourcePath) -> str:
-        path = self._convert_resource_path(resource_path)
-        _, resolved_path = self.loader.find_resource(path)
-
-        with open(resolved_path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-
-    def close(self):
-        pass
-
-    def wrapped(self):
-        return js.PythonLoaderWrapper(self)
-
-    def _convert_resource_path(self, resource_path: ResourcePath):
-        string_path = js.resourcePathAsString(resource_path)
-        return Path("assets") / string_path
 
 
 @dataclass(kw_only=True)
@@ -153,17 +123,10 @@ class HexdocAssetLoader:
 
     @cached_property
     def renderer(self):
-        self.render_dir.mkdir(parents=True, exist_ok=True)
-        return js.RenderClass(
-            self.renderer_loader(),
-            {
-                "outDir": self.render_dir.as_posix(),
-                "imageSize": 300,
-            },
+        return BlockRenderer(
+            loader=self.loader,
+            output_dir=self.render_dir,
         )
-
-    def renderer_loader(self) -> IResourceLoader:
-        return HexdocPythonResourceLoader(loader=self.loader).wrapped()
 
     def fallback_texture(self, item_id: ResourceLocation) -> ItemTexture | None:
         return None
@@ -279,7 +242,7 @@ def load_texture(
 def load_and_render_item(
     model: ModelItem,
     loader: ModResourceLoader,
-    renderer: IRenderClass,
+    renderer: BlockRenderer,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
@@ -317,7 +280,7 @@ def load_and_render_item(
 # TODO: move to methods on a class returned by find_texture?
 def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
-    renderer: IRenderClass,
+    renderer: BlockRenderer,
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
 ) -> SingleItemTexture:
@@ -333,27 +296,18 @@ def lookup_or_render_single_item(
 
 def render_block(
     id: ResourceLocation,
-    renderer: IRenderClass,
+    renderer: BlockRenderer,
     site_url: URL,
 ) -> SingleItemTexture:
-    render_id = js.ResourceLocation(id.namespace, id.path)
-    file_id = id + ".png"
+    if id.path.startswith("item/"):
+        raise ValueError(f"render_block cannot be used to render items: {id}")
+    elif not id.path.startswith("block/"):
+        id = "block" / id
 
-    if file_id.path.startswith("block/"):
-        # model
-        result = renderer.renderToFile(render_id)
-    else:
-        # blockstate
-        file_id = "block" / file_id
-        result = renderer.renderToFile(render_id, file_id.path)
+    out_path = f"assets/{id.namespace}/textures/{id.path}.png"
 
-    if not result:
-        raise TextureNotFoundError("block", id)
-
-    out_root, out_path = result
-
-    # blocks look better if antialiased
-    logger.debug(f"Rendered {id} to {out_path} (in {out_root})")
+    renderer.render_block_model(id, out_path)
+    logger.debug(f"Rendered {id} to {out_path}")
 
     # TODO: ideally we shouldn't be using site_url here, in case the site is moved
     # but I'm not sure what else we could do...

@@ -25,8 +25,8 @@ def main():
         if isinstance(model, ItemModel):
             raise ValueError(f"Invalid block id: {MODEL_ID}")
 
-        with BlockRenderer(loader, debug=DebugType.NONE) as renderer:
-            renderer.render_block_model(model)
+        with BlockRenderer(loader=loader, debug=DebugType.NONE) as renderer:
+            renderer.render_block_model(model, "out.png")
 
 
 if __name__ == "__main__":
