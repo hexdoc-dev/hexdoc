@@ -36,7 +36,6 @@ nox.options.sessions = [
 
 @nox.session
 def pyright(session: nox.Session):
-    session.install("--upgrade", "pyright")
     session.install("-e", ".[test]")
 
     if os.getenv("RUNNER_DEBUG") == "1" or "--verbose" in session.posargs:
