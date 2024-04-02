@@ -34,7 +34,7 @@ from hexdoc.minecraft.models.load import load_model
 from hexdoc.utils.types import Vec3, Vec4
 
 # https://minecraft.wiki/w/Help:Isometric_renders#Preferences
-LIGHT_UP = 0.98
+LIGHT_TOP = 0.98
 LIGHT_LEFT = 0.8
 LIGHT_RIGHT = 0.608
 
@@ -118,6 +118,12 @@ class BlockRendererConfig(WindowConfig):
 
         self.camera = direction_camera(pos="south")
 
+        self.lights = [
+            ((0, -1, 0), LIGHT_TOP),
+            ((1, 0, -1), LIGHT_LEFT),
+            ((-1, 0, -1), LIGHT_RIGHT),
+        ]
+
         # block faces
 
         self.face_prog = self.ctx.program(
@@ -129,6 +135,10 @@ class BlockRendererConfig(WindowConfig):
         self.uniform("m_camera").write(self.camera)
         self.uniform("layer").value = 0  # TODO: implement animations
 
+        for i, (direction, diffuse) in enumerate(self.lights):
+            self.uniform(f"lights[{i}].direction").value = direction
+            self.uniform(f"lights[{i}].diffuse").value = diffuse
+
         # debugging, eg. axis planes
 
         self.debug_prog = self.ctx.program(
@@ -138,7 +148,7 @@ class BlockRendererConfig(WindowConfig):
 
         self.uniform("m_proj", "debug").write(self.projection)
         self.uniform("m_camera", "debug").write(self.camera)
-        self.uniform("m_model", "debug").write(Matrix44.identity(dtype="f4"))
+        self.uniform("m_model", "debug").write(Matrix44.identity("f4"))
 
         self.debug_axes = list[tuple[VAO, Vec4]]()
 
@@ -151,7 +161,7 @@ class BlockRendererConfig(WindowConfig):
         ]:
             vao = VAO()
             verts = get_face_verts(from_, to, direction)
-            vao.buffer(np.array(verts, dtype=np.float32), "3f", ["in_position"])
+            vao.buffer(np.array(verts, np.float32), "3f", ["in_position"])
             self.debug_axes.append((vao, color))
 
     def render_block(
@@ -196,6 +206,9 @@ class BlockRendererConfig(WindowConfig):
             * Matrix44.from_translation((-8, -8, -8))
         )
 
+        normals_transform = Matrix44.from_y_rotation(-gui.eulers[1], "f4")
+        self.uniform("m_normals").write(normals_transform)
+
         # render elements
 
         for element in model.elements:
@@ -215,7 +228,6 @@ class BlockRendererConfig(WindowConfig):
 
             # render each face of the element
             for direction, face in element.faces.items():
-                self.uniform("light").value = get_face_light(direction)
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
 
                 vao = get_face_vao(element, direction, face)
@@ -336,6 +348,10 @@ def get_face_verts(from_: Vec3, to: Vec3, direction: FaceName):
     # fmt: on
 
 
+def get_face_normals(direction: FaceName):
+    return 6 * get_direction_vec(direction)
+
+
 def get_face_uv_indices(direction: FaceName):
     match direction:
         case "south":
@@ -355,6 +371,8 @@ def get_face_uv_indices(direction: FaceName):
 def get_face_vao(element: ModelElement, direction: FaceName, face: ElementFace):
     verts = get_face_verts(element.from_, element.to, direction)
 
+    normals = get_face_normals(direction)
+
     face_uv = face.uv or ElementFaceUV.default(element, direction)
     uvs = [
         value
@@ -363,47 +381,32 @@ def get_face_vao(element: ModelElement, direction: FaceName, face: ElementFace):
     ]
 
     vao = VAO()
-    vao.buffer(np.array(verts, dtype=np.float32), "3f", ["in_position"])
-    vao.buffer(np.array(uvs, dtype=np.float32) / 16, "2f", ["in_texcoord_0"])
+    vao.buffer(np.array(verts, np.float32), "3f", ["in_position"])
+    vao.buffer(np.array(normals, np.float32), "3f", ["in_normal"])
+    vao.buffer(np.array(uvs, np.float32) / 16, "2f", ["in_texcoord_0"])
     return vao
-
-
-def get_face_light(direction: FaceName):
-    match direction:
-        case "up":
-            return LIGHT_UP
-        case "down":
-            return LIGHT_UP / 2
-        case "south":
-            return LIGHT_LEFT
-        case "north":
-            return LIGHT_LEFT / 2
-        case "east":
-            return LIGHT_RIGHT
-        case "west":
-            return LIGHT_RIGHT / 2
 
 
 def orbit_camera(pitch: float, yaw: float):
     """Both values are in degrees."""
 
-    eye = np.matmul(
-        (-64, 0, 0, 1),
+    eye = transform_vec(
+        (-64, 0, 0),
         (
             Matrix44.identity(dtype="f4")
             * Matrix44.from_y_rotation(math.radians(yaw))
             * Matrix44.from_z_rotation(math.radians(pitch))
         ),
-    )[:3]
+    )
 
-    up = np.matmul(
-        (-1, 0, 0, 1),
+    up = transform_vec(
+        (-1, 0, 0),
         (
             Matrix44.identity(dtype="f4")
             * Matrix44.from_y_rotation(math.radians(yaw))
             * Matrix44.from_z_rotation(math.radians(90 - pitch))
         ),
-    )[:3]
+    )
 
     return Matrix44.look_at(
         eye=eye,
@@ -411,6 +414,10 @@ def orbit_camera(pitch: float, yaw: float):
         up=up,
         dtype="f4",
     )
+
+
+def transform_vec(vec: Vec3, matrix: Matrix44) -> Vec3:
+    return np.matmul((*vec, 1), matrix, dtype="f4")[:3]
 
 
 def direction_camera(pos: FaceName, up: FaceName = "up"):
