@@ -23,7 +23,12 @@ void main() {
     for (int i = 0; i < NUM_LIGHTS; i++) {
         Light light = lights[i];
         vec3 lightDir = normalize(-light.direction);
-        diffuse += light.diffuse * max(dot(normal, lightDir), 0.0);
+
+        // for debugging, light back faces with half the intensity
+        float dotProduct = dot(normal, lightDir);
+        if (dotProduct < 0) dotProduct = -dotProduct / 2;
+
+        diffuse += light.diffuse * dotProduct;
     }
 
     fragColor = vec4(min(diffuse, 1.0) * texColor.rgb, texColor.a);
