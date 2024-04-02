@@ -135,6 +135,7 @@ markers = [
 ]
 filterwarnings = [
     'ignore:setDaemon\(\) is deprecated, set the daemon attribute instead:DeprecationWarning:javascript.events',
+    'ignore:invalid escape sequence:DeprecationWarning:pyrr.vector',
 ]
 
 [tool.coverage.report]
