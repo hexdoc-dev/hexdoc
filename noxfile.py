@@ -229,6 +229,8 @@ def watch_graphics(session: nox.Session):
         "--watch",
         "./src/hexdoc/graphics",
         "--watch",
+        "./src/hexdoc/minecraft/models",
+        "--watch",
         "test.py",
         "-e",
         "py,glsl",

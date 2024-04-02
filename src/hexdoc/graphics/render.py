@@ -26,6 +26,7 @@ from hexdoc.minecraft.models import BlockModel
 from hexdoc.minecraft.models.base import (
     DisplayPosition,
     ElementFace,
+    ElementFaceUV,
     FaceName,
     ModelElement,
 )
@@ -104,7 +105,7 @@ class BlockRendererConfig(WindowConfig):
         # ensure faces are displayed in the correct order
         self.ctx.enable(mgl.DEPTH_TEST | mgl.BLEND)
 
-        view_size = 16  # TODO: value?
+        view_size = 16
         self.projection = Matrix44.orthogonal_projection(
             left=-view_size / 2,
             right=view_size / 2,
@@ -115,8 +116,8 @@ class BlockRendererConfig(WindowConfig):
             dtype="f4",
         )
 
-        self.camera = orbit_camera(yaw=90, pitch=0)
-        # self.camera = orbit_camera(yaw=180, pitch=0)
+        # self.camera = direction_camera(pos="east")
+        self.camera = orbit_camera(yaw=45, pitch=30)
 
         # block faces
 
@@ -173,6 +174,8 @@ class BlockRendererConfig(WindowConfig):
             texture = self.load_texture_array(
                 path=str(info.image_path),
                 layers=info.layers,
+                flip_x=False,
+                flip_y=False,
             )
             texture.filter = (mgl.NEAREST, mgl.NEAREST)
             texture.use(i)
@@ -189,7 +192,7 @@ class BlockRendererConfig(WindowConfig):
 
         model_transform *= (
             Matrix44.from_translation(gui.translation)
-            * get_rotation_matrix(gui.eulers)
+            # * get_rotation_matrix(gui.eulers)
             * Matrix44.from_scale(gui.scale)
         )
 
@@ -214,9 +217,6 @@ class BlockRendererConfig(WindowConfig):
 
             # render each face of the element
             for direction, face in element.faces.items():
-                rotation = Matrix44.from_y_rotation(math.radians(face.rotation), "f4")
-                self.uniform("m_texture").write(rotation)
-
                 self.uniform("light").value = get_face_light(direction)
                 self.uniform("texture0").value = texture_locs[face.texture.lstrip("#")]
 
@@ -229,6 +229,8 @@ class BlockRendererConfig(WindowConfig):
                 axis.render(self.debug_prog)
 
         self.ctx.finish()
+
+        # save to file
 
         image = Image.frombytes(
             mode="RGBA",
@@ -336,71 +338,31 @@ def get_face_verts(from_: Vec3, to: Vec3, direction: FaceName):
     # fmt: on
 
 
+def get_face_uv_indices(direction: FaceName):
+    match direction:
+        case "south":
+            return (2, 3, 1, 3, 0, 1)
+        case "east":
+            return (2, 3, 1, 3, 0, 1)
+        case "down":
+            return (2, 3, 0, 2, 0, 1)
+        case "west":
+            return (2, 3, 0, 2, 0, 1)
+        case "north":
+            return (0, 1, 2, 0, 2, 3)
+        case "up":
+            return (3, 0, 2, 0, 1, 2)
+
+
 def get_face_vao(element: ModelElement, direction: FaceName, face: ElementFace):
     verts = get_face_verts(element.from_, element.to, direction)
 
-    if face.uv:
-        u1, v1, u2, v2 = face.uv
-    else:
-        u1, v1, u2, v2 = get_default_uv(element, direction)
-
-    # fmt: off
-    match direction:
-        case "south":
-            uvs = [
-                u2, v1,
-                u2, v2,
-                u1, v1,
-                u2, v2,
-                u1, v2,
-                u1, v1,
-            ]
-        case "east":
-            uvs = [
-                u2, v1,
-                u2, v2,
-                u1, v1,
-                u2, v2,
-                u1, v2,
-                u1, v1,
-            ]
-        case "down":
-            uvs = [
-                u2, v2,
-                u1, v2,
-                u1, v1,
-                u2, v2,
-                u1, v1,
-                u2, v1,
-            ]
-        case "west":
-            uvs = [
-                u1, v2,
-                u1, v1,
-                u2, v1,
-                u1, v2,
-                u2, v1,
-                u2, v2,
-            ]
-        case "north":
-            uvs = [
-                u2, v1,
-                u2, v2,
-                u1, v2,
-                u2, v1,
-                u1, v2,
-                u1, v1,
-            ]
-        case "up":
-            uvs = [
-                u2, v2,
-                u1, v2,
-                u2, v1,
-                u1, v2,
-                u1, v1,
-                u2, v1,
-            ]
-    # fmt: on
+    face_uv = face.uv or ElementFaceUV.default(element, direction)
+    uvs = [
+        value
+        for index in get_face_uv_indices(direction)
+        for value in face_uv.get_uv(index)
+    ]
 
     vao = VAO()
     vao.buffer(np.array(verts, dtype=np.float32), "3f", ["in_position"])
@@ -413,40 +375,15 @@ def get_face_light(direction: FaceName):
         case "up":
             return LIGHT_UP
         case "down":
-            return LIGHT_UP / 4
+            return LIGHT_UP / 2
         case "south":
             return LIGHT_LEFT
         case "north":
-            return LIGHT_LEFT / 4
+            return LIGHT_LEFT / 2
         case "east":
             return LIGHT_RIGHT
         case "west":
-            return LIGHT_RIGHT / 4
-
-
-def get_default_uv(element: ModelElement, direction: FaceName):
-    match direction:
-        case "up" | "down":
-            ui = 0
-            vi = 2
-        case "north" | "south":
-            ui = 0
-            vi = 1
-        case "east" | "west":
-            ui = 2
-            vi = 1
-
-    u_from = element.from_[ui]
-    u_to = element.to[ui]
-    v_from = element.from_[vi]
-    v_to = element.to[vi]
-
-    return (
-        min(u_from, u_to),
-        min(v_from, v_to),
-        max(u_from, u_to),
-        max(v_from, v_to),
-    )
+            return LIGHT_RIGHT / 2
 
 
 def orbit_camera(pitch: float, yaw: float):
@@ -476,6 +413,32 @@ def orbit_camera(pitch: float, yaw: float):
         up=up,
         dtype="f4",
     )
+
+
+def direction_camera(pos: FaceName, up: FaceName = "up"):
+    """eg. north -> camera is placed to the north of the model, looking south"""
+    return Matrix44.look_at(
+        eye=get_direction_vec(pos, 64),
+        target=(0, 0, 0),
+        up=get_direction_vec(up),
+        dtype="f4",
+    )
+
+
+def get_direction_vec(direction: FaceName, magnitude: float = 1):
+    match direction:
+        case "north":
+            return (0, 0, -magnitude)
+        case "south":
+            return (0, 0, magnitude)
+        case "west":
+            return (-magnitude, 0, 0)
+        case "east":
+            return (magnitude, 0, 0)
+        case "down":
+            return (0, -magnitude, 0)
+        case "up":
+            return (0, magnitude, 0)
 
 
 def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):

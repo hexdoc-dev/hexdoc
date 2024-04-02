@@ -188,7 +188,7 @@ class ElementFace(HexdocModel):
     https://minecraft.wiki/w/Tutorials/Models
     """
 
-    uv: Vec4[Annotated[float, Field(ge=0, le=16)]] | None = None
+    raw_uv: Vec4[Annotated[float, Field(ge=0, le=16)]] | None = Field(None, alias="uv")
     """Defines the area of the texture to use according to the scheme [x1, y1, x2, y2].
 
     The texture behavior is inconsistent if UV extends below 0 or above 16, so these
@@ -226,6 +226,55 @@ class ElementFace(HexdocModel):
     is ignored (as long as it is set to something other than -1); it could be used for
     modded blocks that need multiple distinct tint values in the same block though.
     """
+
+    @property
+    def uv(self):
+        if self.raw_uv is None:
+            return None
+        return ElementFaceUV(uvs=self.raw_uv, rotation=self.rotation)
+
+
+class ElementFaceUV(HexdocModel):
+    uvs: Vec4[Annotated[float, Field(ge=0, le=16)]]
+    rotation: Literal[0, 90, 180, 270] = 0
+
+    @classmethod
+    def default(cls, element: ModelElement, direction: FaceName):
+        x1, y1, z1 = element.from_
+        x2, y2, z2 = element.to
+
+        uvs: Vec4
+        match direction:
+            case "down":
+                uvs = (x1, 16 - z2, x2, 16 - z1)
+            case "up":
+                uvs = (x1, z1, x2, z2)
+            case "north":
+                uvs = (16 - x2, 16 - y2, 16 - x1, 16 - y1)
+            case "south":
+                uvs = (x1, 16 - y2, x2, 16 - y1)
+            case "west":
+                uvs = (z1, 16 - y2, z2, 16 - y1)
+            case "east":
+                uvs = (16 - z2, 16 - y2, 16 - z1, 16 - y1)
+
+        return cls(uvs=uvs)
+
+    def get_uv(self, index: Literal[0, 1, 2, 3]):
+        return self.get_u(index), self.get_v(index)
+
+    def get_u(self, index: Literal[0, 1, 2, 3]):
+        if self._get_shifted_index(index) in {0, 1}:
+            return self.uvs[0]
+        return self.uvs[2]
+
+    def get_v(self, index: Literal[0, 1, 2, 3]):
+        if self._get_shifted_index(index) in {0, 3}:
+            return self.uvs[1]
+        return self.uvs[3]
+
+    def _get_shifted_index(self, index: Literal[0, 1, 2, 3]):
+        return (index + self.rotation // 90) % 4
 
 
 # this is required to ensure BlockModel and ItemModel are fully defined
