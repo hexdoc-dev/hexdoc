@@ -19,6 +19,7 @@ from moderngl_window import WindowConfig
 from moderngl_window.context.headless import Window as HeadlessWindow
 from moderngl_window.opengl.vao import VAO
 from PIL import Image
+from pydantic import ValidationError
 from pyrr import Matrix44
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
@@ -101,11 +102,18 @@ class BlockRenderer:
         self.config.render_block(model, textures, output_path, self.debug)
 
     def load_texture(self, texture_id: ResourceLocation):
+        logger.debug(f"Loading texture: {texture_id}")
         _, path = self.loader.find_resource("assets", "textures", texture_id + ".png")
 
         meta_path = path.with_suffix(".png.mcmeta")
         if meta_path.is_file():
-            meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
+            logger.debug(f"Loading animation mcmeta: {meta_path}")
+            # FIXME: hack
+            try:
+                meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
+            except ValidationError as e:
+                logger.warning(f"Failed to parse animation meta for {texture_id}:\n{e}")
+                meta = None
         else:
             meta = None
 
@@ -238,8 +246,11 @@ class BlockRendererConfig(WindowConfig):
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
 
+            if not (layers := info.layers):
+                layers = image.height // image.width
+
             texture = self.ctx.texture_array(
-                size=(image.width, image.width, info.layers),
+                size=(image.width, image.width, layers),
                 components=4,
                 data=image.tobytes(),
             )
@@ -339,7 +350,7 @@ class BlockTextureInfo:
     @property
     def layers(self):
         if not self.meta:
-            return 1
+            return None
 
         max_index = 0
         for i, frame in enumerate(self.meta.animation.frames):
