@@ -4,6 +4,7 @@ _checkout/
 __gradle_version__.py
 out/
 .hexdoc*/
+out.png
 
 node_modules/
 package-lock.json

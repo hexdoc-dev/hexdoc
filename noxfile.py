@@ -219,23 +219,6 @@ def setup(session: nox.Session):
     session.run("pre-commit", "install")
 
 
-@nox.session(python=False)
-def watch_graphics(session: nox.Session):
-    session.run(
-        "nodemon",
-        "--exec",
-        "python test.py",
-        "--watch",
-        "./src/hexdoc/graphics",
-        "--watch",
-        "./src/hexdoc/minecraft/models",
-        "--watch",
-        "test.py",
-        "-e",
-        "py,glsl",
-    )
-
-
 @nox.session
 def hexdoc(session: nox.Session):
     session.install("-e", ".")
