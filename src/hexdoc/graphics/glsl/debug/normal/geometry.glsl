@@ -11,7 +11,7 @@ in vec3 normal[];
 layout (line_strip, max_vertices = 5) out;
 out vec3 color;
 
-vec3 gl_in_position(int i) {
+vec3 get_gl_in_position(int i) {
     return gl_in[i].gl_Position.xyz;
 }
 
@@ -23,7 +23,7 @@ void emitTransformedVertex(mat4 transform, vec3 vertex) {
 void main() {
     vec3 midpoint = vec3(0.0);
     for (int i = 0; i < 3; i++) {
-        midpoint += gl_in_position(i);
+        midpoint += get_gl_in_position(i);
     }
     midpoint /= 3.0;
 
@@ -49,7 +49,7 @@ void main() {
     color /= 2;
 
     for (int i = 0; i < 3; i++) {
-        vec3 vertex = gl_in_position(i);
+        vec3 vertex = get_gl_in_position(i);
         emitTransformedVertex(transform, vertex + 0.2 * (midpoint - vertex));
     }
 
