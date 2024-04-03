@@ -100,7 +100,7 @@ class HexdocAssetLoader:
                 )
             yield texture_id, path
 
-    def load_item_models(self):
+    def load_item_models(self) -> Iterable[tuple[ResourceLocation, ModelItem]]:
         for _, item_id, data in self.loader.load_resources(
             "assets",
             namespace="*",
