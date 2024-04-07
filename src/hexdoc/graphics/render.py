@@ -246,7 +246,7 @@ class BlockRendererConfig(WindowConfig):
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
 
-            if not (layers := info.layers):
+            if (layers := info.layers) is None:
                 layers = image.height // image.width
 
             texture = self.ctx.texture_array(
