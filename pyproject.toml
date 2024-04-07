@@ -37,10 +37,12 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "frozendict~=2.4",
     "hatch~=1.9",
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
-    "minecraft-render~=2.0.0a6",
+    "moderngl[headless]~=5.10",
+    "moderngl-window~=2.4",
     "more_itertools~=10.1",
     "networkx~=3.2",
     "ordered-set~=4.1",
@@ -54,6 +56,9 @@ dependencies = [
     "typer[all]~=0.9",
     "typing_extensions~=4.6",
     "yarl~=1.9",
+
+    # DEPRECATED
+    "minecraft-render~=2.0.0a6",
 
     # Favicons deps, because it's vendored
     "pillow~=9.5.0",
@@ -71,6 +76,7 @@ test = [
     "pytest-dependency~=0.5",
     "syrupy~=4.6",
     "copier_template_tester",
+    "pyyaml-include<2", # https://github.com/copier-org/copier/issues/1568
 ]
 dev = [
     "hexdoc[pdoc,test]",
@@ -131,6 +137,7 @@ markers = [
 ]
 filterwarnings = [
     'ignore:setDaemon\(\) is deprecated, set the daemon attribute instead:DeprecationWarning:javascript.events',
+    'ignore:invalid escape sequence:DeprecationWarning:pyrr.vector',
 ]
 
 [tool.coverage.report]

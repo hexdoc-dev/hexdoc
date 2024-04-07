@@ -23,6 +23,7 @@ from hexdoc.data.sitemap import (
     dump_sitemap,
     load_sitemap,
 )
+from hexdoc.graphics.render import BlockRenderer, DebugType
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
@@ -30,12 +31,14 @@ from hexdoc.minecraft.assets import (
     PNGTexture,
     TextureContext,
 )
+from hexdoc.minecraft.models.item import ItemModel
+from hexdoc.minecraft.models.load import load_model
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
 from hexdoc.utils.logging import repl_readfunc
 
-from . import ci, render_block
+from . import ci
 from .utils.args import (
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
@@ -60,7 +63,6 @@ app = Typer(
     },
     add_completion=False,
 )
-app.add_typer(render_block.app)
 app.add_typer(ci.app)
 
 
@@ -442,6 +444,36 @@ def serve(
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass
+
+
+@app.command()
+def render_model(
+    model_id: str,
+    *,
+    props_file: PropsOption,
+    output_path: Annotated[Path, Option("--out", "-o")] = Path("out.png"),
+    axes: bool = False,
+    normals: bool = False,
+):
+    """Use hexdoc's block rendering to render an item or block model."""
+    props, pm, *_ = load_common_data(props_file, branch="")
+
+    debug = DebugType.NONE
+    if axes:
+        debug |= DebugType.AXES
+    if normals:
+        debug |= DebugType.NORMALS
+
+    with ModResourceLoader.load_all(props, pm, export=False) as loader:
+        _, model = load_model(loader, ResourceLocation.from_str(model_id))
+        while isinstance(model, ItemModel) and model.parent:
+            _, model = load_model(loader, model.parent)
+
+        if isinstance(model, ItemModel):
+            raise ValueError(f"Invalid block id: {model_id}")
+
+        with BlockRenderer(loader=loader, debug=debug) as renderer:
+            renderer.render_block_model(model, output_path)
 
 
 @app.command(deprecated=True)

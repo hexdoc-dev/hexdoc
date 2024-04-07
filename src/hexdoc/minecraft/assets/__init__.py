@@ -2,7 +2,6 @@ __all__ = [
     "AnimatedTexture",
     "AnimationMeta",
     "HexdocAssetLoader",
-    "HexdocPythonResourceLoader",
     "ImageTexture",
     "ItemTexture",
     "ItemWithTexture",
@@ -31,7 +30,6 @@ from .items import (
 )
 from .load_assets import (
     HexdocAssetLoader,
-    HexdocPythonResourceLoader,
     Texture,
     validate_texture,
 )
@@ -47,3 +45,10 @@ from .with_texture import (
     NamedTexture,
     TagWithTexture,
 )
+
+HexdocPythonResourceLoader = None
+"""PLACEHOLDER - DO NOT USE
+
+This class has been removed from hexdoc, but this variable is required to fix an import
+error with old versions of `hexdoc_minecraft`.
+"""

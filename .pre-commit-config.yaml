@@ -19,9 +19,10 @@ repos:
     hooks:
       - id: pyright
         name: pyright
-        entry: nox -s precommit_pyright --
+        entry: nox -s pyright --
         language: python
         language_version: '3.11'
-        additional_dependencies: [nox]
+        additional_dependencies:
+          - nox>=2024.03.02
         types_or: [python, pyi]
         require_serial: true

@@ -24,6 +24,10 @@ DEFAULT_CONFIG = ConfigDict(
     ),
 )
 
+IGNORE_EXTRA_CONFIG = DEFAULT_CONFIG | ConfigDict(
+    extra="ignore",
+)
+
 _init_context_var = ContextVar[Any]("_init_context_var", default=None)
 
 
