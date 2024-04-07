@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import logging
+from collections import defaultdict
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Self, Sequence
+from typing import Annotated, Any, Self, Sequence
 
 from pydantic import Field, PrivateAttr, field_validator, model_validator
 from yarl import URL
@@ -139,6 +140,21 @@ class TexturesProps(StripHiddenModel):
     ] = Field(default_factory=dict)
 
 
+class LangProps(StripHiddenModel):
+    """Configuration for a specific book language."""
+
+    quiet: bool = False
+    """If `True`, do not log warnings for missing translations.
+
+    Using this option for the default language is not recommended.
+    """
+    ignore_errors: bool = False
+    """If `True`, log fatal errors for this language instead of failing entirely.
+
+    Using this option for the default language is not recommended.
+    """
+
+
 class BaseProperties(StripHiddenModel, ValidationContext):
     env: EnvironmentVariableProps
     props_dir: Path
@@ -198,6 +214,12 @@ class Properties(BaseProperties):
     textures: TexturesProps = Field(default_factory=TexturesProps)
 
     template: TemplateProps | None = None
+
+    lang: defaultdict[
+        str,
+        Annotated[LangProps, Field(default_factory=LangProps)],
+    ] = Field(default_factory=lambda: defaultdict(LangProps))
+    """Per-language configuration. The key should be the language code, eg. `en_us`."""
 
     extra: dict[str, Any] = Field(default_factory=dict)
 

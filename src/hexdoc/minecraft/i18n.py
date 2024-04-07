@@ -15,6 +15,7 @@ from hexdoc.core import (
     ResourceLocation,
     ValueIfVersion,
 )
+from hexdoc.core.properties import LangProps
 from hexdoc.model import HexdocModel, ValidationContextModel
 from hexdoc.utils import decode_and_flatten_json_dict
 
@@ -98,6 +99,7 @@ class I18n(ValidationContextModel):
     lang: str
     default_i18n: I18n | None
     enabled: bool
+    lang_props: LangProps
 
     @classmethod
     def list_all(cls, loader: ModResourceLoader):
@@ -128,6 +130,7 @@ class I18n(ValidationContextModel):
             lang=default_lang,
             default_i18n=None,
             enabled=enabled,
+            lang_props=loader.props.lang[default_lang],
         )
 
         return {default_lang: default_i18n} | {
@@ -136,6 +139,7 @@ class I18n(ValidationContextModel):
                 lang=lang,
                 default_i18n=default_i18n,
                 enabled=enabled,
+                lang_props=loader.props.lang[lang],
             )
             for lang, lookup in lookups.items()
             if lang in internal_langs and lang != default_lang
@@ -171,6 +175,7 @@ class I18n(ValidationContextModel):
             lang=lang,
             default_i18n=default_i18n,
             enabled=enabled,
+            lang_props=loader.props.lang[lang],
         )
 
     @classmethod
@@ -203,9 +208,14 @@ class I18n(ValidationContextModel):
     @model_validator(mode="after")
     def _warn_if_disabled(self):
         if not self.enabled:
-            logger.warning(
-                "I18n is disabled for this book. Warnings about missing translations"
+            logger.info(
+                f"I18n is disabled for {self.lang}. Warnings about missing translations"
                 + " will only be logged in verbose mode."
+            )
+        elif self.lang_props.quiet:
+            logger.info(
+                f"Quiet mode is enabled for {self.lang}. Warnings about missing"
+                + " translations will only be logged in verbose mode."
             )
         return self
 
@@ -233,10 +243,8 @@ class I18n(ValidationContextModel):
             if key in self.lookup:
                 return self.lookup[key]
 
-        if silent or not self.enabled:
+        if silent or not self.enabled or self.lang_props.quiet:
             log_level = logging.DEBUG
-        elif self.is_default:
-            log_level = logging.ERROR
         else:
             log_level = logging.WARNING
 

@@ -2,6 +2,7 @@ from typing import Any
 
 import pytest
 from hexdoc.core import ResourceLocation
+from hexdoc.core.properties import LangProps
 from hexdoc.minecraft import I18n, LocalizedStr
 from hexdoc.patchouli.page.abstract_pages import PageWithTitle
 from hexdoc.plugin import PluginManager
@@ -23,6 +24,7 @@ def test_fallback_tag_name(namespace: str, path: str, want: str):
         lang="en_us",
         default_i18n=None,
         enabled=True,
+        lang_props=LangProps(),
     )
 
     got = i18n.localize_item_tag(tag)
@@ -41,6 +43,7 @@ def test_disabled_i18n(pm: PluginManager):
         lang="en_us",
         default_i18n=None,
         enabled=False,
+        lang_props=LangProps(),
     ).add_to_context(context)
 
     class MockPage(PageWithTitle, type="patchouli:mock"):

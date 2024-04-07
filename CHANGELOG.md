@@ -13,11 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
   * Note: `minecraft-render` is still included as a dependency for backwards compatibility reasons. This will be removed in a future release.
 * New command: `hexdoc render-model`
 * New dependencies: `frozendict`, `moderngl[headless]`, `moderngl-window`
+* New `hexdoc.toml` field `lang.{lang}` for per-language configuration. Currently supported options include `quiet` and `ignore_errors`.
 
 ### Changed
 
 * Update `zh_cn` translations, by @ChuijkYahus in [#69](https://github.com/hexdoc-dev/hexdoc/pull/69).
 * Blockstates are no longer taken into account when selecting block models to render.
+* Deprecated the `--quiet-lang` CLI option.
+* Errors will now always be raised for all languages unless explicitly disabled in `hexdoc.toml`. Previously, errors when rendering non-default languages would only fail the overall command in release mode.
 
 ### Removed
 

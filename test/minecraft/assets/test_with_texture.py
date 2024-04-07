@@ -3,6 +3,7 @@ from typing import Any
 
 import pytest
 from hexdoc.core import Properties
+from hexdoc.core.properties import LangProps
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft.assets.textures import TextureContext
 from hexdoc.minecraft.assets.with_texture import ItemWithTexture, TagWithTexture
@@ -28,6 +29,7 @@ def context():
         lang="en_us",
         default_i18n=None,
         enabled=True,
+        lang_props=LangProps(),
     )
 
     texture_ctx = TextureContext(

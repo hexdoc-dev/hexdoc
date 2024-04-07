@@ -81,6 +81,10 @@ def callback(
         Option("--version", "-V", callback=version_callback, is_eager=True),
     ] = False,
 ):
+    if quiet_lang:
+        logger.warning(
+            "`--quiet-lang` is deprecated, use `props.lang.{lang}.quiet` instead."
+        )
     setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
 
 
@@ -226,7 +230,7 @@ def build(
                     )
                 )
             except Exception:
-                if release or language == props.default_lang:
+                if not props.lang[language].ignore_errors:
                     raise
                 logger.exception(f"Failed to load book for {language}")
 
@@ -298,7 +302,7 @@ def build(
                     template_args=template_args,
                 )
             except Exception:
-                if release or book_info.language == props.default_lang:
+                if not props.lang[book_info.language].ignore_errors:
                     raise
                 logger.exception(f"Failed to render book for {book_info.language}")
 
