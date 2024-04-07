@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Added
+
+* New block rendering system, implemented entirely in Python! This replaces [minecraft-render-py](https://github.com/hexdoc-dev/minecraft-render-py) and removes hexdoc's Node.js dependency. Block renders should now be much closer to how items look in inventories ingame.
+  * Note: Animated models currently only render the first frame of the animation.
+  * Note: `minecraft-render` is still included as a dependency for backwards compatibility reasons. This will be removed in a future release.
+* New command: `hexdoc render-model`
+* New dependencies: `frozendict`, `moderngl[headless]`, `moderngl-window`
+
+### Changed
+
+* Update `zh_cn` translations, by @ChuijkYahus in [#69](https://github.com/hexdoc-dev/hexdoc/pull/69).
+* Blockstates are no longer taken into account when selecting block models to render.
+
+### Removed
+
+* ⚠️ BREAKING: Removed `HexdocPythonResourceLoader`, as it was only needed for the old rendering system.
+* ⚠️ BREAKING: Removed `HexdocAssetLoader.load_blockstates` and `HexdocAssetLoader.renderer_loader`. Several argument/return types have been changed from `IRenderClass` to `BlockRenderer`.
+* Removed `hexdoc render-block` subcommands.
+
 ## `1!0.1.0a11`
 
 ### Added

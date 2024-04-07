@@ -18,9 +18,8 @@ This is the library that powers [Hex Casting](https://github.com/gamma-delta/Hex
 
 There are issues related to installing hexdoc with the following dependency versions:
 * Python 3.12+ on Windows: https://github.com/aio-libs/multidict/issues/887
-* Node.js 20+: https://github.com/stackgl/headless-gl/issues/268
 
-hexdoc is known to work with Python 3.11 and Node.js 18.
+hexdoc is known to work with Python 3.11.
 
 ## Plugins
 
