@@ -1,13 +1,11 @@
 {
   hexdoc: {
     welcome: {
-      "1": "这是{}文档的在线版本。",
-      "2": "此版本会显示文档内嵌的图片和图案，合成配方和物品则不会。\
-        缺失的内容请查阅游戏内手册。",
-      "3": "此外，此版本是根据GitHub上最新代码构建而来的。\
+      "header": "这是{}文档的在线版本。",
+      "bleeding_edge": "此版本是根据GitHub上最新代码构建而来的。\
         其中可能包含游戏内暂未实装的$(bold)新/$特性，\
         就连Modrinth和CurseForge上的最新版本里也找不到！",
-      "4": "$(bold)条目的模糊处理相当于剧透警告/$。\
+      "spoilers": "$(bold)条目的模糊处理相当于剧透警告/$。\
         点击可取消模糊，不过这么做有可能破坏游戏后期的进程与体验。\
         也可点击$(l:?nospoiler)此处/$以取消所有模糊。",
       "old_version": "$(italic)往事犹若异乡；他们在那里做的事情都不一样。/$",
@@ -21,6 +19,36 @@
       toggle_all: "显示或收起全部",
     },
 
+    nav: {
+      dropdown: {
+        minecraft: "Minecraft {version}",
+      },
+    },
+
     linkout: "链接：",
+
+    recipe: {
+      show: "点击以显示配方",
+      hide: "点击以隐藏配方",
+      smelting: {
+        cooktime: "{}秒",
+        exp: "{}点经验"
+      }
+    },
+
+    multiblock: {
+      show: "点击以显示多方块",
+      hide: "点击以隐藏多方块",
+    },
+
+    when_clicked: "点击时执行：{}",
+
+    any_block:  "任意方块",
+
+    redirect: {
+      "category.title": "类别：{}",
+      "entry.title": "条目：{}",
+      "page.title": "页面：{}",
+    }
   },
 }
