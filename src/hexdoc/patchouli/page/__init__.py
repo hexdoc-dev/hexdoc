@@ -1,4 +1,6 @@
 __all__ = [
+    "BlastingPage",
+    "CampfireCookingPage",
     "CraftingPage",
     "EmptyPage",
     "EntityPage",
@@ -12,12 +14,17 @@ __all__ = [
     "QuestPage",
     "RelationsPage",
     "SmeltingPage",
+    "SmithingPage",
+    "SmokingPage",
     "SpotlightPage",
+    "StonecuttingPage",
     "TextPage",
 ]
 
 from .abstract_pages import Page, PageWithText, PageWithTitle
 from .pages import (
+    BlastingPage,
+    CampfireCookingPage,
     CraftingPage,
     EmptyPage,
     EntityPage,
@@ -28,6 +35,9 @@ from .pages import (
     QuestPage,
     RelationsPage,
     SmeltingPage,
+    SmithingPage,
+    SmokingPage,
     SpotlightPage,
+    StonecuttingPage,
     TextPage,
 )
