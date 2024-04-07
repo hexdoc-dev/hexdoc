@@ -38,11 +38,11 @@ nox.options.sessions = [
 def pyright(session: nox.Session):
     session.install("-e", ".[test]")
 
-    if os.getenv("RUNNER_DEBUG") == "1" or "--verbose" in session.posargs:
-        session.run("pyright", "--version")
-        session.run("pyright", "--warnings", "--verbose")
-    else:
-        session.run("pyright", "--warnings")
+    args = ["--warnings", *session.posargs]
+    if os.getenv("RUNNER_DEBUG") == "1" and "--verbose" not in args:
+        args.append("--verbose")
+
+    session.run("pyright", *args)
 
 
 @nox.session(tags=["test"])
@@ -114,17 +114,6 @@ def test_copier(session: nox.Session):
         *session.posargs,
         env={"MOCK_PLATFORM": "Windows"},
     )
-
-
-# pre-commit
-
-
-@nox.session(python=False)
-def precommit_pyright(session: nox.Session):
-    session.run("pip", "install", "--upgrade", "pyright")
-    session.run("pip", "install", "-e", ".[test]")
-
-    session.run("pyright", "--warnings", *session.posargs)
 
 
 # CI/CD
