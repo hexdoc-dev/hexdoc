@@ -11,7 +11,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import Literal, TypedDict, TypeVar, Unpack
 
-from github import Auth, Github
+from github import Auth, Github, UnknownObjectException
 from github.Repository import Repository
 from pydantic import TypeAdapter
 from typer import Typer
@@ -149,6 +149,11 @@ def get_pages_url(repo: Repository) -> str:
         _, data = repo._requester.requestJsonAndCheck("GET", endpoint)
     except Exception as e:
         e.add_note(f"  Endpoint: {endpoint}")
+        if isinstance(e, UnknownObjectException):
+            e.add_note(
+                "Note: check if GitHub Pages is enabled in this repo"
+                + " (https://github.com/hexdoc-dev/hexdoc-hexcasting-template/blob/d6f918f6f115/README.md#setting-up-pages)"
+            )
         raise
     return str(data["html_url"])
 
