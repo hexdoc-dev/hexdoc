@@ -152,7 +152,7 @@ def get_pages_url(repo: Repository) -> str:
         if isinstance(e, UnknownObjectException):
             e.add_note(
                 "Note: check if GitHub Pages is enabled in this repo"
-                + " (https://github.com/hexdoc-dev/hexdoc-hexcasting-template/blob/d6f918f6f115/README.md#setting-up-pages)"
+                + " (https://hexdoc.hexxy.media/docs/guides/github-pages)"
             )
         raise
     return str(data["html_url"])
