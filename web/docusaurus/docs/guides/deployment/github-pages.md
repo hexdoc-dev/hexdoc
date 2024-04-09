@@ -24,7 +24,7 @@ Making changes to these settings will immediately trigger the built-in `pages-bu
 
 :::
 
-## Deployment
+## Deploying with GitHub Actions
 
 You can use the [`hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml`](https://github.com/hexdoc-dev/hexdoc/blob/main/.github/workflows/hexdoc.yml) reusable workflow to build and deploy a hexdoc book using [GitHub Actions](https://docs.github.com/en/actions).
 

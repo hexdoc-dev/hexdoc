@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Custom Styles
 
 The easiest way to customize the appearance of your web book is by adding styles to `index.css`.
