@@ -1,9 +1,10 @@
 import logging
-import subprocess
 from pathlib import Path
 from typing import Annotated
 
 from typer import Argument, Option
+
+from hexdoc.utils import commands
 
 logger = logging.getLogger(__name__)
 
@@ -31,12 +32,7 @@ def get_default_props() -> Path:
 
 
 def get_current_commit() -> str:
-    return subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"],
-        check=True,
-        capture_output=True,
-        encoding="utf-8",
-    ).stdout.strip()
+    return commands.run(["git", "rev-parse", "--short", "HEAD"])
 
 
 PathArgument = Annotated[Path, Argument()]
