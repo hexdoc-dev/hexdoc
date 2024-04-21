@@ -262,7 +262,7 @@ class ModResourceLoader(ValidationContext):
     ) -> tuple[PathResourceDir, Path]:
         """Find the first file with this resource location in `resource_dirs`.
 
-        If no file extension is provided, `.json` is assumed.
+        If no file extension is provided, `.json` / `.json5` is assumed.
 
         Raises FileNotFoundError if the file does not exist.
         """
@@ -278,6 +278,10 @@ class ModResourceLoader(ValidationContext):
             path = resource_dir.path / path_stub
             if path.is_file():
                 return resource_dir, path
+            if path.suffix == ".json":
+                path = path.with_suffix(".json5")
+                if path.is_file():
+                    return resource_dir, path
 
         raise FileNotFoundError(f"Path {path_stub} not found in any resource dir")
 
@@ -398,6 +402,7 @@ class ModResourceLoader(ValidationContext):
         globs = [glob] if isinstance(glob, str) else glob
         for i in range(len(globs)):
             if not Path(globs[i]).suffix:
+                globs.append(globs[i] + ".json5")
                 globs[i] += ".json"
 
         # find all files matching the resloc

@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 * Print stdout and stderr when shell commands fail (fixes [#63](https://github.com/hexdoc-dev/hexdoc/issues/63)).
 * Improve the error message when GitHub Pages is not enabled.
+* Support `.json5` files in places other than I18n. Note that `.flatten.json5` is still only supported for I18n.
 
 ## `1!0.1.0a12`
 
