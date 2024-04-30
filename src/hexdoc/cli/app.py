@@ -3,7 +3,6 @@ import logging
 import os
 import shutil
 import sys
-import time
 from dataclasses import dataclass
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -375,7 +374,7 @@ def serve(
     src: Path = DEFAULT_MERGE_SRC,
     dst: Path = DEFAULT_MERGE_DST,
     branch: BranchOption,
-    try_release: bool = True,
+    release: bool = True,
     clean: bool = False,
     do_merge: Annotated[bool, Option("--merge/--no-merge")] = True,
 ):
@@ -396,34 +395,15 @@ def serve(
         "GITHUB_PAGES_URL": str(book_url),
     }
 
-    build_latest = True
-
-    if try_release:
-        try:
-            print()
-            logger.info("hexdoc build --release")
-            build(
-                branch=branch,
-                props_file=props_file,
-                output_dir=src,
-                release=True,
-                clean=clean,
-            )
-            build_latest = False
-        except Exception:
-            logger.exception("Release build failed")
-            time.sleep(2)
-
-    if build_latest:
-        print()
-        logger.info("hexdoc build --no-release")
-        build(
-            branch=branch,
-            props_file=props_file,
-            output_dir=src,
-            release=False,
-            clean=clean,
-        )
+    print()
+    logger.info(f"hexdoc build --{'' if release else 'no-'}release")
+    build(
+        branch=branch,
+        props_file=props_file,
+        output_dir=src,
+        release=True,
+        clean=clean,
+    )
 
     if do_merge:
         print()
