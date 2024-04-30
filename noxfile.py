@@ -127,6 +127,9 @@ def docs(session: nox.Session):
     hexdoc_version = get_hexdoc_version()
     commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
+    static_generated = "web/docusaurus/static-generated"
+    rmtree(session, static_generated)
+
     session.run(
         "pdoc",
         "hexdoc",
@@ -136,10 +139,22 @@ def docs(session: nox.Session):
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
         "--edit-url=hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/",
         f"--footer-text=Version: {hexdoc_version} ({commit})",
-        "--output-directory=web/docusaurus/static-generated/docs/api",
+        f"--output-directory={static_generated}/docs/api",
     )
 
-    shutil.copytree("media", "web/docusaurus/static-generated/img", dirs_exist_ok=True)
+    shutil.copytree("media", f"{static_generated}/img", dirs_exist_ok=True)
+
+    for model_type in [
+        "hexdoc.core.Properties",
+    ]:
+        session.run(
+            "python",
+            "-m",
+            "_scripts.json_schema",
+            model_type,
+            "--output",
+            f"{static_generated}/schema/{model_type.replace('.', '/')}.json",
+        )
 
     with session.cd("web/docusaurus"):
         session.run_install("npm", ("ci" if is_ci() else "install"), external=True)

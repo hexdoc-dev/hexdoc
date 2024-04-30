@@ -1,4 +1,7 @@
+import contextlib
 import inspect
+import io
+import sys
 import traceback
 from types import CodeType, FrameType, TracebackType
 from typing import cast
@@ -114,3 +117,14 @@ def create_filtered_excepthook(hidden_modules: set[str]):
         traceback.print_exception(exc_type, exc_value, exc_tb)
 
     return filtered_excepthook
+
+
+# https://github.com/python/cpython/blob/6f9ca53a6ac343a5/Lib/idlelib/run.py#L225
+def get_message_with_hints(exc: AttributeError | NameError, removeprefix: bool = True):
+    err = io.StringIO()
+    with contextlib.redirect_stderr(err):
+        sys.__excepthook__(type(exc), exc, None)
+    message = err.getvalue().strip().split("\n")[-1]
+    if removeprefix:
+        message = message.removeprefix(f"{type(exc).__name__}: ")
+    return message

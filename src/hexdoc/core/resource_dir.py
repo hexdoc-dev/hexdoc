@@ -14,11 +14,35 @@ from pydantic import model_validator
 from typing_extensions import override
 
 from hexdoc.model import HexdocModel
+from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import JSONDict, RelativePath, relative_path_root
 
 
 class BaseResourceDir(HexdocModel, ABC):
+    @staticmethod
+    def _json_schema_extra(schema: dict[str, Any]):
+        properties = schema.pop("properties")
+        new_schema = {
+            "anyOf": [
+                schema | {"properties": properties | {key: value}}
+                for key, value in {
+                    "external": properties.pop("external"),
+                    "internal": {
+                        "type": "boolean",
+                        "default": True,
+                        "title": "Internal",
+                    },
+                }.items()
+            ],
+        }
+        schema.clear()
+        schema.update(new_schema)
+
+    model_config = DEFAULT_CONFIG | {
+        "json_schema_extra": _json_schema_extra,
+    }
+
     external: bool
     reexport: bool
     """If not set, the default value will be `not self.external`.
@@ -90,6 +114,24 @@ class BasePathResourceDir(BaseResourceDir):
 
 
 class PathResourceDir(BasePathResourceDir):
+    @staticmethod
+    def _json_schema_extra(schema: dict[str, Any]):
+        BaseResourceDir._json_schema_extra(schema)
+        new_schema = {
+            "anyOf": [
+                *schema["anyOf"],
+                {
+                    "type": "string",
+                },
+            ]
+        }
+        schema.clear()
+        schema.update(new_schema)
+
+    model_config = DEFAULT_CONFIG | {
+        "json_schema_extra": _json_schema_extra,
+    }
+
     # input is relative to the props file
     path: RelativePath
 

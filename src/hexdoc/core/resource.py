@@ -12,11 +12,13 @@ from typing import Annotated, Any, ClassVar, Literal, Self, TypeVar
 
 from pydantic import (
     BeforeValidator,
+    ConfigDict,
     TypeAdapter,
     field_validator,
     model_serializer,
     model_validator,
 )
+from pydantic.config import JsonDict
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 from typing_extensions import override
@@ -52,7 +54,40 @@ def _make_regex(count: bool = False, nbt: bool = False) -> re.Pattern[str]:
     return re.compile(pattern)
 
 
-@dataclass(config=DEFAULT_CONFIG, frozen=True, repr=False)
+def _json_schema_extra(schema: JsonDict, model_type: type[BaseResourceLocation]):
+    object_schema = schema.copy()
+
+    regex = model_type._from_str_regex  # pyright: ignore[reportPrivateUsage]
+    pattern = re.sub(
+        r"\(\?P<(.+?)>(.+?)\)",
+        r"(?<\1>\2)",
+        f"^{regex.pattern}$",
+    )
+    string_schema: JsonDict = {
+        "type": "string",
+        "pattern": pattern,
+    }
+
+    schema.clear()
+
+    for key in ["title", "description"]:
+        if value := object_schema.pop(key, None):
+            schema[key] = value
+
+    schema["anyOf"] = [
+        object_schema,
+        string_schema,
+    ]
+
+
+@dataclass(
+    frozen=True,
+    repr=False,
+    config=DEFAULT_CONFIG
+    | ConfigDict(
+        json_schema_extra=_json_schema_extra,
+    ),
+)
 class BaseResourceLocation:
     namespace: str
     path: str
@@ -115,7 +150,7 @@ class BaseResourceLocation:
         return f"{self.namespace}:{self.path}"
 
 
-@dataclass(config=DEFAULT_CONFIG, frozen=True, repr=False)
+@dataclass(frozen=True, repr=False)
 class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
     """Represents a Minecraft resource location / namespaced ID."""
 
@@ -210,7 +245,7 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
 ResLoc = ResourceLocation
 
 
-@dataclass(config=DEFAULT_CONFIG, frozen=True, repr=False)
+@dataclass(frozen=True, repr=False)
 class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
     """Represents an item with optional count and NBT.
 
@@ -236,7 +271,7 @@ class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
         return s
 
 
-@dataclass(config=DEFAULT_CONFIG, frozen=True, repr=False)
+@dataclass(frozen=True, repr=False)
 class Entity(BaseResourceLocation, regex=_make_regex(nbt=True)):
     """Represents an entity with optional NBT.
 

@@ -4,9 +4,15 @@ import logging
 from collections import defaultdict
 from functools import cached_property
 from pathlib import Path
-from typing import Annotated, Any, Self, Sequence
+from typing import Annotated, Any, Literal, Self, Sequence
 
 from pydantic import Field, PrivateAttr, field_validator, model_validator
+from pydantic.json_schema import (
+    DEFAULT_REF_TEMPLATE,
+    GenerateJsonSchema,
+    SkipJsonSchema,
+)
+from typing_extensions import override
 from yarl import URL
 
 from hexdoc.model.base import HexdocSettings
@@ -20,6 +26,7 @@ from hexdoc.utils import (
     load_toml_with_placeholders,
     relative_path_root,
 )
+from hexdoc.utils.deserialize.toml import GenerateJsonSchemaTOML
 from hexdoc.utils.types import PydanticURL
 
 from .resource import ResourceLocation
@@ -156,8 +163,8 @@ class LangProps(StripHiddenModel):
 
 
 class BaseProperties(StripHiddenModel, ValidationContext):
-    env: EnvironmentVariableProps
-    props_dir: Path
+    env: SkipJsonSchema[EnvironmentVariableProps]
+    props_dir: SkipJsonSchema[Path]
 
     @classmethod
     def load(cls, path: Path) -> Self:
@@ -182,6 +189,17 @@ class BaseProperties(StripHiddenModel, ValidationContext):
 
         logger.log(TRACE, props)
         return props
+
+    @override
+    @classmethod
+    def model_json_schema(
+        cls,
+        by_alias: bool = True,
+        ref_template: str = DEFAULT_REF_TEMPLATE,
+        schema_generator: type[GenerateJsonSchema] = GenerateJsonSchemaTOML,
+        mode: Literal["validation", "serialization"] = "validation",
+    ) -> dict[str, Any]:
+        return super().model_json_schema(by_alias, ref_template, schema_generator, mode)
 
 
 class Properties(BaseProperties):

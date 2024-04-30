@@ -2,7 +2,13 @@ import datetime
 import re
 import tomllib
 from pathlib import Path
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar
+
+from pydantic import TypeAdapter
+from pydantic.json_schema import GenerateJsonSchema, JsonSchemaValue
+from pydantic_core import CoreSchema
+from pydantic_core.core_schema import NoneSchema, NullableSchema, StringSchema
+from typing_extensions import TypedDict, override
 
 from .assertions import cast_or_raise
 
@@ -122,3 +128,51 @@ def load_toml_with_placeholders(path: Path) -> TOMLDict:
     data = tomllib.loads(path.read_text("utf-8"))
     fill_placeholders(data)
     return data
+
+
+IntrinsicRaw = TypedDict("IntrinsicRaw", {"!Raw": Any})
+raw_core_schema = TypeAdapter(IntrinsicRaw).core_schema
+
+IntrinsicNone = TypedDict("IntrinsicNone", {"!None": Any})
+none_core_schema = TypeAdapter(IntrinsicNone).core_schema
+
+
+class GenerateJsonSchemaTOML(GenerateJsonSchema):
+    _is_recursing = False
+
+    @override
+    def str_schema(self, schema: StringSchema) -> JsonSchemaValue:
+        string_schema = super().str_schema(schema)
+        if self._is_recursing:
+            return string_schema
+
+        return self.get_flattened_anyof(
+            [
+                string_schema,
+                self._generate_inner_recursive(raw_core_schema),
+            ]
+        )
+
+    @override
+    def none_schema(self, schema: NoneSchema) -> JsonSchemaValue:
+        return self.get_flattened_anyof(
+            [
+                super().none_schema(schema),
+                self.generate_inner(none_core_schema),
+            ]
+        )
+
+    @override
+    def nullable_schema(self, schema: NullableSchema) -> JsonSchemaValue:
+        null_schema = self.none_schema(NoneSchema(type="none"))
+        inner_json_schema = self.generate_inner(schema["schema"])
+        if inner_json_schema == null_schema:
+            return null_schema
+        return self.get_flattened_anyof([inner_json_schema, null_schema])
+
+    def _generate_inner_recursive(self, core_schema: CoreSchema):
+        # FIXME: hack
+        self._is_recursing = True
+        result = self.generate_inner(core_schema)
+        self._is_recursing = False
+        return result

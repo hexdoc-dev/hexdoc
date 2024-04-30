@@ -113,6 +113,9 @@ only-include = [
     "src",
     "vendor",
 ]
+exclude = [
+    "src/_scripts",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = [
