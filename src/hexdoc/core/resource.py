@@ -75,8 +75,8 @@ def _json_schema_extra(schema: JsonDict, model_type: type[BaseResourceLocation])
             schema[key] = value
 
     schema["anyOf"] = [
-        object_schema,
         string_schema,
+        object_schema,
     ]
 
 

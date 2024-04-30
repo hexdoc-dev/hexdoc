@@ -119,10 +119,11 @@ class PathResourceDir(BasePathResourceDir):
         BaseResourceDir._json_schema_extra(schema)
         new_schema = {
             "anyOf": [
-                *schema["anyOf"],
                 {
                     "type": "string",
+                    "format": "path",
                 },
+                *schema["anyOf"],
             ]
         }
         schema.clear()
