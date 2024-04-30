@@ -1,3 +1,5 @@
+#:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
+
 modid = "hexdoc"
 default_lang = "en_us"
 default_branch = "main"

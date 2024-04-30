@@ -36,7 +36,4 @@
     //     {"name": "pydantic", "depth": 2},
     // ],
     "evenBetterToml.schema.enabled": true,
-    "evenBetterToml.schema.associations": {
-        "hexdoc\\.toml": "https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json",
-    },
 }
