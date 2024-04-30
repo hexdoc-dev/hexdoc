@@ -1,6 +1,7 @@
+import functools
 from abc import ABC, abstractmethod
 from enum import Enum, unique
-from typing import Annotated, Any, Mapping, Protocol, get_args
+from typing import Annotated, Any, Callable, Mapping, ParamSpec, Protocol, get_args
 
 from ordered_set import OrderedSet, OrderedSetInitializer
 from pydantic import (
@@ -14,6 +15,9 @@ from typing_extensions import TypeVar
 from yarl import URL
 
 _T = TypeVar("_T")
+
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
 
 _T_float = TypeVar("_T_float", default=float)
 
@@ -156,3 +160,22 @@ def clamping_validator(lower: float | None, upper: float | None):
 
 # short alias for convenience
 clamped = clamping_validator
+
+
+def typed_partial(f: Callable[_P, _R]) -> Callable[_P, Callable[_P, _R]]:
+    """Given a function, returns a function that takes arguments for that function and
+    returns a function that calls the original function with the partial arguments and
+    whatever's passed into it.
+
+    Basically, this is a more strongly typed version of `functools.partial`.
+    """
+
+    @functools.wraps(f)
+    def builder_builder(*partial_args: _P.args, **partial_kwargs: _P.kwargs):
+        @functools.wraps(f)
+        def builder(*args: _P.args, **kwargs: _P.kwargs):
+            return f(*partial_args, *args, **partial_kwargs, **kwargs)
+
+        return builder
+
+    return builder_builder

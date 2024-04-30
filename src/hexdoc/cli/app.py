@@ -12,7 +12,7 @@ from typing import Annotated, Any, Optional
 
 import typer
 from packaging.version import Version
-from typer import Option, Typer
+from typer import Option
 from yarl import URL
 
 from hexdoc.__version__ import VERSION
@@ -43,6 +43,7 @@ from .utils.args import (
     DEFAULT_MERGE_DST,
     DEFAULT_MERGE_SRC,
     BranchOption,
+    DefaultTyper,
     PathArgument,
     PropsOption,
     ReleaseOption,
@@ -56,13 +57,7 @@ from .utils.load import (
 
 logger = logging.getLogger(__name__)
 
-app = Typer(
-    pretty_exceptions_enable=False,
-    context_settings={
-        "help_option_names": ["--help", "-h"],
-    },
-    add_completion=False,
-)
+app = DefaultTyper()
 app.add_typer(ci.app)
 
 
