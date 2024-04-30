@@ -53,7 +53,7 @@ dependencies = [
     "pygithub~=2.1",
     "pyjson5~=1.6",
     "requests~=2.31",
-    "typer[all]~=0.9",
+    "typer~=0.12",
     "typing_extensions~=4.6",
     "yarl~=1.9",
 
