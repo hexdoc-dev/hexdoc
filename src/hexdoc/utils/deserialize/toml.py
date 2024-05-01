@@ -42,6 +42,11 @@ def _expand_placeholder(
 ) -> str:
     tmp_stack: list[TOMLDict] = stack[:]
 
+    # leading $ references the root table
+    if placeholder[0] == "$":  # the regex *should* ensure placeholder is never empty
+        placeholder = placeholder.lstrip("$.")
+        tmp_stack = [tmp_stack[0]]
+
     key = "UNBOUND"
     keys = placeholder.split(".")
     for i, key in enumerate(keys):

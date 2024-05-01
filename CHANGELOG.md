@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Added
+
+* Placeholders in `hexdoc.toml` may now start with `$` to reference the root table (eg. `{$modid}` and `{$.modid}` are both valid).
+
 ## `1!0.1.0a14`
 
 ### Added
