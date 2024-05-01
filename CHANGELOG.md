@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Added
 
+* Path resource dirs now support reading `.jar` and `.zip` files.
+  * Note: The resource folders (eg. `assets/`) currently must be at the root of the archive.
+* New glob resource dir type: `{ glob="mods/*.jar", exclude=["**/some_broken_mod.jar"] }`
+* New texture config to print some errors instead of failing the build: `textures.strict`
 * Placeholders in `hexdoc.toml` may now start with `$` to reference the root table (eg. `{$modid}` and `{$.modid}` are both valid).
 
 ## `1!0.1.0a14`
