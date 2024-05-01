@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a14`
+
+### Added
+
+* The internal hexdoc CI now automatically generates and deploys a JSON Schema definition for `hexdoc.toml`. See the [documentation](https://hexdoc.hexxy.media/docs/guides/configuration/) for more details.
+
+### Changed
+
+* `hexdoc serve` will now fail immediately instead of retrying the build in non-release mode if an error occurs.
+* Update minimum Typer version to `0.12`.
+
+### Fixed
+
+* Fix incorrect texture array size calculation when non-square images are used for block textures.
+
 ## `1!0.1.0a13`
 
 ### Changed
