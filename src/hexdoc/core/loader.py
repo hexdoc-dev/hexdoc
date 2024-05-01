@@ -24,6 +24,7 @@ from hexdoc.utils import (
     strip_suffixes,
     write_to_path,
 )
+from hexdoc.utils.cd import relative_path_root
 from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
@@ -92,14 +93,17 @@ class ModResourceLoader(ValidationContext):
         export_dir = props.export_dir if export else None
         stack = ExitStack()
 
-        return cls(
-            props=props,
-            export_dir=export_dir,
-            resource_dirs=[
+        with relative_path_root(Path()):
+            resource_dirs = [
                 path_resource_dir
                 for resource_dir in props.resource_dirs
                 for path_resource_dir in stack.enter_context(resource_dir.load(pm))
-            ],
+            ]
+
+        return cls(
+            props=props,
+            export_dir=export_dir,
+            resource_dirs=resource_dirs,
             _stack=stack,
         )
 

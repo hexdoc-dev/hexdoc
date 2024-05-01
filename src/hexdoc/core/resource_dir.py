@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 from abc import ABC, abstractmethod
 from contextlib import ExitStack, contextmanager
+from fnmatch import fnmatch
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, ContextManager, Iterable, Iterator, Literal, Self
@@ -17,7 +18,7 @@ from typing_extensions import override
 from hexdoc.model import HexdocModel
 from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import JSONDict, RelativePath, relative_path_root
+from hexdoc.utils import JSONDict, RelativePath
 from hexdoc.utils.types import cast_nullable
 
 
@@ -140,8 +141,8 @@ class PathResourceDir(BasePathResourceDir):
         "json_schema_extra": _json_schema_extra,
     }
 
-    # input is relative to the props file
     path: RelativePath
+    """A path relative to `hexdoc.toml`."""
 
     archive: bool = Field(default=None, validate_default=False)
     """If true, treat this path as a zip archive (eg. a mod's `.jar` file).
@@ -166,6 +167,7 @@ class PathResourceDir(BasePathResourceDir):
         return self
 
     @contextmanager
+    @override
     def load(self, pm: PluginManager):
         if self.archive:
             with self._extract_archive() as path:
@@ -179,7 +181,10 @@ class PathResourceDir(BasePathResourceDir):
 
     @contextmanager
     def _extract_archive(self) -> Iterator[Path]:
-        with ZipFile(self.path, "r") as zf, TemporaryDirectory() as tempdir:
+        with (
+            ZipFile(self.path, "r") as zf,
+            TemporaryDirectory(suffix=self.path.name) as tempdir,
+        ):
             # extract root-level files and *useful* sub-directories
             # ie. avoid extracting classes etc
             for info in zf.filelist:
@@ -203,6 +208,54 @@ class PathResourceDir(BasePathResourceDir):
         return self
 
 
+class GlobResourceDir(BasePathResourceDir):
+    glob: RelativePath
+    exclude: list[str] = Field(default_factory=list)
+
+    _resolved_paths: list[Path] | None = None
+
+    @property
+    @override
+    def _paths(self):
+        if self._resolved_paths:
+            return self._resolved_paths
+
+        base = Path()
+        for i, part in enumerate(self.glob.parts):
+            if "*" in part:
+                glob = str(Path(*self.glob.parts[i:]))
+                break
+            base /= part
+        else:
+            raise ValueError(f"Glob does not contain any wildcards: {self.glob}")
+
+        self._resolved_paths = [
+            path
+            for path in base.glob(glob)
+            if not any(fnmatch(path.as_posix(), pat) for pat in self.exclude)
+        ]
+        if not self._resolved_paths:
+            raise ValueError(f"Glob failed to find any matches: {self.glob}")
+
+        return self._resolved_paths
+
+    @contextmanager
+    @override
+    def load(self, pm: PluginManager):
+        with ExitStack() as stack:
+            yield [
+                resource_dir
+                for path in self._paths
+                for resource_dir in stack.enter_context(
+                    PathResourceDir(
+                        path=path,
+                        external=self.external,
+                        reexport=self.reexport,
+                    ).load(pm)
+                )
+            ]
+
+
 class PatchouliBooksResourceDir(BasePathResourceDir):
     """For modpack books, eg. `.minecraft/patchouli_books`.
 
@@ -224,8 +277,9 @@ class PatchouliBooksResourceDir(BasePathResourceDir):
         return [self.patchouli_books]
 
     @contextmanager
+    @override
     def load(self, pm: PluginManager):
-        with relative_path_root(Path()), TemporaryDirectory() as tmpdir:
+        with TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
 
             # TODO: hack
@@ -254,8 +308,9 @@ class PluginResourceDir(BaseResourceDir):
     reexport: bool = False
 
     @contextmanager
+    @override
     def load(self, pm: PluginManager):
-        with ExitStack() as stack, relative_path_root(Path()):
+        with ExitStack() as stack:
             yield list(self._load_all(pm, stack))  # NOT "yield from"
 
     def _load_all(self, pm: PluginManager, stack: ExitStack):
@@ -270,4 +325,6 @@ class PluginResourceDir(BaseResourceDir):
             ).set_modid(self.modid)  # setting _modid directly causes a validation error
 
 
-ResourceDir = PathResourceDir | PatchouliBooksResourceDir | PluginResourceDir
+ResourceDir = (
+    PathResourceDir | PatchouliBooksResourceDir | PluginResourceDir | GlobResourceDir
+)

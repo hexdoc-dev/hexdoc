@@ -140,6 +140,8 @@ class TextureTextureOverride(StripHiddenModel):
 class TexturesProps(StripHiddenModel):
     enabled: bool = True
     """Set to False to disable texture rendering."""
+    strict: bool = True
+    """Set to False to print some errors instead of throwing them."""
     missing: set[ResourceLocation] = Field(default_factory=set)
     override: dict[
         ResourceLocation,

@@ -1,4 +1,5 @@
 import logging
+import textwrap
 from collections.abc import Set
 from dataclasses import dataclass
 from functools import cached_property
@@ -187,7 +188,7 @@ class HexdocAssetLoader:
         if missing_items:
             raise FileNotFoundError(
                 "Failed to find a texture for some items: "
-                + ", ".join(str(item) for item in missing_items)
+                + ", ".join(sorted(str(item) for item in missing_items))
             )
 
 
@@ -293,7 +294,15 @@ def render_block(
 
     out_path = f"assets/{id.namespace}/textures/{id_out_path}.png"
 
-    renderer.render_block_model(id, out_path)
+    try:
+        renderer.render_block_model(id, out_path)
+    except Exception as e:
+        if renderer.loader.props.textures.strict:
+            raise
+        message = textwrap.indent(f"{e.__class__.__name__}: {e}", "  ")
+        logger.error(f"Failed to render block {id}:\n{message}")
+        raise TextureNotFoundError("block", id)
+
     logger.debug(f"Rendered {id} to {out_path}")
 
     # TODO: ideally we shouldn't be using site_url here, in case the site is moved
