@@ -1,7 +1,8 @@
 from pydantic import Field
 from yarl import URL
 
-from hexdoc.core import ResourceDir, ResourceLocation
+from hexdoc.core import ResourceLocation
+from hexdoc.core.resource_dir import PathResourceDir
 from hexdoc.data import HexdocMetadata
 from hexdoc.model import ValidationContextModel
 from hexdoc.patchouli.text import BookLinks
@@ -14,7 +15,7 @@ class BookContext(ValidationContextModel):
     spoilered_advancements: set[ResourceLocation]
     all_metadata: dict[str, HexdocMetadata]
 
-    def get_link_base(self, resource_dir: ResourceDir) -> URL:
+    def get_link_base(self, resource_dir: PathResourceDir) -> URL:
         modid = resource_dir.modid
         if resource_dir.internal or modid is None or modid == self.modid:
             return URL()
