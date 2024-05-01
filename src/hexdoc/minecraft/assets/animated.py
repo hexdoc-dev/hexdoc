@@ -1,6 +1,8 @@
 from functools import cached_property
 from typing import Any, Literal, Self
 
+from pydantic import Field
+
 from hexdoc.model import HexdocModel
 from hexdoc.utils.types import PydanticURL
 
@@ -13,11 +15,11 @@ class AnimationMetaFrame(HexdocModel):
 
 
 class AnimationMetaTag(HexdocModel):
-    interpolate: Literal[False]  # TODO: handle interpolation
+    interpolate: Literal[False] = False  # TODO: handle interpolation
     width: None = None  # TODO: handle non-square textures
     height: None = None
     frametime: int = 1
-    frames: list[int | AnimationMetaFrame]
+    frames: list[int | AnimationMetaFrame] = Field(default_factory=list)
 
 
 class AnimationMeta(HexdocModel):
