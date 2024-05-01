@@ -74,7 +74,7 @@ class BaseTexture(InlineModel, ABC):
 
 
 class PNGTexture(BaseTexture):
-    url: PydanticURL
+    url: PydanticURL | None
     pixelated: bool
 
     @classmethod

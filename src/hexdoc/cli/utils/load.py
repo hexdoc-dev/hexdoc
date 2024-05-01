@@ -85,7 +85,7 @@ def render_textures_and_export_metadata(
 
     internal_lookups = TextureLookups[Texture](dict)
     if loader.props.textures.enabled:
-        logger.info("Loading and rendering textures.")
+        logger.info(f"Loading and rendering textures to {asset_loader.render_dir}.")
         for id, texture in asset_loader.load_and_render_internal_textures(
             image_textures
         ):

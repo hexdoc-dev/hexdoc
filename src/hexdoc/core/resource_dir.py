@@ -7,16 +7,18 @@ from abc import ABC, abstractmethod
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, ContextManager, Iterable, Literal, Self
+from typing import Any, ContextManager, Iterable, Iterator, Literal, Self
+from zipfile import ZipFile
 
 import importlib_resources as resources
-from pydantic import model_validator
+from pydantic import Field, model_validator
 from typing_extensions import override
 
 from hexdoc.model import HexdocModel
 from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import JSONDict, RelativePath, relative_path_root
+from hexdoc.utils.types import cast_nullable
 
 
 class BaseResourceDir(HexdocModel, ABC):
@@ -102,18 +104,23 @@ class BasePathResourceDir(BaseResourceDir):
     @abstractmethod
     def _paths(self) -> Iterable[Path]: ...
 
+    def _validate_path(self, path: Path) -> bool:
+        return path.exists()
+
     @model_validator(mode="after")
-    def _assert_path_exists(self):
+    def _validate_paths(self):
         if self.required:
             for path in self._paths:
-                assert (
-                    path.exists()
-                ), f"{self.__class__.__name__} path does not exist: {path}"
-
+                if not self._validate_path(path):
+                    raise ValueError(
+                        f"{self.__class__.__name__} path does not exist: {path}"
+                    )
         return self
 
 
 class PathResourceDir(BasePathResourceDir):
+    """Represents a path to a resources directory or a mod's `.jar` file."""
+
     @staticmethod
     def _json_schema_extra(schema: dict[str, Any]):
         BaseResourceDir._json_schema_extra(schema)
@@ -136,6 +143,12 @@ class PathResourceDir(BasePathResourceDir):
     # input is relative to the props file
     path: RelativePath
 
+    archive: bool = Field(default=None, validate_default=False)
+    """If true, treat this path as a zip archive (eg. a mod's `.jar` file).
+
+    If `path` ends with `.jar` or `.zip`, defaults to `True`.
+    """
+
     # not a props field
     _modid: str | None = None
 
@@ -154,7 +167,27 @@ class PathResourceDir(BasePathResourceDir):
 
     @contextmanager
     def load(self, pm: PluginManager):
-        yield [self]
+        if self.archive:
+            with self._extract_archive() as path:
+                update = {
+                    "path": path,
+                    "archive": False,
+                }
+                yield [self.model_copy(update=update)]
+        else:
+            yield [self]
+
+    @contextmanager
+    def _extract_archive(self) -> Iterator[Path]:
+        with ZipFile(self.path, "r") as zf, TemporaryDirectory() as tempdir:
+            # extract root-level files and *useful* sub-directories
+            # ie. avoid extracting classes etc
+            for info in zf.filelist:
+                path = info.filename
+                if path.startswith(("assets/", "data/")) or "/" not in path:
+                    zf.extract(info, tempdir)
+
+            yield Path(tempdir)
 
     @model_validator(mode="before")
     def _pre_root(cls: Any, value: Any):
@@ -162,6 +195,12 @@ class PathResourceDir(BasePathResourceDir):
         if isinstance(value, str):
             return {"path": value}
         return value
+
+    @model_validator(mode="after")
+    def _post_root(self):
+        if cast_nullable(self.archive) is None:
+            self.archive = self.path.suffix in {".jar", ".zip"}
+        return self
 
 
 class PatchouliBooksResourceDir(BasePathResourceDir):

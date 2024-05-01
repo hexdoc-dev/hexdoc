@@ -46,7 +46,7 @@ class AnimatedTextureFrame(HexdocModel):
 
 
 class AnimatedTexture(BaseTexture):
-    url: PydanticURL
+    url: PydanticURL | None
     pixelated: bool
     css_class: str
     meta: AnimationMeta

@@ -179,3 +179,11 @@ def typed_partial(f: Callable[_P, _R]) -> Callable[_P, Callable[_P, _R]]:
         return builder
 
     return builder_builder
+
+
+def cast_nullable(value: _T) -> _T | None:
+    """Tells the type checker that the given value could also be `None`.
+
+    At runtime, just returns the value as-is.
+    """
+    return value

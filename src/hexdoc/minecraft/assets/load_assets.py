@@ -198,9 +198,16 @@ def load_texture(
     repo_root: Path,
     asset_url: URL,
 ) -> ImageTexture:
-    url = asset_url.joinpath(*path.relative_to(repo_root).parts)
-    meta_path = path.with_suffix(".png.mcmeta")
+    # FIXME: is_relative_to is only false when reading zip archives. ideally we would
+    # permalink to the gh-pages branch and copy all textures there, but we can't get
+    # that commit until we build the book, so it's a bit of a circular dependency.
+    if path.is_relative_to(repo_root):
+        url = asset_url.joinpath(*path.relative_to(repo_root).parts)
+    else:
+        logger.warning(f"Failed to find relative path for {id}: {path}")
+        url = None
 
+    meta_path = path.with_suffix(".png.mcmeta")
     if meta_path.is_file():
         try:
             meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
