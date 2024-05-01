@@ -25,7 +25,7 @@ from pyrr import Matrix44
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.graphics import glsl
 from hexdoc.minecraft.assets import AnimationMeta
-from hexdoc.minecraft.assets.animated import AnimationMetaFrame
+from hexdoc.minecraft.assets.animated import AnimationMetaTag
 from hexdoc.minecraft.models import BlockModel
 from hexdoc.minecraft.models.base_model import (
     DisplayPosition,
@@ -239,6 +239,7 @@ class BlockRendererConfig(WindowConfig):
         for i, (name, info) in enumerate(texture_vars.items()):
             texture_locs[name] = i
 
+            logger.debug(f"Loading texture {name}: {info}")
             image = Image.open(info.image_path).convert("RGBA")
 
             min_alpha, _ = cast(tuple[int, int], image.getextrema()[3])
@@ -246,11 +247,32 @@ class BlockRendererConfig(WindowConfig):
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
 
-            if (layers := info.layers) is None:
-                layers = image.height // image.width
+            # TODO: implement non-square animations, write test cases
+            match info.meta:
+                case AnimationMeta(
+                    animation=AnimationMetaTag(height=frame_height),
+                ) if frame_height:
+                    # animated with specified size
+                    layers = image.height // frame_height
+                case AnimationMeta():
+                    # size is unspecified, assume it's square and verify later
+                    frame_height = image.width
+                    layers = image.height // frame_height
+                case None:
+                    # non-animated
+                    frame_height = image.height
+                    layers = 1
 
+            if frame_height * layers != image.height:
+                raise RuntimeError(
+                    f"Invalid texture size for variable #{name}:"
+                    + f" {frame_height}x{layers} != {image.height}"
+                    + f"\n  {info}"
+                )
+
+            logger.debug(f"Texture array: {image.width=}, {frame_height=}, {layers=}")
             texture = self.ctx.texture_array(
-                size=(image.width, image.width, layers),
+                size=(image.width, frame_height, layers),
                 components=4,
                 data=image.tobytes(),
             )
@@ -346,24 +368,6 @@ class BlockRendererConfig(WindowConfig):
 class BlockTextureInfo:
     image_path: Path
     meta: AnimationMeta | None
-
-    @property
-    def layers(self):
-        if not self.meta:
-            return None
-
-        max_index = 0
-        for i, frame in enumerate(self.meta.animation.frames):
-            match frame:
-                case int():
-                    index = frame
-                case AnimationMetaFrame(index=int(index)):
-                    pass
-                case _:
-                    index = i
-            max_index = max(max_index, index)
-
-        return max_index + 1
 
 
 @dataclass(kw_only=True)
