@@ -1,18 +1,23 @@
 #:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
 
+# for standalone model rendering, just leave this as "hexdoc"
 modid = "hexdoc"
 
 resource_dirs = [
+    # path(s) to "resources" folders, resource packs, and/or mod jars where your models and textures are located
     "resources",
     { glob="mods/*.jar" },
+    # required if your models depend on vanilla resources
     { modid="minecraft" },
     { modid="hexdoc" },
 ]
 
+# folder where loaded resources (not rendered models) should be copied to
 export_dir = "out/export"
 
 [textures]
 strict = false
 missing = [
+    # add item/block/model IDs to ignore missing or broken models
     "emi:*",
 ]
