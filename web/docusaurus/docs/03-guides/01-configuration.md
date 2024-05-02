@@ -1,8 +1,4 @@
----
-sidebar_position: 1
----
-
-# Configuration
+# Config File
 
 Most configuration for hexdoc can be done in the `hexdoc.toml` (or `doc/hexdoc.toml`) file.
 

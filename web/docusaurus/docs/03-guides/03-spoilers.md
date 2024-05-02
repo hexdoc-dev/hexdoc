@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # Spoilers
 
 Patchouli's [advancement locking system](https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/advancement-locking) can be used with hexdoc to automatically add a spoiler blur to late-game categories, entries, and (as of `v1!0.1.0a11`) pages.
