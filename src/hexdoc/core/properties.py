@@ -216,8 +216,8 @@ class Properties(BaseProperties):
     book_id: ResourceLocation | None = Field(alias="book", default=None)
     extra_books: list[ResourceLocation] = Field(default_factory=list)
 
-    default_lang: str
-    default_branch: str
+    default_lang: str = "en_us"
+    default_branch: str = "main"
 
     is_0_black: bool = False
     """If true, the style `$(0)` changes the text color to black; otherwise it resets
