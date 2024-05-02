@@ -30,6 +30,7 @@ from hexdoc.minecraft.assets import (
     PNGTexture,
     TextureContext,
 )
+from hexdoc.minecraft.assets.load_assets import render_block
 from hexdoc.minecraft.models.item import ItemModel
 from hexdoc.minecraft.models.load import load_model
 from hexdoc.patchouli import BookContext, FormattingContext
@@ -55,6 +56,26 @@ from .utils.load import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def set_default_env():
+    """Sets placeholder values for unneeded environment variables."""
+    for key, value in {
+        "GITHUB_REPOSITORY": "placeholder/placeholder",
+        "GITHUB_SHA": "",
+        "GITHUB_PAGES_URL": "",
+    }.items():
+        os.environ.setdefault(key, value)
+
+
+@dataclass(kw_only=True)
+class LoadedBookInfo:
+    language: str
+    i18n: I18n
+    context: dict[str, Any]
+    book_id: ResourceLocation
+    book: Any
+
 
 app = DefaultTyper()
 app.add_typer(ci.app)
@@ -146,15 +167,6 @@ def repl(*, props_file: PropsOption):
         local=repl_locals,
         exitmsg="",
     )
-
-
-@dataclass(kw_only=True)
-class LoadedBookInfo:
-    language: str
-    i18n: I18n
-    context: dict[str, Any]
-    book_id: ResourceLocation
-    book: Any
 
 
 @app.command()
@@ -430,11 +442,12 @@ def render_model(
     model_id: str,
     *,
     props_file: PropsOption,
-    output_path: Annotated[Path, Option("--out", "-o")] = Path("out.png"),
+    output_path: Annotated[Path, Option("--output", "-o")] = Path("out.png"),
     axes: bool = False,
     normals: bool = False,
 ):
     """Use hexdoc's block rendering to render an item or block model."""
+    set_default_env()
     props, pm, *_ = load_common_data(props_file, branch="")
 
     debug = DebugType.NONE
@@ -453,6 +466,40 @@ def render_model(
 
         with BlockRenderer(loader=loader, debug=debug) as renderer:
             renderer.render_block_model(model, output_path)
+
+
+@app.command()
+def render_models(
+    model_ids: list[str] = [],
+    *,
+    props_file: PropsOption,
+    render_all: Annotated[bool, Option("--all")] = False,
+    output_dir: Annotated[Path, Option("--output", "-o")] = Path("out"),
+    site_url_str: Annotated[Optional[str], Option("--site-url")] = None,
+    export_resources: bool = True,
+):
+    if not (model_ids or render_all):
+        raise ValueError("At least one model id must be provided if --all is missing")
+
+    site_url = URL(site_url_str or "")
+
+    set_default_env()
+    props, pm, _, plugin = load_common_data(props_file, branch="")
+
+    with ModResourceLoader.load_all(props, pm, export=export_resources) as loader:
+        if model_ids:
+            with BlockRenderer(loader=loader, output_dir=output_dir) as renderer:
+                for model_id in model_ids:
+                    model_id = ResourceLocation.from_str(model_id)
+                    render_block(model_id, renderer, site_url)
+        else:
+            asset_loader = plugin.asset_loader(
+                loader=loader,
+                site_url=site_url,
+                asset_url=props.env.asset_url,
+                render_dir=output_dir,
+            )
+            render_textures_and_export_metadata(loader, asset_loader)
 
 
 @app.command(deprecated=True)
