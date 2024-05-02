@@ -9,7 +9,7 @@ For a complete example, see [examples/model_rendering](https://github.com/hexdoc
 1. In a [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments), install the following Python packages:
    * `hexdoc>=1!0.1.0a15`
    * `hexdoc-minecraft~={GAME_VERSION}.0` (eg. `hexdoc-minecraft~=1.19.2.0`)
-2. Create a [`hexdoc.toml` config file](../configuration):
+2. Create a [`hexdoc.toml` config file](../../configuration):
 
     ```toml title="hexdoc.toml"
     #:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
