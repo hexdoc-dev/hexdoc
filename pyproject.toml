@@ -90,7 +90,7 @@ Homepage = "https://hexdoc.hexxy.media"
 Documentation = "https://hexdoc.hexxy.media/docs"
 Changelog = "https://github.com/hexdoc-dev/hexdoc/blob/main/CHANGELOG.md"
 Source = "https://github.com/hexdoc-dev/hexdoc"
-"Demo Book" = "https://book.hexxy.media"
+Demo = "https://book.hexxy.media"
 
 [tool.hatch.version]
 source = "regex_commit"
