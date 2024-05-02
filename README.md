@@ -14,6 +14,8 @@ A [Jinja](https://jinja.palletsprojects.com/en/3.1.x/)-based documentation gener
 
 This is the library that powers [Hex Casting](https://github.com/gamma-delta/HexMod)'s web book.
 
+Check out the docs at [https://hexdoc.hexxy.media](https://hexdoc.hexxy.media)!
+
 ## IMPORTANT: Version incompatibilities
 
 There are issues related to installing hexdoc with the following dependency versions:
@@ -23,7 +25,14 @@ hexdoc is known to work with Python 3.11.
 
 ## Plugins
 
-See [hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting-template) for instructions to set up a hexdoc plugin for a pre-existing Hex Casting addon.
+hexdoc has a few Copier templates that you can use to set up a hexdoc plugin for your mod:
+
+* [hexdoc-mod-template](https://github.com/hexdoc-dev/hexdoc-mod-template): generic template
+* [hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting-template): Hex Casting addons (also compatible with [HexDummy](https://github.com/FallingColors/hexdummy)!)
+
+## Support
+
+hexdoc does not currently have a dedicated support server. If you have any questions, please feel free to join the [Hex Casting Discord server](https://discord.gg/4xxHGYteWk) and ask in the [#hexdoc](https://discord.com/channels/936370934292549712/1180655324684894309) channel, or open an [issue](https://github.com/hexdoc-dev/hexdoc/issues)/[discussion](https://github.com/hexdoc-dev/hexdoc/discussions) on GitHub.
 
 ## Contributing
 
