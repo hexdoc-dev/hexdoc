@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [UNRELEASED]
+## `1!0.1.0a15`
 
 ### Added
 
@@ -17,8 +17,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Changed
 
+* In `hexdoc.toml`, `default_lang` and `default_branch` are now optional, defaulting to `en_us` and `main` respectively.
 * Update minimum Pydantic version to `2.7.1`.
 * Update Pyright version to `1.1.361`.
+
+### Fixed
+
+* Add missing default values for some fields in `*.png.mcmeta`.
 
 ## `1!0.1.0a14`
 
