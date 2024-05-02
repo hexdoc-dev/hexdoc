@@ -11,7 +11,7 @@ from typing import Annotated, Any, Optional
 
 import typer
 from packaging.version import Version
-from typer import Option
+from typer import Argument, Option
 from yarl import URL
 
 from hexdoc.__version__ import VERSION
@@ -473,7 +473,7 @@ def render_model(
 
 @app.command()
 def render_models(
-    model_ids: list[str] = [],
+    model_ids: Annotated[Optional[list[str]], Argument()] = None,
     *,
     props_file: PropsOption,
     render_all: Annotated[bool, Option("--all")] = False,
@@ -503,6 +503,8 @@ def render_models(
                 render_dir=output_dir,
             )
             render_textures_and_export_metadata(loader, asset_loader)
+
+    logger.info("Done.")
 
 
 @app.command(deprecated=True)
