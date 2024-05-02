@@ -1,0 +1,18 @@
+#:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
+
+modid = "hexdoc"
+
+resource_dirs = [
+    "resources",
+    { glob="mods/*.jar" },
+    { modid="minecraft" },
+    { modid="hexdoc" },
+]
+
+export_dir = "out/export"
+
+[textures]
+strict = false
+missing = [
+    "emi:*",
+]

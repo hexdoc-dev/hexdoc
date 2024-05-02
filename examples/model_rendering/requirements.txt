@@ -1,0 +1,2 @@
+hexdoc~=1!0.1.0a15
+hexdoc-minecraft~=1.19.2.0

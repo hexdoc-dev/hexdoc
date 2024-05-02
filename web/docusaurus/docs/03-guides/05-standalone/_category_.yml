@@ -1,0 +1,4 @@
+label: Standalone Usage
+link:
+  type: generated-index
+  description: How to use hexdoc as a standalone tool without setting up a Patchouli web book.
