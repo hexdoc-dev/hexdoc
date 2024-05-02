@@ -377,6 +377,9 @@ def merge(
         for path, redirect_contents in redirects.items():
             write_to_path(dst / path / filename, redirect_contents)
 
+    # bypass Jekyll on GitHub Pages
+    (dst / ".nojekyll").touch()
+
 
 @app.command()
 def serve(
