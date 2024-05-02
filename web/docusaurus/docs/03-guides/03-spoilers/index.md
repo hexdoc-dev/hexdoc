@@ -25,7 +25,7 @@ Because [`fnmatch.fnmatch`](https://docs.python.org/3/library/fnmatch.html#fnmat
 
 ## Example
 
-![A screenshot of a spoilered entry in the Hex Casting web book](/img/spoilers.png)
+![A screenshot of a spoilered entry in the Hex Casting web book](example.png)
 
 :::hex-casting
 

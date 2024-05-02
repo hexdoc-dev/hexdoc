@@ -38,3 +38,11 @@ For a complete example, see [examples/model_rendering](https://github.com/hexdoc
     ```
 
 3. To render all available models, run this command: `hexdoc render-models --all`
+
+## Example renders
+
+![Minecraft anvil](anvil.png)
+![Minecraft sculk shrieker](sculk_shrieker.png)
+
+![Hex Casting edified stairs](edified_stairs.png)
+![Hex Casting amethyst sconce](amethyst_sconce.png)
