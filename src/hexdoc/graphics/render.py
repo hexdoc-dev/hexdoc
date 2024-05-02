@@ -287,11 +287,12 @@ class BlockRendererConfig(WindowConfig):
             scale=(0.625, 0.625, 0.625),
         )
 
-        model_transform = (
+        model_transform = cast(
+            Matrix44,
             Matrix44.from_scale(gui.scale, "f4")
             * get_rotation_matrix(gui.eulers)
             * Matrix44.from_translation(gui.translation, "f4")
-            * Matrix44.from_translation((-8, -8, -8), "f4")
+            * Matrix44.from_translation((-8, -8, -8), "f4"),
         )
 
         normals_transform = Matrix44.from_y_rotation(-gui.eulers[1], "f4")
@@ -307,10 +308,11 @@ class BlockRendererConfig(WindowConfig):
             # TODO: rescale??
             if rotation := element.rotation:
                 origin = np.array(rotation.origin)
-                element_transform *= (
+                element_transform *= cast(
+                    Matrix44,
                     Matrix44.from_translation(origin, "f4")
                     * get_rotation_matrix(rotation.eulers)
-                    * Matrix44.from_translation(-origin, "f4")
+                    * Matrix44.from_translation(-origin, "f4"),
                 )
 
             # prepare each face of the element for rendering
@@ -500,19 +502,21 @@ def orbit_camera(pitch: float, yaw: float):
 
     eye = transform_vec(
         (-64, 0, 0),
-        (
+        cast(
+            Matrix44,
             Matrix44.identity(dtype="f4")
             * Matrix44.from_y_rotation(math.radians(yaw))
-            * Matrix44.from_z_rotation(math.radians(pitch))
+            * Matrix44.from_z_rotation(math.radians(pitch)),
         ),
     )
 
     up = transform_vec(
         (-1, 0, 0),
-        (
+        cast(
+            Matrix44,
             Matrix44.identity(dtype="f4")
             * Matrix44.from_y_rotation(math.radians(yaw))
-            * Matrix44.from_z_rotation(math.radians(90 - pitch))
+            * Matrix44.from_z_rotation(math.radians(90 - pitch)),
         ),
     )
 
@@ -560,9 +564,10 @@ def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):
     return file.read_text("utf-8")
 
 
-def get_rotation_matrix(eulers: Vec3):
-    return (
+def get_rotation_matrix(eulers: Vec3) -> Matrix44:
+    return cast(
+        Matrix44,
         Matrix44.from_x_rotation(-eulers[0], "f4")
         * Matrix44.from_y_rotation(-eulers[1], "f4")
-        * Matrix44.from_z_rotation(-eulers[2], "f4")
+        * Matrix44.from_z_rotation(-eulers[2], "f4"),
     )

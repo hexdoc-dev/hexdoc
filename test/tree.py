@@ -33,7 +33,7 @@ def write_file_tree(root: str | Path, tree: FileTree):
                 # anything else - usually just text
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(dedent(text))
-            case int() | float() | bool() | None:
+            case bool() | int() | float() | None:
                 raise TypeError(
                     f"Type {type(value)} is only allowed in JSON data: {value}"
                 )

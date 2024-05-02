@@ -86,13 +86,14 @@ class PydanticOrderedSet(OrderedSet[_T]):
         source: type[Any],
         handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        match get_args(source):
-            case [type_arg]:
-                pass
-            case []:
+        type_arg: Any
+        match len(type_args := get_args(source)):
+            case 0:
                 type_arg = Any
-            case args:
-                raise ValueError(f"Expected 0 or 1 type args, got {len(args)}: {args}")
+            case 1:
+                type_arg = type_args[0]
+            case n:
+                raise ValueError(f"Expected 0 or 1 type args, got {n}: {type_args}")
 
         return core_schema.union_schema(
             [

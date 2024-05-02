@@ -1,5 +1,5 @@
 import re
-from typing import TypeVar
+from typing import TypeVar, cast
 
 import pyjson5
 from pydantic import JsonValue as JSONValue
@@ -18,7 +18,7 @@ def decode_json_dict(data: str | bytes) -> JSONDict:
         case _:
             decoded = pyjson5.decode_utf8(data)
     assert isinstance_or_raise(decoded, dict)
-    return decoded
+    return cast(JSONDict, decoded)
 
 
 # implement pkpcpbp's flattening in python

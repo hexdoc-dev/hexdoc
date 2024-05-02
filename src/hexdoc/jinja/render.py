@@ -103,7 +103,7 @@ def create_jinja_env_with_loader(loader: BaseLoader):
         ],
     )
 
-    env.filters |= {  # pyright: ignore[reportGeneralTypeIssues]
+    env.filters |= {  # pyright: ignore[reportAttributeAccessIssue]
         "hexdoc_wrap": hexdoc_wrap,
         "hexdoc_localize": hexdoc_localize,
         "hexdoc_texture": hexdoc_texture,

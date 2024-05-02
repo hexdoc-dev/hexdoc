@@ -14,6 +14,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 * New texture config to print some errors instead of failing the build: `textures.strict`
 * Placeholders in `hexdoc.toml` may now start with `$` to reference the root table (eg. `{$modid}` and `{$.modid}` are both valid).
 
+### Changed
+
+* Update minimum Pydantic version to `2.7.1`.
+* Update Pyright version to `1.1.361`.
+
 ## `1!0.1.0a14`
 
 ### Added

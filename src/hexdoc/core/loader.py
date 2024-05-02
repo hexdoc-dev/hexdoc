@@ -186,7 +186,7 @@ class ModResourceLoader(ValidationContext):
             lang = self.props.default_lang
 
         # use ordered set to be deterministic but avoid duplicate ids
-        books_to_check = PydanticOrderedSet.collect(
+        books_to_check = PydanticOrderedSet[ResourceLocation].collect(
             parent_book_id,
             self.props.book_id,
             *self.props.extra_books,

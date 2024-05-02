@@ -41,7 +41,7 @@ def validate_texture(
     value: Any,
     *,
     context: ContextSource,
-    model_type: type[_T_Texture] = Texture,
+    model_type: type[_T_Texture] | Any = Texture,
 ) -> _T_Texture:
     ta = TypeAdapter(model_type)
     return ta.validate_python(
