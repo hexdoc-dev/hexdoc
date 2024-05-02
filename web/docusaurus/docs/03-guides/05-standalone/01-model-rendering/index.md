@@ -47,7 +47,7 @@ hexdoc render-models --all
 hexdoc render-model minecraft:block/stone
 
 # render several specific models (since 1!0.1.0a16)
-hexdoc render-models minecraft:block/anvil hexcasting:amethyst_sconce
+hexdoc render-models minecraft:anvil hexcasting:amethyst_sconce
 ```
 
 ## Example renders
