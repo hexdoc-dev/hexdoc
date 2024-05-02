@@ -7,6 +7,7 @@ from typing import (
     Annotated,
     Any,
     Iterable,
+    Literal,
     Self,
     TypeVar,
 )
@@ -47,7 +48,7 @@ class BaseTexture(InlineModel, ABC):
         cls,
         id: ResourceLocation,
         lookups: TextureLookups[Any],
-        allowed_missing: Iterable[ResourceLocation],
+        allowed_missing: Iterable[ResourceLocation] | Literal["*"],
     ) -> Self:
         """Returns the texture from the lookup table if it exists, or the "missing
         texture" texture if it's in `props.texture.missing`, or raises `ValueError`.
@@ -58,7 +59,10 @@ class BaseTexture(InlineModel, ABC):
         if id in textures:
             return textures[id]
 
-        if any(id.match(pattern) for pattern in allowed_missing):
+        # TODO: this logic is duplicated in load_assets.py :/
+        if allowed_missing == "*" or any(
+            id.match(pattern) for pattern in allowed_missing
+        ):
             logger.warning(f"No {cls.__name__} for {id}, using default missing texture")
             return cls.from_url(MISSING_TEXTURE_URL, pixelated=True)
 
@@ -96,4 +100,4 @@ TextureLookups = defaultdict[
 
 class TextureContext(ValidationContextModel):
     textures: TextureLookups[Any]
-    allowed_missing_textures: set[ResourceLocation]
+    allowed_missing_textures: set[ResourceLocation] | Literal["*"]

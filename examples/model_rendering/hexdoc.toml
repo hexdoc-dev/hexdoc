@@ -16,8 +16,7 @@ resource_dirs = [
 export_dir = "out/export"
 
 [textures]
+# hide/disable some warnings and errors that aren't really relevant here
 strict = false
-missing = [
-    # add item/block/model IDs to ignore missing or broken models
-    "emi:*",
-]
+# print a warning instead of failing when any model can't be rendered
+missing = "*"

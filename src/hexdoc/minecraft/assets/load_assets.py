@@ -67,15 +67,21 @@ class HexdocAssetLoader:
     def gaslighting_items(self):
         return Tag.GASLIGHTING_ITEMS.load(self.loader).value_ids_set
 
+    @property
+    def texture_props(self):
+        return self.loader.props.textures
+
     def can_be_missing(self, id: ResourceLocation):
-        return any(id.match(pattern) for pattern in self.loader.props.textures.missing)
+        if self.texture_props.missing == "*":
+            return True
+        return any(id.match(pattern) for pattern in self.texture_props.missing)
 
     def get_override(
         self,
         id: ResourceLocation,
         image_textures: dict[ResourceLocation, ImageTexture],
     ) -> Texture | None:
-        match self.loader.props.textures.override.get(id):
+        match self.texture_props.override.get(id):
             case PNGTextureOverride(url=url, pixelated=pixelated):
                 return PNGTexture(url=url, pixelated=pixelated)
             case TextureTextureOverride(texture=texture):
@@ -141,7 +147,7 @@ class HexdocAssetLoader:
                         path=path,
                         repo_root=self.loader.props.repo_root,
                         asset_url=self.asset_url,
-                        strict=self.loader.props.textures.strict,
+                        strict=self.texture_props.strict,
                     )
 
                 case PNGTexture() | AnimatedTexture() as texture:
