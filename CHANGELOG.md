@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Changed
+
+* The `hexdoc.toml` field `textures.missing` can now be set to `missing = "*"`, allowing all textures to be missing. No other string values are currently supported.
+* The command `hexdoc merge` now creates an empty `.nojekyll` file in the site root to disable Jekyll on GitHub Pages (since it's not necessary for hexdoc). Fixes [#68](https://github.com/hexdoc-dev/hexdoc/issues/68).
+
+### Fixed
+
+* The command `hexdoc render-models` was accidentally configured to take a list of models as an option instead of an argument.
+
 ## `1!0.1.0a15`
 
 ### Added
