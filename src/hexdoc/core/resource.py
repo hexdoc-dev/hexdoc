@@ -74,10 +74,7 @@ def _json_schema_extra(schema: JsonDict, model_type: type[BaseResourceLocation])
         if value := object_schema.pop(key, None):
             schema[key] = value
 
-    schema["anyOf"] = [
-        string_schema,
-        object_schema,
-    ]
+    schema.update(string_schema)
 
 
 @dataclass(
