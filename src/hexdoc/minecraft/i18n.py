@@ -17,7 +17,9 @@ from hexdoc.core import (
 )
 from hexdoc.core.properties import LangProps
 from hexdoc.model import HexdocModel, ValidationContextModel
+from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.utils import decode_and_flatten_json_dict
+from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +27,8 @@ logger = logging.getLogger(__name__)
 @total_ordering
 class LocalizedStr(HexdocModel, frozen=True):
     """Represents a string which has been localized."""
+
+    model_config = DEFAULT_CONFIG | json_schema_extra_config(type_str, inherited)
 
     key: str
     value: str

@@ -54,7 +54,10 @@ def _make_regex(count: bool = False, nbt: bool = False) -> re.Pattern[str]:
     return re.compile(pattern)
 
 
-def _json_schema_extra(schema: JsonDict, model_type: type[BaseResourceLocation]):
+def resloc_json_schema_extra(
+    schema: JsonDict,
+    model_type: type[BaseResourceLocation],
+):
     object_schema = schema.copy()
 
     regex = model_type._from_str_regex  # pyright: ignore[reportPrivateUsage]
@@ -82,7 +85,7 @@ def _json_schema_extra(schema: JsonDict, model_type: type[BaseResourceLocation])
     repr=False,
     config=DEFAULT_CONFIG
     | ConfigDict(
-        json_schema_extra=_json_schema_extra,
+        json_schema_extra=resloc_json_schema_extra,
     ),
 )
 class BaseResourceLocation:

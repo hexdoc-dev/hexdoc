@@ -1,6 +1,7 @@
 from typing import Any, Self
 
 from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
 
 from hexdoc.core import ResourceLocation
 from hexdoc.core.loader import ModResourceLoader
@@ -20,8 +21,8 @@ class Category(IDModel, Sortable):
     See: https://vazkiimods.github.io/Patchouli/docs/reference/category-json
     """
 
-    entries: dict[ResourceLocation, Entry] = Field(default_factory=dict)
-    is_spoiler: bool = False
+    entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(default_factory=dict)
+    is_spoiler: SkipJsonSchema[bool] = False
 
     # required
     name: LocalizedStr

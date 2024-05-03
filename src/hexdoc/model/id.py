@@ -4,6 +4,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Self
 
+from pydantic.json_schema import SkipJsonSchema
+
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
@@ -18,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 class IDModel(HexdocModel):
-    id: ResourceLocation
-    resource_dir: PathResourceDir
+    id: SkipJsonSchema[ResourceLocation]
+    resource_dir: SkipJsonSchema[PathResourceDir]
 
     @classmethod
     def load(

@@ -6,13 +6,21 @@ from typing import Any, Self, dataclass_transform
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core.resource import ItemStack, ResourceLocation
+from hexdoc.core.resource import (
+    ItemStack,
+    ResourceLocation,
+    resloc_json_schema_extra,
+)
 
-from .base import HexdocModel
+from .base import DEFAULT_CONFIG, HexdocModel
 
 
 @dataclass_transform()
 class InlineModel(HexdocModel, ABC):
+    model_config = DEFAULT_CONFIG | {
+        "json_schema_extra": lambda s: resloc_json_schema_extra(s, ResourceLocation),
+    }
+
     @classmethod
     @abstractmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any: ...
@@ -45,6 +53,10 @@ class InlineModel(HexdocModel, ABC):
 
 @dataclass_transform()
 class InlineItemModel(HexdocModel, ABC):
+    model_config = DEFAULT_CONFIG | {
+        "json_schema_extra": lambda s: resloc_json_schema_extra(s, ItemStack),
+    }
+
     @classmethod
     @abstractmethod
     def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any: ...

@@ -4,6 +4,7 @@ from contextvars import ContextVar
 from typing import (
     Any,
     ClassVar,
+    cast,
     dataclass_transform,
 )
 
@@ -62,6 +63,10 @@ class HexdocModel(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _call_hexdoc_before_validator(cls, value: Any, info: ValidationInfo):
+        # allow json schema field in all models
+        if isinstance(value, dict):
+            value = cast(dict[Any, Any], value)
+            value.pop("$schema", None)
         if cls.__hexdoc_before_validator__:
             return cls.__hexdoc_before_validator__(cls, value, info)
         return value

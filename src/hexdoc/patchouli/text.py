@@ -18,6 +18,7 @@ from hexdoc.minecraft import I18n, LocalizedStr
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import PydanticURL, TryGetEnum, classproperty
+from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",
@@ -334,7 +335,7 @@ STYLE_REGEX = re.compile(r"\$\(([^)]*)\)")
 
 
 @final
-@dataclass(config=DEFAULT_CONFIG)
+@dataclass(config=DEFAULT_CONFIG | json_schema_extra_config(type_str, inherited))
 class FormatTree:
     style: Style
     children: list[FormatTree | str]  # this can't be Self, it breaks Pydantic

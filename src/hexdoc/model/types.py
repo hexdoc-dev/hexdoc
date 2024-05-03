@@ -4,10 +4,20 @@ from typing import Any
 from pydantic import field_validator, model_validator
 from pydantic.dataclasses import dataclass
 
+from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
+
 from .base import DEFAULT_CONFIG
 
 
-@dataclass(config=DEFAULT_CONFIG, frozen=True)
+@dataclass(
+    frozen=True,
+    config=DEFAULT_CONFIG
+    | json_schema_extra_config(
+        type_str,
+        inherited,
+        pattern=r"(#|0x)?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})",
+    ),
+)
 class Color:
     """Represents a hexadecimal color.
 
