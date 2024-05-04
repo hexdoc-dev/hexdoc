@@ -31,8 +31,7 @@ from hexdoc.minecraft.assets import (
     TextureContext,
 )
 from hexdoc.minecraft.assets.load_assets import render_block
-from hexdoc.minecraft.models.item import ItemModel
-from hexdoc.minecraft.models.load import load_model
+from hexdoc.minecraft.model import BlockModel
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
@@ -459,13 +458,17 @@ def render_model(
     if normals:
         debug |= DebugType.NORMALS
 
+    model_id_ = ResourceLocation.from_str(model_id)
     with ModResourceLoader.load_all(props, pm, export=False) as loader:
-        _, model = load_model(loader, ResourceLocation.from_str(model_id))
-        while isinstance(model, ItemModel) and model.parent:
-            _, model = load_model(loader, model.parent)
+        _, model = BlockModel.load(loader, model_id_)
 
-        if isinstance(model, ItemModel):
-            raise ValueError(f"Invalid block id: {model_id}")
+        # TODO: reimplement
+
+        # while isinstance(model, ItemModel) and model.parent:
+        #     _, model = load_model(loader, model.parent)
+
+        # if isinstance(model, ItemModel):
+        #     raise ValueError(f"Invalid block id: {model_id}")
 
         with BlockRenderer(loader=loader, debug=debug) as renderer:
             renderer.render_block_model(model, output_path)

@@ -1,5 +1,6 @@
 __all__ = [
     "DEFAULT_CONFIG",
+    "IGNORE_EXTRA_CONFIG",
     "Color",
     "HexdocModel",
     "HexdocSettings",
@@ -21,6 +22,7 @@ __all__ = [
 
 from .base import (
     DEFAULT_CONFIG,
+    IGNORE_EXTRA_CONFIG,
     HexdocModel,
     HexdocSettings,
     HexdocTypeAdapter,

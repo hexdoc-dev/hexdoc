@@ -1,133 +1,18 @@
 from __future__ import annotations
 
 import math
-import re
-from abc import ABC, abstractmethod
-from typing import Annotated, Literal, Self
+from typing import Annotated, Literal
 
-from pydantic import AfterValidator, Field, model_validator
+from pydantic import Field
 
-from hexdoc.core import ResourceLocation
 from hexdoc.model import HexdocModel
 from hexdoc.model.base import IGNORE_EXTRA_CONFIG
 from hexdoc.utils.types import Vec3, Vec4, clamped
 
-
-class BaseMinecraftModel(HexdocModel, ABC):
-    """Base class for Minecraft block/item models.
-
-    https://minecraft.wiki/w/Tutorials/Models
-    """
-
-    model_config = IGNORE_EXTRA_CONFIG
-
-    parent: ResourceLocation | None = None
-    """Loads a different model from the given path, in form of a resource location.
-
-    If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
-    tag from the previous model.
-    """
-    display: dict[DisplayPositionName, DisplayPosition] = Field(default_factory=dict)
-    """Holds the different places where item models are displayed.
-
-    `fixed` refers to item frames, while the rest are as their name states.
-    """
-    textures: dict[str, TextureVariable | ResourceLocation] = Field(
-        default_factory=dict
-    )
-    """Holds the textures of the model, in form of a resource location or can be another
-    texture variable."""
-    elements: list[ModelElement] | None = None
-    """Contains all the elements of the model. They can have only cubic forms.
-
-    If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
-    tag from the previous model.
-    """
-    gui_light: Literal["front", "side"] = Field(None, validate_default=False)
-    """If set to `side` (default), the model is rendered like a block.
-
-    If set to `front`, model is shaded like a flat item.
-
-    Note: although the wiki only lists this field for item models, Minecraft sets it in
-    the models `minecraft:block/block` and `minecraft:block/calibrated_sculk_sensor`.
-    """
-
-    @abstractmethod
-    def apply_parent(self, parent: Self):
-        """Merge the parent model into this one."""
-        self.parent = parent.parent
-        # prefer current display/textures over parent
-        self.display = parent.display | self.display
-        self.textures = parent.textures | self.textures
-        # only use parent elements if current model doesn't have elements
-        if self.elements is None:
-            self.elements = parent.elements
-        if not self._was_gui_light_set:
-            self.gui_light = parent.gui_light
-
-    @model_validator(mode="after")
-    def _set_default_gui_light(self):
-        self._was_gui_light_set = self.gui_light is not None  # type: ignore
-        if not self._was_gui_light_set:
-            self.gui_light = "side"
-        return self
+from .variable import TextureVariable
 
 
-def _validate_texture_variable(value: str):
-    assert re.fullmatch(r"#\w+", value)
-    return value
-
-
-TextureVariable = Annotated[str, AfterValidator(_validate_texture_variable)]
-
-
-DisplayPositionName = Literal[
-    "thirdperson_righthand",
-    "thirdperson_lefthand",
-    "firstperson_righthand",
-    "firstperson_lefthand",
-    "gui",
-    "head",
-    "ground",
-    "fixed",
-]
-"""`fixed` refers to item frames, while the rest are as their name states."""
-
-
-class DisplayPosition(HexdocModel):
-    """Place where an item model is displayed. Holds its rotation, translation and scale
-    for the specified situation.
-
-    Note that translations are applied to the model before rotations.
-
-    If this is specified but not all of translation, rotation and scale are in it, the
-    others aren't inherited from the parent. (TODO: is this only for items? see wiki)
-
-    https://minecraft.wiki/w/Tutorials/Models
-    """
-
-    rotation: Vec3 = (0, 0, 0)
-    """Specifies the rotation of the model according to the scheme [x, y, z]."""
-    translation: Vec3[Annotated[float, clamped(-80, 80)]] = (0, 0, 0)
-    """Specifies the position of the model according to the scheme [x, y, z].
-
-    The values are clamped between -80 and 80.
-    """
-    scale: Vec3[Annotated[float, clamped(None, 4), Field(ge=0)]] = Field((0, 0, 0))
-    """Specifies the scale of the model according to the scheme [x, y, z].
-
-    If the value is greater than 4, it is displayed as 4.
-    """
-
-    @property
-    def eulers(self) -> Vec3:
-        """Euler rotation vector, in radians."""
-        rotation = tuple(math.radians(v) for v in self.rotation)
-        assert len(rotation) == 3
-        return rotation
-
-
-class ModelElement(HexdocModel):
+class Element(HexdocModel):
     """An element of a block/item model. Must be cubic.
 
     https://minecraft.wiki/w/Tutorials/Models
@@ -256,7 +141,7 @@ class ElementFaceUV(HexdocModel):
     rotation: Literal[0, 90, 180, 270] = 0
 
     @classmethod
-    def default(cls, element: ModelElement, direction: FaceName):
+    def default(cls, element: Element, direction: FaceName):
         x1, y1, z1 = element.from_
         x2, y2, z2 = element.to
 
@@ -292,7 +177,3 @@ class ElementFaceUV(HexdocModel):
 
     def _get_shifted_index(self, index: Literal[0, 1, 2, 3]):
         return (index + self.rotation // 90) % 4
-
-
-# this is required to ensure BlockModel and ItemModel are fully defined
-BaseMinecraftModel.model_rebuild()

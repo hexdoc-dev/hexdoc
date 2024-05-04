@@ -26,13 +26,13 @@ from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.graphics import glsl
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.assets.animated import AnimationMetaTag
-from hexdoc.minecraft.models import BlockModel
-from hexdoc.minecraft.models.base_model import (
+from hexdoc.minecraft.model import (
+    BlockModel,
     DisplayPosition,
+    Element,
     ElementFace,
     ElementFaceUV,
     FaceName,
-    ModelElement,
 )
 from hexdoc.utils.types import Vec3, Vec4
 
@@ -81,12 +81,7 @@ class BlockRenderer:
         output_path: str | Path,
     ):
         if isinstance(model, ResourceLocation):
-            _, model = self.loader.load_resource(
-                type="assets",
-                folder="models",
-                id=model,
-                decode=BlockModel.model_validate_json,
-            )
+            _, model = BlockModel.load(self.loader, model)
 
         model.load_parents_and_apply(self.loader)
 
@@ -374,7 +369,7 @@ class BlockTextureInfo:
 
 @dataclass(kw_only=True)
 class BakedFace:
-    element: ModelElement
+    element: Element
     direction: FaceName
     face: ElementFace
     m_model: Matrix44
