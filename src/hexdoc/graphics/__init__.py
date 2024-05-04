@@ -1,6 +1,7 @@
 __all__ = [
-    "BlockRenderer",
     "DebugType",
+    "ModelRenderer",
 ]
 
-from .render import BlockRenderer, DebugType
+from .renderer import ModelRenderer
+from .utils import DebugType

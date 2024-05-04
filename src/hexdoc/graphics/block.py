@@ -4,23 +4,19 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from enum import Flag, auto
 from functools import cached_property
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 import moderngl as mgl
-import moderngl_window as mglw
 import numpy as np
 from moderngl import Context, Program, Uniform
 from moderngl_window import WindowConfig
 from moderngl_window.context.headless import Window as HeadlessWindow
 from moderngl_window.opengl.vao import VAO
 from PIL import Image
-from pydantic import ValidationError
 from pyrr import Matrix44
 
-from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.assets.animated import AnimationMetaTag
 from hexdoc.minecraft.model import (
@@ -35,7 +31,7 @@ from hexdoc.utils.types import Vec3, Vec4
 
 from .camera import direction_camera
 from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
-from .utils import get_rotation_matrix, read_shader
+from .utils import DebugType, get_rotation_matrix, read_shader
 
 logger = logging.getLogger(__name__)
 
@@ -48,85 +44,7 @@ LIGHT_RIGHT = 0.608
 LIGHT_FLAT = 0.98
 
 
-class DebugType(Flag):
-    NONE = 0
-    AXES = auto()
-    NORMALS = auto()
-
-
-@dataclass(kw_only=True)
-class BlockRenderer:
-    loader: ModResourceLoader
-    output_dir: Path | None = None
-    debug: DebugType = DebugType.NONE
-
-    def __post_init__(self):
-        self.window = HeadlessWindow(
-            size=(300, 300),
-        )
-        mglw.activate_context(self.window)
-
-        self.config = BlockRendererConfig(ctx=self.window.ctx, wnd=self.window)
-
-        self.window.config = self.config
-        self.window.swap_buffers()
-        self.window.set_default_viewport()
-
-    @property
-    def ctx(self):
-        return self.window.ctx
-
-    def render_block_model(
-        self,
-        model: BlockModel | ResourceLocation,
-        output_path: str | Path,
-    ):
-        if isinstance(model, ResourceLocation):
-            _, model = BlockModel.load_unresolved(self.loader, model)
-
-        model.resolve(self.loader)
-
-        textures = {
-            name: self.load_texture(texture_id)
-            for name, texture_id in model.resolved_textures.items()
-        }
-
-        output_path = Path(output_path)
-        if self.output_dir and not output_path.is_absolute():
-            output_path = self.output_dir / output_path
-
-        self.config.render_block(model, textures, output_path, self.debug)
-
-    def load_texture(self, texture_id: ResourceLocation):
-        logger.debug(f"Loading texture: {texture_id}")
-        _, path = self.loader.find_resource("assets", "textures", texture_id + ".png")
-
-        meta_path = path.with_suffix(".png.mcmeta")
-        if meta_path.is_file():
-            logger.debug(f"Loading animation mcmeta: {meta_path}")
-            # FIXME: hack
-            try:
-                meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
-            except ValidationError as e:
-                logger.warning(f"Failed to parse animation meta for {texture_id}:\n{e}")
-                meta = None
-        else:
-            meta = None
-
-        return BlockTextureInfo(path, meta)
-
-    def destroy(self):
-        self.window.destroy()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *_: Any):
-        self.destroy()
-        return False
-
-
-class BlockRendererConfig(WindowConfig):
+class BlockRenderer(WindowConfig):
     def __init__(self, ctx: Context, wnd: HeadlessWindow):
         super().__init__(ctx, wnd)
 

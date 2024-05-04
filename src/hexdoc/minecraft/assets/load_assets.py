@@ -14,7 +14,7 @@ from hexdoc.core.properties import (
     PNGTextureOverride,
     TextureTextureOverride,
 )
-from hexdoc.graphics import BlockRenderer
+from hexdoc.graphics import ModelRenderer
 from hexdoc.utils import PydanticURL
 from hexdoc.utils.context import ContextSource
 
@@ -120,7 +120,7 @@ class HexdocAssetLoader:
 
     @cached_property
     def renderer(self):
-        return BlockRenderer(
+        return ModelRenderer(
             loader=self.loader,
             output_dir=self.render_dir,
         )
@@ -237,7 +237,7 @@ def load_texture(
 def load_and_render_item(
     model: ModelItem,
     loader: ModResourceLoader,
-    renderer: BlockRenderer,
+    renderer: ModelRenderer,
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
@@ -275,7 +275,7 @@ def load_and_render_item(
 # TODO: move to methods on a class returned by find_texture?
 def lookup_or_render_single_item(
     found_texture: FoundNormalTexture,
-    renderer: BlockRenderer,
+    renderer: ModelRenderer,
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
 ) -> SingleItemTexture:
@@ -291,7 +291,7 @@ def lookup_or_render_single_item(
 
 def render_block(
     id: ResourceLocation,
-    renderer: BlockRenderer,
+    renderer: ModelRenderer,
     site_url: URL,
 ) -> SingleItemTexture:
     # FIXME: hack
@@ -304,7 +304,7 @@ def render_block(
     out_path = f"assets/{id.namespace}/textures/{id_out_path}.png"
 
     try:
-        renderer.render_block_model(id, out_path)
+        renderer.render_model(id, out_path)
     except Exception as e:
         if renderer.loader.props.textures.strict:
             raise

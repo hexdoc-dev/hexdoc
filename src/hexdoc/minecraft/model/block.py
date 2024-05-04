@@ -83,11 +83,12 @@ class BlockModel(HexdocModel):
 
     @classmethod
     def load_and_resolve(cls, loader: ModResourceLoader, model_id: ResourceLocation):
-        resource_dir, model = cls.load_unresolved(loader, model_id)
+        resource_dir, model = cls.load_only(loader, model_id)
         return resource_dir, model.resolve(loader)
 
     @classmethod
-    def load_unresolved(cls, loader: ModResourceLoader, model_id: ResourceLocation):
+    def load_only(cls, loader: ModResourceLoader, model_id: ResourceLocation):
+        """Loads the given model without resolving it."""
         try:
             return loader.load_resource(
                 type="assets",
@@ -120,7 +121,7 @@ class BlockModel(HexdocModel):
                 case ResourceLocation("minecraft", "builtin/entity"):
                     raise ValueError(f"Unsupported model parent id: {parent_id}")
                 case _:
-                    _, parent = self.load_unresolved(loader, parent_id)
+                    _, parent = self.load_only(loader, parent_id)
                     self._apply_parent(parent)
 
         return self

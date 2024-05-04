@@ -17,21 +17,12 @@ from yarl import URL
 from hexdoc.__version__ import VERSION
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
-from hexdoc.data.sitemap import (
-    delete_updated_books,
-    dump_sitemap,
-    load_sitemap,
-)
-from hexdoc.graphics import BlockRenderer, DebugType
+from hexdoc.data.sitemap import delete_updated_books, dump_sitemap, load_sitemap
+from hexdoc.graphics import DebugType, ModelRenderer
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import (
-    AnimatedTexture,
-    PNGTexture,
-    TextureContext,
-)
+from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureContext
 from hexdoc.minecraft.assets.load_assets import render_block
-from hexdoc.minecraft.model import BlockModel
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
@@ -458,20 +449,11 @@ def render_model(
     if normals:
         debug |= DebugType.NORMALS
 
-    model_id_ = ResourceLocation.from_str(model_id)
-    with ModResourceLoader.load_all(props, pm, export=False) as loader:
-        _, model = BlockModel.load_and_resolve(loader, model_id_)
-
-        # TODO: reimplement
-
-        # while isinstance(model, ItemModel) and model.parent:
-        #     _, model = load_model(loader, model.parent)
-
-        # if isinstance(model, ItemModel):
-        #     raise ValueError(f"Invalid block id: {model_id}")
-
-        with BlockRenderer(loader=loader, debug=debug) as renderer:
-            renderer.render_block_model(model, output_path)
+    with (
+        ModResourceLoader.load_all(props, pm, export=False) as loader,
+        ModelRenderer(loader=loader, debug=debug) as renderer,
+    ):
+        renderer.render_model(ResourceLocation.from_str(model_id), output_path)
 
 
 @app.command()
@@ -494,7 +476,7 @@ def render_models(
 
     with ModResourceLoader.load_all(props, pm, export=export_resources) as loader:
         if model_ids:
-            with BlockRenderer(loader=loader, output_dir=output_dir) as renderer:
+            with ModelRenderer(loader=loader, output_dir=output_dir) as renderer:
                 for model_id in model_ids:
                     model_id = ResourceLocation.from_str(model_id)
                     render_block(model_id, renderer, site_url)

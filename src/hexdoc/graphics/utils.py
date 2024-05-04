@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from enum import Flag, auto
 from typing import Literal, cast
 
 import importlib_resources as resources
@@ -10,6 +11,12 @@ from pyrr import Matrix44
 
 from hexdoc.graphics import glsl
 from hexdoc.utils.types import Vec3
+
+
+class DebugType(Flag):
+    NONE = 0
+    AXES = auto()
+    NORMALS = auto()
 
 
 def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):
