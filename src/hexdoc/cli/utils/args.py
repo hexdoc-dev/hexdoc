@@ -24,7 +24,6 @@ DEFAULT_PROPS_FILES = [
 
 
 DefaultTyper = typed_partial(Typer)(
-    pretty_exceptions_enable=False,
     context_settings={
         "help_option_names": ["--help", "-h"],
     },

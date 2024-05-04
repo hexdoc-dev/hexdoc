@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 import sys
 from bisect import bisect
@@ -101,7 +102,10 @@ def setup_logging(
 
     if level >= logging.INFO:
         # set this here so we don't clobber exceptions in verbose mode
-        sys.excepthook = filtered_excepthook
+        # but don't set it if Typer's pretty tracebacks are enabled
+        # see also: https://typer.tiangolo.com/tutorial/exceptions/#disable-pretty-exceptions
+        if os.getenv("_TYPER_STANDARD_TRACEBACK"):
+            sys.excepthook = filtered_excepthook
 
         formats |= {
             logging.INFO: log_format("levelname"),
