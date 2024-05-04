@@ -460,7 +460,7 @@ def render_model(
 
     model_id_ = ResourceLocation.from_str(model_id)
     with ModResourceLoader.load_all(props, pm, export=False) as loader:
-        _, model = BlockModel.load(loader, model_id_)
+        _, model = BlockModel.load_and_resolve(loader, model_id_)
 
         # TODO: reimplement
 

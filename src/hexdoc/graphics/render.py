@@ -82,13 +82,13 @@ class BlockRenderer:
         output_path: str | Path,
     ):
         if isinstance(model, ResourceLocation):
-            _, model = BlockModel.load(self.loader, model)
+            _, model = BlockModel.load_unresolved(self.loader, model)
 
-        model.load_parents_and_apply(self.loader)
+        model.resolve(self.loader)
 
         textures = {
             name: self.load_texture(texture_id)
-            for name, texture_id in model.resolve_texture_variables().items()
+            for name, texture_id in model.resolved_textures.items()
         }
 
         output_path = Path(output_path)

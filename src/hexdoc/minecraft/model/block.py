@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from functools import cached_property
 from typing import Literal, Self
 
-from pydantic import Field, model_validator
+from pydantic import Field, PrivateAttr, model_validator
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.model import IGNORE_EXTRA_CONFIG, HexdocModel
+from hexdoc.utils.types import PydanticOrderedSet, cast_nullable
 
 from .display import DisplayPosition, DisplayPositionName
 from .element import Element
@@ -22,7 +24,7 @@ class BlockModel(HexdocModel):
 
     # common fields
 
-    parent: ResourceLocation | None = None
+    parent_id: ResourceLocation | None = Field(None, alias="parent")
     """Loads a different model from the given path, in form of a resource location.
 
     If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
@@ -76,8 +78,16 @@ class BlockModel(HexdocModel):
     for example this avoids recursion on overriding to the same model.
     """
 
+    # internal fields
+    _is_generated_item: bool = PrivateAttr(False)
+
     @classmethod
-    def load(cls, loader: ModResourceLoader, model_id: ResourceLocation):
+    def load_and_resolve(cls, loader: ModResourceLoader, model_id: ResourceLocation):
+        resource_dir, model = cls.load_unresolved(loader, model_id)
+        return resource_dir, model.resolve(loader)
+
+    @classmethod
+    def load_unresolved(cls, loader: ModResourceLoader, model_id: ResourceLocation):
         try:
             return loader.load_resource(
                 type="assets",
@@ -89,8 +99,34 @@ class BlockModel(HexdocModel):
             e.add_note(f"  note: {model_id=}")
             raise
 
-    def apply_parent(self, parent: Self):
-        self.parent = parent.parent
+    def resolve(self, loader: ModResourceLoader):
+        """Loads this model's parents and applies them in-place.
+
+        Returns this model for convenience.
+        """
+        loaded_parents = PydanticOrderedSet[ResourceLocation]()
+        while parent_id := self.parent_id:
+            if parent_id in loaded_parents:
+                raise ValueError(
+                    "Recursive model parent chain: "
+                    + " -> ".join(str(v) for v in [*loaded_parents, parent_id])
+                )
+            loaded_parents.add(parent_id)
+
+            match parent_id:
+                case ResourceLocation("minecraft", "builtin/generated"):
+                    self._is_generated_item = True
+                    self.parent_id = None
+                case ResourceLocation("minecraft", "builtin/entity"):
+                    raise ValueError(f"Unsupported model parent id: {parent_id}")
+                case _:
+                    _, parent = self.load_unresolved(loader, parent_id)
+                    self._apply_parent(parent)
+
+        return self
+
+    def _apply_parent(self, parent: Self):
+        self.parent_id = parent.parent_id
 
         # prefer current display/textures over parent
         self.display = parent.display | self.display
@@ -99,23 +135,26 @@ class BlockModel(HexdocModel):
         # only use parent elements if current model doesn't have elements
         if self.elements is None:
             self.elements = parent.elements
+
         if not self._was_gui_light_set:
             self.gui_light = parent.gui_light
 
         self.ambientocclusion = parent.ambientocclusion
+
         self.render_type = self.render_type or parent.render_type
 
-    def load_parents_and_apply(self, loader: ModResourceLoader):
-        while self.parent:
-            _, parent = loader.load_resource(
-                "assets",
-                "models",
-                self.parent,
-                decode=self.model_validate_json,
-            )
-            self.apply_parent(parent)
+    @property
+    def is_resolved(self):
+        return self.parent_id is None
 
-    def resolve_texture_variables(self):
+    @property
+    def is_generated_item(self):
+        return self._is_generated_item
+
+    @cached_property
+    def resolved_textures(self):
+        assert self.is_resolved, "Cannot resolve textures for unresolved model"
+
         textures = dict[str, ResourceLocation]()
         for name, value in self.textures.items():
             # TODO: is it possible for this to loop forever?
@@ -129,7 +168,7 @@ class BlockModel(HexdocModel):
 
     @model_validator(mode="after")
     def _set_default_gui_light(self):
-        self._was_gui_light_set = self.gui_light is not None  # type: ignore
+        self._was_gui_light_set = cast_nullable(self.gui_light) is not None
         if not self._was_gui_light_set:
             self.gui_light = "side"
         return self
