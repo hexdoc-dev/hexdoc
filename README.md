@@ -106,6 +106,10 @@ nox -s dummy_serve
 nox -s dummy_hexdoc -- build
 
 nox -s dummy_clean
+
+# generate and run the full docs website locally, or just run Docusaurus
+nox -t docs
+nox -s docusaurus
 ```
 
 ## Badges
