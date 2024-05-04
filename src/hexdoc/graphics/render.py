@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import logging
-import math
 from dataclasses import dataclass
 from enum import Flag, auto
 from functools import cached_property
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import Any, cast
 
-import importlib_resources as resources
 import moderngl as mgl
 import moderngl_window as mglw
 import numpy as np
@@ -23,7 +21,6 @@ from pydantic import ValidationError
 from pyrr import Matrix44
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
-from hexdoc.graphics import glsl
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.assets.animated import AnimationMetaTag
 from hexdoc.minecraft.model import (
@@ -35,6 +32,10 @@ from hexdoc.minecraft.model import (
     FaceName,
 )
 from hexdoc.utils.types import Vec3, Vec4
+
+from .camera import direction_camera
+from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
+from .utils import get_rotation_matrix, read_shader
 
 logger = logging.getLogger(__name__)
 
@@ -407,162 +408,3 @@ class BakedFace:
         if self.is_opaque:
             return 0
         return sum((a - b) ** 2 for a, b in zip(eye, self.position))
-
-
-def get_face_verts(from_: Vec3, to: Vec3, direction: FaceName):
-    x1, y1, z1 = from_
-    x2, y2, z2 = to
-
-    # fmt: off
-    match direction:
-        case "south":
-            return [
-                x2, y1, z2,
-                x2, y2, z2,
-                x1, y1, z2,
-                x2, y2, z2,
-                x1, y2, z2,
-                x1, y1, z2,
-            ]
-        case "east":
-            return [
-                x2, y1, z1,
-                x2, y2, z1,
-                x2, y1, z2,
-                x2, y2, z1,
-                x2, y2, z2,
-                x2, y1, z2,
-            ]
-        case "down":
-            return [
-                x2, y1, z1,
-                x2, y1, z2,
-                x1, y1, z2,
-                x2, y1, z1,
-                x1, y1, z2,
-                x1, y1, z1,
-            ]
-        case "west":
-            return [
-                x1, y1, z2,
-                x1, y2, z2,
-                x1, y2, z1,
-                x1, y1, z2,
-                x1, y2, z1,
-                x1, y1, z1,
-            ]
-        case "north":
-            return [
-                x2, y2, z1,
-                x2, y1, z1,
-                x1, y1, z1,
-                x2, y2, z1,
-                x1, y1, z1,
-                x1, y2, z1,
-            ]
-        case "up":
-            return [
-                x2, y2, z1,
-                x1, y2, z1,
-                x2, y2, z2,
-                x1, y2, z1,
-                x1, y2, z2,
-                x2, y2, z2,
-            ]
-    # fmt: on
-
-
-def get_face_normals(direction: FaceName):
-    return 6 * get_direction_vec(direction)
-
-
-def get_face_uv_indices(direction: FaceName):
-    match direction:
-        case "south":
-            return (2, 3, 1, 3, 0, 1)
-        case "east":
-            return (2, 3, 1, 3, 0, 1)
-        case "down":
-            return (2, 3, 0, 2, 0, 1)
-        case "west":
-            return (2, 3, 0, 2, 0, 1)
-        case "north":
-            return (0, 1, 2, 0, 2, 3)
-        case "up":
-            return (3, 0, 2, 0, 1, 2)
-
-
-def orbit_camera(pitch: float, yaw: float):
-    """Both values are in degrees."""
-
-    eye = transform_vec(
-        (-64, 0, 0),
-        cast(
-            Matrix44,
-            Matrix44.identity(dtype="f4")
-            * Matrix44.from_y_rotation(math.radians(yaw))
-            * Matrix44.from_z_rotation(math.radians(pitch)),
-        ),
-    )
-
-    up = transform_vec(
-        (-1, 0, 0),
-        cast(
-            Matrix44,
-            Matrix44.identity(dtype="f4")
-            * Matrix44.from_y_rotation(math.radians(yaw))
-            * Matrix44.from_z_rotation(math.radians(90 - pitch)),
-        ),
-    )
-
-    return Matrix44.look_at(
-        eye=eye,
-        target=(0, 0, 0),
-        up=up,
-        dtype="f4",
-    ), eye
-
-
-def transform_vec(vec: Vec3, matrix: Matrix44) -> Vec3:
-    return np.matmul((*vec, 1), matrix, dtype="f4")[:3]
-
-
-def direction_camera(pos: FaceName, up: FaceName = "up"):
-    """eg. north -> camera is placed to the north of the model, looking south"""
-    eye = get_direction_vec(pos, 64)
-    return Matrix44.look_at(
-        eye=eye,
-        target=(0, 0, 0),
-        up=get_direction_vec(up),
-        dtype="f4",
-    ), eye
-
-
-def get_direction_vec(direction: FaceName, magnitude: float = 1):
-    match direction:
-        case "north":
-            return (0, 0, -magnitude)
-        case "south":
-            return (0, 0, magnitude)
-        case "west":
-            return (-magnitude, 0, 0)
-        case "east":
-            return (magnitude, 0, 0)
-        case "down":
-            return (0, -magnitude, 0)
-        case "up":
-            return (0, magnitude, 0)
-
-
-def read_shader(path: str, type: Literal["fragment", "vertex", "geometry"]):
-    file = resources.files(glsl) / path / f"{type}.glsl"
-    return file.read_text("utf-8")
-
-
-def get_rotation_matrix(eulers: Vec3) -> Matrix44:
-    return cast(
-        Matrix44,
-        Matrix44.from_x_rotation(-eulers[0], "f4")
-        * Matrix44.from_y_rotation(-eulers[1], "f4")
-        * Matrix44.from_z_rotation(-eulers[2], "f4"),
-    )

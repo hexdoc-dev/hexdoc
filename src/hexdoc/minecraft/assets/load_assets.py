@@ -14,7 +14,7 @@ from hexdoc.core.properties import (
     PNGTextureOverride,
     TextureTextureOverride,
 )
-from hexdoc.graphics.render import BlockRenderer
+from hexdoc.graphics import BlockRenderer
 from hexdoc.utils import PydanticURL
 from hexdoc.utils.context import ContextSource
 

@@ -22,7 +22,7 @@ from hexdoc.data.sitemap import (
     dump_sitemap,
     load_sitemap,
 )
-from hexdoc.graphics.render import BlockRenderer, DebugType
+from hexdoc.graphics import BlockRenderer, DebugType
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import (
