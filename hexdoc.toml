@@ -1,4 +1,4 @@
-#:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
+#:schema https://hexdoc.hexxy.media/schema/core/Properties.json
 
 modid = "hexdoc"
 default_lang = "en_us"

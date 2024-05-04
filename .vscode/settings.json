@@ -35,4 +35,18 @@
         {"name": "pydantic", "depth": 2},
     ],
     "evenBetterToml.schema.enabled": true,
+    "json.schemas": [
+        {
+            "url": "./web/docusaurus/static-generated/schema/patchouli/Book.json",
+            "fileMatch": ["**/patchouli_books/*/book.json"],
+        },
+        {
+            "url": "./web/docusaurus/static-generated/schema/patchouli/Category.json",
+            "fileMatch": ["**/patchouli_books/*/*/categories/**/*.json"],
+        },
+        {
+            "url": "./web/docusaurus/static-generated/schema/patchouli/Entry.json",
+            "fileMatch": ["**/patchouli_books/*/*/entries/**/*.json"],
+        },
+    ],
 }

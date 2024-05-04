@@ -130,6 +130,28 @@ def docs(session: nox.Session):
     static_generated = "web/docusaurus/static-generated"
     rmtree(session, static_generated)
 
+    for model_type in [
+        "core.Properties",
+        "patchouli.Book",
+        "patchouli.Category",
+        "patchouli.Entry",
+    ]:
+        session.run(
+            "python",
+            "-m",
+            "_scripts.json_schema",
+            f"hexdoc.{model_type}",
+            "--output",
+            f"{static_generated}/schema/{model_type.replace('.', '/')}.json",
+        )
+
+    # backwards compatibility with old naming scheme
+    Path(f"{static_generated}/schema/hexdoc/core").mkdir(parents=True, exist_ok=True)
+    shutil.copy(
+        f"{static_generated}/schema/core/Properties.json",
+        f"{static_generated}/schema/hexdoc/core/Properties.json",
+    )
+
     session.run(
         "pdoc",
         "hexdoc",
@@ -143,18 +165,6 @@ def docs(session: nox.Session):
     )
 
     shutil.copytree("media", f"{static_generated}/img", dirs_exist_ok=True)
-
-    for model_type in [
-        "hexdoc.core.Properties",
-    ]:
-        session.run(
-            "python",
-            "-m",
-            "_scripts.json_schema",
-            model_type,
-            "--output",
-            f"{static_generated}/schema/{model_type.replace('.', '/')}.json",
-        )
 
     with session.cd("web/docusaurus"):
         session.run_install("npm", ("ci" if is_ci() else "install"), external=True)

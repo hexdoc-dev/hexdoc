@@ -12,7 +12,7 @@ For a complete example, see [examples/model_rendering](https://github.com/hexdoc
 2. Create a [`hexdoc.toml` config file](../../configuration):
 
     ```toml title="hexdoc.toml"
-    #:schema https://hexdoc.hexxy.media/schema/hexdoc/core/Properties.json
+    #:schema https://hexdoc.hexxy.media/schema/core/Properties.json
 
     # for standalone model rendering, just leave this as "hexdoc"
     modid = "hexdoc"
