@@ -3,23 +3,38 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Self, dataclass_transform
 
-from pydantic import ValidationInfo, model_validator
+from pydantic import GetJsonSchemaHandler, TypeAdapter, ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
+from pydantic_core import core_schema as cs
 
 from hexdoc.core.resource import (
+    BaseResourceLocation,
     ItemStack,
     ResourceLocation,
-    resloc_json_schema_extra,
 )
 
-from .base import DEFAULT_CONFIG, HexdocModel
+from .base import HexdocModel
+
+
+class BaseInlineModel(HexdocModel):
+    @classmethod
+    @abstractmethod
+    def _id_type(cls) -> type[BaseResourceLocation]: ...
+
+    @classmethod
+    def __get_pydantic_json_schema__(
+        cls,
+        core_schema: cs.CoreSchema,
+        handler: GetJsonSchemaHandler,
+    ) -> dict[str, Any]:
+        return handler(TypeAdapter(cls._id_type()).core_schema)
 
 
 @dataclass_transform()
-class InlineModel(HexdocModel, ABC):
-    model_config = DEFAULT_CONFIG | {
-        "json_schema_extra": lambda s: resloc_json_schema_extra(s, ResourceLocation),
-    }
+class InlineModel(BaseInlineModel, ABC):
+    @classmethod
+    def _id_type(cls):
+        return ResourceLocation
 
     @classmethod
     @abstractmethod
@@ -52,10 +67,10 @@ class InlineModel(HexdocModel, ABC):
 
 
 @dataclass_transform()
-class InlineItemModel(HexdocModel, ABC):
-    model_config = DEFAULT_CONFIG | {
-        "json_schema_extra": lambda s: resloc_json_schema_extra(s, ItemStack),
-    }
+class InlineItemModel(BaseInlineModel, ABC):
+    @classmethod
+    def _id_type(cls):
+        return ItemStack
 
     @classmethod
     @abstractmethod

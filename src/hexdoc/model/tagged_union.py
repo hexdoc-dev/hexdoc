@@ -7,9 +7,18 @@ from collections import defaultdict
 from typing import Any, ClassVar, Generator, Self, Unpack
 
 import more_itertools
-from pydantic import ConfigDict, ValidationError, ValidationInfo, model_validator
+from pydantic import (
+    ConfigDict,
+    GetJsonSchemaHandler,
+    TypeAdapter,
+    ValidationError,
+    ValidationInfo,
+    model_validator,
+)
 from pydantic.functional_validators import ModelWrapValidatorHandler
-from pydantic_core import InitErrorDetails, PydanticCustomError
+from pydantic.json_schema import JsonSchemaValue
+from pydantic_core import InitErrorDetails, PydanticCustomError, core_schema as cs
+from typing_extensions import override
 
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.plugin import PluginManager
@@ -228,6 +237,82 @@ class InternallyTaggedUnion(HexdocModel):
             assert value.pop(cls._tag_key, NoValue) == cls._tag_value
         return value
 
+    @classmethod
+    @override
+    def __get_pydantic_json_schema__(
+        cls,
+        core_schema: cs.CoreSchema,
+        handler: GetJsonSchemaHandler,
+    ) -> JsonSchemaValue:
+        base_schema = handler.resolve_ref_schema(
+            super().__get_pydantic_json_schema__(core_schema, handler)
+        )
+
+        if cls._tag_key is None:
+            return base_schema
+
+        properties = base_schema.setdefault("properties", {})
+
+        properties[cls._tag_key] = handler(cs.literal_schema([cls._tag_value]))
+        base_schema.setdefault("required", []).append(cls._tag_key)
+
+        if cls._tag_value is not None:
+            return base_schema
+
+        subtypes = {
+            subtype
+            for subtypes in cls.__concrete_subtypes.values()
+            for subtype in subtypes
+            if subtype is not cls
+        }
+        if not subtypes:
+            return base_schema
+
+        union_schema = cs.union_schema(
+            [subtype.__pydantic_core_schema__ for subtype in subtypes],
+        )
+        json_schema = handler.resolve_ref_schema(handler(union_schema))
+
+        if any_of := json_schema.get("anyOf"):
+            other_schema = base_schema | {
+                "additionalProperties": True,
+                "properties": (
+                    properties
+                    | {
+                        cls._tag_key: {
+                            "allOf": [
+                                handler(cls._tag_value_schema),
+                                {
+                                    "not": handler(
+                                        cs.union_schema(
+                                            [
+                                                cs.literal_schema([subtype._tag_value])
+                                                for subtype in subtypes
+                                                if subtype._tag_value
+                                                not in {None, NoValue}
+                                            ]
+                                        )
+                                    )
+                                },
+                            ],
+                        },
+                    }
+                ),
+            }
+            any_of.append(other_schema)
+
+        return json_schema
+
+    @classproperty
+    @classmethod
+    def _tag_value_type(cls) -> type[Any]:
+        return str
+
+    @classproperty
+    @classmethod
+    def _tag_value_schema(cls):
+        return TypeAdapter(cls._tag_value_type).core_schema
+
 
 class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
     _type: ClassVar[ResourceLocation | NoValueType | None] = None
@@ -250,6 +335,12 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
     @classmethod
     def type(cls):
         return cls._type
+
+    @classproperty
+    @classmethod
+    @override
+    def _tag_value_type(cls) -> type[Any]:
+        return ResourceLocation
 
 
 class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
