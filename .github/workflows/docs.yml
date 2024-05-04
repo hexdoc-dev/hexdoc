@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate docs
         timeout-minutes: 5
-        run: nox --session docs -- build
+        run: nox --tags docs -- build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

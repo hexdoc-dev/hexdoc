@@ -20,6 +20,8 @@ MOCK_ENV = {
 
 DUMMY_PATH = Path(".hexdoc/dummy_book")
 
+STATIC_GENERATED = "web/docusaurus/static-generated"
+
 nox.options.default_venv_backend = "uv|virtualenv"
 nox.options.reuse_existing_virtualenvs = True
 nox.options.sessions = [
@@ -119,16 +121,14 @@ def test_copier(session: nox.Session):
 # CI/CD
 
 
-# docs for the docs!
-@nox.session
-def docs(session: nox.Session):
-    session.install("-e", ".[pdoc]")
+@nox.session(tags=["docs"], python=False)
+def clean_docs(session: nox.Session):
+    rmtree(session, STATIC_GENERATED)
 
-    hexdoc_version = get_hexdoc_version()
-    commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
-    static_generated = "web/docusaurus/static-generated"
-    rmtree(session, static_generated)
+@nox.session(tags=["docs"])
+def json_schemas(session: nox.Session):
+    session.install("-e", ".")
 
     for model_type in [
         "core.Properties",
@@ -142,15 +142,23 @@ def docs(session: nox.Session):
             "_scripts.json_schema",
             f"hexdoc.{model_type}",
             "--output",
-            f"{static_generated}/schema/{model_type.replace('.', '/')}.json",
+            f"{STATIC_GENERATED}/schema/{model_type.replace('.', '/')}.json",
         )
 
     # backwards compatibility with old naming scheme
-    Path(f"{static_generated}/schema/hexdoc/core").mkdir(parents=True, exist_ok=True)
+    Path(f"{STATIC_GENERATED}/schema/hexdoc/core").mkdir(parents=True, exist_ok=True)
     shutil.copy(
-        f"{static_generated}/schema/core/Properties.json",
-        f"{static_generated}/schema/hexdoc/core/Properties.json",
+        f"{STATIC_GENERATED}/schema/core/Properties.json",
+        f"{STATIC_GENERATED}/schema/hexdoc/core/Properties.json",
     )
+
+
+@nox.session(tags=["docs"])
+def pdoc(session: nox.Session):
+    session.install("-e", ".[pdoc]")
+
+    hexdoc_version = get_hexdoc_version()
+    commit = run_silent_external(session, "git", "rev-parse", "--short", "HEAD")
 
     session.run(
         "pdoc",
@@ -161,10 +169,14 @@ def docs(session: nox.Session):
         "--logo=https://github.com/hexdoc-dev/hexdoc/raw/main/media/hexdoc.svg",
         "--edit-url=hexdoc=https://github.com/hexdoc-dev/hexdoc/blob/main/src/hexdoc/",
         f"--footer-text=Version: {hexdoc_version} ({commit})",
-        f"--output-directory={static_generated}/docs/api",
+        f"--output-directory={STATIC_GENERATED}/docs/api",
     )
 
-    shutil.copytree("media", f"{static_generated}/img", dirs_exist_ok=True)
+
+# docs for the docs!
+@nox.session(tags=["docs"], python=False)
+def docusaurus(session: nox.Session):
+    shutil.copytree("media", f"{STATIC_GENERATED}/img", dirs_exist_ok=True)
 
     with session.cd("web/docusaurus"):
         session.run_install("npm", ("ci" if is_ci() else "install"), external=True)
@@ -180,6 +192,7 @@ def docs(session: nox.Session):
 
 
 # IMPORTANT: must install packaging alongside Nox to use this session!
+# FIXME: this should be in src/_scripts instead
 @nox.session
 def tag(session: nox.Session):
     from packaging.version import Version
