@@ -14,6 +14,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      # TODO: can we disable this warning somehow? :/
+      run-scraper: ${{ steps.filter.outputs.docs }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -33,6 +36,14 @@ jobs:
         with:
           path: web/docusaurus/build
 
+      - name: Check if scraper should run
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs:
+              - 'web/docusaurus/**'
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -47,7 +58,8 @@ jobs:
         uses: actions/deploy-pages@v4
 
   run-scraper:
-    needs: deploy
+    needs: [build, deploy]
+    if: ${{ needs.build.outputs.run-scraper }}
     runs-on: ubuntu-latest
     environment:
       name: algolia
