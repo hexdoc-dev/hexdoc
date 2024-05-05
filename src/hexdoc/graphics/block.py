@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from functools import cached_property
-from pathlib import Path
 from typing import cast
 
 import moderngl as mgl
@@ -17,7 +16,6 @@ from moderngl_window.opengl.vao import VAO
 from PIL import Image
 from pyrr import Matrix44
 
-from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.model import (
     BlockModel,
     DisplayPosition,
@@ -30,7 +28,8 @@ from hexdoc.utils.types import Vec3, Vec4
 
 from .camera import direction_camera
 from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
-from .utils import DebugType, get_height_and_layers, get_rotation_matrix, read_shader
+from .texture import ModelTexture
+from .utils import DebugType, get_rotation_matrix, read_shader
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +79,6 @@ class BlockRenderer(WindowConfig):
 
         self.uniform("m_proj").write(self.projection)
         self.uniform("m_camera").write(self.camera)
-        self.uniform("layer").value = 0  # TODO: implement animations
 
         for i, (direction, diffuse) in enumerate(self.lights):
             self.uniform(f"lights[{i}].direction").value = direction
@@ -128,8 +126,7 @@ class BlockRenderer(WindowConfig):
     def render_block(
         self,
         model: BlockModel,
-        texture_vars: dict[str, BlockTextureInfo],
-        output_path: Path,
+        texture_vars: dict[str, ModelTexture],
         debug: DebugType = DebugType.NONE,
     ):
         if not model.elements:
@@ -149,35 +146,30 @@ class BlockRenderer(WindowConfig):
         texture_locs = dict[str, int]()
         transparent_textures = set[str]()
 
-        for i, (name, info) in enumerate(texture_vars.items()):
+        for i, (name, texture) in enumerate(texture_vars.items()):
             texture_locs[name] = i
 
-            logger.debug(f"Loading texture {name}: {info}")
-            image = Image.open(info.image_path).convert("RGBA")
+            image = texture.image
+            frame_height = texture.frame_height
+            layers = len(texture.frames)
 
             min_alpha, _ = cast(tuple[int, int], image.getextrema()[3])
             if min_alpha < 255:
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
 
-            # TODO: implement non-square animations, write test cases
-            frame_height, layers = get_height_and_layers(image, info.meta)
-
-            if frame_height * layers != image.height:
-                raise RuntimeError(
-                    f"Invalid texture size for variable #{name}:"
-                    + f" {frame_height}x{layers} != {image.height}"
-                    + f"\n  {info}"
-                )
+            data = bytes()
+            for frame in texture.frames:
+                data += frame.tobytes()
 
             logger.debug(f"Texture array: {image.width=}, {frame_height=}, {layers=}")
-            texture = self.ctx.texture_array(
+            texture_array = self.ctx.texture_array(
                 size=(image.width, frame_height, layers),
                 components=4,
-                data=image.tobytes(),
+                data=data,
             )
-            texture.filter = (mgl.NEAREST, mgl.NEAREST)
-            texture.use(i)
+            texture_array.filter = (mgl.NEAREST, mgl.NEAREST)
+            texture_array.use(i)
 
         # transform entire model
 
@@ -222,7 +214,8 @@ class BlockRenderer(WindowConfig):
                     direction=direction,
                     face=face,
                     m_model=element_transform,
-                    texture0=texture_locs[face.texture_name],
+                    texture_loc=texture_locs[face.texture_name],
+                    texture=texture_vars[face.texture_name],
                     is_opaque=face.texture_name not in transparent_textures,
                 )
                 baked_faces.append(baked_face)
@@ -230,9 +223,19 @@ class BlockRenderer(WindowConfig):
         # TODO: use a map if this is actually slow
         baked_faces.sort(key=lambda face: face.sortkey(self.eye))
 
+        animation_length = max(len(face.texture.frames) for face in baked_faces)
+        return [
+            self._render_frame(baked_faces, debug, animation_tick)
+            for animation_tick in range(animation_length)
+        ]
+
+    def _render_frame(self, baked_faces: list[BakedFace], debug: DebugType, tick: int):
+        self.wnd.clear()
+
         for face in baked_faces:
             self.uniform("m_model").write(face.m_model)
-            self.uniform("texture0").value = face.texture0
+            self.uniform("texture0").value = face.texture_loc
+            self.uniform("layer").value = face.texture.get_frame_index(tick)
 
             face.vao.render(self.face_prog)
 
@@ -249,27 +252,18 @@ class BlockRenderer(WindowConfig):
 
         self.ctx.finish()
 
-        # save to file
-
         image = Image.frombytes(
             mode="RGBA",
             size=self.wnd.fbo.size,
             data=self.wnd.fbo.read(components=4),
         ).transpose(Image.FLIP_TOP_BOTTOM)
 
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        image.save(output_path, format="png")
+        return image
 
     def uniform(self, name: str, program: Program | None = None):
         program = program or self.face_prog
         assert isinstance(uniform := program[name], Uniform)
         return uniform
-
-
-@dataclass
-class BlockTextureInfo:
-    image_path: Path
-    meta: AnimationMeta | None
 
 
 @dataclass(kw_only=True)
@@ -278,7 +272,8 @@ class BakedFace:
     direction: FaceName
     face: ElementFace
     m_model: Matrix44
-    texture0: float
+    texture_loc: float
+    texture: ModelTexture
     is_opaque: bool
 
     def __post_init__(self):

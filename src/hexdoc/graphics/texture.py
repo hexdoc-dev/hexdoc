@@ -51,7 +51,11 @@ class ModelTexture:
                 return self.image.width
 
     @cached_property
-    def frame_count(self):
+    def _frame_count(self):
+        """Number of sub-images within `self.image`.
+
+        Not necessarily equal to `len(self.frames)`!
+        """
         count = self.image.height / self.frame_height
         if not count.is_integer() or count < 1:
             raise ValueError(
@@ -61,10 +65,13 @@ class ModelTexture:
             )
         return int(count)
 
-    def get_frame(self, tick: int):
+    def get_frame_index(self, tick: int):
         if tick < 0:
             raise ValueError(f"Expected tick >= 0, got {tick}")
-        return self.frames[tick % len(self.frames)]
+        return tick % len(self.frames)
+
+    def get_frame(self, tick: int):
+        return self.frames[self.get_frame_index(tick)]
 
     @cached_property
     @listify
@@ -81,7 +88,7 @@ class ModelTexture:
 
         frames = self.animation.frames or [
             AnimationFrame(index=i, time=self.animation.frametime)
-            for i in range(self.frame_count)
+            for i in range(self._frame_count)
         ]
 
         frame_images = [(frame, self._get_frame_image(frame)) for frame in frames]
@@ -97,9 +104,9 @@ class ModelTexture:
                     yield image
 
     def _get_frame_image(self, frame: AnimationFrame):
-        if frame.index >= self.frame_count:
+        if frame.index >= self._frame_count:
             raise ValueError(
-                f"Invalid frame index (expected <{self.frame_count}): {frame}"
+                f"Invalid frame index (expected <{self._frame_count}): {frame}"
             )
         start_y = self.frame_height * frame.index
         end_y = start_y + self.frame_height

@@ -11,14 +11,12 @@ import moderngl_window as mglw
 from moderngl_window.context.headless import Window as HeadlessWindow
 from PIL import Image
 from PIL.Image import Resampling
-from pydantic import ValidationError
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.graphics.texture import ModelTexture
-from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.model import BlockModel
 
-from .block import BlockRenderer, BlockTextureInfo
+from .block import BlockRenderer
 from .utils import DebugType
 
 logger = logging.getLogger(__name__)
@@ -63,27 +61,11 @@ class ModelRenderer:
             output_path = self.output_dir / output_path
 
         if model.is_generated_item:
-            return self._render_item(model, output_path)
+            frames = self._render_item(model)
         else:
-            return self._render_block(model, output_path)
+            frames = self._render_block(model)
 
-    def _render_block(self, model: BlockModel, output_path: Path):
-        textures = {
-            name: self._load_texture(texture_id)
-            for name, texture_id in model.resolved_textures.items()
-        }
-        self.block_renderer.render_block(model, textures, output_path, self.debug)
-        return output_path.suffix
-
-    def _render_item(self, model: BlockModel, output_path: Path):
-        layers = sorted(self._load_layers(model), key=lambda tex: tex.layer_index)
-
-        animation_length = max(len(layer.frames) for layer in layers)
-
-        frames = [
-            self._render_item_frame(layers, tick) for tick in range(animation_length)
-        ]
-
+        output_path.mkdir(parents=True, exist_ok=True)
         match frames:
             case [image]:
                 image.save(output_path)
@@ -96,13 +78,30 @@ class ModelRenderer:
                     loop=0,  # loop forever
                     duration=1000 / 20,
                     disposal=2,  # restore to background color
-                    interlace=False,
                 )
             case _:
                 # TODO: awful error message.
                 raise ValueError("No frames rendered!")
 
         return output_path.suffix
+
+    def _render_block(self, model: BlockModel):
+        textures = {
+            name: ModelTexture.load(self.loader, texture_id)
+            for name, texture_id in model.resolved_textures.items()
+        }
+        return self.block_renderer.render_block(model, textures, self.debug)
+
+    def _render_item(self, model: BlockModel):
+        layers = sorted(
+            self._load_layers(model),
+            key=lambda tex: tex.layer_index,
+        )
+        animation_length = max(len(layer.frames) for layer in layers)
+        return [
+            self._render_item_frame(layers, animation_tick)
+            for animation_tick in range(animation_length)
+        ]
 
     def _render_item_frame(self, layers: list[ModelTexture], tick: int):
         image = layers[0].get_frame(tick)
@@ -133,24 +132,6 @@ class ModelRenderer:
             texture = ModelTexture.load(self.loader, texture_id)
             texture.layer_index = int(index)
             yield texture
-
-    def _load_texture(self, texture_id: ResourceLocation):
-        logger.debug(f"Loading texture: {texture_id}")
-        _, path = self.loader.find_resource("assets", "textures", texture_id + ".png")
-
-        meta_path = path.with_suffix(".png.mcmeta")
-        if meta_path.is_file():
-            logger.debug(f"Loading animation mcmeta: {meta_path}")
-            # FIXME: hack
-            try:
-                meta = AnimationMeta.model_validate_json(meta_path.read_bytes())
-            except ValidationError as e:
-                logger.warning(f"Failed to parse animation meta for {texture_id}:\n{e}")
-                meta = None
-        else:
-            meta = None
-
-        return BlockTextureInfo(path, meta)
 
     def destroy(self):
         self.window.destroy()
