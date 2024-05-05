@@ -17,7 +17,7 @@ from hexdoc.utils import listify
 logger = logging.getLogger(__name__)
 
 
-MAX_DURATION_SECONDS = 30
+MAX_DURATION_SECONDS = 15
 MAX_FRAMES = MAX_DURATION_SECONDS * 20
 
 _TEXTURE_CACHE: dict[ResourceLocation, ModelTexture] = {}
