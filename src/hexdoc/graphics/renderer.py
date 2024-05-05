@@ -65,7 +65,7 @@ class ModelRenderer:
         else:
             frames = self._render_block(model)
 
-        output_path.mkdir(parents=True, exist_ok=True)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         match frames:
             case [image]:
                 image.save(output_path)
