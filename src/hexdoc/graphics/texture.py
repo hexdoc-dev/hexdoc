@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class ModelTexture:
-    index: int = -1
     image: Image.Image
     animation: Animation | None
+    layer_index: int = -1
 
     @classmethod
     def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation):
@@ -77,7 +77,7 @@ class ModelTexture:
             yield self.image
             return
 
-        # TODO: implement width/height, interpolation
+        # TODO: implement width/height
 
         frames = self.animation.frames or [
             AnimationFrame(index=i, time=self.animation.frametime)

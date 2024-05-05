@@ -10,6 +10,7 @@ from typing import Any
 import moderngl_window as mglw
 from moderngl_window.context.headless import Window as HeadlessWindow
 from PIL import Image
+from PIL.Image import Resampling
 from pydantic import ValidationError
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
@@ -28,10 +29,12 @@ class ModelRenderer:
     loader: ModResourceLoader
     output_dir: Path | None = None
     debug: DebugType = DebugType.NONE
+    block_size: int | None = None
+    item_size: int | None = None
 
     def __post_init__(self):
         self.window = HeadlessWindow(
-            size=(300, 300),
+            size=(self.block_size or 300,) * 2,
         )
         mglw.activate_context(self.window)
 
@@ -73,7 +76,7 @@ class ModelRenderer:
         return output_path.suffix
 
     def _render_item(self, model: BlockModel, output_path: Path):
-        layers = sorted(self._load_layers(model), key=lambda v: v.index)
+        layers = sorted(self._load_layers(model), key=lambda tex: tex.layer_index)
 
         animation_length = max(len(layer.frames) for layer in layers)
 
@@ -103,14 +106,19 @@ class ModelRenderer:
 
     def _render_item_frame(self, layers: list[ModelTexture], tick: int):
         image = layers[0].get_frame(tick)
+
         for texture in layers[1:]:
             layer = texture.get_frame(tick)
             if layer.size != image.size:
                 raise ValueError(
-                    f"Mismatched size for layer {texture.index} at frame 0 "
+                    f"Mismatched size for layer {texture.layer_index} at frame 0 "
                     + f"(expected {image.size}, got {layer.size})"
                 )
             image = Image.alpha_composite(image, layer)
+
+        if self.item_size:
+            image = image.resize((self.item_size, self.item_size), Resampling.NEAREST)
+
         return image
 
     def _load_layers(self, model: BlockModel):
@@ -123,7 +131,7 @@ class ModelRenderer:
                 continue
 
             texture = ModelTexture.load(self.loader, texture_id)
-            texture.index = int(index)
+            texture.layer_index = int(index)
             yield texture
 
     def _load_texture(self, texture_id: ResourceLocation):

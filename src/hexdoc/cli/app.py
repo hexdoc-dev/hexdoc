@@ -438,6 +438,7 @@ def render_model(
     output_path: Annotated[Path, Option("--output", "-o")] = Path("out.png"),
     axes: bool = False,
     normals: bool = False,
+    size: Optional[int] = None,
 ):
     """Use hexdoc's block rendering to render an item or block model."""
     set_default_env()
@@ -451,7 +452,12 @@ def render_model(
 
     with (
         ModResourceLoader.load_all(props, pm, export=False) as loader,
-        ModelRenderer(loader=loader, debug=debug) as renderer,
+        ModelRenderer(
+            loader=loader,
+            debug=debug,
+            block_size=size,
+            item_size=size,
+        ) as renderer,
     ):
         renderer.render_model(ResourceLocation.from_str(model_id), output_path)
 
