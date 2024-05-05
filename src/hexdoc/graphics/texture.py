@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
+import numpy as np
 from PIL import Image
 from pydantic import ValidationError
 
@@ -13,20 +16,34 @@ from hexdoc.utils import listify
 logger = logging.getLogger(__name__)
 
 
+MAX_DURATION_SECONDS = 30
+MAX_FRAMES = MAX_DURATION_SECONDS * 20
+
+_TEXTURE_CACHE: dict[ResourceLocation, ModelTexture] = {}
+
+
 @dataclass(kw_only=True)
 class ModelTexture:
+    texture_id: ResourceLocation
     image: Image.Image
     animation: Animation | None
     layer_index: int = -1
 
     @classmethod
     def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation):
+        if cached := _TEXTURE_CACHE.get(texture_id):
+            return cached
+
         logger.debug(f"Loading texture: {texture_id}")
         _, path = loader.find_resource("assets", "textures", texture_id + ".png")
-        return cls(
+
+        texture = cls(
+            texture_id=texture_id,
             image=Image.open(path).convert("RGBA"),
             animation=cls._load_animation(path.with_suffix(".png.mcmeta")),
         )
+        _TEXTURE_CACHE[texture_id] = texture
+        return texture
 
     @classmethod
     def _load_animation(cls, path: Path):
@@ -91,17 +108,28 @@ class ModelTexture:
             for i in range(self._frame_count)
         ]
 
-        frame_images = [(frame, self._get_frame_image(frame)) for frame in frames]
+        frame_lerps = [
+            (frame, i / frame.time if self.animation.interpolate else 0)
+            for frame in frames
+            for i in range(frame.time)
+        ]
 
-        for i, (frame, image) in enumerate(frame_images):
-            # wrap around so it interpolates back to the start of the loop
-            _, next_image = frame_images[(i + 1) % len(frame_images)]
+        if (n := len(frame_lerps)) > MAX_FRAMES:
+            logger.warning(
+                f"Animation for texture {self.texture_id} is too long, dropping"
+                + f" {n - MAX_FRAMES} frames ({n} > {MAX_FRAMES})"
+            )
+            idx = np.round(np.linspace(0, n - 1, MAX_FRAMES)).astype(int)
+            frame_lerps = np.array(frame_lerps)[idx]
 
-            for i in range(frame.time):
-                if self.animation.interpolate:
-                    yield Image.blend(image, next_image, i / frame.time)
-                else:
-                    yield image
+        frame_images = [self._get_frame_image(frame) for frame, _ in frame_lerps]
+
+        for (_, lerp), image, next_image in zip(
+            frame_lerps,
+            frame_images,
+            frame_images[1:] + [frame_images[0]],
+        ):
+            yield Image.blend(image, next_image, lerp)
 
     def _get_frame_image(self, frame: AnimationFrame):
         if frame.index >= self._frame_count:
