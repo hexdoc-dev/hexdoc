@@ -4,6 +4,7 @@ from textwrap import indent
 from typing import Any, Literal, overload
 
 from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from hexdoc.core import (
     MinecraftVersion,
@@ -88,10 +89,11 @@ def render_textures_and_export_metadata(
     internal_lookups = TextureLookups[Texture](dict)
     if loader.props.textures.enabled:
         logger.info(f"Loading and rendering textures to {asset_loader.render_dir}.")
-        bar = tqdm(asset_loader.load_and_render_internal_textures(image_textures))
-        for id, texture in bar:
-            bar.set_postfix_str(str(id))
-            texture.insert_texture(internal_lookups, id)
+        with logging_redirect_tqdm():
+            bar = tqdm(asset_loader.load_and_render_internal_textures(image_textures))
+            for id, texture in bar:
+                bar.set_postfix_str(str(id))
+                texture.insert_texture(internal_lookups, id)
 
     # this mod's metadata
     metadata = HexdocMetadata(
