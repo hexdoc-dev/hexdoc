@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
@@ -108,28 +109,31 @@ class ModelTexture:
             for i in range(self._frame_count)
         ]
 
-        frame_lerps = [
-            (frame, i / frame.time if self.animation.interpolate else 0)
-            for frame in frames
-            for i in range(frame.time)
+        images = [self._get_frame_image(frame) for frame in frames]
+
+        frame_time_multiplier = 1
+        total_frames = sum(frame.time for frame in frames)
+        if total_frames > MAX_FRAMES:
+            logger.warning(
+                f"Animation for texture {self.texture_id} is too long, dropping about"
+                + f" {total_frames - MAX_FRAMES} frames"
+                + f" ({total_frames} > {MAX_FRAMES})"
+            )
+            frame_time_multiplier = MAX_FRAMES / total_frames
+
+        frame_lerps: list[tuple[int, float]] = [
+            (frame_idx, time / frame.time if self.animation.interpolate else 0)
+            for frame_idx, frame in enumerate(frames)
+            for time in np.linspace(
+                0,
+                frame.time - 1,
+                max(1, math.floor(frame.time * frame_time_multiplier)),
+            )
         ]
 
-        if (n := len(frame_lerps)) > MAX_FRAMES:
-            logger.warning(
-                f"Animation for texture {self.texture_id} is too long, dropping"
-                + f" {n - MAX_FRAMES} frames ({n} > {MAX_FRAMES})"
-            )
-            idx = np.round(np.linspace(0, n - 1, MAX_FRAMES)).astype(int)
-            frame_lerps = np.array(frame_lerps)[idx]
-
-        frame_images = [self._get_frame_image(frame) for frame, _ in frame_lerps]
-
-        for (_, lerp), image, next_image in zip(
-            frame_lerps,
-            frame_images,
-            frame_images[1:] + [frame_images[0]],
-        ):
-            yield Image.blend(image, next_image, lerp)
+        for i, lerp in frame_lerps:
+            j = (i + 1) % len(images)
+            yield Image.blend(images[i], images[j], lerp)
 
     def _get_frame_image(self, frame: AnimationFrame):
         if frame.index >= self._frame_count:
