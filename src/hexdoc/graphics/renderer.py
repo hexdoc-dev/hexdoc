@@ -70,14 +70,16 @@ class ModelRenderer:
             case [image]:
                 image.save(output_path)
             case [first, *rest]:
-                output_path = output_path.with_suffix(".gif")
+                # TODO: decide if we want to use APNG or GIF
+                # output_path = output_path.with_suffix(".gif")
                 first.save(
                     output_path,
                     save_all=True,
                     append_images=rest,
                     loop=0,  # loop forever
                     duration=1000 / 20,
-                    disposal=2,  # restore to background color
+                    # disposal=2,  # restore to background color
+                    disposal=1,
                 )
             case _:
                 # TODO: awful error message.
