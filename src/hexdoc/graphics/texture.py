@@ -84,15 +84,23 @@ class ModelTexture:
             for i in range(self.frame_count)
         ]
 
-        for frame in frames:
-            if frame.index >= self.frame_count:
-                raise ValueError(
-                    f"Invalid frame index (expected <{self.frame_count}): {frame}"
-                )
+        frame_images = [(frame, self._get_frame_image(frame)) for frame in frames]
 
-            start_y = self.frame_height * frame.index
-            end_y = start_y + self.frame_height
-            frame_image = self.image.crop((0, start_y, self.image.width, end_y))
+        for i, (frame, image) in enumerate(frame_images):
+            # wrap around so it interpolates back to the start of the loop
+            _, next_image = frame_images[(i + 1) % len(frame_images)]
 
-            for _ in range(frame.time):
-                yield frame_image
+            for i in range(frame.time):
+                if self.animation.interpolate:
+                    yield Image.blend(image, next_image, i / frame.time)
+                else:
+                    yield image
+
+    def _get_frame_image(self, frame: AnimationFrame):
+        if frame.index >= self.frame_count:
+            raise ValueError(
+                f"Invalid frame index (expected <{self.frame_count}): {frame}"
+            )
+        start_y = self.frame_height * frame.index
+        end_y = start_y + self.frame_height
+        return self.image.crop((0, start_y, self.image.width, end_y))
