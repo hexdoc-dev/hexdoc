@@ -18,7 +18,6 @@ from PIL import Image
 from pyrr import Matrix44
 
 from hexdoc.minecraft.assets import AnimationMeta
-from hexdoc.minecraft.assets.animated import AnimationMetaTag
 from hexdoc.minecraft.model import (
     BlockModel,
     DisplayPosition,
@@ -31,7 +30,7 @@ from hexdoc.utils.types import Vec3, Vec4
 
 from .camera import direction_camera
 from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
-from .utils import DebugType, get_rotation_matrix, read_shader
+from .utils import DebugType, get_height_and_layers, get_rotation_matrix, read_shader
 
 logger = logging.getLogger(__name__)
 
@@ -162,20 +161,7 @@ class BlockRenderer(WindowConfig):
                 transparent_textures.add(name)
 
             # TODO: implement non-square animations, write test cases
-            match info.meta:
-                case AnimationMeta(
-                    animation=AnimationMetaTag(height=frame_height),
-                ) if frame_height:
-                    # animated with specified size
-                    layers = image.height // frame_height
-                case AnimationMeta():
-                    # size is unspecified, assume it's square and verify later
-                    frame_height = image.width
-                    layers = image.height // frame_height
-                case None:
-                    # non-animated
-                    frame_height = image.height
-                    layers = 1
+            frame_height, layers = get_height_and_layers(image, info.meta)
 
             if frame_height * layers != image.height:
                 raise RuntimeError(

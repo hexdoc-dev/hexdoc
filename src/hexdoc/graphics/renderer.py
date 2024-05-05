@@ -9,9 +9,11 @@ from typing import Any
 
 import moderngl_window as mglw
 from moderngl_window.context.headless import Window as HeadlessWindow
+from PIL import Image
 from pydantic import ValidationError
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.graphics.texture import ModelTexture
 from hexdoc.minecraft.assets import AnimationMeta
 from hexdoc.minecraft.model import BlockModel
 
@@ -58,22 +60,71 @@ class ModelRenderer:
             output_path = self.output_dir / output_path
 
         if model.is_generated_item:
-            self._render_item(model, output_path)
+            return self._render_item(model, output_path)
         else:
-            self._render_block(model, output_path)
-
-    def _render_item(self, model: BlockModel, output_path: Path) -> None:
-        raise NotImplementedError()
+            return self._render_block(model, output_path)
 
     def _render_block(self, model: BlockModel, output_path: Path):
-        textures = self._load_textures(model.resolved_textures)
-        self.block_renderer.render_block(model, textures, output_path, self.debug)
-
-    def _load_textures(self, textures: dict[str, ResourceLocation]):
-        return {
+        textures = {
             name: self._load_texture(texture_id)
-            for name, texture_id in textures.items()
+            for name, texture_id in model.resolved_textures.items()
         }
+        self.block_renderer.render_block(model, textures, output_path, self.debug)
+        return output_path.suffix
+
+    def _render_item(self, model: BlockModel, output_path: Path):
+        layers = sorted(self._load_layers(model), key=lambda v: v.index)
+
+        animation_length = max(len(layer.frames) for layer in layers)
+
+        frames = [
+            self._render_item_frame(layers, tick) for tick in range(animation_length)
+        ]
+
+        match frames:
+            case [image]:
+                image.save(output_path)
+            case [first, *rest]:
+                output_path = output_path.with_suffix(".gif")
+                first.save(
+                    output_path,
+                    save_all=True,
+                    append_images=rest,
+                    loop=0,  # loop forever
+                    duration=1000 / 20,
+                    disposal=2,  # restore to background color
+                    interlace=False,
+                )
+            case _:
+                # TODO: awful error message.
+                raise ValueError("No frames rendered!")
+
+        return output_path.suffix
+
+    def _render_item_frame(self, layers: list[ModelTexture], tick: int):
+        image = layers[0].get_frame(tick)
+        for texture in layers[1:]:
+            layer = texture.get_frame(tick)
+            if layer.size != image.size:
+                raise ValueError(
+                    f"Mismatched size for layer {texture.index} at frame 0 "
+                    + f"(expected {image.size}, got {layer.size})"
+                )
+            image = Image.alpha_composite(image, layer)
+        return image
+
+    def _load_layers(self, model: BlockModel):
+        for name, texture_id in model.resolved_textures.items():
+            if not name.startswith("layer"):
+                continue
+
+            index = name.removeprefix("layer")
+            if not index.isnumeric():
+                continue
+
+            texture = ModelTexture.load(self.loader, texture_id)
+            texture.index = int(index)
+            yield texture
 
     def _load_texture(self, texture_id: ResourceLocation):
         logger.debug(f"Loading texture: {texture_id}")

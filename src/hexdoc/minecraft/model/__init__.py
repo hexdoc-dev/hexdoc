@@ -1,4 +1,7 @@
 __all__ = [
+    "Animation",
+    "AnimationFrame",
+    "AnimationMeta",
     "BlockModel",
     "Blockstate",
     "DisplayPosition",
@@ -8,6 +11,7 @@ __all__ = [
     "FaceName",
 ]
 
+from .animation import Animation, AnimationFrame, AnimationMeta
 from .block import BlockModel
 from .blockstate import Blockstate
 from .display import DisplayPosition

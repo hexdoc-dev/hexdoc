@@ -1,29 +1,13 @@
-from functools import cached_property
-from typing import Any, Literal, Self
+from __future__ import annotations
 
-from pydantic import Field
+from functools import cached_property
+from typing import Any, Self
 
 from hexdoc.model import HexdocModel
 from hexdoc.utils.types import PydanticURL
 
+from ..model.animation import AnimationMeta
 from .textures import BaseTexture
-
-
-class AnimationMetaFrame(HexdocModel):
-    index: int | None = None
-    time: int | None = None
-
-
-class AnimationMetaTag(HexdocModel):
-    interpolate: Literal[False] = False  # TODO: handle interpolation
-    width: None = None  # TODO: handle non-square textures
-    height: None = None
-    frametime: int = 1
-    frames: list[int | AnimationMetaFrame] = Field(default_factory=list)
-
-
-class AnimationMeta(HexdocModel):
-    animation: AnimationMetaTag
 
 
 class AnimatedTextureFrame(HexdocModel):
@@ -63,35 +47,16 @@ class AnimatedTexture(BaseTexture):
 
     @cached_property
     def time(self):
-        return sum(time for _, time in self._normalized_frames)
+        return sum(frame.time for frame in self.meta.animation.frames)
 
     @property
     def frames(self):
         start = 0
-        for index, time in self._normalized_frames:
+        for frame in self.meta.animation.frames:
             yield AnimatedTextureFrame(
-                index=index,
+                index=frame.index,
                 start=start,
-                time=time,
+                time=frame.time,
                 animation_time=self.time,
             )
-            start += time
-
-    @property
-    def _normalized_frames(self):
-        """index, time"""
-        animation = self.meta.animation
-
-        for i, frame in enumerate(animation.frames):
-            match frame:
-                case int(index):
-                    time = None
-                case AnimationMetaFrame(index=index, time=time):
-                    pass
-
-            if index is None:
-                index = i
-            if time is None:
-                time = animation.frametime
-
-            yield index, time
+            start += frame.time
