@@ -187,11 +187,16 @@ class TexturesProps(StripHiddenModel):
     """Set to False to disable texture rendering."""
     strict: bool = True
     """Set to False to print some errors instead of throwing them."""
+
     missing: set[ResourceLocation] | Literal["*"] = Field(default_factory=set)
     override: dict[
         ResourceLocation,
         PNGTextureOverride | TextureTextureOverride,
     ] = Field(default_factory=dict)
+
+    animated: AnimatedTexturesProps = Field(
+        default_factory=lambda: AnimatedTexturesProps(),
+    )
 
 
 # TODO: support item/block override
@@ -203,6 +208,32 @@ class PNGTextureOverride(StripHiddenModel):
 class TextureTextureOverride(StripHiddenModel):
     texture: ResourceLocation
     """The id of an image texture (eg. `minecraft:textures/item/stick.png`)."""
+
+
+class AnimatedTexturesProps(StripHiddenModel):
+    enabled: bool = True
+    """If set to `False`, animated textures will be rendered as a PNG with the first
+    frame of the animation."""
+    format: Literal["apng", "gif"] = "apng"
+    """Animated image output format.
+
+    APNG (the default) is higher quality, but the file size is a bit larger.
+
+    GIF produces smaller but lower quality files, and interpolated textures may have
+    issues with flickering.
+    """
+    max_frames: Annotated[int, Field(ge=0)] = 15 * 20  # 15 seconds * 20 tps
+    """Maximum number of frames for animated textures (1 frame = 1 tick = 1/20 seconds).
+    If a texture would have more frames than this, some frames will be dropped.
+
+    This is mostly necessary because of prismarine, which is an interpolated texture
+    with a total length of 6600 frames or 5.5 minutes.
+
+    The default value is 300 frames or 15 seconds, producing about a 3 MB animation for
+    prismarine.
+
+    To disable the frame limit entirely, set this value to 0.
+    """
 
 
 class TemplateProps(StripHiddenModel, validate_assignment=True):

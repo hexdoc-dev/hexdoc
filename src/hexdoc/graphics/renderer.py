@@ -11,6 +11,7 @@ import moderngl_window as mglw
 from moderngl_window.context.headless import Window as HeadlessWindow
 from PIL import Image
 from PIL.Image import Resampling
+from PIL.PngImagePlugin import Disposal as APNGDisposal
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.graphics.texture import ModelTexture
@@ -56,36 +57,25 @@ class ModelRenderer:
 
         model.resolve(self.loader)
 
-        output_path = Path(output_path)
-        if self.output_dir and not output_path.is_absolute():
-            output_path = self.output_dir / output_path
-
         if model.is_generated_item:
             frames = self._render_item(model)
         else:
             frames = self._render_block(model)
 
+        output_path = Path(output_path)
+        if self.output_dir and not output_path.is_absolute():
+            output_path = self.output_dir / output_path
         output_path.parent.mkdir(parents=True, exist_ok=True)
+
         match frames:
-            case [image]:
-                image.save(output_path)
-            case [first, *rest]:
-                # TODO: decide if we want to use APNG or GIF
-                # output_path = output_path.with_suffix(".gif")
-                first.save(
-                    output_path,
-                    save_all=True,
-                    append_images=rest,
-                    loop=0,  # loop forever
-                    duration=1000 / 20,
-                    # disposal=2,  # restore to background color
-                    disposal=1,
-                )
-            case _:
+            case []:
                 # TODO: awful error message.
                 raise ValueError("No frames rendered!")
-
-        return output_path.suffix
+            case [image]:
+                image.save(output_path)
+                return output_path.suffix
+            case _:
+                return self._save_animation(output_path, frames)
 
     def _render_block(self, model: BlockModel):
         textures = {
@@ -134,6 +124,30 @@ class ModelRenderer:
             texture = ModelTexture.load(self.loader, texture_id)
             texture.layer_index = int(index)
             yield texture
+
+    def _save_animation(self, output_path: Path, frames: list[Image.Image]):
+        kwargs: dict[str, Any]
+        match self.loader.props.textures.animated.format:
+            case "apng":
+                suffix = ".png"
+                kwargs = dict(
+                    disposal=APNGDisposal.OP_BACKGROUND,
+                )
+            case "gif":
+                suffix = ".gif"
+                kwargs = dict(
+                    loop=0,  # loop forever
+                    disposal=2,  # restore to background color
+                )
+
+        frames[0].save(
+            output_path.with_suffix(suffix),
+            save_all=True,
+            append_images=frames[1:],
+            duration=1000 / 20,
+            **kwargs,
+        )
+        return suffix
 
     def destroy(self):
         self.window.destroy()

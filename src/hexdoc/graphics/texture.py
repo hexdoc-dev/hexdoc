@@ -11,14 +11,12 @@ from PIL import Image
 from pydantic import ValidationError
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.properties import AnimatedTexturesProps
 from hexdoc.minecraft.model import Animation, AnimationFrame, AnimationMeta
 from hexdoc.utils import listify
 
 logger = logging.getLogger(__name__)
 
-
-MAX_DURATION_SECONDS = 15
-MAX_FRAMES = MAX_DURATION_SECONDS * 20
 
 _TEXTURE_CACHE: dict[ResourceLocation, ModelTexture] = {}
 
@@ -29,6 +27,7 @@ class ModelTexture:
     image: Image.Image
     animation: Animation | None
     layer_index: int = -1
+    props: AnimatedTexturesProps
 
     @classmethod
     def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation):
@@ -42,6 +41,7 @@ class ModelTexture:
             texture_id=texture_id,
             image=Image.open(path).convert("RGBA"),
             animation=cls._load_animation(path.with_suffix(".png.mcmeta")),
+            props=loader.props.textures.animated,
         )
         _TEXTURE_CACHE[texture_id] = texture
         return texture
@@ -109,17 +109,21 @@ class ModelTexture:
             for i in range(self._frame_count)
         ]
 
+        if not self.props.enabled:
+            yield self._get_frame_image(frames[0])
+            return
+
         images = [self._get_frame_image(frame) for frame in frames]
 
         frame_time_multiplier = 1
         total_frames = sum(frame.time for frame in frames)
-        if total_frames > MAX_FRAMES:
+        if self.props.max_frames > 0 and total_frames > self.props.max_frames:
             logger.warning(
                 f"Animation for texture {self.texture_id} is too long, dropping about"
-                + f" {total_frames - MAX_FRAMES} frames"
-                + f" ({total_frames} > {MAX_FRAMES})"
+                + f" {total_frames - self.props.max_frames} frames"
+                + f" ({total_frames} > {self.props.max_frames})"
             )
-            frame_time_multiplier = MAX_FRAMES / total_frames
+            frame_time_multiplier = self.props.max_frames / total_frames
 
         frame_lerps: list[tuple[int, float]] = [
             (frame_idx, time / frame.time if self.animation.interpolate else 0)
