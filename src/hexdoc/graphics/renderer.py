@@ -14,10 +14,11 @@ from PIL.Image import Resampling
 from PIL.PngImagePlugin import Disposal as APNGDisposal
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
-from hexdoc.graphics.texture import ModelTexture
+from hexdoc.core.properties import AnimationFormat
 from hexdoc.minecraft.model import BlockModel
 
 from .block import BlockRenderer
+from .texture import ModelTexture
 from .utils import DebugType
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,13 @@ class ModelRenderer:
         self.window.config = self.block_renderer
         self.window.swap_buffers()
         self.window.set_default_viewport()
+
+        if self.texture_props.large_items:
+            self.item_size = self.item_size or 256
+
+    @property
+    def texture_props(self):
+        return self.loader.props.textures
 
     @property
     def ctx(self):
@@ -127,13 +135,13 @@ class ModelRenderer:
 
     def _save_animation(self, output_path: Path, frames: list[Image.Image]):
         kwargs: dict[str, Any]
-        match self.loader.props.textures.animated.format:
-            case "apng":
+        match self.texture_props.animated.format:
+            case AnimationFormat.APNG:
                 suffix = ".png"
                 kwargs = dict(
                     disposal=APNGDisposal.OP_BACKGROUND,
                 )
-            case "gif":
+            case AnimationFormat.GIF:
                 suffix = ".gif"
                 kwargs = dict(
                     loop=0,  # loop forever

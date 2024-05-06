@@ -16,6 +16,7 @@ from yarl import URL
 
 from hexdoc.__version__ import VERSION
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.properties import AnimationFormat
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import delete_updated_books, dump_sitemap, load_sitemap
 from hexdoc.graphics import DebugType, ModelRenderer
@@ -439,6 +440,7 @@ def render_model(
     axes: bool = False,
     normals: bool = False,
     size: Optional[int] = None,
+    format: Optional[AnimationFormat] = None,
 ):
     """Use hexdoc's block rendering to render an item or block model."""
     set_default_env()
@@ -449,6 +451,9 @@ def render_model(
         debug |= DebugType.AXES
     if normals:
         debug |= DebugType.NORMALS
+
+    if format:
+        props.textures.animated.format = format
 
     with (
         ModResourceLoader.load_all(props, pm, export=False) as loader,

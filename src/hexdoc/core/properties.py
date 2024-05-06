@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
+from enum import StrEnum
 from functools import cached_property
 from pathlib import Path
 from typing import Annotated, Any, Literal, Self, Sequence
@@ -194,6 +195,10 @@ class TexturesProps(StripHiddenModel):
         PNGTextureOverride | TextureTextureOverride,
     ] = Field(default_factory=dict)
 
+    large_items: bool = True
+    """Controls whether flat item renders should be enlarged after rendering, or left at
+    the default size (usually 16x16). Defaults to `True`."""
+
     animated: AnimatedTexturesProps = Field(
         default_factory=lambda: AnimatedTexturesProps(),
     )
@@ -210,16 +215,21 @@ class TextureTextureOverride(StripHiddenModel):
     """The id of an image texture (eg. `minecraft:textures/item/stick.png`)."""
 
 
+class AnimationFormat(StrEnum):
+    APNG = "apng"
+    GIF = "gif"
+
+
 class AnimatedTexturesProps(StripHiddenModel):
     enabled: bool = True
     """If set to `False`, animated textures will be rendered as a PNG with the first
     frame of the animation."""
-    format: Literal["apng", "gif"] = "apng"
+    format: AnimationFormat = AnimationFormat.APNG
     """Animated image output format.
 
-    APNG (the default) is higher quality, but the file size is a bit larger.
+    `apng` (the default) is higher quality, but the file size is a bit larger.
 
-    GIF produces smaller but lower quality files, and interpolated textures may have
+    `gif` produces smaller but lower quality files, and interpolated textures may have
     issues with flickering.
     """
     max_frames: Annotated[int, Field(ge=0)] = 15 * 20  # 15 seconds * 20 tps
