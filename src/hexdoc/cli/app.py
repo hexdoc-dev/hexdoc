@@ -49,16 +49,6 @@ from .utils.load import (
 logger = logging.getLogger(__name__)
 
 
-def set_default_env():
-    """Sets placeholder values for unneeded environment variables."""
-    for key, value in {
-        "GITHUB_REPOSITORY": "placeholder/placeholder",
-        "GITHUB_SHA": "",
-        "GITHUB_PAGES_URL": "",
-    }.items():
-        os.environ.setdefault(key, value)
-
-
 @dataclass(kw_only=True)
 class LoadedBookInfo:
     language: str
@@ -87,11 +77,27 @@ def callback(
         Option("--version", "-V", callback=version_callback, is_eager=True),
     ] = False,
 ):
+    setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
+
     if quiet_lang:
         logger.warning(
             "`--quiet-lang` is deprecated, use `props.lang.{lang}.quiet` instead."
         )
-    setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
+
+    if not os.getenv("CI"):
+        set_any = False
+        for key, value in {
+            "GITHUB_REPOSITORY": "placeholder/placeholder",
+            "GITHUB_SHA": "00000000",
+            "GITHUB_PAGES_URL": "https://example.hexxy.media",
+        }.items():
+            if not os.getenv(key):
+                os.environ[key] = value
+                set_any = True
+        if set_any:
+            logger.info(
+                "CI not detected, setting defaults for missing environment variables."
+            )
 
 
 @app.command()
@@ -443,7 +449,6 @@ def render_model(
     format: Optional[AnimationFormat] = None,
 ):
     """Use hexdoc's block rendering to render an item or block model."""
-    set_default_env()
     props, pm, *_ = load_common_data(props_file, branch="")
 
     debug = DebugType.NONE
@@ -482,7 +487,6 @@ def render_models(
 
     site_url = URL(site_url_str or "")
 
-    set_default_env()
     props, pm, _, plugin = load_common_data(props_file, branch="")
 
     with ModResourceLoader.load_all(props, pm, export=export_resources) as loader:
