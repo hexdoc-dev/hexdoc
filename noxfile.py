@@ -174,7 +174,8 @@ def pdoc(session: nox.Session):
 
 
 # docs for the docs!
-@nox.session(tags=["docs"], python=False)
+# note: we can't use python=False because then --no-install doesn't work
+@nox.session(tags=["docs"])
 def docusaurus(session: nox.Session):
     shutil.copytree("media", f"{STATIC_GENERATED}/img", dirs_exist_ok=True)
 
