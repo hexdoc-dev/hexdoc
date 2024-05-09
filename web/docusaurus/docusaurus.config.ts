@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import internalPathnameLinks from "./src/remark/internalPathnameLinks";
 
 const SITE_URL = "https://hexdoc.hexxy.media";
 
@@ -40,6 +41,7 @@ const config: Config = {
             keywords: ["hex-casting"],
             extendDefaults: true,
           },
+          beforeDefaultRemarkPlugins: [internalPathnameLinks],
         },
         blog: false,
         theme: {

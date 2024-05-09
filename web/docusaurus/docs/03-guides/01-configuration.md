@@ -11,3 +11,9 @@ With Taplo-based tools like Even Better TOML, you can enable the schema by addin
 ```toml
 #:schema https://hexdoc.hexxy.media/schema/core/Properties.json
 ```
+
+## API Docs
+
+The `hexdoc.toml` file models are included in hexdoc's auto-generated API documentation.
+
+All relevant classes can be found in the following module: [hexdoc.core.properties](static:///docs/api/hexdoc/core/properties.html)

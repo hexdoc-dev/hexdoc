@@ -2,7 +2,7 @@
 
 The easiest way to customize the appearance of your web book is by adding styles to `index.css`.
 
-## Using [`template.extend_render`](pathname:///docs/api/hexdoc/core/properties.html#TemplateProps.extend_render) to overwrite `index.css`
+## Using [`template.extend_render`](static:///docs/api/hexdoc/core/properties.html#TemplateProps.extend_render) to overwrite `index.css`
 
 Create a template called `yourmodid.css.jinja`:
 
@@ -61,7 +61,7 @@ There are two problems with this approach:
 
 * You must specify a namespace (the `hexdoc:` part) to prevent the template from recursively rendering itself. This can be error-prone if you pick the wrong namespace.
   * For example, [hexdoc-hexcasting](https://github.com/object-Object/HexMod/blob/7edab68db2bee50285e354f7c9b935b512ebc4bd/doc/src/hexdoc_hexcasting/_templates/index.css.jinja) adds styles to `index.css`, which is why the above note is necessary.
-* Your custom styles might interfere with other hexdoc plugins if they add your modid to [`template.include`](pathname:///docs/api/hexdoc/core/properties.html#TemplateProps.include).
+* Your custom styles might interfere with other hexdoc plugins if they add your modid to [`template.include`](static:///docs/api/hexdoc/core/properties.html#TemplateProps.include).
 
 Both of these problems can be avoided by using the `template.extend_render` approach.
 
