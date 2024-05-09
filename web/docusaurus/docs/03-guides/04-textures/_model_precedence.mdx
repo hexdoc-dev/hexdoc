@@ -1,0 +1,13 @@
+import CodeBlock from "@theme/CodeBlock";
+
+1. `hexdoc.toml`:
+   <CodeBlock language="toml" title="doc/hexdoc.toml">
+     {[
+       "[textures.override.model]",
+       `${props.namespace}:${props.path}" = ...`,
+     ].join("\n")}
+   </CodeBlock>
+2. Internal resources: <code>assets/{props.namespace}/hexdoc/renders/{props.path}.\{png,gif\}</code>
+   - If multiple formats exist, the one configured in `props.textures.animated.format` (default: APNG) will be used.
+3. On-demand model rendering: <code>assets/{props.namespace}/models/{props.path}.json</code>
+4. External resources: <code>assets/{props.namespace}/hexdoc/renders/{props.path}.\{png,gif\}</code>
