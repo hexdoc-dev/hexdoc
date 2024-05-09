@@ -281,7 +281,7 @@ function processLinkNode(node: Link) {
       type: "mdxJsxAttribute",
       name: "rel",
       value: nullExpression,
-    }
+    },
   );
 
   if (node.title) {
@@ -317,7 +317,7 @@ export default function plugin(): Transformer {
 
     if (!includesImportLink) {
       tree.children.unshift(
-        defaultImportNode({ name: "Link", source: "@docusaurus/Link" })
+        defaultImportNode({ name: "Link", source: "@docusaurus/Link" }),
       );
     }
   };
