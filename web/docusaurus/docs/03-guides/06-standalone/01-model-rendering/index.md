@@ -1,6 +1,6 @@
 # Model Rendering
 
-hexdoc includes a fairly advanced module for rendering block models. It runs by default when building a web book, but you can also use it as a standalone tool with a bit of configuration.
+hexdoc includes a [fairly advanced module](../../textures) for rendering block models. It runs by default when building a web book, but you can also use it as a standalone tool with a bit of configuration.
 
 For a complete example, see [examples/model_rendering](https://github.com/hexdoc-dev/hexdoc/tree/main/examples/model_rendering) in hexdoc's GitHub repo.
 
