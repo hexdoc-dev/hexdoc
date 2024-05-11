@@ -1,3 +1,5 @@
+{% import "macros/formatting.html.jinja" as fmt with context %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -63,12 +65,8 @@
 
     {% block footer %}
       <footer class="footer">
-        <div class="container">
-          <p class="text-muted">
-            Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.<br />
-            Minecraft content and materials are the intellectual property of their respective owners.<br />
-            Made with ❤️ using <a href="https://pypi.org/project/hexdoc/" target="_blank">hexdoc</a>.
-          </p>
+        <div class="container text-muted">
+          {{ fmt.styled(_f("hexdoc.footer")) }}
         </div>
       </footer>
     {% endblock footer %}
