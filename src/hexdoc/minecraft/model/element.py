@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 import math
+import re
 from typing import Annotated, Literal
 
-from pydantic import Field
+from pydantic import AfterValidator, Field
 
 from hexdoc.model import HexdocModel
 from hexdoc.model.base import IGNORE_EXTRA_CONFIG
 from hexdoc.utils.types import Vec3, Vec4, clamped
-
-from .variable import TextureVariable
 
 
 class Element(HexdocModel):
@@ -177,3 +176,11 @@ class ElementFaceUV(HexdocModel):
 
     def _get_shifted_index(self, index: Literal[0, 1, 2, 3]):
         return (index + self.rotation // 90) % 4
+
+
+def _validate_texture_variable(value: str):
+    assert re.fullmatch(r"#\w+", value)
+    return value
+
+
+TextureVariable = Annotated[str, AfterValidator(_validate_texture_variable)]

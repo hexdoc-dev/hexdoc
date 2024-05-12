@@ -10,8 +10,7 @@ from hexdoc.model import IGNORE_EXTRA_CONFIG, HexdocModel
 from hexdoc.utils.types import PydanticOrderedSet, cast_nullable
 
 from .display import DisplayPosition, DisplayPositionName
-from .element import Element
-from .variable import TextureVariable
+from .element import Element, TextureVariable
 
 
 class BlockModel(HexdocModel):
