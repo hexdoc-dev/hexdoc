@@ -8,6 +8,7 @@ __all__ = [
     "PNGTextureOverride",
     "Properties",
     "TemplateProps",
+    "TextureOverrides",
     "TextureTextureOverride",
     "TexturesProps",
     "env",
@@ -25,6 +26,7 @@ from .textures import (
     AnimatedTexturesProps,
     AnimationFormat,
     PNGTextureOverride,
+    TextureOverrides,
     TexturesProps,
     TextureTextureOverride,
 )

@@ -135,27 +135,25 @@ class ModelRenderer:
 
     def _save_animation(self, output_path: Path, frames: list[Image.Image]):
         kwargs: dict[str, Any]
-        match self.texture_props.animated.format:
+        match output_format := self.texture_props.animated.format:
             case AnimationFormat.APNG:
-                suffix = ".png"
                 kwargs = dict(
                     disposal=APNGDisposal.OP_BACKGROUND,
                 )
             case AnimationFormat.GIF:
-                suffix = ".gif"
                 kwargs = dict(
                     loop=0,  # loop forever
                     disposal=2,  # restore to background color
                 )
 
         frames[0].save(
-            output_path.with_suffix(suffix),
+            output_path.with_suffix(output_format.suffix),
             save_all=True,
             append_images=frames[1:],
             duration=1000 / 20,
             **kwargs,
         )
-        return suffix
+        return output_format.suffix
 
     def destroy(self):
         self.window.destroy()

@@ -5,6 +5,7 @@ from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import Field
+from typing_extensions import deprecated
 
 from hexdoc.model.strip_hidden import StripHiddenModel
 from hexdoc.utils.types import PydanticURL
@@ -28,6 +29,14 @@ class TextureTextureOverride(StripHiddenModel):
 class AnimationFormat(StrEnum):
     APNG = "apng"
     GIF = "gif"
+
+    @property
+    def suffix(self):
+        match self:
+            case AnimationFormat.APNG:
+                return ".png"
+            case AnimationFormat.GIF:
+                return ".gif"
 
 
 class AnimatedTexturesProps(StripHiddenModel):
@@ -56,8 +65,16 @@ class AnimatedTexturesProps(StripHiddenModel):
     """
 
 
-class OverridesProps(StripHiddenModel):
-    pass
+class TextureOverrides(StripHiddenModel):
+    models: dict[ResourceLocation, ResourceLocation | PydanticURL] = Field(
+        default_factory=dict
+    )
+    """Model overrides.
+
+    Key: model id (eg. `minecraft:item/stick`).
+
+    Value: texture id (eg. `minecraft:textures/item/stick.png`) or image URL.
+    """
 
 
 class TexturesProps(StripHiddenModel):
@@ -73,7 +90,13 @@ class TexturesProps(StripHiddenModel):
 
     animated: AnimatedTexturesProps = Field(default_factory=AnimatedTexturesProps)
 
+    overrides: TextureOverrides = Field(default_factory=TextureOverrides)
+
     override: dict[
         ResourceLocation,
         PNGTextureOverride | TextureTextureOverride,
-    ] = Field(default_factory=dict)
+    ] = Field(
+        default_factory=dict,
+        deprecated=deprecated("Use textures.overrides.model instead"),
+    )
+    """DEPRECATED."""
