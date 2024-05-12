@@ -71,7 +71,7 @@ class ModelLoader(ValidationContext):
                         exc_info=True,
                     )
 
-        self._fail(f"All strategies failed to render model: {model_id}")
+        return self._fail(f"All strategies failed to render model: {model_id}")
 
     def render_texture(self, texture_id: ResourceLocation) -> URL | None:
         if result := self._texture_cache.get(texture_id):
@@ -91,7 +91,7 @@ class ModelLoader(ValidationContext):
                     + " (this should never happen)"
                 )
 
-            self._fail(f"Failed to find texture: {texture_id}")
+            return self._fail(f"Failed to find texture: {texture_id}")
 
     def _fail(self, message: str):
         if self.props.textures.strict:
