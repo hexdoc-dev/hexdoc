@@ -1,6 +1,4 @@
 exclude: '__snapshots__|^vendor/'
-default_stages:
-  - pre-commit
 default_install_hook_types:
   - pre-commit
   - pre-push
