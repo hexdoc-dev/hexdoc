@@ -25,6 +25,7 @@ repos:
     hooks:
       - id: pyright
         name: pyright
+        stages: [pre-push]
         entry: nox -s pyright --
         language: python
         language_version: '3.11'
