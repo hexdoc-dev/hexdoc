@@ -70,9 +70,13 @@ class ModelRenderer:
         else:
             frames = self._render_block(model)
 
+        return self.save_image(output_path, frames)
+
+    def save_image(self, output_path: str | Path, frames: list[Image.Image]):
         output_path = Path(output_path)
         if self.output_dir and not output_path.is_absolute():
             output_path = self.output_dir / output_path
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         match frames:

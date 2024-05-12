@@ -79,6 +79,7 @@ class BlockModel(HexdocModel):
 
     # internal fields
     _is_generated_item: bool = PrivateAttr(False)
+    _id: ResourceLocation = PrivateAttr(None)
 
     @classmethod
     def load_and_resolve(cls, loader: ModResourceLoader, model_id: ResourceLocation):
@@ -89,12 +90,14 @@ class BlockModel(HexdocModel):
     def load_only(cls, loader: ModResourceLoader, model_id: ResourceLocation):
         """Loads the given model without resolving it."""
         try:
-            return loader.load_resource(
+            resource_dir, model = loader.load_resource(
                 type="assets",
                 folder="models",
                 id=model_id,
                 decode=cls.model_validate_json,
             )
+            model._id = model_id
+            return resource_dir, model
         except Exception as e:
             e.add_note(f"  note: {model_id=}")
             raise
@@ -150,6 +153,10 @@ class BlockModel(HexdocModel):
     @property
     def is_generated_item(self):
         return self._is_generated_item
+
+    @property
+    def id(self):
+        return self._id
 
     @cached_property
     def resolved_textures(self):

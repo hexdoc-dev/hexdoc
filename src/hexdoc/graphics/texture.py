@@ -18,24 +18,35 @@ from hexdoc.utils import listify
 logger = logging.getLogger(__name__)
 
 
-_TEXTURE_CACHE: dict[ResourceLocation, ModelTexture] = {}
+# TODO: maybe put this in some system in ModResourceLoader? (see weakref.finalize)
+# then we could clear the cache and free up memory when the loader is closed
+_TEXTURE_CACHE: dict[ResourceLocation | Path, ModelTexture] = {}
 
 
 @dataclass(kw_only=True)
 class ModelTexture:
-    texture_id: ResourceLocation
+    texture_id: ResourceLocation | Path
     image: Image.Image
     animation: Animation | None
     layer_index: int = -1
     props: AnimatedTexturesProps
 
     @classmethod
-    def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation):
+    def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation | Path):
         if cached := _TEXTURE_CACHE.get(texture_id):
+            logger.debug(f"Cache hit: {texture_id}")
             return cached
 
-        logger.debug(f"Loading texture: {texture_id}")
-        _, path = loader.find_resource("assets", "textures", texture_id + ".png")
+        match texture_id:
+            case ResourceLocation():
+                _, path = loader.find_resource(
+                    "assets",
+                    "textures",
+                    texture_id + ".png",
+                )
+                logger.debug(f"Loading texture {texture_id}: {path}")
+            case Path() as path:
+                logger.debug(f"Loading texture: {texture_id}")
 
         texture = cls(
             texture_id=texture_id,
