@@ -6,8 +6,7 @@ from frozendict import frozendict
 from pydantic import AfterValidator, BeforeValidator, ConfigDict, model_validator
 
 from hexdoc.core import ResourceLocation
-from hexdoc.model import HexdocModel
-from hexdoc.model.base import DEFAULT_CONFIG
+from hexdoc.model import DEFAULT_CONFIG, HexdocModel
 
 
 class Blockstate(HexdocModel):

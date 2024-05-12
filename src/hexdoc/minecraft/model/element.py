@@ -6,8 +6,7 @@ from typing import Annotated, Literal
 
 from pydantic import AfterValidator, Field
 
-from hexdoc.model import HexdocModel
-from hexdoc.model.base import IGNORE_EXTRA_CONFIG
+from hexdoc.model import IGNORE_EXTRA_CONFIG, HexdocModel
 from hexdoc.utils.types import Vec3, Vec4, clamped
 
 
