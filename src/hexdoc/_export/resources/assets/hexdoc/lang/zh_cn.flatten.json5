@@ -6,7 +6,7 @@
         其中可能包含游戏内暂未实装的$(bold)新/$特性，\
         就连Modrinth和CurseForge上的最新版本里也找不到！",
       "spoilers": "$(bold)条目的模糊处理相当于剧透警告/$。\
-        点击可取消模糊，不过这么做有可能破坏游戏后期的进程与体验。\
+        点击条目即可取消模糊，不过这么做有可能破坏游戏后期的进程与体验。\
         也可点击$(l:?nospoiler)此处/$以取消所有模糊。",
       "old_version": "$(italic)往事犹若异乡；他们在那里做的事情都不一样。/$",
     },
@@ -49,6 +49,10 @@
       "category.title": "类别：{}",
       "entry.title": "条目：{}",
       "page.title": "页面：{}",
-    }
+    },
+
+    footer: "该页面不是Minecraft的官方产品，不隶属于Mojang和Microsoft，且不代表Mojang和Microsoft的意见。$(br2)\
+      Minecraft的游戏内容和资源均为各自所有者的知识财产。$(br2)\
+      使用$(l:https://pypi.org/project/hexdoc/)hexdoc/$精心制作。❤️"
   },
 }
