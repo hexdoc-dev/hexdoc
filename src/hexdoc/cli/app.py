@@ -444,7 +444,7 @@ def render_model(
     model_id: str,
     *,
     props_file: PropsOption,
-    output_path: Annotated[Path, Option("--output", "-o")] = Path("out.png"),
+    output_dir: Annotated[Path, Option("--output", "-o")] = Path("out"),
     axes: bool = False,
     normals: bool = False,
     size: Optional[int] = None,
@@ -475,7 +475,7 @@ def render_model(
             loader=loader,
             renderer=renderer,
             site_url=URL(),
-            site_dir=output_path.parent,
+            site_dir=output_dir,
         )
         url = ml.render_model(ResourceLocation.from_str(model_id))
         print(f"Rendered model {model_id} to {url}.")

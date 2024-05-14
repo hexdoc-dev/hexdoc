@@ -43,13 +43,14 @@ class AnimatedTexturesProps(StripHiddenModel):
     enabled: bool = True
     """If set to `False`, animated textures will be rendered as a PNG with the first
     frame of the animation."""
-    format: AnimationFormat = AnimationFormat.APNG
+    format: AnimationFormat = AnimationFormat.GIF
     """Animated image output format.
 
-    `apng` (the default) is higher quality, but the file size is a bit larger.
+    `gif` (the default) produces smaller but lower quality files, and interpolated
+    textures may have issues with flickering.
 
-    `gif` produces smaller but lower quality files, and interpolated textures may have
-    issues with flickering.
+    `apng` is higher quality, but the file size is a bit larger, and some
+    platforms (eg. Discord) don't fully support it.
     """
     max_frames: Annotated[int, Field(ge=0)] = 15 * 20  # 15 seconds * 20 tps
     """Maximum number of frames for animated textures (1 frame = 1 tick = 1/20 seconds).
