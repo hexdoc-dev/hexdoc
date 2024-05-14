@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 MISSING_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/missing.png")
 
-ModelLoaderStrategy = Callable[[BlockModel], URL | None]
+ModelLoaderStrategy = Callable[[ResourceLocation], URL | None]
 
 
 @dataclass(kw_only=True)
@@ -50,28 +50,24 @@ class ModelLoader(ValidationContext):
         return self.render_model("item" / item_id)
 
     def render_model(self, model_id: ResourceLocation):
-        model = self._load_model(model_id)
-        if not isinstance(model, BlockModel):
-            return model
-
-        for override_model in self._get_overrides(model):
-            if isinstance(override_model, URL):
-                return override_model
+        logger.debug(f"Rendering model: {model_id}")
+        for override_id in self._get_overrides(model_id):
+            logger.debug(f"Attempting override: {override_id}")
             for strategy in self._strategies:
                 logger.debug(f"Attempting model strategy: {strategy.__name__}")
                 try:
-                    if result := strategy(override_model):
+                    if result := strategy(override_id):
                         self._model_cache[model_id] = result
-                        self._model_cache[override_model.id] = result
+                        self._model_cache[override_id] = result
                         return result
                 except Exception:
                     # TODO: probably shouldn't just swallow all errors like this.
                     logger.debug(
-                        f"Exception while rendering override: {override_model.id}",
+                        f"Exception while rendering override: {override_id}",
                         exc_info=True,
                     )
 
-        return self._fail(f"All strategies failed to render model: {model_id}")
+        return self._fail(f"Failed to render model: {model_id}")
 
     def render_texture(self, texture_id: ResourceLocation) -> URL | None:
         if result := self._texture_cache.get(texture_id):
@@ -99,9 +95,9 @@ class ModelLoader(ValidationContext):
         logger.error(message)
         return self.render_texture(MISSING_TEXTURE_ID)
 
-    def _get_overrides(self, model: BlockModel):
-        # TODO: implement (with _load_model)
-        yield model
+    def _get_overrides(self, model_id: ResourceLocation):
+        # TODO: implement (maybe)
+        yield model_id
 
     def _load_model(self, model_id: ResourceLocation):
         if result := self._model_cache.get(model_id):
@@ -112,7 +108,7 @@ class ModelLoader(ValidationContext):
             _, model = BlockModel.load_and_resolve(self.loader, model_id)
             return model
         except Exception as e:
-            return self._fail(f"Failed to load model {model_id}: {e}")
+            return self._fail(f"Failed to load model: {model_id}: {e}")
 
     def _render_existing_texture(self, src: Path, output_id: ResourceLocation):
         fragment = self._get_fragment(output_id, src.suffix)
@@ -142,9 +138,11 @@ class ModelLoader(ValidationContext):
             "assets",
             namespace=texture_id.namespace,
             folder=folder,
-            glob=texture_id.path + ".{png,gif}",
+            glob=texture_id.path + ".*",
             allow_missing=True,
         ):
+            if path.suffix not in {".png", ".gif"}:
+                continue
             # after we find a match, only keep looking in the same resource dir
             # so we don't break the load order
             if prev_dir and prev_dir != resource_dir:
@@ -158,33 +156,36 @@ class ModelLoader(ValidationContext):
 
     # model rendering strategies
 
-    def _from_props(self, model: BlockModel):
-        match self.props.textures.overrides.models.get(model.id):
+    def _from_props(self, model_id: ResourceLocation):
+        match self.props.textures.overrides.models.get(model_id):
             case ResourceLocation() as texture_id:
                 _, src = self.loader.find_resource("assets", "", texture_id)
-                return self._render_existing_texture(src, model.id)
+                return self._render_existing_texture(src, model_id)
             case URL() as url:
                 return url
             case None:
-                logger.debug(f"No props override for model: {model.id}")
+                logger.debug(f"No props override for model: {model_id}")
                 return None
 
     def _from_resources(self, *, internal: bool):
         type_ = "internal" if internal else "external"
 
-        def inner(model: BlockModel):
+        def inner(model_id: ResourceLocation):
             if path := self._find_texture(
-                model.id,
+                model_id,
                 folder="hexdoc/renders",
                 internal=internal,
             ):
-                return self._render_existing_texture(path, model.id)
-            logger.debug(f"No {type_} rendered resource for model: {model.id}")
+                return self._render_existing_texture(path, model_id)
+            logger.debug(f"No {type_} rendered resource for model: {model_id}")
 
         inner.__name__ = f"_from_resources({internal=})"
         return inner
 
-    def _from_renderer(self, model: BlockModel):
-        fragment = self._get_fragment(model.id)
+    def _from_renderer(self, model_id: ResourceLocation):
+        model = self._load_model(model_id)
+        if not isinstance(model, BlockModel):
+            return None
+        fragment = self._get_fragment(model_id)
         suffix = self.renderer.render_model(model, self.site_dir / fragment)
         return self._fragment_to_url(fragment.with_suffix(suffix))

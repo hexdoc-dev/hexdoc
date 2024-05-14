@@ -1,6 +1,6 @@
 # hexdoc
 out/
-renders/
+/renders/
 .hexdoc*/
 out.png
 
