@@ -11,6 +11,8 @@ from typing import Annotated, Any, Optional
 
 import typer
 from packaging.version import Version
+from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 from typer import Argument, Option
 from yarl import URL
 
@@ -20,10 +22,10 @@ from hexdoc.core.properties import AnimationFormat
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import delete_updated_books, dump_sitemap, load_sitemap
 from hexdoc.graphics import DebugType, ModelRenderer
+from hexdoc.graphics.loader import ModelLoader
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureContext
-from hexdoc.minecraft.assets.load_assets import render_block
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
@@ -469,7 +471,14 @@ def render_model(
             item_size=size,
         ) as renderer,
     ):
-        renderer.render_model(ResourceLocation.from_str(model_id), output_path)
+        ml = ModelLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=URL(),
+            site_dir=output_path.parent,
+        )
+        url = ml.render_model(ResourceLocation.from_str(model_id))
+        print(f"Rendered model {model_id} to {url}.")
 
 
 @app.command()
@@ -487,22 +496,37 @@ def render_models(
 
     site_url = URL(site_url_str or "")
 
-    props, pm, _, plugin = load_common_data(props_file, branch="")
+    props, pm, *_ = load_common_data(props_file, branch="")
 
-    with ModResourceLoader.load_all(props, pm, export=export_resources) as loader:
+    with (
+        ModResourceLoader.load_all(props, pm, export=export_resources) as loader,
+        ModelRenderer(loader=loader) as renderer,
+    ):
+        ml = ModelLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=site_url,
+            site_dir=output_dir,
+        )
+
         if model_ids:
-            with ModelRenderer(loader=loader, output_dir=output_dir) as renderer:
-                for model_id in model_ids:
-                    model_id = ResourceLocation.from_str(model_id)
-                    render_block(model_id, renderer, site_url)
+            iterator = (ResourceLocation.from_str(model_id) for model_id in model_ids)
         else:
-            asset_loader = plugin.asset_loader(
-                loader=loader,
-                site_url=site_url,
-                asset_url=props.env.asset_url,
-                render_dir=output_dir,
+            iterator = (
+                "item" / item_id
+                for _, item_id, _ in loader.find_resources(
+                    "assets",
+                    namespace="*",
+                    folder="models/item",
+                    internal_only=True,
+                )
             )
-            render_textures_and_export_metadata(loader, asset_loader)
+
+        with logging_redirect_tqdm():
+            bar = tqdm(iterator)
+            for model_id in bar:
+                bar.set_postfix_str(str(model_id))
+                ml.render_model(model_id)
 
     logger.info("Done.")
 
