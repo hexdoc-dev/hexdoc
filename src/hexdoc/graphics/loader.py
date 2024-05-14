@@ -51,7 +51,7 @@ class ModelLoader(ValidationContext):
 
     def render_model(self, model_id: ResourceLocation):
         model = self._load_model(model_id)
-        if isinstance(model, URL):
+        if not isinstance(model, BlockModel):
             return model
 
         for override_model in self._get_overrides(model):
@@ -108,8 +108,11 @@ class ModelLoader(ValidationContext):
             logger.debug(f"Cache hit: {model_id} = {result}")
             return result
 
-        _, model = BlockModel.load_and_resolve(self.loader, model_id)
-        return model
+        try:
+            _, model = BlockModel.load_and_resolve(self.loader, model_id)
+            return model
+        except Exception as e:
+            return self._fail(f"Failed to load model {model_id}: {e}")
 
     def _render_existing_texture(self, src: Path, output_id: ResourceLocation):
         fragment = self._get_fragment(output_id, src.suffix)
