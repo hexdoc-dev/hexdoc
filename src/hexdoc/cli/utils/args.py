@@ -1,5 +1,6 @@
 import importlib
 import logging
+import os
 from pathlib import Path
 from typing import Annotated
 
@@ -28,6 +29,7 @@ DefaultTyper = typed_partial(Typer)(
         "help_option_names": ["--help", "-h"],
     },
     add_completion=False,
+    pretty_exceptions_show_locals=bool(os.getenv("HEXDOC_TYPER_EXCEPTION_LOCALS")),
 )
 
 

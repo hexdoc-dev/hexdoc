@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Changed
+
+* Disable showing local variables in Typer pretty exceptions, since it's a really absurd amount of output in many cases. Set a non-empty value for the environment variable `HEXDOC_TYPER_EXCEPTION_LOCALS` to reenable it, if you really want to.
+
 ## `1!0.1.0a16`
 
 ### Added
