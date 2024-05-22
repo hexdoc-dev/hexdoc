@@ -344,21 +344,21 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
 
 
 class TemplateModel(HexdocModel, ABC):
-    __template_id: ClassVar[ResourceLocation | None] = None
+    _template_id: ClassVar[ResourceLocation | None] = None
 
     def __init_subclass__(
         cls,
         *,
-        template_type: str | ResourceLocation | None = None,
+        template_type: str | ResourceLocation | InheritType | None = None,
         **kwargs: Unpack[ConfigDict],
     ) -> None:
         super().__init_subclass__(**kwargs)
         match template_type:
             case str():
-                cls.__template_id = ResourceLocation.from_str(template_type)
-            case ResourceLocation():
-                cls.__template_id = template_type
-            case None:
+                cls._template_id = ResourceLocation.from_str(template_type)
+            case ResourceLocation() | None:
+                cls._template_id = template_type
+            case InheritType():
                 pass
 
     @classproperty
@@ -373,8 +373,8 @@ class TemplateModel(HexdocModel, ABC):
     @classproperty
     @classmethod
     def template_id(cls):
-        assert cls.__template_id is not None, f"Template id not initialized: {cls}"
-        return cls.__template_id
+        assert cls._template_id is not None, f"Template id not initialized: {cls}"
+        return cls._template_id
 
 
 class TypeTaggedTemplate(TypeTaggedUnion, TemplateModel, ABC, type=None):
