@@ -16,6 +16,7 @@ from .types import HookReturn
 
 if TYPE_CHECKING:
     from hexdoc.core import ModResourceLoader, Properties
+    from hexdoc.graphics.validators import ItemImage
     from hexdoc.minecraft.assets import HexdocAssetLoader
 
 DefaultRenderedTemplates = Mapping[
@@ -139,6 +140,10 @@ class ModPlugin(ABC):
         This is called after hexdoc is done setting up the Jinja environment but before
         rendering the book.
         """
+
+    def item_image_types(self) -> HookReturn[type[ItemImage[Any]]]:
+        """List of `ModelImage` types to attempt when loading a block/item model."""
+        return []
 
     # utils
 

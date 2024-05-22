@@ -6,6 +6,7 @@ from typing import Callable
 from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.minecraft.model import BlockModel
 from hexdoc.utils import ValidationContext
 
@@ -15,10 +16,14 @@ from .texture import ModelTexture
 logger = logging.getLogger(__name__)
 
 MISSING_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/missing.png")
+TAG_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/tag.png")
 
-ModelLoaderStrategy = Callable[[ResourceLocation], URL | None]
+ModelLoaderResult = tuple[URL, BlockModel | None]
+
+ModelLoaderStrategy = Callable[[ResourceLocation], ModelLoaderResult | None]
 
 
+# TODO: rename to ImageLoader
 @dataclass(kw_only=True)
 class ModelLoader(ValidationContext):
     loader: ModResourceLoader
@@ -29,7 +34,7 @@ class ModelLoader(ValidationContext):
     def __post_init__(self):
         # TODO: see cache comment in hexdoc.graphics.texture
         # (though it's less of an issue here since these aren't globals)
-        self._model_cache = dict[ResourceLocation, URL]()
+        self._model_cache = dict[ResourceLocation, ModelLoaderResult]()
         self._texture_cache = dict[ResourceLocation, URL]()
 
         self._strategies: list[ModelLoaderStrategy] = [
@@ -43,13 +48,14 @@ class ModelLoader(ValidationContext):
     def props(self):
         return self.loader.props
 
-    def render_block(self, block_id: ResourceLocation):
-        return self.render_model("block" / block_id)
+    def render_block(self, block_id: BaseResourceLocation) -> ModelLoaderResult:
+        return self.render_model("block" / block_id.id)
 
-    def render_item(self, item_id: ResourceLocation):
-        return self.render_model("item" / item_id)
+    def render_item(self, item_id: BaseResourceLocation) -> ModelLoaderResult:
+        return self.render_model("item" / item_id.id)
 
-    def render_model(self, model_id: ResourceLocation):
+    def render_model(self, model_id: BaseResourceLocation) -> ModelLoaderResult:
+        model_id = model_id.id
         logger.debug(f"Rendering model: {model_id}")
         for override_id in self._get_overrides(model_id):
             logger.debug(f"Attempting override: {override_id}")
@@ -67,9 +73,9 @@ class ModelLoader(ValidationContext):
                         exc_info=True,
                     )
 
-        return self._fail(f"Failed to render model: {model_id}")
+        return self._fail(f"Failed to render model: {model_id}"), None
 
-    def render_texture(self, texture_id: ResourceLocation) -> URL | None:
+    def render_texture(self, texture_id: ResourceLocation) -> URL:
         if result := self._texture_cache.get(texture_id):
             return result
 
@@ -93,7 +99,9 @@ class ModelLoader(ValidationContext):
         if self.props.textures.strict:
             raise ValueError(message)
         logger.error(message)
-        return self.render_texture(MISSING_TEXTURE_ID)
+        missing = self.render_texture(MISSING_TEXTURE_ID)
+        assert missing is not None
+        return missing
 
     def _get_overrides(self, model_id: ResourceLocation):
         # TODO: implement (maybe)
@@ -160,9 +168,9 @@ class ModelLoader(ValidationContext):
         match self.props.textures.overrides.models.get(model_id):
             case ResourceLocation() as texture_id:
                 _, src = self.loader.find_resource("assets", "", texture_id)
-                return self._render_existing_texture(src, model_id)
+                return self._render_existing_texture(src, model_id), None
             case URL() as url:
-                return url
+                return url, None
             case None:
                 logger.debug(f"No props override for model: {model_id}")
                 return None
@@ -176,7 +184,7 @@ class ModelLoader(ValidationContext):
                 folder="hexdoc/renders",
                 internal=internal,
             ):
-                return self._render_existing_texture(path, model_id)
+                return self._render_existing_texture(path, model_id), None
             logger.debug(f"No {type_} rendered resource for model: {model_id}")
 
         inner.__name__ = f"_from_resources({internal=})"
@@ -188,4 +196,4 @@ class ModelLoader(ValidationContext):
             return None
         fragment = self._get_fragment(model_id)
         suffix = self.renderer.render_model(model, self.site_dir / fragment)
-        return self._fragment_to_url(fragment.with_suffix(suffix))
+        return self._fragment_to_url(fragment.with_suffix(suffix)), model

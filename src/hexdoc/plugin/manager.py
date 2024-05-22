@@ -29,6 +29,7 @@ from hexdoc.utils import ContextSource, ValidationContext
 
 if TYPE_CHECKING:
     from hexdoc.core import Properties, ResourceLocation
+    from hexdoc.graphics.validators import ItemImage
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
@@ -98,6 +99,7 @@ class PluginManager(ValidationContext):
 
     mod_plugins: dict[str, ModPlugin] = field(default_factory=dict)
     book_plugins: dict[str, BookPlugin[Any]] = field(default_factory=dict)
+    item_image_types: list[type[ItemImage]] = field(default_factory=list)
 
     def __post_init__(self, load: bool):
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)
@@ -128,6 +130,7 @@ class PluginManager(ValidationContext):
             )
         ):
             self.mod_plugins[plugin.modid] = plugin
+            self.item_image_types += flatten([plugin.item_image_types()])
 
     def register(self, plugin: Any, name: str | None = None):
         self.inner.register(plugin, name)

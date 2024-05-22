@@ -53,7 +53,7 @@ class UnionModel(HexdocModel):
     def _resolve_union(
         cls,
         value: Any,
-        info: ValidationInfo,
+        context: dict[str, Any] | None,
         *,
         model_types: Iterable[type[Self]],
         allow_ambiguous: bool,
@@ -69,7 +69,7 @@ class UnionModel(HexdocModel):
             try:
                 result = matches[model_type] = model_type.model_validate(
                     value,
-                    context=info.context,
+                    context=context,
                 )
                 if allow_ambiguous:
                     return result
@@ -253,7 +253,7 @@ class InternallyTaggedUnion(UnionModel):
         try:
             return cls._resolve_union(
                 data,
-                info,
+                info.context,
                 model_types=tag_types,
                 allow_ambiguous=False,
                 error_name="TaggedUnionMatchError",
