@@ -343,26 +343,23 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
         return ResourceLocation
 
 
-class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
-    __template_id: ClassVar[ResourceLocation]
+class TemplateModel(HexdocModel, ABC):
+    __template_id: ClassVar[ResourceLocation | None] = None
 
     def __init_subclass__(
         cls,
         *,
-        type: str | InheritType | None = Inherit,
-        template_type: str | None = None,
+        template_type: str | ResourceLocation | None = None,
         **kwargs: Unpack[ConfigDict],
     ) -> None:
-        super().__init_subclass__(type=type, **kwargs)
-
-        # jinja template path
-        if template_type is not None:
-            template_id = ResourceLocation.from_str(template_type)
-        else:
-            template_id = cls.type
-
-        if template_id:
-            cls.__template_id = template_id
+        super().__init_subclass__(**kwargs)
+        match template_type:
+            case str():
+                cls.__template_id = ResourceLocation.from_str(template_type)
+            case ResourceLocation():
+                cls.__template_id = template_type
+            case None:
+                pass
 
     @classproperty
     @classmethod
@@ -376,4 +373,30 @@ class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
     @classproperty
     @classmethod
     def template_id(cls):
+        assert cls.__template_id is not None, f"Template id not initialized: {cls}"
         return cls.__template_id
+
+
+class TypeTaggedTemplate(TypeTaggedUnion, TemplateModel, ABC, type=None):
+    def __init_subclass__(
+        cls,
+        *,
+        type: str | InheritType | None = Inherit,
+        template_type: str | ResourceLocation | None = None,
+        **kwargs: Unpack[ConfigDict],
+    ) -> None:
+        if template_type is None:
+            match type:
+                case str():
+                    template_type = type
+                case InheritType() if isinstance(cls.type, ResourceLocation):
+                    template_type = cls.type
+                case _:
+                    pass
+
+        super().__init_subclass__(
+            type=type,
+            # pyright doesn't seem to understand multiple inheritance here
+            template_type=template_type,  # pyright: ignore[reportCallIssue]
+            **kwargs,
+        )

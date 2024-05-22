@@ -14,6 +14,7 @@ __all__ = [
     "ResourceModel",
     "StripHiddenModel",
     "TagValue",
+    "TemplateModel",
     "TypeTaggedTemplate",
     "TypeTaggedUnion",
     "ValidationContextModel",
@@ -37,6 +38,7 @@ from .tagged_union import (
     NoValue,
     NoValueType,
     TagValue,
+    TemplateModel,
     TypeTaggedTemplate,
     TypeTaggedUnion,
 )
