@@ -1,14 +1,14 @@
 __all__ = [
     "DebugType",
+    "ImageLoader",
     "ItemImage",
-    "ModelLoader",
     "ModelRenderer",
     "ModelTexture",
     "TagImage",
     "TextureImage",
 ]
 
-from .loader import ModelLoader
+from .loader import ImageLoader
 from .renderer import ModelRenderer
 from .texture import ModelTexture
 from .utils import DebugType

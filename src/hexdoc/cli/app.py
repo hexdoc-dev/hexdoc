@@ -22,7 +22,7 @@ from hexdoc.core.properties import AnimationFormat
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import delete_updated_books, dump_sitemap, load_sitemap
 from hexdoc.graphics import DebugType, ModelRenderer
-from hexdoc.graphics.loader import ModelLoader
+from hexdoc.graphics.loader import ImageLoader
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
 from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureContext
@@ -471,13 +471,13 @@ def render_model(
             item_size=size,
         ) as renderer,
     ):
-        ml = ModelLoader(
+        image_loader = ImageLoader(
             loader=loader,
             renderer=renderer,
             site_url=URL(),
             site_dir=output_dir,
         )
-        url = ml.render_model(ResourceLocation.from_str(model_id))
+        url = image_loader.render_model(ResourceLocation.from_str(model_id))
         print(f"Rendered model {model_id} to {url}.")
 
 
@@ -502,7 +502,7 @@ def render_models(
         ModResourceLoader.load_all(props, pm, export=export_resources) as loader,
         ModelRenderer(loader=loader) as renderer,
     ):
-        ml = ModelLoader(
+        image_loader = ImageLoader(
             loader=loader,
             renderer=renderer,
             site_url=site_url,
@@ -526,7 +526,7 @@ def render_models(
             bar = tqdm(iterator)
             for model_id in bar:
                 bar.set_postfix_str(str(model_id))
-                ml.render_model(model_id)
+                image_loader.render_model(model_id)
 
     logger.info("Done.")
 

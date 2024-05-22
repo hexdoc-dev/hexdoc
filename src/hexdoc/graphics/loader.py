@@ -18,14 +18,13 @@ logger = logging.getLogger(__name__)
 MISSING_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/missing.png")
 TAG_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/tag.png")
 
-ModelLoaderResult = tuple[URL, BlockModel | None]
+LoadedModel = tuple[URL, BlockModel | None]
 
-ModelLoaderStrategy = Callable[[ResourceLocation], ModelLoaderResult | None]
+ModelLoaderStrategy = Callable[[ResourceLocation], LoadedModel | None]
 
 
-# TODO: rename to ImageLoader
 @dataclass(kw_only=True)
-class ModelLoader(ValidationContext):
+class ImageLoader(ValidationContext):
     loader: ModResourceLoader
     renderer: ModelRenderer
     site_dir: Path
@@ -34,10 +33,10 @@ class ModelLoader(ValidationContext):
     def __post_init__(self):
         # TODO: see cache comment in hexdoc.graphics.texture
         # (though it's less of an issue here since these aren't globals)
-        self._model_cache = dict[ResourceLocation, ModelLoaderResult]()
+        self._model_cache = dict[ResourceLocation, LoadedModel]()
         self._texture_cache = dict[ResourceLocation, URL]()
 
-        self._strategies: list[ModelLoaderStrategy] = [
+        self._model_strategies: list[ModelLoaderStrategy] = [
             self._from_props,
             self._from_resources(internal=True),
             self._from_renderer,
@@ -48,18 +47,18 @@ class ModelLoader(ValidationContext):
     def props(self):
         return self.loader.props
 
-    def render_block(self, block_id: BaseResourceLocation) -> ModelLoaderResult:
+    def render_block(self, block_id: BaseResourceLocation) -> LoadedModel:
         return self.render_model("block" / block_id.id)
 
-    def render_item(self, item_id: BaseResourceLocation) -> ModelLoaderResult:
+    def render_item(self, item_id: BaseResourceLocation) -> LoadedModel:
         return self.render_model("item" / item_id.id)
 
-    def render_model(self, model_id: BaseResourceLocation) -> ModelLoaderResult:
+    def render_model(self, model_id: BaseResourceLocation) -> LoadedModel:
         model_id = model_id.id
         logger.debug(f"Rendering model: {model_id}")
         for override_id in self._get_overrides(model_id):
             logger.debug(f"Attempting override: {override_id}")
-            for strategy in self._strategies:
+            for strategy in self._model_strategies:
                 logger.debug(f"Attempting model strategy: {strategy.__name__}")
                 try:
                     if result := strategy(override_id):

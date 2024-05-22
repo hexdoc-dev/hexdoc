@@ -29,7 +29,7 @@ from hexdoc.model import (
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import Inherit, InheritType, PydanticURL, classproperty
 
-from .loader import TAG_TEXTURE_ID, ModelLoader
+from .loader import TAG_TEXTURE_ID, ImageLoader
 
 _T_ResourceLocation = TypeVar(
     "_T_ResourceLocation",
@@ -82,7 +82,7 @@ class TextureImage(URLImage[ResourceLocation], InlineModel):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
-        url = ModelLoader.of(context).render_texture(id)
+        url = ImageLoader.of(context).render_texture(id)
         return cls(id=id, url=url)
 
     @override
@@ -110,7 +110,7 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
     @override
     @classmethod
     def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
-        url, model = ModelLoader.of(context).render_item(item)
+        url, model = ImageLoader.of(context).render_item(item)
         return cls(id=item, url=url, model=model)
 
     @override
@@ -131,7 +131,7 @@ class TagImage(URLImage[ResourceLocation], InlineModel):
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
         # TODO: load images for all the items in the tag?
-        url = ModelLoader.of(context).render_texture(TAG_TEXTURE_ID)
+        url = ImageLoader.of(context).render_texture(TAG_TEXTURE_ID)
         return cls(id=id, url=url)
 
     @override
