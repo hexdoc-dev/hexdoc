@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import importlib
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass, field
 from importlib.resources import Package
 from pathlib import Path
 from types import ModuleType
@@ -87,21 +87,20 @@ class _NoCallTypedHookCaller(TypedHookCaller[_P, None]):
     def __call__(self, *args: _P.args, **kwargs: _P.kwargs) -> Never: ...
 
 
-# TODO: convert to dataclass
+@dataclass
 class PluginManager(ValidationContext):
     """Custom hexdoc plugin manager with helpers and stronger typing."""
 
-    def __init__(self, branch: str, props: Properties, load: bool = True) -> None:
-        """Initialize the hexdoc plugin manager.
+    branch: str
+    props: Properties
+    load: InitVar[bool] = True
+    """If true (the default), calls `init_entrypoints` and `init_mod_plugins`."""
 
-        If `load` is true (the default), calls `init_entrypoints` and `init_mod_plugins`.
-        """
-        self.branch = branch
-        self.props = props
+    mod_plugins: dict[str, ModPlugin] = field(default_factory=dict)
+    book_plugins: dict[str, BookPlugin[Any]] = field(default_factory=dict)
+
+    def __post_init__(self, load: bool):
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)
-        self.mod_plugins: dict[str, ModPlugin] = {}
-        self.book_plugins: dict[str, BookPlugin[Any]] = {}
-
         self.inner.add_hookspecs(PluginSpec)
         if load:
             self.init_entrypoints()
