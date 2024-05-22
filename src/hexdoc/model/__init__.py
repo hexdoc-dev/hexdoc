@@ -17,6 +17,7 @@ __all__ = [
     "TemplateModel",
     "TypeTaggedTemplate",
     "TypeTaggedUnion",
+    "UnionModel",
     "ValidationContextModel",
     "init_context",
 ]
@@ -41,5 +42,6 @@ from .tagged_union import (
     TemplateModel,
     TypeTaggedTemplate,
     TypeTaggedUnion,
+    UnionModel,
 )
 from .types import Color
