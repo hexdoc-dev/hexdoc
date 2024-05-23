@@ -497,6 +497,9 @@ def dummy_setup(session: nox.Session):
                     ]
                     export_dir = "src/hexdoc_dummy/_export/generated"
 
+                    [textures]
+                    strict = false
+
                     [template]
                     icon = "icon.png"
                     include = [
