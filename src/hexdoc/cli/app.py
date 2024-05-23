@@ -214,7 +214,6 @@ def build(
             asset_url=props.env.asset_url,
             render_dir=site_dir,
         )
-        asset_loader.default_renderer = renderer
 
         image_loader = ImageLoader(
             loader=loader,
