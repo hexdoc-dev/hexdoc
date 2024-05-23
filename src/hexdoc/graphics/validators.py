@@ -13,6 +13,7 @@ from pydantic import (
     model_validator,
 )
 from typing_extensions import TypeVar, override
+from yarl import URL
 
 from hexdoc.core import ItemStack, Properties, ResourceLocation
 from hexdoc.minecraft.i18n import I18n, LocalizedStr
@@ -59,6 +60,10 @@ class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
     def name(self):
         return self._name
 
+    @property
+    @abstractmethod
+    def first_url(self) -> URL: ...
+
     @abstractmethod
     def _get_name(self, info: ValidationInfo) -> LocalizedStr: ...
 
@@ -75,6 +80,11 @@ class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
 class URLImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:single"):
     url: PydanticURL
     pixelated: bool = True
+
+    @property
+    @override
+    def first_url(self):
+        return self.url
 
 
 class TextureImage(URLImage[ResourceLocation], InlineModel):
@@ -141,6 +151,11 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
 
 class CyclingImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:cycling"):
     images: list[HexdocImage] = Field(min_length=1)
+
+    @property
+    @override
+    def first_url(self):
+        return self.images[0].first_url
 
     @override
     def _get_name(self, info: ValidationInfo):
