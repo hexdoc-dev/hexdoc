@@ -190,7 +190,7 @@ def parent_book(
         lang=parent_props.default_lang,
     )
 
-    context = init_context(
+    with init_context(
         book_id=book_id,
         book_data=book_data,
         pm=pm,
@@ -198,11 +198,9 @@ def parent_book(
         image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
-    )
-
-    book = book_plugin.validate_book(book_data, context=context)
-
-    return book, context
+    ) as context:
+        book = book_plugin.validate_book(book_data, context=context)
+        yield book, context
 
 
 @pytest.fixture
@@ -232,7 +230,7 @@ def child_book(
         lang=child_props.default_lang,
     )
 
-    context = init_context(
+    with init_context(
         book_id=book_id,
         book_data=book_data,
         pm=pm,
@@ -240,11 +238,9 @@ def child_book(
         image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
-    )
-
-    book = book_plugin.validate_book(book_data, context=context)
-
-    return book, context
+    ) as context:
+        book = book_plugin.validate_book(book_data, context=context)
+        yield book, context
 
 
 def test_parent_ids(parent_book: tuple[Book, dict[str, Any]]):

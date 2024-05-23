@@ -118,7 +118,7 @@ def book_and_context(
         lang=props.default_lang,
     )
 
-    context = init_context(
+    with init_context(
         book_id=book_id,
         book_data=book_data,
         pm=pm,
@@ -126,11 +126,9 @@ def book_and_context(
         image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
-    )
-
-    book = book_plugin.validate_book(book_data, context=context)
-
-    yield book, context
+    ) as context:
+        book = book_plugin.validate_book(book_data, context=context)
+        yield book, context
 
 
 def test_book_name(book_and_context: tuple[Book, dict[str, Any]]):

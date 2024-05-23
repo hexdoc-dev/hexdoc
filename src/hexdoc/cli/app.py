@@ -152,7 +152,7 @@ def repl(*, props_file: PropsOption):
         )
 
         if book_id and book_data:
-            context = init_context(
+            with init_context(
                 book_id=book_id,
                 book_data=book_data,
                 pm=pm,
@@ -160,8 +160,8 @@ def repl(*, props_file: PropsOption):
                 image_loader=image_loader,
                 i18n=i18n,
                 all_metadata=all_metadata,
-            )
-            book = book_plugin.validate_book(book_data, context=context)
+            ) as context:
+                book = book_plugin.validate_book(book_data, context=context)
             repl_locals |= dict(
                 book=book,
                 context=context,
@@ -239,7 +239,7 @@ def build(
         books = list[LoadedBookInfo]()
         for language, i18n in all_i18n.items():
             try:
-                context = init_context(
+                with init_context(
                     book_id=book_id,
                     book_data=book_data,
                     pm=pm,
@@ -247,8 +247,8 @@ def build(
                     image_loader=image_loader,
                     i18n=i18n,
                     all_metadata=all_metadata,
-                )
-                book = book_plugin.validate_book(book_data, context=context)
+                ) as context:
+                    book = book_plugin.validate_book(book_data, context=context)
                 books.append(
                     LoadedBookInfo(
                         language=language,

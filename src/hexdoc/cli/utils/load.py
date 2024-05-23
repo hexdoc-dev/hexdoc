@@ -1,4 +1,5 @@
 import logging
+from contextlib import contextmanager
 from pathlib import Path
 from textwrap import indent
 from typing import Any, Literal, overload
@@ -23,6 +24,7 @@ from hexdoc.minecraft.assets import (
     TextureContext,
     TextureLookups,
 )
+from hexdoc.model import init_context as set_init_context
 from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
 from hexdoc.plugin import BookPlugin, ModPlugin, ModPluginWithBook, PluginManager
@@ -118,6 +120,7 @@ def render_textures_and_export_metadata(
 
 
 # TODO: refactor a lot of this out
+@contextmanager
 def init_context(
     *,
     book_id: ResourceLocation,
@@ -128,6 +131,8 @@ def init_context(
     i18n: I18n,
     all_metadata: dict[str, HexdocMetadata],
 ):
+    """This is only a contextmanager so it can call `hexdoc.model.init_context`."""
+
     props = loader.props
 
     context = dict[str, Any]()
@@ -160,4 +165,5 @@ def init_context(
     for item in pm.update_context(context):
         item.add_to_context(context)
 
-    return context
+    with set_init_context(context):
+        yield context
