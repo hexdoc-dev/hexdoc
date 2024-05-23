@@ -73,7 +73,7 @@ class UnionModel(HexdocModel):
                 )
                 if allow_ambiguous:
                     return result
-            except Exception as e:
+            except (ValueError, AssertionError, ValidationError) as e:
                 exceptions.append(
                     InitErrorDetails(
                         type=PydanticCustomError(
