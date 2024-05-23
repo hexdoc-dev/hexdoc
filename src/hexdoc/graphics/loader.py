@@ -106,7 +106,7 @@ class ImageLoader(ValidationContext):
         # TODO: implement (maybe)
         yield model_id
 
-    def _load_model(self, model_id: ResourceLocation):
+    def _load_model(self, model_id: ResourceLocation) -> LoadedModel | BlockModel:
         if result := self._model_cache.get(model_id):
             logger.debug(f"Cache hit: {model_id} = {result}")
             return result
@@ -115,7 +115,7 @@ class ImageLoader(ValidationContext):
             _, model = BlockModel.load_and_resolve(self.loader, model_id)
             return model
         except Exception as e:
-            return self._fail(f"Failed to load model: {model_id}: {e}")
+            return self._fail(f"Failed to load model: {model_id}: {e}"), None
 
     def _render_existing_texture(self, src: Path, output_id: ResourceLocation):
         fragment = self._get_fragment(output_id, src.suffix)
@@ -192,7 +192,7 @@ class ImageLoader(ValidationContext):
     def _from_renderer(self, model_id: ResourceLocation):
         model = self._load_model(model_id)
         if not isinstance(model, BlockModel):
-            return None
+            return model
         fragment = self._get_fragment(model_id)
         suffix = self.renderer.render_model(model, self.site_dir / fragment)
         return self._fragment_to_url(fragment.with_suffix(suffix)), model
