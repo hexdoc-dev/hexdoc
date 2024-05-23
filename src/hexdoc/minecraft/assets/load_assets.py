@@ -62,6 +62,7 @@ class HexdocAssetLoader:
     site_url: PydanticURL
     asset_url: PydanticURL
     render_dir: Path
+    default_renderer: ModelRenderer | None = None
 
     @cached_property
     def gaslighting_items(self):
@@ -120,7 +121,7 @@ class HexdocAssetLoader:
 
     @cached_property
     def renderer(self):
-        return ModelRenderer(
+        return self.default_renderer or ModelRenderer(
             loader=self.loader,
             output_dir=self.render_dir,
         )

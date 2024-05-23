@@ -13,6 +13,7 @@ from hexdoc.core import (
     ResourceLocation,
 )
 from hexdoc.data import HexdocMetadata, load_metadata_textures
+from hexdoc.graphics.loader import ImageLoader
 from hexdoc.minecraft import I18n, Tag
 from hexdoc.minecraft.assets import (
     AnimatedTexture,
@@ -123,6 +124,7 @@ def init_context(
     book_data: dict[str, Any],
     pm: PluginManager,
     loader: ModResourceLoader,
+    image_loader: ImageLoader,
     i18n: I18n,
     all_metadata: dict[str, HexdocMetadata],
 ):
@@ -134,6 +136,7 @@ def init_context(
         props,
         pm,
         loader,
+        image_loader,
         i18n,
         TextureContext(
             textures=load_metadata_textures(all_metadata),

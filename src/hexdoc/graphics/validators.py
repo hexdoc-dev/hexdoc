@@ -1,13 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import (
-    Any,
-    Generic,
-    Unpack,
-)
+from typing import Any, Generic
 
-from copier import ConfigDict
 from pydantic import (
     Field,
     PrivateAttr,
@@ -17,8 +12,8 @@ from pydantic import (
 )
 from typing_extensions import TypeVar, override
 
-from hexdoc.core import BaseResourceLocation, ItemStack, ResourceLocation
-from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.core import ItemStack, ResourceLocation
+from hexdoc.minecraft.i18n import I18n, LocalizedStr
 from hexdoc.minecraft.model import BlockModel
 from hexdoc.model import (
     InlineItemModel,
@@ -31,11 +26,7 @@ from hexdoc.utils import Inherit, InheritType, PydanticURL, classproperty
 
 from .loader import TAG_TEXTURE_ID, ImageLoader
 
-_T_ResourceLocation = TypeVar(
-    "_T_ResourceLocation",
-    bound=BaseResourceLocation,
-    default=ResourceLocation,
-)
+_T_ResourceLocation = TypeVar("_T_ResourceLocation", default=ResourceLocation)
 
 
 class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
@@ -49,10 +40,10 @@ class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
     def __init_subclass__(
         cls,
         *,
-        template_type: str | ResourceLocation | InheritType | None = Inherit,
-        **kwargs: Unpack[ConfigDict],
+        template_id: str | ResourceLocation | InheritType | None = Inherit,
+        **kwargs: Any,
     ):
-        super().__init_subclass__(template_type=template_type, **kwargs)
+        super().__init_subclass__(template_id=template_id, **kwargs)
 
     @classproperty
     @classmethod
@@ -92,8 +83,8 @@ class TextureImage(URLImage[ResourceLocation], InlineModel):
 
 class ItemImage(HexdocImage[ItemStack], InlineItemModel, UnionModel, ABC):
     @override
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
         pm = PluginManager.of(context)
         return cls._resolve_union(

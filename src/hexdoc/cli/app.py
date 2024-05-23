@@ -112,18 +112,21 @@ def repl(*, props_file: PropsOption):
 
     try:
         props, pm, book_plugin, plugin = load_common_data(props_file, branch="")
-        repl_locals |= dict(
-            props=props,
-            pm=pm,
-            plugin=plugin,
-        )
 
         loader = ModResourceLoader.load_all(
             props,
             pm,
             export=False,
         )
-        repl_locals["loader"] = loader
+
+        renderer = ModelRenderer(loader=loader)
+
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=URL(),
+            site_dir=Path("out"),
+        )
 
         if props.book_id:
             book_id, book_data = book_plugin.load_book_data(props.book_id, loader)
@@ -137,7 +140,16 @@ def repl(*, props_file: PropsOption):
         )[props.default_lang]
 
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-        repl_locals["all_metadata"] = all_metadata
+
+        repl_locals |= dict(
+            props=props,
+            pm=pm,
+            plugin=plugin,
+            loader=loader,
+            renderer=renderer,
+            image_loader=image_loader,
+            all_metadata=all_metadata,
+        )
 
         if book_id and book_data:
             context = init_context(
@@ -145,6 +157,7 @@ def repl(*, props_file: PropsOption):
                 book_data=book_data,
                 pm=pm,
                 loader=loader,
+                image_loader=image_loader,
                 i18n=i18n,
                 all_metadata=all_metadata,
             )
@@ -188,7 +201,10 @@ def build(
         output_dir /= props.env.hexdoc_subdirectory
 
     logger.info("Exporting resources.")
-    with ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader:
+    with (
+        ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader,
+        ModelRenderer(loader=loader) as renderer,
+    ):
         site_path = plugin.site_path(versioned=release)
         site_dir = output_dir / site_path
 
@@ -197,6 +213,14 @@ def build(
             site_url=props.env.github_pages_url.joinpath(*site_path.parts),
             asset_url=props.env.asset_url,
             render_dir=site_dir,
+        )
+        asset_loader.default_renderer = renderer
+
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_dir=site_dir,
+            site_url=URL(*site_path.parts),
         )
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
@@ -221,6 +245,7 @@ def build(
                     book_data=book_data,
                     pm=pm,
                     loader=loader,
+                    image_loader=image_loader,
                     i18n=i18n,
                     all_metadata=all_metadata,
                 )

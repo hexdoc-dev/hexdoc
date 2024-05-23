@@ -8,11 +8,14 @@ from hexdoc.core import ModResourceLoader
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import Properties
 from hexdoc.core.resource import ResourceLocation
+from hexdoc.graphics.loader import ImageLoader
+from hexdoc.graphics.renderer import ModelRenderer
 from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.text import FormatTree
 from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
+from yarl import URL
 
 from ..tree import write_file_tree
 
@@ -83,9 +86,27 @@ def loader(props: Properties, pm: PluginManager):
 
 
 @pytest.fixture
-def book_and_context(pm: PluginManager, loader: ModResourceLoader):
+def renderer(loader: ModResourceLoader):
+    with ModelRenderer(loader=loader) as renderer:
+        yield renderer
+
+
+@pytest.fixture
+def book_and_context(
+    tmp_path: Path,
+    pm: PluginManager,
+    loader: ModResourceLoader,
+    renderer: ModelRenderer,
+):
     props = loader.props
     assert props.book_id
+
+    image_loader = ImageLoader(
+        loader=loader,
+        renderer=renderer,
+        site_dir=tmp_path,
+        site_url=URL(),
+    )
 
     book_plugin = pm.book_plugin(props.book_type)
 
@@ -102,6 +123,7 @@ def book_and_context(pm: PluginManager, loader: ModResourceLoader):
         book_data=book_data,
         pm=pm,
         loader=loader,
+        image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
     )

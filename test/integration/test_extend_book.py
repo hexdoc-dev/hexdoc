@@ -8,6 +8,8 @@ from hexdoc.core import ModResourceLoader, PathResourceDir, PluginResourceDir
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import EnvironmentVariableProps, Properties, TexturesProps
 from hexdoc.core.resource import ResourceLocation
+from hexdoc.graphics.loader import ImageLoader
+from hexdoc.graphics.renderer import ModelRenderer
 from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.book_context import BookContext
@@ -150,9 +152,33 @@ def child_loader(child_props: Properties, pm: PluginManager):
 
 
 @pytest.fixture
-def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
+def parent_renderer(parent_loader: ModResourceLoader):
+    with ModelRenderer(loader=parent_loader) as renderer:
+        yield renderer
+
+
+@pytest.fixture
+def child_renderer(child_loader: ModResourceLoader):
+    with ModelRenderer(loader=child_loader) as renderer:
+        yield renderer
+
+
+@pytest.fixture
+def parent_book(
+    tmp_path: Path,
+    pm: PluginManager,
+    parent_loader: ModResourceLoader,
+    parent_renderer: ModelRenderer,
+):
     parent_props = parent_loader.props
     assert parent_props.book_id
+
+    image_loader = ImageLoader(
+        loader=parent_loader,
+        renderer=parent_renderer,
+        site_dir=tmp_path,
+        site_url=URL(),
+    )
 
     book_plugin = pm.book_plugin(parent_props.book_type)
 
@@ -169,6 +195,7 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
         book_data=book_data,
         pm=pm,
         loader=parent_loader,
+        image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
     )
@@ -179,9 +206,21 @@ def parent_book(pm: PluginManager, parent_loader: ModResourceLoader):
 
 
 @pytest.fixture
-def child_book(pm: PluginManager, child_loader: ModResourceLoader):
+def child_book(
+    tmp_path: Path,
+    pm: PluginManager,
+    child_loader: ModResourceLoader,
+    child_renderer: ModelRenderer,
+):
     child_props = child_loader.props
     assert child_props.book_id
+
+    image_loader = ImageLoader(
+        loader=child_loader,
+        renderer=child_renderer,
+        site_dir=tmp_path,
+        site_url=URL(),
+    )
 
     book_plugin = pm.book_plugin(child_props.book_type)
 
@@ -198,6 +237,7 @@ def child_book(pm: PluginManager, child_loader: ModResourceLoader):
         book_data=book_data,
         pm=pm,
         loader=child_loader,
+        image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
     )

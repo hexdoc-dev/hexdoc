@@ -392,15 +392,15 @@ class TemplateModel(HexdocModel, ABC):
     def __init_subclass__(
         cls,
         *,
-        template_type: str | ResourceLocation | InheritType | None = None,
+        template_id: str | ResourceLocation | InheritType | None = None,
         **kwargs: Unpack[ConfigDict],
     ) -> None:
         super().__init_subclass__(**kwargs)
-        match template_type:
+        match template_id:
             case str():
-                cls._template_id = ResourceLocation.from_str(template_type)
+                cls._template_id = ResourceLocation.from_str(template_id)
             case ResourceLocation() | None:
-                cls._template_id = template_type
+                cls._template_id = template_id
             case InheritType():
                 pass
 
@@ -440,6 +440,6 @@ class TypeTaggedTemplate(TypeTaggedUnion, TemplateModel, ABC, type=None):
         super().__init_subclass__(
             type=type,
             # pyright doesn't seem to understand multiple inheritance here
-            template_type=template_type,  # pyright: ignore[reportCallIssue]
+            template_id=template_type,  # pyright: ignore[reportCallIssue]
             **kwargs,
         )
