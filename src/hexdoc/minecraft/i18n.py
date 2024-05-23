@@ -349,6 +349,11 @@ class I18n(ValidationContextModel):
 
     def localize_texture(self, texture_id: ResourceLocation, silent: bool = False):
         path = texture_id.path.removeprefix("textures/").removesuffix(".png")
+        if "/" not in path:
+            raise ValueError(
+                f"Unable to localize texture id not containing '/': {texture_id}"
+            )
+
         root, rest = path.split("/", 1)
 
         # TODO: refactor / extensibilify
