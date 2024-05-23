@@ -220,7 +220,7 @@ def build(
             loader=loader,
             renderer=renderer,
             site_dir=site_dir,
-            site_url=URL(*site_path.parts),
+            site_url=URL().joinpath(*site_path.parts),
         )
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
