@@ -1,18 +1,20 @@
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Generic
 
 from pydantic import (
     Field,
     PrivateAttr,
+    ValidationError,
     ValidationInfo,
     field_validator,
     model_validator,
 )
 from typing_extensions import TypeVar, override
 
-from hexdoc.core import ItemStack, ResourceLocation
+from hexdoc.core import ItemStack, Properties, ResourceLocation
 from hexdoc.minecraft.i18n import I18n, LocalizedStr
 from hexdoc.minecraft.model import BlockModel
 from hexdoc.model import (
@@ -24,7 +26,9 @@ from hexdoc.model import (
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import Inherit, InheritType, PydanticURL, classproperty
 
-from .loader import TAG_TEXTURE_ID, ImageLoader
+from .loader import MISSING_TEXTURE_ID, TAG_TEXTURE_ID, ImageLoader
+
+logger = logging.getLogger(__name__)
 
 _T_ResourceLocation = TypeVar("_T_ResourceLocation", default=ResourceLocation)
 
@@ -60,7 +64,11 @@ class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
 
     @model_validator(mode="after")
     def _set_name(self, info: ValidationInfo):
-        self._name = self._get_name(info)
+        try:
+            self._name = self._get_name(info)
+        except ValidationError as e:
+            logger.debug(f"Failed to get name for {self.__class__}: {e}")
+            self._name = LocalizedStr.with_value(str(self.id))
         return self
 
 
@@ -79,6 +87,23 @@ class TextureImage(URLImage[ResourceLocation], InlineModel):
     @override
     def _get_name(self, info: ValidationInfo):
         return I18n.of(info).localize_texture(self.id)
+
+
+class MissingImage(TextureImage):
+    @override
+    @classmethod
+    def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
+        message = f"Using missing texture for id: {id}"
+        if Properties.of(context).textures.strict:
+            raise ValueError(message)
+        logger.warning(message)
+
+        url = ImageLoader.of(context).render_texture(MISSING_TEXTURE_ID)
+        return cls(id=id, url=url, pixelated=True)
+
+    @override
+    def _get_name(self, info: ValidationInfo):
+        return LocalizedStr.with_value(str(self.id))
 
 
 class ItemImage(HexdocImage[ItemStack], InlineItemModel, UnionModel, ABC):

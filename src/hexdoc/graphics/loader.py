@@ -78,7 +78,7 @@ class ImageLoader(ValidationContext):
                         exc_info=True,
                     )
 
-        return LoadedModel(self._fail(f"Failed to render model: {model_id}"))
+        raise ValueError(f"Failed to render model: {model_id}")
 
     def render_texture(self, texture_id: ResourceLocation) -> URL:
         if result := self._texture_cache.get(texture_id):
@@ -90,23 +90,7 @@ class ImageLoader(ValidationContext):
             self._texture_cache[texture_id] = result
             return result
         except FileNotFoundError:
-            # prevent infinite recursion if something really weird happens
-            # use RuntimeError instead of assert so Pydantic doesn't catch it
-            if texture_id == MISSING_TEXTURE_ID:
-                raise RuntimeError(
-                    f"Built-in missing texture {MISSING_TEXTURE_ID} not found"
-                    + " (this should never happen)"
-                )
-
-            return self._fail(f"Failed to find texture: {texture_id}")
-
-    def _fail(self, message: str):
-        if self.props.textures.strict:
-            raise ValueError(message)
-        logger.error(message)
-        missing = self.render_texture(MISSING_TEXTURE_ID)
-        assert missing is not None
-        return missing
+            raise ValueError(f"Failed to find texture: {texture_id}")
 
     def _get_overrides(self, model_id: ResourceLocation):
         # TODO: implement (maybe)
@@ -121,7 +105,7 @@ class ImageLoader(ValidationContext):
             _, model = BlockModel.load_and_resolve(self.loader, model_id)
             return model
         except Exception as e:
-            return LoadedModel(self._fail(f"Failed to load model: {model_id}: {e}"))
+            raise ValueError(f"Failed to load model: {model_id}: {e}") from e
 
     def _render_existing_texture(self, src: Path, output_id: ResourceLocation):
         fragment = self._get_fragment(output_id, src.suffix)
