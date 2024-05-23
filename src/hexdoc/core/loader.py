@@ -468,15 +468,46 @@ class ModResourceLoader(ValidationContext):
 
         return value
 
-    @overload
-    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None: ...
+    def export_resources(
+        self,
+        type: ResourceType,
+        *,
+        namespace: str,
+        folder: str | Path,
+        glob: str | list[str] = "**/*",
+        allow_missing: bool = False,
+        internal_only: bool = False,
+    ):
+        for resource_dir, _, path in self.find_resources(
+            type,
+            namespace=namespace,
+            folder=folder,
+            glob=glob,
+            allow_missing=allow_missing,
+            internal_only=internal_only,
+        ):
+            if resource_dir.reexport:
+                self.export(
+                    path=path.relative_to(resource_dir.path),
+                    data=path.read_bytes(),
+                )
 
     @overload
     def export(
         self,
         /,
         path: Path,
-        data: str,
+        data: str | bytes,
+        *,
+        cache: bool = False,
+    ) -> None: ...
+
+    @overload
+    def export(
+        self,
+        /,
+        path: Path,
+        data: str | bytes,
         value: _T,
         *,
         decode: Callable[[str], _T] = decode_json_dict,
@@ -487,7 +518,7 @@ class ModResourceLoader(ValidationContext):
     def export(
         self,
         path: Path,
-        data: str,
+        data: str | bytes,
         value: _T = None,
         *,
         decode: Callable[[str], _T] = decode_json_dict,

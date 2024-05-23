@@ -225,6 +225,17 @@ def build(
 
         all_metadata = render_textures_and_export_metadata(loader, asset_loader)
 
+        # FIXME: put this somewhere saner?
+        logger.info("Exporting all image-related resources.")
+        for folder in ["blockstates", "models", "textures"]:
+            loader.export_resources(
+                "assets",
+                namespace="*",
+                folder=folder,
+                glob="**/*.*",
+                allow_missing=True,
+            )
+
         if not props.book_id:
             logger.info("Skipping book load because props.book_id is not set.")
             return site_dir
