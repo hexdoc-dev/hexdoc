@@ -26,8 +26,10 @@ logger = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class ModelRenderer:
+    """Avoid creating multiple instances of this class - it seems to cause issues with
+    the OpenGL/ModernGL context."""
+
     loader: ModResourceLoader
-    output_dir: Path | None = None
     debug: DebugType = DebugType.NONE
     block_size: int | None = None
     item_size: int | None = None
@@ -74,9 +76,6 @@ class ModelRenderer:
 
     def save_image(self, output_path: str | Path, frames: list[Image.Image]):
         output_path = Path(output_path)
-        if self.output_dir and not output_path.is_absolute():
-            output_path = self.output_dir / output_path
-
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         match frames:

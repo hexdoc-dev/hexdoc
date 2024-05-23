@@ -1,7 +1,7 @@
 import logging
 import textwrap
 from collections.abc import Set
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Iterable, Iterator, TypeVar, cast
@@ -64,6 +64,9 @@ class HexdocAssetLoader:
     asset_url: PydanticURL
     render_dir: Path
 
+    # FIXME: so so so awfully hacky. i hate it here
+    renderer: ModelRenderer = field(init=False)
+
     @cached_property
     def gaslighting_items(self):
         return Tag.GASLIGHTING_ITEMS.load(self.loader).value_ids_set
@@ -119,13 +122,6 @@ class HexdocAssetLoader:
             model = ModelItem.load_data("item" / item_id, data)
             yield item_id, model
 
-    @cached_property
-    def renderer(self):
-        return ModelRenderer(
-            loader=self.loader,
-            output_dir=self.render_dir,
-        )
-
     def fallback_texture(self, item_id: ResourceLocation) -> ItemTexture | None:
         return None
 
@@ -175,6 +171,7 @@ class HexdocAssetLoader:
                 self.gaslighting_items,
                 image_textures,
                 self.site_url,
+                self.render_dir,
             ):
                 found_items_from_models.add(item_id)
                 yield item_id, result
@@ -242,6 +239,7 @@ def load_and_render_item(
     gaslighting_items: Set[ResourceLocation],
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
+    output_dir: Path,
 ) -> ItemTexture | None:
     try:
         match model.find_texture(loader, gaslighting_items):
@@ -255,6 +253,7 @@ def load_and_render_item(
                         renderer,
                         image_textures,
                         site_url,
+                        output_dir,
                     ).inner
                     for found_texture in found_textures
                 )
@@ -266,6 +265,7 @@ def load_and_render_item(
                     renderer,
                     image_textures,
                     site_url,
+                    output_dir,
                 )
                 return texture
     except TextureNotFoundError as e:
@@ -279,6 +279,7 @@ def lookup_or_render_single_item(
     renderer: ModelRenderer,
     image_textures: dict[ResourceLocation, ImageTexture],
     site_url: URL,
+    output_dir: Path,
 ) -> SingleItemTexture:
     match found_texture:
         case "texture", texture_id:
@@ -287,13 +288,14 @@ def lookup_or_render_single_item(
             return SingleItemTexture(inner=image_textures[texture_id])
 
         case "block_model", model_id:
-            return render_block(model_id, renderer, site_url)
+            return render_block(model_id, renderer, site_url, output_dir)
 
 
 def render_block(
     id: ResourceLocation,
     renderer: ModelRenderer,
     site_url: URL,
+    output_dir: Path,
 ) -> SingleItemTexture:
     # FIXME: hack
     id_out_path = id.path
@@ -306,7 +308,7 @@ def render_block(
 
     try:
         # FIXME: scuffed
-        suffix = renderer.render_model(id, out_path)
+        suffix = renderer.render_model(id, output_dir / out_path)
         out_path = out_path.removesuffix(".png") + suffix
     except Exception as e:
         if renderer.loader.props.textures.strict:
