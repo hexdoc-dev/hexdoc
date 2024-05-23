@@ -18,8 +18,9 @@ from hexdoc.graphics import ModelRenderer
 from hexdoc.utils import PydanticURL
 from hexdoc.utils.context import ContextSource
 
+from ..model.animation import AnimationMeta
 from ..tags import Tag
-from .animated import AnimatedTexture, AnimationMeta
+from .animated import AnimatedTexture
 from .constants import MISSING_TEXTURE_URL
 from .items import (
     ImageTexture,
