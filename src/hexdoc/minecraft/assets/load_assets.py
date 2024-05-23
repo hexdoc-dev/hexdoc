@@ -308,7 +308,7 @@ def render_block(
 
     try:
         # FIXME: scuffed
-        suffix = renderer.render_model(id, output_dir / out_path)
+        suffix, _ = renderer.render_model(id, output_dir / out_path)
         out_path = out_path.removesuffix(".png") + suffix
     except Exception as e:
         if renderer.loader.props.textures.strict:

@@ -10,7 +10,7 @@ from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.minecraft.model import BlockModel
 from hexdoc.utils import ValidationContext
 
-from .renderer import ModelRenderer
+from .renderer import ImageType, ModelRenderer
 from .texture import ModelTexture
 
 logger = logging.getLogger(__name__)
@@ -18,7 +18,13 @@ logger = logging.getLogger(__name__)
 MISSING_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/missing.png")
 TAG_TEXTURE_ID = ResourceLocation("hexdoc", "textures/item/tag.png")
 
-LoadedModel = tuple[URL, BlockModel | None]
+
+@dataclass
+class LoadedModel:
+    url: URL
+    model: BlockModel | None = None
+    image_type: ImageType = ImageType.UNKNOWN
+
 
 ModelLoaderStrategy = Callable[[ResourceLocation], LoadedModel | None]
 
@@ -72,7 +78,7 @@ class ImageLoader(ValidationContext):
                         exc_info=True,
                     )
 
-        return self._fail(f"Failed to render model: {model_id}"), None
+        return LoadedModel(self._fail(f"Failed to render model: {model_id}"))
 
     def render_texture(self, texture_id: ResourceLocation) -> URL:
         if result := self._texture_cache.get(texture_id):
@@ -115,7 +121,7 @@ class ImageLoader(ValidationContext):
             _, model = BlockModel.load_and_resolve(self.loader, model_id)
             return model
         except Exception as e:
-            return self._fail(f"Failed to load model: {model_id}: {e}"), None
+            return LoadedModel(self._fail(f"Failed to load model: {model_id}: {e}"))
 
     def _render_existing_texture(self, src: Path, output_id: ResourceLocation):
         fragment = self._get_fragment(output_id, src.suffix)
@@ -167,9 +173,9 @@ class ImageLoader(ValidationContext):
         match self.props.textures.overrides.models.get(model_id):
             case ResourceLocation() as texture_id:
                 _, src = self.loader.find_resource("assets", "", texture_id)
-                return self._render_existing_texture(src, model_id), None
+                return LoadedModel(self._render_existing_texture(src, model_id))
             case URL() as url:
-                return url, None
+                return LoadedModel(url)
             case None:
                 logger.debug(f"No props override for model: {model_id}")
                 return None
@@ -183,7 +189,7 @@ class ImageLoader(ValidationContext):
                 folder="hexdoc/renders",
                 internal=internal,
             ):
-                return self._render_existing_texture(path, model_id), None
+                return LoadedModel(self._render_existing_texture(path, model_id))
             logger.debug(f"No {type_} rendered resource for model: {model_id}")
 
         inner.__name__ = f"_from_resources({internal=})"
@@ -194,5 +200,9 @@ class ImageLoader(ValidationContext):
         if not isinstance(model, BlockModel):
             return model
         fragment = self._get_fragment(model_id)
-        suffix = self.renderer.render_model(model, self.site_dir / fragment)
-        return self._fragment_to_url(fragment.with_suffix(suffix)), model
+        suffix, image_type = self.renderer.render_model(model, self.site_dir / fragment)
+        return LoadedModel(
+            self._fragment_to_url(fragment.with_suffix(suffix)),
+            model,
+            image_type,
+        )

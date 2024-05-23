@@ -101,8 +101,13 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
     @override
     @classmethod
     def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
-        url, model = ImageLoader.of(context).render_item(item)
-        return cls(id=item, url=url, model=model)
+        result = ImageLoader.of(context).render_item(item)
+        return cls(
+            id=item,
+            url=result.url,
+            model=result.model,
+            pixelated=result.image_type.pixelated,
+        )
 
     @override
     def _get_name(self, info: ValidationInfo):

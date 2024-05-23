@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from enum import Enum, auto
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,21 @@ from .texture import ModelTexture
 from .utils import DebugType
 
 logger = logging.getLogger(__name__)
+
+
+# FIXME: I don't really like this - ideally we should check the image size and pixelate if it's small
+class ImageType(Enum):
+    BLOCK = auto()
+    ITEM = auto()
+    UNKNOWN = auto()
+
+    @property
+    def pixelated(self):
+        match self:
+            case ImageType.BLOCK:
+                return False
+            case ImageType.ITEM | ImageType.UNKNOWN:
+                return True
 
 
 @dataclass(kw_only=True)
@@ -69,10 +85,12 @@ class ModelRenderer:
 
         if model.is_generated_item:
             frames = self._render_item(model)
+            image_type = ImageType.ITEM
         else:
             frames = self._render_block(model)
+            image_type = ImageType.BLOCK
 
-        return self.save_image(output_path, frames)
+        return self.save_image(output_path, frames), image_type
 
     def save_image(self, output_path: str | Path, frames: list[Image.Image]):
         output_path = Path(output_path)
