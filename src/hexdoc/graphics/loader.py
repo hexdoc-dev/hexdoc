@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
+from traceback import TracebackException
 from typing import Callable
 
 from yarl import URL
@@ -49,6 +50,9 @@ class ImageLoader(ValidationContext):
             self._from_resources(internal=False),
         ]
 
+        self._overridden_models = set[ResourceLocation]()
+        self._exceptions = list[Exception]()
+
     @property
     def props(self):
         return self.loader.props
@@ -60,23 +64,42 @@ class ImageLoader(ValidationContext):
         return self.render_model("item" / item_id.id)
 
     def render_model(self, model_id: BaseResourceLocation) -> LoadedModel:
-        model_id = model_id.id
+        self._overridden_models.clear()
+        self._exceptions.clear()
+        try:
+            return self._render_model_recursive(model_id.id)
+        except Exception as e:
+            if self._exceptions:
+                # FIXME: hack
+                # necessary because of https://github.com/Textualize/rich/issues/1859
+                group = ExceptionGroup(
+                    "Caught errors while rendering model",
+                    self._exceptions,
+                )
+                traceback = "".join(TracebackException.from_exception(group).format())
+                if e.args:
+                    e.args = (f"{e.args[0]}\n{traceback}", *e.args[1:])
+                else:
+                    e.args = (traceback,)
+            raise e
+        finally:
+            self._overridden_models.clear()
+            self._exceptions.clear()
+
+    def _render_model_recursive(self, model_id: ResourceLocation):
         logger.debug(f"Rendering model: {model_id}")
-        for override_id in self._get_overrides(model_id):
-            logger.debug(f"Attempting override: {override_id}")
-            for strategy in self._model_strategies:
-                logger.debug(f"Attempting model strategy: {strategy.__name__}")
-                try:
-                    if result := strategy(override_id):
-                        self._model_cache[model_id] = result
-                        self._model_cache[override_id] = result
-                        return result
-                except Exception:
-                    # TODO: probably shouldn't just swallow all errors like this.
-                    logger.debug(
-                        f"Exception while rendering override: {override_id}",
-                        exc_info=True,
-                    )
+        for strategy in self._model_strategies:
+            logger.debug(f"Attempting model strategy: {strategy.__name__}")
+            try:
+                if result := strategy(model_id):
+                    self._model_cache[model_id] = result
+                    return result
+            except Exception as e:
+                logger.debug(
+                    f"Exception while rendering override: {model_id}",
+                    exc_info=True,
+                )
+                self._exceptions.append(e)
 
         raise ValueError(f"Failed to render model: {model_id}")
 
@@ -91,10 +114,6 @@ class ImageLoader(ValidationContext):
             return result
         except FileNotFoundError:
             raise ValueError(f"Failed to find texture: {texture_id}")
-
-    def _get_overrides(self, model_id: ResourceLocation):
-        # TODO: implement (maybe)
-        yield model_id
 
     def _load_model(self, model_id: ResourceLocation) -> LoadedModel | BlockModel:
         if result := self._model_cache.get(model_id):
@@ -183,7 +202,33 @@ class ImageLoader(ValidationContext):
         model = self._load_model(model_id)
         if not isinstance(model, BlockModel):
             return model
-        fragment = self._get_fragment(model_id)
+
+        try:
+            return self._from_model(model)
+        except Exception as e:
+            logger.debug(f"Failed to render model {model.id}: {e}")
+            self._exceptions.append(e)
+
+        if not model.overrides:
+            return None
+
+        if model.id in self._overridden_models:
+            logger.debug(f"Skipping override check for recursive override: {model.id}")
+            return None
+        self._overridden_models.add(model.id)
+
+        # TODO: implement a smarter way of choosing an override?
+        n = len(model.overrides)
+        for i, override in enumerate(model.overrides):
+            logger.debug(f"Rendering model override ({i+1}/{n}): {override.model}")
+            try:
+                return self._render_model_recursive(override.model)
+            except Exception as e:
+                logger.debug(f"Failed to render override {override.model}: {e}")
+                self._exceptions.append(e)
+
+    def _from_model(self, model: BlockModel):
+        fragment = self._get_fragment(model.id)
         suffix, image_type = self.renderer.render_model(model, self.site_dir / fragment)
         return LoadedModel(
             self._fragment_to_url(fragment.with_suffix(suffix)),
