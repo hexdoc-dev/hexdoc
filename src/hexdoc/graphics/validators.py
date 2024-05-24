@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Annotated, Any, Generic
+from typing import TYPE_CHECKING, Annotated, Any
 
 from pydantic import (
     Field,
@@ -37,8 +37,6 @@ logger = logging.getLogger(__name__)
 
 _T = TypeVar("_T")
 
-_T_ResourceLocation = TypeVar("_T_ResourceLocation", default=ResourceLocation)
-
 
 class _ImageFieldType:
     def __class_getitem__(cls, item: Any) -> Any:
@@ -66,16 +64,10 @@ else:
         pass
 
 
-class HexdocImage(
-    TemplateModel,
-    MustBeAnnotated,
-    Generic[_T_ResourceLocation],
-    ABC,
-    annotation=ImageField,
-):
+class HexdocImage(TemplateModel, MustBeAnnotated, ABC, annotation=ImageField):
     """An image that can be rendered in a hexdoc web book."""
 
-    id: _T_ResourceLocation
+    id: ResourceLocation
 
     _name: LocalizedStr = PrivateAttr()
 
@@ -115,7 +107,7 @@ class HexdocImage(
         return self
 
 
-class URLImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:single"):
+class URLImage(HexdocImage, template_id="hexdoc:single"):
     url: PydanticURL
     pixelated: bool = True
 
@@ -125,7 +117,7 @@ class URLImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:single"):
         return self.url
 
 
-class TextureImage(URLImage[ResourceLocation], InlineModel):
+class TextureImage(URLImage, InlineModel):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
@@ -154,7 +146,9 @@ class MissingImage(TextureImage, annotation=None):
         return LocalizedStr.with_value(str(self.id))
 
 
-class ItemImage(HexdocImage[ItemStack], InlineItemModel, UnionModel, ABC):
+class ItemImage(HexdocImage, InlineItemModel, UnionModel, ABC):
+    item: ItemStack
+
     @override
     @classmethod
     @abstractmethod
@@ -168,7 +162,7 @@ class ItemImage(HexdocImage[ItemStack], InlineItemModel, UnionModel, ABC):
         )
 
 
-class SingleItemImage(URLImage[ItemStack], ItemImage):
+class SingleItemImage(URLImage, ItemImage):
     model: BlockModel | None
 
     @override
@@ -176,7 +170,8 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
     def load_id(cls, item: ItemStack, context: dict[str, Any]) -> Any:
         result = ImageLoader.of(context).render_item(item)
         return cls(
-            id=item,
+            id=item.id,
+            item=item,
             url=result.url,
             model=result.model,
             pixelated=result.image_type.pixelated,
@@ -187,8 +182,8 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
         return I18n.of(info).localize_item(self.id)
 
 
-class CyclingImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:cycling"):
-    images: SkipValidation[list[HexdocImage]] = Field(min_length=1)
+class CyclingImage(HexdocImage, template_id="hexdoc:cycling"):
+    images: SkipValidation[list[HexdocImage[Any]]] = Field(min_length=1)
 
     @property
     @override
@@ -200,7 +195,7 @@ class CyclingImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:cycling
         return self.images[0].name
 
 
-class TagImage(URLImage[ResourceLocation], InlineModel):
+class TagImage(URLImage, InlineModel):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
