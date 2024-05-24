@@ -188,6 +188,7 @@ include = [
 ]
 extraPaths = [
     "vendor",
+    "typings",
 ]
 exclude = [
     "noxfile.py",

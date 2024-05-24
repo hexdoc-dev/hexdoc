@@ -3,8 +3,7 @@ import string
 import textwrap
 from typing import Any, ClassVar, Sequence
 
-from copier import ConfigDict
-from pydantic import field_validator, model_validator
+from pydantic import ConfigDict, field_validator, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.fields import FieldInfo
 from typing_extensions import Unpack
