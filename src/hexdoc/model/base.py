@@ -1,14 +1,26 @@
 from __future__ import annotations
 
+import inspect
+import typing
 from contextvars import ContextVar
 from typing import (
+    Annotated,
     Any,
     ClassVar,
+    Sequence,
     cast,
     dataclass_transform,
 )
 
-from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationInfo, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    SkipValidation,
+    TypeAdapter,
+    ValidationInfo,
+    model_validator,
+)
+from pydantic.fields import FieldInfo
 from pydantic.functional_validators import ModelBeforeValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from yarl import URL
@@ -49,6 +61,81 @@ class HexdocModel(BaseModel):
     """@private"""
 
     __hexdoc_before_validator__: ClassVar[ModelBeforeValidator | None] = None
+
+    @classmethod
+    def __hexdoc_check_model_field__(
+        cls,
+        model_type: type[HexdocModel],
+        field_name: str,
+        field_info: FieldInfo,
+        origin_stack: Sequence[Any],
+        annotation_stack: Sequence[Any],
+    ) -> None:
+        """Called when initializing a model of type `model_type` for all places where
+        `cls` is in a type annotation."""
+
+    # global model field validation (mostly used for HexdocImage)
+    @classmethod
+    def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
+        super().__pydantic_init_subclass__(**kwargs)
+
+        for field_name, field_info in cls.model_fields.items():
+            cls._hexdoc_check_model_field(field_name, field_info)
+
+    @classmethod
+    def _hexdoc_check_model_field(cls, field_name: str, field_info: FieldInfo):
+        if field_type := field_info.rebuild_annotation():
+            cls._hexdoc_check_model_field_type(
+                field_name, field_info, field_type, [], []
+            )
+
+    @classmethod
+    def _hexdoc_check_model_field_type(
+        cls,
+        field_name: str,
+        field_info: FieldInfo,
+        field_type: Any,
+        origin_stack: list[Any],
+        annotation_stack: list[Any],
+    ):
+        # TODO: better way to detect recursive types?
+        if len(origin_stack) > 25:
+            return
+
+        if inspect.isclass(field_type) and issubclass(field_type, HexdocModel):
+            field_type.__hexdoc_check_model_field__(
+                cls,
+                field_name,
+                field_info,
+                origin_stack,
+                annotation_stack,
+            )
+
+        if origin := typing.get_origin(field_type):
+            args = typing.get_args(field_type)
+
+            if origin is Annotated:
+                arg, *annotations = args
+                args = [arg]
+            else:
+                annotations = []
+
+            if any(isinstance(a, SkipValidation) for a in annotations):
+                return
+
+            origin_stack.append(origin)
+            annotation_stack += reversed(annotations)
+            for arg in args:
+                cls._hexdoc_check_model_field_type(
+                    field_name,
+                    field_info,
+                    arg,
+                    origin_stack,
+                    annotation_stack,
+                )
+            origin_stack.pop()
+            if annotations:
+                del annotation_stack[-len(annotations) :]
 
     def __init__(__pydantic_self__, **data: Any) -> None:  # type: ignore
         __tracebackhide__ = True

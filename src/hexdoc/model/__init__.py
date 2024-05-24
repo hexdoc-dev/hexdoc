@@ -9,6 +9,7 @@ __all__ = [
     "InlineItemModel",
     "InlineModel",
     "InternallyTaggedUnion",
+    "MustBeAnnotated",
     "NoValue",
     "NoValueType",
     "ResourceModel",
@@ -44,4 +45,4 @@ from .tagged_union import (
     TypeTaggedUnion,
     UnionModel,
 )
-from .types import Color
+from .types import Color, MustBeAnnotated

@@ -2,16 +2,19 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Generic
+from typing import TYPE_CHECKING, Annotated, Any, Generic
 
 from pydantic import (
     Field,
     PrivateAttr,
+    SkipValidation,
     ValidationError,
     ValidationInfo,
+    WrapValidator,
     field_validator,
     model_validator,
 )
+from pydantic.functional_validators import ModelWrapValidatorHandler
 from typing_extensions import TypeVar, override
 from yarl import URL
 
@@ -24,6 +27,7 @@ from hexdoc.model import (
     TemplateModel,
     UnionModel,
 )
+from hexdoc.model.types import MustBeAnnotated
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import Inherit, InheritType, PydanticURL, classproperty
 
@@ -31,10 +35,44 @@ from .loader import MISSING_TEXTURE_ID, TAG_TEXTURE_ID, ImageLoader
 
 logger = logging.getLogger(__name__)
 
+_T = TypeVar("_T")
+
 _T_ResourceLocation = TypeVar("_T_ResourceLocation", default=ResourceLocation)
 
 
-class HexdocImage(TemplateModel, Generic[_T_ResourceLocation], ABC):
+class _ImageFieldType:
+    def __class_getitem__(cls, item: Any) -> Any:
+        return Annotated[item, WrapValidator(cls._validator), cls]
+
+    @staticmethod
+    def _validator(
+        value: Any,
+        handler: ModelWrapValidatorHandler[Any],
+        info: ValidationInfo,
+    ):
+        try:
+            return handler(value)
+        except ValidationError:
+            return MissingImage.model_validate(value, context=info.context)
+
+
+# scuffed, but Pydantic did it first
+# see: pydantic.functional_validators.SkipValidation
+if TYPE_CHECKING:
+    ImageField = Annotated[_T, _ImageFieldType]
+else:
+
+    class ImageField(_ImageFieldType):
+        pass
+
+
+class HexdocImage(
+    TemplateModel,
+    MustBeAnnotated,
+    Generic[_T_ResourceLocation],
+    ABC,
+    annotation=ImageField,
+):
     """An image that can be rendered in a hexdoc web book."""
 
     id: _T_ResourceLocation
@@ -99,7 +137,7 @@ class TextureImage(URLImage[ResourceLocation], InlineModel):
         return I18n.of(info).localize_texture(self.id)
 
 
-class MissingImage(TextureImage):
+class MissingImage(TextureImage, annotation=None):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
@@ -150,7 +188,7 @@ class SingleItemImage(URLImage[ItemStack], ItemImage):
 
 
 class CyclingImage(HexdocImage[_T_ResourceLocation], template_id="hexdoc:cycling"):
-    images: list[HexdocImage] = Field(min_length=1)
+    images: SkipValidation[list[HexdocImage]] = Field(min_length=1)
 
     @property
     @override

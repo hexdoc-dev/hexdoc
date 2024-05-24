@@ -10,9 +10,8 @@ __all__ = [
     "TextureImage",
 ]
 
-from .annotations import ImageField, ItemImage, TagImage, TextureImage
 from .loader import ImageLoader
 from .renderer import ModelRenderer
 from .texture import ModelTexture
 from .utils import DebugType
-from .validators import MissingImage
+from .validators import ImageField, ItemImage, MissingImage, TagImage, TextureImage
