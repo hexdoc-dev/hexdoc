@@ -13,11 +13,22 @@ from hexdoc.graphics.validators import (
     TextureImage,
     validate_image,
 )
+from hexdoc.model.base import init_context
 from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
 
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+
+
+def hexdoc_pass_context(f: Callable[_P, _R]) -> Callable[_P, _R]:
+    @functools.wraps(f)
+    @pass_context
+    def wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        with init_context(args[0]):
+            return f(*args, **kwargs)
+
+    return wrapper
 
 
 def make_jinja_exceptions_suck_a_bit_less(f: Callable[_P, _R]) -> Callable[_P, _R]:
@@ -82,14 +93,14 @@ def hexdoc_localize(
 
 
 # TODO: rename to hexdoc_texture_url
-@pass_context
+@hexdoc_pass_context
 @make_jinja_exceptions_suck_a_bit_less
 def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
     image = validate_image(TextureImage, id, context)
     return str(image.url)
 
 
-@pass_context
+@hexdoc_pass_context
 @make_jinja_exceptions_suck_a_bit_less
 def hexdoc_item(
     context: Context,
