@@ -3,8 +3,8 @@ from typing import Iterable, Iterator
 from pydantic import Field
 
 from hexdoc.core import ItemStack, ResourceLocation
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
 from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
 from hexdoc.utils import Sortable
@@ -23,7 +23,7 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
     # required (entry.json)
     name: LocalizedStr
     category_id: ResourceLocation = Field(alias="category")
-    icon: ItemWithTexture | NamedTexture
+    icon: ImageField[ItemImage | TextureImage]
     pages: list[Page]
 
     # optional (entry.json)

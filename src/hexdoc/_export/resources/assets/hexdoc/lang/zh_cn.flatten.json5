@@ -43,12 +43,12 @@
 
     when_clicked: "点击时执行：{}",
 
-    any_block:  "任意方块",
-
     redirect: {
       "category.title": "类别：{}",
       "entry.title": "条目：{}",
       "page.title": "页面：{}",
     }
   },
+
+  "gui.hexdoc.any_block": "任意方块",
 }

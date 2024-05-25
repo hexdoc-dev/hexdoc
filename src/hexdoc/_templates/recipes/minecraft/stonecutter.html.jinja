@@ -1,7 +1,7 @@
 {% extends "recipes/base.html.jinja" %}
 
 {% import "macros/recipes.html.jinja" as recipe_macros with context %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/images.html.jinja" as Images with context -%}
 
 {% block recipe_class -%}
   stonecutting-recipe recipe
@@ -17,6 +17,6 @@
   </div>
 
   <div class="stonecutting-result recipe-item-slot">
-    {{ texture_macros.render_item(recipe.result, count=recipe.count) }}
+    {{ Images.item(recipe.result, count=recipe.count) }}
   </div>
 {% endblock content %}

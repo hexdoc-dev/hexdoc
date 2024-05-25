@@ -10,3 +10,16 @@
     <div class="badge item-texture-count">{{ count }}</div>
   {%- endif %}
 {%- endmacro %}
+
+{% macro recipe_gui(recipe, class_names=[]) -%}
+  {{ image(
+    recipe.gui_texture,
+    name=recipe.gui_name,
+    class_names=class_names,
+    lazy=false,
+  ) }}
+{%- endmacro %}
+
+{% macro url(image) -%}
+  {{ site_url }}/{{ image.first_url }}
+{%- endmacro %}

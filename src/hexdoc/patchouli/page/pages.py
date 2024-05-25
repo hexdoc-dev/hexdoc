@@ -3,9 +3,10 @@ from typing import Self
 
 from pydantic import ValidationInfo, field_validator, model_validator
 
-from hexdoc.core import Entity, ItemStack, ResourceLocation
-from hexdoc.minecraft import I18n, LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, PNGTexture, TagWithTexture, Texture
+from hexdoc.core import Entity, ResourceLocation
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
+from hexdoc.graphics.validators import TagImage
+from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -54,7 +55,7 @@ class EntityPage(PageWithText, type="patchouli:entity"):
 
 
 class ImagePage(PageWithTitle, type="patchouli:image"):
-    images: list[Texture]
+    images: list[ImageField[TextureImage]]
     border: bool = False
 
     @property
@@ -74,7 +75,7 @@ class LinkPage(TextPage, type="patchouli:link"):
 class Multiblock(HexdocModel):
     """https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/multiblocks/"""
 
-    mapping: dict[str, ItemWithTexture | TagWithTexture]
+    mapping: dict[str, ImageField[ItemImage | TextureImage]]
     pattern: list[list[str]]
     symmetrical: bool = False
     offset: tuple[int, int, int] | None = None
@@ -110,18 +111,14 @@ class Multiblock(HexdocModel):
     @classmethod
     def _add_default_mapping(
         cls,
-        mapping: dict[str, ItemWithTexture | TagWithTexture],
+        mapping: dict[str, ImageField[ItemImage | TagImage]],
         info: ValidationInfo,
     ):
-        i18n = I18n.of(info)
         return {
-            "_": ItemWithTexture(
-                id=ItemStack("hexdoc", "any"),
-                name=i18n.localize("hexdoc.any_block"),
-                texture=PNGTexture.load_id(
-                    ResourceLocation("hexdoc", "textures/gui/any_block.png"),
-                    context=info,
-                ),
+            # FIXME: this needs to be ItemImage somehow
+            "_": TextureImage.load_id(
+                id=ResourceLocation("hexdoc", "textures/gui/any_block.png"),
+                context=info.context or {},
             ),
         } | mapping
 
@@ -168,5 +165,5 @@ class StonecuttingPage(
 
 
 class SpotlightPage(PageWithTitle, type="patchouli:spotlight"):
-    item: ItemWithTexture
+    item: ImageField[ItemImage]
     link_recipe: bool = False

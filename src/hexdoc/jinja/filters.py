@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Callable, ParamSpec, TypeVar, cast
+from typing import Callable, ParamSpec, TypeVar
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
@@ -7,12 +7,13 @@ from markupsafe import Markup
 
 from hexdoc.core import Properties, ResourceLocation
 from hexdoc.core.resource import ItemStack
-from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import (
-    ItemWithTexture,
-    PNGTexture,
-    validate_texture,
+from hexdoc.graphics.validators import (
+    ItemImage,
+    MissingImage,
+    TextureImage,
+    validate_image,
 )
+from hexdoc.minecraft import I18n
 from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
 
@@ -81,16 +82,12 @@ def hexdoc_localize(
     return formatted
 
 
-# TODO: support the full texture lookup
+# TODO: rename to hexdoc_texture_url
 @pass_context
 @make_jinja_exceptions_suck_a_bit_less
 def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
-    texture = validate_texture(
-        id,
-        context=context,
-        model_type=PNGTexture,
-    )
-    return str(texture.url)
+    image = validate_image(TextureImage, id, context)
+    return str(image.url)
 
 
 @pass_context
@@ -98,8 +95,5 @@ def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
 def hexdoc_item(
     context: Context,
     id: str | ResourceLocation | ItemStack,
-) -> ItemWithTexture:
-    return ItemWithTexture.model_validate(
-        id,
-        context=cast(dict[str, Any], context),  # lie
-    )
+) -> ItemImage | MissingImage:
+    return validate_image(ItemImage, id, context)

@@ -8,6 +8,7 @@ from pydantic import (
     Field,
     PrivateAttr,
     SkipValidation,
+    TypeAdapter,
     ValidationError,
     ValidationInfo,
     WrapValidator,
@@ -29,7 +30,14 @@ from hexdoc.model import (
 )
 from hexdoc.model.types import MustBeAnnotated
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import Inherit, InheritType, PydanticURL, classproperty
+from hexdoc.utils import (
+    ContextSource,
+    Inherit,
+    InheritType,
+    PydanticURL,
+    cast_context,
+    classproperty,
+)
 
 from .loader import MISSING_TEXTURE_ID, TAG_TEXTURE_ID, ImageLoader
 
@@ -212,3 +220,12 @@ class TagImage(URLImage, InlineModel):
     def _validate_id(cls, id: ResourceLocation):
         assert id.is_tag, f"Expected tag id, got {id}"
         return id
+
+
+def validate_image(
+    model_type: type[_T] | Any,
+    value: Any,
+    context: ContextSource,
+) -> _T | MissingImage:
+    ta = TypeAdapter(ImageField[model_type])
+    return ta.validate_python(value, context=cast_context(context))

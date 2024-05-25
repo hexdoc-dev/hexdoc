@@ -1,6 +1,13 @@
 from typing import ClassVar, Iterator, Unpack
 
-from pydantic import ConfigDict, Field, PrivateAttr, ValidationInfo, model_validator
+from pydantic import (
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    TypeAdapter,
+    ValidationInfo,
+    model_validator,
+)
 from typing_extensions import override
 
 from hexdoc.core import (
@@ -9,10 +16,10 @@ from hexdoc.core import (
     ValueIfVersion,
 )
 from hexdoc.core.compat import AtLeast_1_20, Before_1_20
+from hexdoc.graphics import HexdocImage, ImageField, ItemImage, TextureImage
 from hexdoc.model import ResourceModel, TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, classproperty
 
-from ..assets import ImageTexture, ItemWithTexture, validate_texture
 from ..i18n import I18n, LocalizedStr
 from .ingredients import ItemIngredient, ItemIngredientList, ItemResult
 
@@ -34,7 +41,7 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
     _workstation: ClassVar[ResourceLocation | None] = None
 
     _gui_name: LocalizedStr | None = PrivateAttr(None)
-    _gui_texture: ImageTexture | None = PrivateAttr(None)
+    _gui_texture: HexdocImage | None = PrivateAttr(None)
 
     def __init_subclass__(
         cls,
@@ -98,10 +105,9 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
         self._gui_name = self._localize_workstation(I18n.of(info))
 
         if self._gui_texture_id is not None:
-            self._gui_texture = validate_texture(
+            self._gui_texture = TypeAdapter(ImageField[TextureImage]).validate_python(
                 self._gui_texture_id,
-                context=info,
-                model_type=ImageTexture,
+                context=info.context,
             )
 
         return self
@@ -134,7 +140,7 @@ class CraftingShapedRecipe(CraftingRecipe, type="minecraft:crafting_shaped"):
 
 class CookingRecipe(Recipe):
     ingredient: ItemIngredientList
-    result: ItemWithTexture
+    result: ImageField[ItemImage]
     experience: float
     cookingtime: int
 
@@ -182,7 +188,7 @@ class SmithingRecipe(Recipe, workstation="minecraft:smithing_table"):
 
 
 class SmithingTransformRecipe(SmithingRecipe, type="minecraft:smithing_transform"):
-    result: ItemWithTexture
+    result: ImageField[ItemImage]
 
     @property
     def result_item(self):
@@ -199,5 +205,5 @@ class StonecuttingRecipe(
     workstation="minecraft:stonecutter",
 ):
     ingredient: ItemIngredientList
-    result: ItemWithTexture
+    result: ImageField[ItemImage]
     count: int

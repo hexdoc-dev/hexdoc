@@ -25,7 +25,6 @@ from hexdoc.graphics import DebugType, ModelRenderer
 from hexdoc.graphics.loader import ImageLoader
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
 from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import AnimatedTexture, PNGTexture, TextureContext
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
@@ -43,9 +42,9 @@ from .utils.args import (
     VerbosityOption,
 )
 from .utils.load import (
+    export_metadata,
     init_context,
     load_common_data,
-    render_textures_and_export_metadata,
 )
 
 logger = logging.getLogger(__name__)
@@ -208,14 +207,6 @@ def build(
         site_path = plugin.site_path(versioned=release)
         site_dir = output_dir / site_path
 
-        asset_loader = plugin.asset_loader(
-            loader=loader,
-            site_url=props.env.github_pages_url.joinpath(*site_path.parts),
-            asset_url=props.env.asset_url,
-            render_dir=site_dir,
-        )
-        asset_loader.renderer = renderer
-
         image_loader = ImageLoader(
             loader=loader,
             renderer=renderer,
@@ -223,7 +214,10 @@ def build(
             site_url=URL().joinpath(*site_path.parts),
         )
 
-        all_metadata = render_textures_and_export_metadata(loader, asset_loader)
+        all_metadata = export_metadata(
+            loader,
+            site_url=props.env.github_pages_url.joinpath(*site_path.parts),
+        )
 
         # FIXME: put this somewhere saner?
         logger.info("Exporting all image-related resources.")
@@ -306,7 +300,6 @@ def build(
 
                 book_ctx = BookContext.of(book_info.context)
                 formatting_ctx = FormattingContext.of(book_info.context)
-                texture_ctx = TextureContext.of(book_info.context)
 
                 site_book_path = plugin.site_book_path(
                     book_info.language,
@@ -317,11 +310,6 @@ def build(
 
                 template_args: dict[str, Any] = book_info.context | {
                     "all_metadata": all_metadata,
-                    "png_textures": PNGTexture.get_lookup(texture_ctx.textures),
-                    "animations": sorted(  # this MUST be sorted to avoid flaky tests
-                        AnimatedTexture.get_lookup(texture_ctx.textures).values(),
-                        key=lambda t: t.css_class,
-                    ),
                     "book": book_info.book,
                     "book_links": book_ctx.book_links,
                 }

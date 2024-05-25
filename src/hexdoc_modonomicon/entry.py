@@ -1,6 +1,6 @@
 from hexdoc.core import ResourceLocation
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
 from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
 from hexdoc.model import HexdocModel
 from pydantic import Field
 
@@ -23,7 +23,7 @@ class Entry(HexdocModel):
     category: ResourceLocation
     name: LocalizedStr
     description: LocalizedStr
-    icon: ItemWithTexture | NamedTexture
+    icon: ImageField[ItemImage | TextureImage]
     x: int
     y: int
 

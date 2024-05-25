@@ -4,8 +4,7 @@ from pathlib import Path
 from textwrap import indent
 from typing import Any, Literal, overload
 
-from tqdm import tqdm
-from tqdm.contrib.logging import logging_redirect_tqdm
+from yarl import URL
 
 from hexdoc.core import (
     MinecraftVersion,
@@ -13,17 +12,9 @@ from hexdoc.core import (
     Properties,
     ResourceLocation,
 )
-from hexdoc.data import HexdocMetadata, load_metadata_textures
+from hexdoc.data import HexdocMetadata
 from hexdoc.graphics.loader import ImageLoader
 from hexdoc.minecraft import I18n, Tag
-from hexdoc.minecraft.assets import (
-    AnimatedTexture,
-    HexdocAssetLoader,
-    PNGTexture,
-    Texture,
-    TextureContext,
-    TextureLookups,
-)
 from hexdoc.model import init_context as set_init_context
 from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
@@ -76,33 +67,13 @@ def load_common_data(
     return props, pm, book_plugin, mod_plugin
 
 
-def render_textures_and_export_metadata(
-    loader: ModResourceLoader,
-    asset_loader: HexdocAssetLoader,
-):
+def export_metadata(loader: ModResourceLoader, site_url: URL):
     all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-
-    all_lookups = load_metadata_textures(all_metadata)
-    image_textures = {
-        id: texture
-        for texture_type in [PNGTexture, AnimatedTexture]
-        for id, texture in texture_type.get_lookup(all_lookups).items()
-    }
-
-    internal_lookups = TextureLookups[Texture](dict)
-    if loader.props.textures.enabled:
-        logger.info(f"Loading and rendering textures to {asset_loader.render_dir}.")
-        with logging_redirect_tqdm():
-            bar = tqdm(asset_loader.load_and_render_internal_textures(image_textures))
-            for id, texture in bar:
-                bar.set_postfix_str(str(id))
-                texture.insert_texture(internal_lookups, id)
 
     # this mod's metadata
     metadata = HexdocMetadata(
-        book_url=asset_loader.site_url / loader.props.default_lang,
+        book_url=site_url / loader.props.default_lang,
         asset_url=loader.props.env.asset_url,
-        textures=internal_lookups,
     )
 
     loader.export(
@@ -143,10 +114,6 @@ def init_context(
         loader,
         image_loader,
         i18n,
-        TextureContext(
-            textures=load_metadata_textures(all_metadata),
-            allowed_missing_textures=props.textures.missing,
-        ),
         FormattingContext(
             book_id=book_id,
             macros=DEFAULT_MACROS | book_data.get("macros", {}) | props.macros,

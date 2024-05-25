@@ -8,16 +8,14 @@ from typing import TYPE_CHECKING, Any, Mapping
 
 from jinja2.sandbox import SandboxedEnvironment
 from typing_extensions import override
-from yarl import URL
 
 from hexdoc.utils import ContextSource
 
 from .types import HookReturn
 
 if TYPE_CHECKING:
-    from hexdoc.core import ModResourceLoader, Properties
+    from hexdoc.core import Properties
     from hexdoc.graphics.validators import ItemImage
-    from hexdoc.minecraft.assets import HexdocAssetLoader
 
 DefaultRenderedTemplates = Mapping[
     str | Path,
@@ -181,24 +179,6 @@ class ModPlugin(ABC):
         * value: `v/latest/main`
         """
         return self.site_root / "latest" / self.branch
-
-    def asset_loader(
-        self,
-        loader: ModResourceLoader,
-        *,
-        site_url: URL,
-        asset_url: URL,
-        render_dir: Path,
-    ) -> HexdocAssetLoader:
-        # unfortunately, this is necessary to avoid some *real* ugly circular imports
-        from hexdoc.minecraft.assets import HexdocAssetLoader
-
-        return HexdocAssetLoader(
-            loader=loader,
-            site_url=site_url,
-            asset_url=asset_url,
-            render_dir=render_dir,
-        )
 
 
 class VersionedModPlugin(ModPlugin):

@@ -1,5 +1,5 @@
 {% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/images.html.jinja" as Images with context -%}
 {% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {% block inner_body %}
@@ -16,7 +16,7 @@
             alt="Spotlight inventory slot"
             src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
           >
-          {{ texture_macros.render_item(item) }}
+          {{ Images.item(item) }}
         </div>
         <span class="multiblock-ingredient-amount">{{ count }}x {{ item.name }}</span>
       </div>

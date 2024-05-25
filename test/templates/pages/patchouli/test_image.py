@@ -2,10 +2,8 @@ from types import SimpleNamespace
 
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.jinja.render import create_jinja_env_with_loader
-from hexdoc.minecraft.assets.textures import PNGTexture
 from hexdoc.patchouli.page.pages import ImagePage
 from jinja2 import PackageLoader
-from yarl import URL
 
 
 def test_no_title():
@@ -18,8 +16,6 @@ def test_no_title():
             id=ResourceLocation("entry_ns", "entry_path"),
         ),
         page=ImagePage.model_construct(
-            images=[
-                PNGTexture(url=URL("https://example.com"), pixelated=True),
-            ],
+            images=[],
         ),
     )
