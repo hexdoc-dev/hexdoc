@@ -34,7 +34,7 @@ class ValidationContext:
             case dict() | Context():
                 pass
             case _:
-                source = cast_or_raise(source.context, dict)
+                source = cast_or_raise(source.context, (dict, Context))
         return cast_or_raise(source[cls.context_key], cls)
 
     def add_to_context(self, context: dict[str, Any], overwrite: bool = False):
