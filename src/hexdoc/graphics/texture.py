@@ -12,8 +12,9 @@ from pydantic import ValidationError
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import AnimatedTexturesProps
-from hexdoc.minecraft.model import Animation, AnimationFrame, AnimationMeta
 from hexdoc.utils import listify
+
+from .model import Animation, AnimationFrame, AnimationMeta
 
 logger = logging.getLogger(__name__)
 

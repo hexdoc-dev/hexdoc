@@ -9,8 +9,10 @@ __all__ = [
     "ModelTexture",
     "TagImage",
     "TextureImage",
+    "model",
 ]
 
+from . import model
 from .loader import ImageLoader
 from .renderer import ModelRenderer
 from .texture import ModelTexture

@@ -8,9 +8,9 @@ from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.resource import BaseResourceLocation
-from hexdoc.minecraft.model import BlockModel
 from hexdoc.utils import ValidationContext
 
+from .model import BlockModel
 from .renderer import ImageType, ModelRenderer
 from .texture import ModelTexture
 

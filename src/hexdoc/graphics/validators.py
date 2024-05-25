@@ -21,7 +21,6 @@ from yarl import URL
 
 from hexdoc.core import ItemStack, Properties, ResourceLocation
 from hexdoc.minecraft.i18n import I18n, LocalizedStr
-from hexdoc.minecraft.model import BlockModel
 from hexdoc.model import (
     InlineItemModel,
     InlineModel,
@@ -40,6 +39,7 @@ from hexdoc.utils import (
 )
 
 from .loader import MISSING_TEXTURE_ID, TAG_TEXTURE_ID, ImageLoader
+from .model import BlockModel
 
 logger = logging.getLogger(__name__)
 

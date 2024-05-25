@@ -7,9 +7,8 @@ from typing import cast
 
 from pyrr import Matrix44
 
-from hexdoc.minecraft.model import FaceName
-
 from .lookups import get_direction_vec
+from .model import FaceName
 from .utils import transform_vec
 
 

@@ -16,9 +16,9 @@ from PIL.PngImagePlugin import Disposal as APNGDisposal
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import AnimationFormat
-from hexdoc.minecraft.model import BlockModel
 
 from .block import BlockRenderer
+from .model import BlockModel
 from .texture import ModelTexture
 from .utils import DebugType
 

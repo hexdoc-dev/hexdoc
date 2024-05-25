@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from hexdoc.minecraft.model import FaceName
 from hexdoc.utils.types import Vec3
+
+from .model import FaceName
 
 
 def get_face_verts(from_: Vec3, to: Vec3, direction: FaceName):

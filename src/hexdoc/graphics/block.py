@@ -16,7 +16,11 @@ from moderngl_window.opengl.vao import VAO
 from PIL import Image
 from pyrr import Matrix44
 
-from hexdoc.minecraft.model import (
+from hexdoc.utils.types import Vec3, Vec4
+
+from .camera import direction_camera
+from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
+from .model import (
     BlockModel,
     DisplayPosition,
     Element,
@@ -24,10 +28,6 @@ from hexdoc.minecraft.model import (
     ElementFaceUV,
     FaceName,
 )
-from hexdoc.utils.types import Vec3, Vec4
-
-from .camera import direction_camera
-from .lookups import get_face_normals, get_face_uv_indices, get_face_verts
 from .texture import ModelTexture
 from .utils import DebugType, get_rotation_matrix, read_shader
 
