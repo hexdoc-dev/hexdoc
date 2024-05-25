@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from enum import Enum
 from functools import cached_property
 from typing import Literal, Self
 
@@ -78,7 +79,7 @@ class BlockModel(HexdocModel):
     """
 
     # internal fields
-    _is_generated_item: bool = PrivateAttr(False)
+    _builtin_parent: BuiltInModelType | None = PrivateAttr(None)
     _id: ResourceLocation = PrivateAttr(None)
 
     @classmethod
@@ -116,15 +117,12 @@ class BlockModel(HexdocModel):
                 )
             loaded_parents.add(parent_id)
 
-            match parent_id:
-                case ResourceLocation("minecraft", "builtin/generated"):
-                    self._is_generated_item = True
-                    self.parent_id = None
-                case ResourceLocation("minecraft", "builtin/entity"):
-                    raise ValueError(f"Unsupported model parent id: {parent_id}")
-                case _:
-                    _, parent = self.load_only(loader, parent_id)
-                    self._apply_parent(parent)
+            if builtin_parent := BuiltInModelType.get(parent_id):
+                self._builtin_parent = builtin_parent
+                self.parent_id = None
+            else:
+                _, parent = self.load_only(loader, parent_id)
+                self._apply_parent(parent)
 
         return self
 
@@ -151,8 +149,8 @@ class BlockModel(HexdocModel):
         return self.parent_id is None
 
     @property
-    def is_generated_item(self):
-        return self._is_generated_item
+    def builtin_parent(self):
+        return self._builtin_parent
 
     @property
     def id(self):
@@ -191,3 +189,15 @@ class ItemOverride(HexdocModel):
     """The path to the model to use if the case is met."""
     predicate: dict[ResourceLocation, float]
     """Item predicates that must be true for this model to be used."""
+
+
+class BuiltInModelType(Enum):
+    GENERATED = ResourceLocation("minecraft", "builtin/generated")
+    ENTITY = ResourceLocation("minecraft", "builtin/entity")
+
+    @classmethod
+    def get(cls, id: ResourceLocation):
+        try:
+            return cls(id)
+        except ValueError:
+            return None

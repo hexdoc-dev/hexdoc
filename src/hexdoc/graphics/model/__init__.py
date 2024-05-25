@@ -4,6 +4,7 @@ __all__ = [
     "AnimationMeta",
     "BlockModel",
     "Blockstate",
+    "BuiltInModelType",
     "DisplayPosition",
     "Element",
     "ElementFace",
@@ -12,7 +13,7 @@ __all__ = [
 ]
 
 from .animation import Animation, AnimationFrame, AnimationMeta
-from .block import BlockModel
+from .block import BlockModel, BuiltInModelType
 from .blockstate import Blockstate
 from .display import DisplayPosition
 from .element import Element, ElementFace, ElementFaceUV, FaceName

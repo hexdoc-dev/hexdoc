@@ -16,6 +16,7 @@ from PIL.PngImagePlugin import Disposal as APNGDisposal
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import AnimationFormat
+from hexdoc.graphics.model.block import BuiltInModelType
 
 from .block import BlockRenderer
 from .model import BlockModel
@@ -83,12 +84,15 @@ class ModelRenderer:
 
         model.resolve(self.loader)
 
-        if model.is_generated_item:
-            frames = self._render_item(model)
-            image_type = ImageType.ITEM
-        else:
-            frames = self._render_block(model)
-            image_type = ImageType.BLOCK
+        match model.builtin_parent:
+            case BuiltInModelType.GENERATED:
+                frames = self._render_item(model)
+                image_type = ImageType.ITEM
+            case None:
+                frames = self._render_block(model)
+                image_type = ImageType.BLOCK
+            case builtin_type:
+                raise ValueError(f"Unsupported model parent id: {builtin_type.value}")
 
         return self.save_image(output_path, frames), image_type
 
