@@ -4,10 +4,7 @@
 {% block inner_body %}
   <h4 class="spotlight-title page-header">{{ page.item.name }}</h4>
   <div class="spotlight">
-    <img
-      alt="Spotlight inventory slot"
-      src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
-    >
+    {{ Images.load_texture("hexdoc:textures/gui/spotlight.png", "Spotlight inventory slot") }}
     {{ Images.item(page.item) }}
   </div>
   {{ super() }}

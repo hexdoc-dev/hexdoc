@@ -26,9 +26,9 @@ from hexdoc.utils import ContextSource, write_to_path
 
 from .extensions import DefaultMacroExtension, IncludeRawExtension
 from .filters import (
-    hexdoc_item,
+    hexdoc_item_image,
     hexdoc_localize,
-    hexdoc_texture,
+    hexdoc_texture_image,
     hexdoc_wrap,
 )
 
@@ -105,8 +105,8 @@ def create_jinja_env_with_loader(loader: BaseLoader):
     env.filters |= {  # pyright: ignore[reportAttributeAccessIssue]
         "hexdoc_wrap": hexdoc_wrap,
         "hexdoc_localize": hexdoc_localize,
-        "hexdoc_texture": hexdoc_texture,
-        "hexdoc_item": hexdoc_item,
+        "hexdoc_texture_image": hexdoc_texture_image,
+        "hexdoc_item_image": hexdoc_item_image,
     }
 
     return env

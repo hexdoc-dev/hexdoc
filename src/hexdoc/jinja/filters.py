@@ -7,12 +7,7 @@ from markupsafe import Markup
 
 from hexdoc.core import I18n, Properties, ResourceLocation
 from hexdoc.core.resource import ItemStack
-from hexdoc.graphics.validators import (
-    ItemImage,
-    MissingImage,
-    TextureImage,
-    validate_image,
-)
+from hexdoc.graphics.validators import ItemImage, TextureImage, validate_image
 from hexdoc.model.base import init_context
 from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
@@ -92,18 +87,13 @@ def hexdoc_localize(
     return formatted
 
 
-# TODO: rename to hexdoc_texture_url
 @hexdoc_pass_context
 @make_jinja_exceptions_suck_a_bit_less
-def hexdoc_texture(context: Context, id: str | ResourceLocation) -> str:
-    image = validate_image(TextureImage, id, context)
-    return str(image.url)
+def hexdoc_texture_image(context: Context, id: str | ResourceLocation):
+    return validate_image(TextureImage, id, context)
 
 
 @hexdoc_pass_context
 @make_jinja_exceptions_suck_a_bit_less
-def hexdoc_item(
-    context: Context,
-    id: str | ResourceLocation | ItemStack,
-) -> ItemImage | MissingImage:
+def hexdoc_item_image(context: Context, id: str | ResourceLocation | ItemStack):
     return validate_image(ItemImage, id, context)

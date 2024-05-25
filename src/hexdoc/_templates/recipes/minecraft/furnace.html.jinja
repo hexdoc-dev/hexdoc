@@ -39,7 +39,7 @@
 {# TODO: move somewhere more sensible #}
 {% macro extra_info(item_id, text, classes="") -%}
   <div class="extra-info {{classes}}">
-    {{ Images.item(item_id|hexdoc_item)}}
+    {{ Images.item(item_id|hexdoc_item_image)}}
     <span class="extra-info-desc">{{ text }}</span>
   </div>
 {%- endmacro %}

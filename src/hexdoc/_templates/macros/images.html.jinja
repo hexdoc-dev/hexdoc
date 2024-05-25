@@ -23,3 +23,10 @@
 {% macro url(image) -%}
   {{ site_url }}/{{ image.first_url }}
 {%- endmacro %}
+
+{% macro load_texture(id, alt) -%}
+  <img
+    alt="{{ alt }}"
+    src="{{ url(id|hexdoc_texture_image) }}"
+  >
+{%- endmacro %}
