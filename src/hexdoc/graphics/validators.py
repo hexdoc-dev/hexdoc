@@ -58,6 +58,8 @@ class _ImageFieldType:
         try:
             return handler(value)
         except ValidationError:
+            if MissingImage.should_raise(ResourceLocation.model_validate(value), info):
+                raise
             return MissingImage.model_validate(value, context=info.context)
 
 
@@ -140,7 +142,7 @@ class MissingImage(TextureImage, annotation=None):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
-        if Properties.of(context).textures.strict:
+        if cls.should_raise(id, context):
             raise ValueError(f"Failed to load image for id: {id}")
         logger.warning(f"Using missing texture for id: {id}")
 
@@ -150,6 +152,10 @@ class MissingImage(TextureImage, annotation=None):
     @override
     def _get_name(self, info: ValidationInfo):
         return LocalizedStr.with_value(str(self.id))
+
+    @classmethod
+    def should_raise(cls, id: ResourceLocation, context: ContextSource):
+        return Properties.of(context).textures.strict
 
 
 class ItemImage(HexdocImage, InlineItemModel, UnionModel, ABC):
