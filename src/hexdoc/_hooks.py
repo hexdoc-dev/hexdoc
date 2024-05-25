@@ -83,7 +83,6 @@ class HexdocModPlugin(ModPlugin):
         return {
             "index.html": "index.html.jinja",
             "index.css": "index.css.jinja",
-            "textures.css": "textures.jcss.jinja",
             "index.js": "index.js.jinja",
         }
 
