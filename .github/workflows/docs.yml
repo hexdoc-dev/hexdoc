@@ -59,7 +59,7 @@ jobs:
 
   run-scraper:
     needs: [build, deploy]
-    if: ${{ needs.build.outputs.run-scraper }}
+    if: ${{ needs.build.outputs.run-scraper == 'true' }}
     runs-on: ubuntu-latest
     environment:
       name: algolia

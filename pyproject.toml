@@ -98,6 +98,7 @@ source = "regex_commit"
 path = "src/hexdoc/__version__.py"
 commit_message = "Bump version to `{new_version}`"
 tag_message = "Bump version to `{new_version}`"
+commit_extra_args = ["--edit"]
 
 [project.scripts]
 hexdoc = "hexdoc.cli.app:app"

@@ -47,7 +47,11 @@
       "category.title": "Category: {}",
       "entry.title": "Entry: {}",
       "page.title": "Page: {}",
-    }
+    },
+
+    footer: "Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.$(br2)\
+      Minecraft content and materials are the intellectual property of their respective owners.$(br2)\
+      Made with ❤️ using $(l:https://pypi.org/project/hexdoc/)hexdoc/$."
   },
 
   "gui.hexdoc.any_block": "Any Block",
