@@ -3,10 +3,9 @@ from typing import Self
 
 from pydantic import ValidationInfo, field_validator, model_validator
 
-from hexdoc.core import Entity, ResourceLocation
+from hexdoc.core import Entity, LocalizedStr, ResourceLocation
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
 from hexdoc.graphics.validators import TagImage
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,

@@ -1,6 +1,5 @@
-from hexdoc.core import ResourceLocation
+from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import HexdocModel
 from pydantic import Field
 

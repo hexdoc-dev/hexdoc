@@ -9,17 +9,14 @@ from typing import Any, Callable, Self
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core import (
-    ItemStack,
-    ModResourceLoader,
-    ResourceLocation,
-    ValueIfVersion,
-)
-from hexdoc.core.properties import LangProps
-from hexdoc.model import HexdocModel, ValidationContextModel
-from hexdoc.model.base import DEFAULT_CONFIG
+from hexdoc.model.base import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.utils import decode_and_flatten_json_dict
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
+
+from .compat import ValueIfVersion
+from .loader import ModResourceLoader
+from .properties import LangProps
+from .resource import ItemStack, ResourceLocation
 
 logger = logging.getLogger(__name__)
 

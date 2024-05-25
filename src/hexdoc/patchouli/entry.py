@@ -2,9 +2,8 @@ from typing import Iterable, Iterator
 
 from pydantic import Field
 
-from hexdoc.core import ItemStack, ResourceLocation
+from hexdoc.core import ItemStack, LocalizedStr, ResourceLocation
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
 from hexdoc.utils import Sortable

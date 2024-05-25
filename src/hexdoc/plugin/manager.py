@@ -28,9 +28,8 @@ from jinja2.sandbox import SandboxedEnvironment
 from hexdoc.utils import ContextSource, ValidationContext
 
 if TYPE_CHECKING:
-    from hexdoc.core import Properties, ResourceLocation
+    from hexdoc.core import I18n, Properties, ResourceLocation
     from hexdoc.graphics.validators import ItemImage
-    from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
 from .book_plugin import BookPlugin

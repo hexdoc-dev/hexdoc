@@ -17,14 +17,13 @@ from typer import Argument, Option
 from yarl import URL
 
 from hexdoc.__version__ import VERSION
-from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core import I18n, ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import AnimationFormat
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import delete_updated_books, dump_sitemap, load_sitemap
 from hexdoc.graphics import DebugType, ModelRenderer
 from hexdoc.graphics.loader import ImageLoader
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
-from hexdoc.minecraft import I18n
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path

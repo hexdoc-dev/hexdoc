@@ -3,8 +3,8 @@ from argparse import Namespace
 from typing import Any, cast
 
 import pytest
+from hexdoc.core import I18n
 from hexdoc.core.resource import ResourceLocation
-from hexdoc.minecraft import I18n
 from hexdoc.patchouli.text import (
     DEFAULT_MACROS,
     BookLink,

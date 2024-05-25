@@ -13,8 +13,7 @@ from pydantic import ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core import Properties, ResourceLocation
-from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.core import I18n, LocalizedStr, Properties, ResourceLocation
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import PydanticURL, TryGetEnum, classproperty

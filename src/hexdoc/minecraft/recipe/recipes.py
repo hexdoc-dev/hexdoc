@@ -11,6 +11,8 @@ from pydantic import (
 from typing_extensions import override
 
 from hexdoc.core import (
+    I18n,
+    LocalizedStr,
     ModResourceLoader,
     ResourceLocation,
     ValueIfVersion,
@@ -20,7 +22,6 @@ from hexdoc.graphics import HexdocImage, ImageField, ItemImage, TextureImage
 from hexdoc.model import ResourceModel, TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, classproperty
 
-from ..i18n import I18n, LocalizedStr
 from .ingredients import ItemIngredient, ItemIngredientList, ItemResult
 
 

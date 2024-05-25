@@ -3,10 +3,9 @@ from typing import Any, Self
 from pydantic import Field
 from pydantic.json_schema import SkipJsonSchema
 
-from hexdoc.core import ResourceLocation
+from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import IDModel
 from hexdoc.utils import Sortable, sorted_dict
 from hexdoc.utils.graphs import TypedDiGraph

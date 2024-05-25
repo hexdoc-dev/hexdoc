@@ -5,12 +5,12 @@ from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
 from hexdoc.core import (
     ItemStack,
+    LocalizedStr,
     ModResourceLoader,
     ResLoc,
     ResourceLocation,
 )
 from hexdoc.core.compat import AtLeast_1_20, Before_1_20
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
 from hexdoc.utils import ContextSource, cast_context, sorted_dict
 

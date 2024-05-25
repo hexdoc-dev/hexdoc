@@ -10,7 +10,7 @@ from pydantic import (
 )
 
 from hexdoc.core import AssumeTag, ModResourceLoader, ResourceLocation
-from hexdoc.graphics import HexdocImage, ImageField, ItemImage, TagImage
+from hexdoc.graphics.validators import HexdocImage, ImageField, ItemImage, TagImage
 from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
 from hexdoc.utils import listify
 

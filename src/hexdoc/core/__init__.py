@@ -7,8 +7,11 @@ __all__ = [
     "BookFolder",
     "Entity",
     "ExportFn",
+    "I18n",
     "IsVersion",
     "ItemStack",
+    "LocalizedItem",
+    "LocalizedStr",
     "MinecraftVersion",
     "ModResourceLoader",
     "PathResourceDir",
@@ -32,6 +35,7 @@ from .compat import (
     Versioned,
     VersionSource,
 )
+from .i18n import I18n, LocalizedItem, LocalizedStr
 from .loader import (
     METADATA_SUFFIX,
     BookFolder,

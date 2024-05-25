@@ -7,6 +7,7 @@ from typing import Any, Literal, overload
 from yarl import URL
 
 from hexdoc.core import (
+    I18n,
     MinecraftVersion,
     ModResourceLoader,
     Properties,
@@ -14,7 +15,7 @@ from hexdoc.core import (
 )
 from hexdoc.data import HexdocMetadata
 from hexdoc.graphics.loader import ImageLoader
-from hexdoc.minecraft import I18n, Tag
+from hexdoc.minecraft import Tag
 from hexdoc.model import init_context as set_init_context
 from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext

@@ -19,8 +19,7 @@ from pydantic.functional_validators import ModelWrapValidatorHandler
 from typing_extensions import TypeVar, override
 from yarl import URL
 
-from hexdoc.core import ItemStack, Properties, ResourceLocation
-from hexdoc.minecraft.i18n import I18n, LocalizedStr
+from hexdoc.core import I18n, ItemStack, LocalizedStr, Properties, ResourceLocation
 from hexdoc.model import (
     InlineItemModel,
     InlineModel,
@@ -141,10 +140,9 @@ class MissingImage(TextureImage, annotation=None):
     @override
     @classmethod
     def load_id(cls, id: ResourceLocation, context: dict[str, Any]) -> Any:
-        message = f"Using missing texture for id: {id}"
         if Properties.of(context).textures.strict:
-            raise ValueError(message)
-        logger.warning(message)
+            raise ValueError(f"Failed to load image for id: {id}")
+        logger.warning(f"Using missing texture for id: {id}")
 
         url = ImageLoader.of(context).render_texture(MISSING_TEXTURE_ID)
         return cls(id=id, url=url, pixelated=True)
@@ -191,7 +189,7 @@ class SingleItemImage(URLImage, ItemImage):
 
 
 class CyclingImage(HexdocImage, template_id="hexdoc:cycling"):
-    images: SkipValidation[list[HexdocImage[Any]]] = Field(min_length=1)
+    images: SkipValidation[list[HexdocImage]] = Field(min_length=1)
 
     @property
     @override

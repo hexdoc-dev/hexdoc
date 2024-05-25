@@ -4,13 +4,12 @@ from typing import Any
 import pytest
 from hexdoc._hooks import HexdocPlugin
 from hexdoc.cli.utils.load import init_context
-from hexdoc.core import ModResourceLoader, PathResourceDir, PluginResourceDir
+from hexdoc.core import I18n, ModResourceLoader, PathResourceDir, PluginResourceDir
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import EnvironmentVariableProps, Properties, TexturesProps
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.graphics.loader import ImageLoader
 from hexdoc.graphics.renderer import ModelRenderer
-from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.book_context import BookContext
 from hexdoc.patchouli.text import FormattingContext

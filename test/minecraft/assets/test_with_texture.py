@@ -1,10 +1,9 @@
 from typing import Any
 
 import pytest
-from hexdoc.core import Properties
+from hexdoc.core import I18n, Properties
 from hexdoc.core.properties import LangProps
 from hexdoc.graphics import ItemImage, TagImage
-from hexdoc.minecraft.i18n import I18n
 from hexdoc.plugin import PluginManager
 from hexdoc.utils.context import ContextSource
 from pydantic import TypeAdapter

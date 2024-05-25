@@ -5,7 +5,7 @@ from jinja2 import pass_context
 from jinja2.runtime import Context
 from markupsafe import Markup
 
-from hexdoc.core import Properties, ResourceLocation
+from hexdoc.core import I18n, Properties, ResourceLocation
 from hexdoc.core.resource import ItemStack
 from hexdoc.graphics.validators import (
     ItemImage,
@@ -13,7 +13,6 @@ from hexdoc.graphics.validators import (
     TextureImage,
     validate_image,
 )
-from hexdoc.minecraft import I18n
 from hexdoc.patchouli import FormatTree
 from hexdoc.plugin import PluginManager
 

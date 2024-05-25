@@ -3,8 +3,7 @@ from typing import Any, Generic, Self, TypeVar, Unpack
 from pydantic import ConfigDict, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core import ResourceLocation
-from hexdoc.minecraft import LocalizedStr
+from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.minecraft.recipe import Recipe
 from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty

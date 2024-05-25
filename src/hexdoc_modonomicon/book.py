@@ -1,5 +1,4 @@
-from hexdoc.core import ResourceLocation
-from hexdoc.minecraft import LocalizedStr
+from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.model import HexdocModel
 from pydantic import Field, model_validator
 
