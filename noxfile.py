@@ -86,6 +86,7 @@ def test_hexcasting(session: nox.Session, branch: str):
         env={
             "MOCK_PLATFORM": "Windows",
             "TEST_SUBMODULE": submodule,
+            "TEST_BRANCH": branch,
         },
     )
 

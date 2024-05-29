@@ -68,8 +68,7 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    submodule = os.getenv("TEST_SUBMODULE")
-    if submodule is None:
+    if (submodule := os.getenv("TEST_SUBMODULE")) is None:
         raise ValueError("Environment variable not set: TEST_SUBMODULE")
     return Path(f"{submodule}/doc/hexdoc.toml")
 

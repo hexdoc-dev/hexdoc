@@ -1,5 +1,6 @@
 # pyright: reportUnknownMemberType=false, reportPrivateUsage=false
 
+import os
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -54,16 +55,9 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
 
 
 @pytest.fixture
-def branch(hexcasting_props_file: Path) -> str:
-    result = subprocess.run(
-        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-        cwd=hexcasting_props_file.parent,
-        stdout=subprocess.PIPE,
-        encoding="utf8",
-        check=True,
-    )
-
-    assert (branch := result.stdout.strip())
+def branch() -> str:
+    if (branch := os.getenv("TEST_BRANCH")) is None:
+        raise ValueError("Environment variable not set: TEST_BRANCH")
     return branch
 
 
