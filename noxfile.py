@@ -93,7 +93,7 @@ def test_hexcasting(session: nox.Session, branch: str):
 
 @nox.session(tags=["test", "post_build"])
 def test_copier(session: nox.Session):
-    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod_main")
+    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod_1.19")
 
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"
