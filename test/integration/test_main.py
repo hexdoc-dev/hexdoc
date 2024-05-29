@@ -54,10 +54,10 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
 
 
 @pytest.fixture
-def branch() -> str:
+def branch(hexcasting_props_file: Path) -> str:
     result = subprocess.run(
         ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-        cwd="submodules/HexMod",
+        cwd=hexcasting_props_file.parent,
         stdout=subprocess.PIPE,
         encoding="utf8",
         check=True,

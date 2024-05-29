@@ -64,43 +64,35 @@ def test_build(session: nox.Session):
 @nox.session(tags=["test", "post_build"])
 @nox.parametrize(["branch"], ["1.19", "main"])
 def test_hexcasting(session: nox.Session, branch: str):
-    with session.cd("submodules/HexMod"):
-        original_branch = run_silent_external(
-            session, "git", "rev-parse", "--abbrev-ref", "HEAD"
-        )
-        if original_branch == "HEAD":  # properly handle detached HEAD
-            original_branch = run_silent_external(session, "git", "rev-parse", "HEAD")
+    submodule = f"submodules/HexMod_{branch}"
 
-        session.run("git", "checkout", branch, external=True)
+    session.install("-e", ".[test]", "-e", f"./{submodule}")
 
-    try:
-        session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+    session.run(
+        "hexdoc",
+        "--quiet-lang=ru_ru",
+        "--quiet-lang=zh_cn",
+        "build",
+        "--branch=main",
+        f"--props={submodule}/doc/hexdoc.toml",
+        env=MOCK_ENV,
+    )
 
-        session.run(
-            "hexdoc",
-            "--quiet-lang=ru_ru",
-            "--quiet-lang=zh_cn",
-            "build",
-            "--branch=main",
-            "--props=submodules/HexMod/doc/hexdoc.toml",
-            env=MOCK_ENV,
-        )
-
-        session.run(
-            "pytest",
-            "-m",
-            "hexcasting",
-            *session.posargs,
-            env={"MOCK_PLATFORM": "Windows"},
-        )
-    finally:
-        with session.cd("submodules/HexMod"):
-            session.run("git", "checkout", original_branch, external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "hexcasting",
+        *session.posargs,
+        env={
+            "MOCK_PLATFORM": "Windows",
+            "TEST_SUBMODULE": submodule,
+        },
+    )
 
 
 @nox.session(tags=["test", "post_build"])
 def test_copier(session: nox.Session):
-    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod")
+    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod_main")
 
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"
@@ -228,7 +220,7 @@ def tag(session: nox.Session):
 def setup(session: nox.Session):
     session.install("uv", "pre-commit")
 
-    if not Path("submodules/HexMod/pyproject.toml").exists():
+    if not Path("submodules/HexMod_main/pyproject.toml").exists():
         session.run("git", "submodule", "update", "--init")
 
     rmtree(session, "venv", onerror=on_rm_error)
@@ -238,7 +230,7 @@ def setup(session: nox.Session):
         *("uv", "pip", "install"),
         "--quiet",
         "-e=.[dev]",
-        "-e=./submodules/HexMod",
+        "-e=./submodules/HexMod_main",
         env={
             "VIRTUAL_ENV": str(Path.cwd() / "venv"),
         },

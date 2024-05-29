@@ -3,12 +3,12 @@
         "src",
         "resources",
         "vendor",
-        "submodules/HexMod/doc/src",
-        "submodules/HexMod/doc/resources",
-        "submodules/HexMod/doc/hexdoc.toml",
-        "submodules/HexMod/Common/src/main/resources/assets/*/lang"
+        "submodules/HexMod_main/doc/src",
+        "submodules/HexMod_main/doc/resources",
+        "submodules/HexMod_main/doc/hexdoc.toml",
+        "submodules/HexMod_main/Common/src/main/resources/assets/*/lang"
     ],
     "ignore": ["**/generated/**"],
     "ext": "jinja,html,css,js,ts,toml,json,json5,py,png,mcmeta",
-    "exec": "hexdoc build && hexdoc --quiet-lang ru_ru --quiet-lang zh_cn serve --props submodules/HexMod/doc/hexdoc.toml"
+    "exec": "hexdoc build && hexdoc serve --props submodules/HexMod_main/doc/hexdoc.toml"
 }

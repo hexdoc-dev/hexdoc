@@ -1,3 +1,4 @@
+import os
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, cast
@@ -67,7 +68,10 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("submodules/HexMod/doc/hexdoc.toml")
+    submodule = os.getenv("TEST_SUBMODULE")
+    if submodule is None:
+        raise ValueError("Environment variable not set: TEST_SUBMODULE")
+    return Path(f"{submodule}/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")
