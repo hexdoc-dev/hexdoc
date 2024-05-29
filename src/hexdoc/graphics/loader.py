@@ -7,6 +7,12 @@ from typing import Callable
 from yarl import URL
 
 from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core.properties import (
+    ItemOverride,
+    ModelOverride,
+    TextureOverride,
+    URLOverride,
+)
 from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.utils import ValidationContext
 
@@ -174,11 +180,17 @@ class ImageLoader(ValidationContext):
 
     def _from_props(self, model_id: ResourceLocation):
         match self.props.textures.overrides.models.get(model_id):
-            case ResourceLocation() as texture_id:
-                _, src = self.loader.find_resource("assets", "", texture_id)
-                return LoadedModel(self._render_existing_texture(src, model_id))
-            case URL() as url:
-                return LoadedModel(url)
+            case URLOverride(url=url, pixelated=pixelated):
+                return LoadedModel(
+                    url,
+                    image_type=ImageType.ITEM if pixelated else ImageType.BLOCK,
+                )
+            case TextureOverride(texture=texture_id):
+                return LoadedModel(self.render_texture(texture_id))
+            case ModelOverride(model=override_model_id):
+                return self.render_model(override_model_id)
+            case ItemOverride(item=item_id):
+                return self.render_item(item_id)
             case None:
                 logger.debug(f"No props override for model: {model_id}")
                 return None

@@ -4,7 +4,7 @@ import logging
 from enum import StrEnum
 from typing import Annotated, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from typing_extensions import deprecated
 
 from hexdoc.model.strip_hidden import StripHiddenModel
@@ -15,15 +15,27 @@ from ..resource import ResourceLocation
 logger = logging.getLogger(__name__)
 
 
-# TODO: support item/block override
-class PNGTextureOverride(StripHiddenModel):
+class URLOverride(StripHiddenModel):
     url: PydanticURL
-    pixelated: bool
+    pixelated: bool = True
 
 
-class TextureTextureOverride(StripHiddenModel):
+class TextureOverride(StripHiddenModel):
     texture: ResourceLocation
     """The id of an image texture (eg. `minecraft:textures/item/stick.png`)."""
+
+
+class ItemOverride(StripHiddenModel):
+    item: ResourceLocation
+    """The id of an item (eg. `minecraft:stick`)."""
+
+
+class ModelOverride(StripHiddenModel):
+    model: ResourceLocation
+    """The id of a model (eg. `minecraft:item/stick`)."""
+
+
+Override = URLOverride | TextureOverride | ItemOverride | ModelOverride
 
 
 class AnimationFormat(StrEnum):
@@ -67,14 +79,12 @@ class AnimatedTexturesProps(StripHiddenModel):
 
 
 class TextureOverrides(StripHiddenModel):
-    models: dict[ResourceLocation, ResourceLocation | PydanticURL] = Field(
-        default_factory=dict
-    )
+    models: dict[ResourceLocation, Override] = Field(default_factory=dict)
     """Model overrides.
 
     Key: model id (eg. `minecraft:item/stick`).
 
-    Value: texture id (eg. `minecraft:textures/item/stick.png`) or image URL.
+    Value: override.
     """
 
 
@@ -93,16 +103,18 @@ class TexturesProps(StripHiddenModel):
 
     overrides: TextureOverrides = Field(default_factory=TextureOverrides)
 
-    override: dict[
-        ResourceLocation,
-        PNGTextureOverride | TextureTextureOverride,
-    ] = Field(
+    override: dict[ResourceLocation, URLOverride | TextureOverride] = Field(
         default_factory=dict,
-        deprecated=deprecated("Use textures.overrides.model instead"),
+        deprecated=deprecated("Use textures.overrides.models instead"),
     )
-    """DEPRECATED."""
+    """DEPRECATED - Use `textures.overrides.models` instead."""
 
     def can_be_missing(self, id: ResourceLocation):
         if self.missing == "*":
             return True
         return any(id.match(pat) for pat in self.missing)
+
+    @model_validator(mode="after")
+    def _copy_deprecated_overrides(self):
+        self.overrides.models = self.override | self.overrides.models
+        return self
