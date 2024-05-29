@@ -36,7 +36,7 @@ nox.options.sessions = [
 # tests
 
 
-@nox.session(tags=["test", "test_fast"])
+@nox.session(tags=["test_fast"])
 def pyright(session: nox.Session):
     session.install("-e", ".[test]")
 
