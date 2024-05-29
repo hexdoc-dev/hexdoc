@@ -72,7 +72,7 @@ def props(tmp_path: Path):
                 {"modid": "hexdoc"},
             ],
             "textures": {
-                "missing": ["minecraft:stone"],
+                "strict": False,
             },
         },
     )

@@ -76,7 +76,7 @@ def parent_props(tmp_path: Path):
             PluginResourceDir(modid="hexdoc"),
         ],
         textures=TexturesProps(
-            missing=set([ResourceLocation("minecraft", "stone")]),
+            strict=False,
         ),
         default_branch="",
         env=EnvironmentVariableProps(
@@ -127,7 +127,7 @@ def child_props(tmp_path: Path, parent_props: Properties):
             PluginResourceDir(modid="hexdoc"),
         ],
         textures=TexturesProps(
-            missing=set([ResourceLocation("minecraft", "stone")]),
+            strict=False,
         ),
         default_branch="",
         env=EnvironmentVariableProps(

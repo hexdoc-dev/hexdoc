@@ -5,6 +5,7 @@ from typing import Any, cast
 import pytest
 from hexdoc.core import I18n
 from hexdoc.core.resource import ResourceLocation
+from hexdoc.jinja.render import create_jinja_env_with_loader
 from hexdoc.patchouli.text import (
     DEFAULT_MACROS,
     BookLink,
@@ -16,7 +17,7 @@ from hexdoc.patchouli.text import (
     SpecialStyleType,
 )
 from hexdoc.plugin import PluginManager
-from jinja2 import Environment, PackageLoader
+from jinja2 import PackageLoader
 from yarl import URL
 
 
@@ -47,7 +48,7 @@ def flatten_html(html: str):
 
 def hexdoc_block(value: FormatTree):
     loader = PackageLoader("hexdoc", "_templates")
-    env = Environment(loader=loader)
+    env = create_jinja_env_with_loader(loader)
     template = env.from_string(
         """\
         {%- import "macros/formatting.html.jinja" as fmt with context -%}
