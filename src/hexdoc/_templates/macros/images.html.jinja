@@ -1,27 +1,27 @@
 {% macro image(image, name=none, class_names=[], lazy=true, title=true, is_first=none) -%}
-  {% with name = name if name is not none else image.name %}
-    {% include image.template~".html.jinja" %}
-  {% endwith %}
+  {%- with name = name if name is not none else image.name -%}
+    {%- include image.template~".html.jinja" -%}
+  {%- endwith -%}
 {%- endmacro %}
 
 {% macro item(item, is_first=none, count=1) -%}
-  {{ image(item, is_first=is_first, class_names=["item-texture"]) }}
-  {% if count > 1 -%}
+  {{- image(item, is_first=is_first, class_names=["item-texture"]) -}}
+  {%- if count > 1 -%}
     <div class="badge item-texture-count">{{ count }}</div>
-  {%- endif %}
+  {%- endif -%}
 {%- endmacro %}
 
 {% macro recipe_gui(recipe, class_names=[]) -%}
-  {{ image(
+  {{- image(
     recipe.gui_texture,
     name=recipe.gui_name,
     class_names=class_names,
     lazy=false,
-  ) }}
+  ) -}}
 {%- endmacro %}
 
 {% macro url(image) -%}
-  {{ site_url }}/{{ image.first_url }}
+  {{- site_url }}/{{ image.first_url -}}
 {%- endmacro %}
 
 {% macro load_texture(id, alt) -%}
