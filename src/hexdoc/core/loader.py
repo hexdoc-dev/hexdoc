@@ -515,7 +515,7 @@ class ModResourceLoader(ValidationContext):
         cache: bool = False,
     ) -> None: ...
 
-    def export(
+    def export(  # pyright: ignore[reportInconsistentOverload]
         self,
         path: Path,
         data: str | bytes,

@@ -32,7 +32,7 @@ def isinstance_or_raise(
         if len(str_val) > 5000 and level >= logging.DEBUG:
             str_val = str_val[:5000] + " [...truncated]"
 
-        subs = {
+        subs: dict[str, Any] = {
             "expected": list(class_or_tuple),
             "actual": type(val),
             "value": str_val,
