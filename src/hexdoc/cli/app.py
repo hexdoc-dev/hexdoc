@@ -186,6 +186,7 @@ def build(
     branch: BranchOption,
     release: ReleaseOption = False,
     clean: bool = False,
+    clean_exports: bool = True,
     props_file: PropsOption,
 ) -> Path:
     """Export resources and render the web book.
@@ -200,7 +201,9 @@ def build(
 
     logger.info("Exporting resources.")
     with (
-        ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader,
+        ModResourceLoader.load_all(
+            props, pm, export=True, clean=clean_exports
+        ) as loader,
         ModelRenderer(loader=loader) as renderer,
     ):
         site_path = plugin.site_path(versioned=release)

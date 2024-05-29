@@ -59,12 +59,24 @@ class ModResourceLoader(ValidationContext):
         *,
         export: bool = False,
     ):
+        return cls.load_all(props, pm, export=export, clean=True)
+
+    @classmethod
+    def load_all(
+        cls,
+        props: Properties,
+        pm: PluginManager,
+        *,
+        export: bool = False,
+        clean: bool = False,
+    ) -> Self:
         # clear the export dir so we start with a clean slate
         if props.export_dir and export:
-            subprocess.run(
-                ["git", "clean", "-fdX", props.export_dir],
-                cwd=props.props_dir,
-            )
+            if clean:
+                subprocess.run(
+                    ["git", "clean", "-fdX", props.export_dir],
+                    cwd=props.props_dir,
+                )
 
             write_to_path(
                 props.export_dir / "__init__.py",
@@ -76,20 +88,6 @@ class ModResourceLoader(ValidationContext):
                 ),
             )
 
-        return cls.load_all(
-            props,
-            pm,
-            export=export,
-        )
-
-    @classmethod
-    def load_all(
-        cls,
-        props: Properties,
-        pm: PluginManager,
-        *,
-        export: bool = False,
-    ) -> Self:
         export_dir = props.export_dir if export else None
         stack = ExitStack()
 
