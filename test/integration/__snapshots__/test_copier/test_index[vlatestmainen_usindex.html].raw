@@ -131,38 +131,38 @@
   </h2>
     <details class="toc-category">
       <summary><a href="#basics" class="toc-elem "><img
-      title="Amethyst Shard"
-      alt="Amethyst Shard"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    > Getting Started</a></summary>
+  title="Amethyst Shard"
+  alt="Amethyst Shard"
+  src="../../../../v/latest/main/renders/minecraft/item/amethyst_shard.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+> Getting Started</a></summary>
       <ul>
           <li><a href="#baz" class="toc-elem spoilered"><img
-      title="Nausea"
-      alt="Nausea"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    > This is the online version of the {} documentation.</a></li>
+  title="Nausea"
+  alt="Nausea"
+  src="../../../../v/latest/main/renders/minecraft/textures/mob_effect/nausea.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+> This is the online version of the {} documentation.</a></li>
       </ul>
     </details>
     <details class="toc-category">
       <summary><a href="#foo" class="toc-elem spoilered"><img
-      title="Amethyst Shard"
-      alt="Amethyst Shard"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    > Mod Book</a></summary>
+  title="Amethyst Shard"
+  alt="Amethyst Shard"
+  src="../../../../v/latest/main/renders/minecraft/item/amethyst_shard.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+> Mod Book</a></summary>
       <ul>
           <li><a href="#bar" class="toc-elem spoilered"><img
-      title="Nausea"
-      alt="Nausea"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    > This is the online version of the {} documentation.</a></li>
+  title="Nausea"
+  alt="Nausea"
+  src="../../../../v/latest/main/renders/minecraft/textures/mob_effect/nausea.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+> This is the online version of the {} documentation.</a></li>
       </ul>
     </details>
 </nav>
@@ -170,12 +170,12 @@
 <section id="basics">
     <h2 class="category-title page-header">
     <img
-      title="Amethyst Shard"
-      alt="Amethyst Shard"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    >Getting Started<a
+  title="Amethyst Shard"
+  alt="Amethyst Shard"
+  src="../../../../v/latest/main/renders/minecraft/item/amethyst_shard.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+>Getting Started<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"
@@ -189,12 +189,12 @@
     <div class="spoilered">
       <h3 class="entry-title page-header">
     <img
-      title="Nausea"
-      alt="Nausea"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    >This is the online version of the {} documentation.<a
+  title="Nausea"
+  alt="Nausea"
+  src="../../../../v/latest/main/renders/minecraft/textures/mob_effect/nausea.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+>This is the online version of the {} documentation.<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"
@@ -212,12 +212,12 @@
     <div class="spoilered">
       <h2 class="category-title page-header">
     <img
-      title="Amethyst Shard"
-      alt="Amethyst Shard"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/items/amethyst_shard.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    >Mod Book<a
+  title="Amethyst Shard"
+  alt="Amethyst Shard"
+  src="../../../../v/latest/main/renders/minecraft/item/amethyst_shard.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+>Mod Book<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"
@@ -232,12 +232,12 @@
     <div class="spoilered">
       <h3 class="entry-title page-header">
     <img
-      title="Nausea"
-      alt="Nausea"
-      src="https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/a14c64362abe4a12c2dfd87f8d1673af9d1b09f4/data/1.20.2/mob_effect/nausea.png"
-      loading="lazy"
-      class="item-texture  texture pixelated"
-    >This is the online version of the {} documentation.<a
+  title="Nausea"
+  alt="Nausea"
+  src="../../../../v/latest/main/renders/minecraft/textures/mob_effect/nausea.png"
+  loading="lazy"
+  class="item-texture texture pixelated "
+>This is the online version of the {} documentation.<a
     href="#table-of-contents"
     class="permalink small"
     title="Jump to top"

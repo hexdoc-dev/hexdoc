@@ -11,15 +11,9 @@ from syrupy.assertion import SnapshotAssertion
 
 from ..conftest import list_directory
 
-# include: v/latest/main/assets
-# include: v/latest/main/assets/hexcasting
-# exclude: v/latest/main/assets/hexcasting/textures/block/akashic_ligature.png
-EXCLUDE_GLOB = "**/assets/**/**"
-
 CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/index.html",
     "v/latest/main/en_us/index.css",
-    "v/latest/main/en_us/textures.css",
     "v/latest/main/en_us/index.js",
     "v/latest/main/en_us/hexcasting.js",
     "v/latest/main/en_us/.sitemap-marker.json",
@@ -91,7 +85,7 @@ def test_render_app_release(
     )
 
     rename_snapshot(snapshot, branch)
-    assert list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB) == snapshot
+    assert list_directory(app_output_dir) == snapshot
 
 
 @pytest.mark.hexcasting
@@ -127,8 +121,8 @@ def test_file_structure(
     snapshot: SnapshotAssertion,
     branch: str,
 ):
-    app_list = list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB)
-    subprocess_list = list_directory(subprocess_output_dir, exclude_glob=EXCLUDE_GLOB)
+    app_list = list_directory(app_output_dir)
+    subprocess_list = list_directory(subprocess_output_dir)
 
     rename_snapshot(snapshot, branch)
     assert app_list == subprocess_list
