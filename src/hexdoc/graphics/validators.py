@@ -140,7 +140,8 @@ class MissingImage(TextureImage, annotation=None):
 
     @classmethod
     def should_raise(cls, id: ResourceLocation, context: ContextSource):
-        return Properties.of(context).textures.strict
+        props = Properties.of(context).textures
+        return props.strict and not props.can_be_missing(id)
 
 
 class ItemImage(HexdocImage, InlineItemModel, UnionModel, ABC):

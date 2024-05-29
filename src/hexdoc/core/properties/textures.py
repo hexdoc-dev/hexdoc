@@ -101,3 +101,8 @@ class TexturesProps(StripHiddenModel):
         deprecated=deprecated("Use textures.overrides.model instead"),
     )
     """DEPRECATED."""
+
+    def can_be_missing(self, id: ResourceLocation):
+        if self.missing == "*":
+            return True
+        return any(id.match(pat) for pat in self.missing)
