@@ -77,7 +77,7 @@ jobs:
       matrix:
         nox-args:
           - --tags test_fast
-          - --sessions test_build "test_hexcasting(branch='1.19')" test_copier
+          - --sessions test_build "test_hexcasting(branch='1.19')"
           - --sessions test_build "test_hexcasting(branch='main')"
     steps:
       - uses: actions/checkout@v4
