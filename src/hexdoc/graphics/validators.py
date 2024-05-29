@@ -11,11 +11,9 @@ from pydantic import (
     TypeAdapter,
     ValidationError,
     ValidationInfo,
-    WrapValidator,
     field_validator,
     model_validator,
 )
-from pydantic.functional_validators import ModelWrapValidatorHandler
 from typing_extensions import TypeVar, override
 from yarl import URL
 
@@ -47,26 +45,13 @@ _T = TypeVar("_T")
 
 class _ImageFieldType:
     def __class_getitem__(cls, item: Any) -> Any:
-        return Annotated[item, WrapValidator(cls._validator), cls]
-
-    @staticmethod
-    def _validator(
-        value: Any,
-        handler: ModelWrapValidatorHandler[Any],
-        info: ValidationInfo,
-    ):
-        try:
-            return handler(value)
-        except ValidationError:
-            if MissingImage.should_raise(ResourceLocation.model_validate(value), info):
-                raise
-            return MissingImage.model_validate(value, context=info.context)
+        return Annotated[item | MissingImage, cls]
 
 
 # scuffed, but Pydantic did it first
 # see: pydantic.functional_validators.SkipValidation
 if TYPE_CHECKING:
-    ImageField = Annotated[_T, _ImageFieldType]
+    ImageField = Annotated["_T | MissingImage", _ImageFieldType]
 else:
 
     class ImageField(_ImageFieldType):
