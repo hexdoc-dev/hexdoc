@@ -110,7 +110,7 @@ class TexturesProps(StripHiddenModel):
     """DEPRECATED - Use `textures.overrides.models` instead."""
 
     def can_be_missing(self, id: ResourceLocation):
-        if self.missing == "*":
+        if not self.strict or self.missing == "*":
             return True
         return any(id.match(pat) for pat in self.missing)
 
