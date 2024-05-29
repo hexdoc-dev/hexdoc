@@ -70,8 +70,6 @@ def test_hexcasting(session: nox.Session, branch: str):
 
     session.run(
         "hexdoc",
-        "--quiet-lang=ru_ru",
-        "--quiet-lang=zh_cn",
         "build",
         "--branch=main",
         f"--props={submodule}/doc/hexdoc.toml",
@@ -90,13 +88,18 @@ def test_hexcasting(session: nox.Session, branch: str):
         },
     )
 
-    if branch == "main":
-        session.notify("test_copier")
-
 
 @nox.session(tags=["test"])
 def test_copier(session: nox.Session):
     session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod_main")
+
+    session.run(
+        "hexdoc",
+        "build",
+        "--branch=main",
+        "--props=submodules/HexMod_main/doc/hexdoc.toml",
+        env=MOCK_ENV,
+    )
 
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"

@@ -97,8 +97,6 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
 def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",
-        "--quiet-lang=ru_ru",
-        "--quiet-lang=zh_cn",
         "build",
         subprocess_output_dir.as_posix(),
         f"--props={hexcasting_props_file.as_posix()}",
