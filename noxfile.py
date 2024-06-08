@@ -62,7 +62,7 @@ def test_build(session: nox.Session):
 
 
 @nox.session(tags=["test", "post_build"])
-@nox.parametrize(["branch"], ["1.19", "main"])
+@nox.parametrize(["branch"], ["1.19_old", "main_old"])
 def test_hexcasting(session: nox.Session, branch: str):
     with session.cd("submodules/HexMod"):
         original_branch = run_silent_external(

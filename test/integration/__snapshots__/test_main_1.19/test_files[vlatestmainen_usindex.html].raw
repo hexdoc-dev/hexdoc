@@ -903,7 +903,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>Casting a <span style="color: #b38ef3">Hex</span> is quite difficult-- no wonder this art was lost to time! I&#39;ll have to re-read my notes carefully.</p><p>I can start a <span style="color: #b38ef3">Hex</span> by pressing Use Item/Place Block with a <a href="#items/staff"><span style="color: #b0b">Staff</span></a> in my hand-- this will cause a hexagonal grid of dots to appear in front of me. Then I can click and drag from dot to dot to draw patterns in the <span style="color: #74b3f2">media</span> of the grid; finishing a pattern will run its corresponding action (more on that later).</p>
 <br />
-    <p>Once I&#39;ve drawn enough patterns to cast a spell, the grid will disappear as the <span style="color: #74b3f2">media</span> I&#39;ve stored up is released. Holding Sneak while using my <a href="#items/staff"><span style="color: #b0b">staff</span></a> will also clear the grid, if I don&#39;t mind the chance of mishap. (It seems that the more <span style="color: #74b3f2">media</span> I&#39;ve built up, the more likely I&#39;ll meet misfortune.)</p><p>So how do patterns work? In short:</p><p class="fake-li"><i>Patterns</i> will execute...</p><p class="fake-li"><i>Actions</i>, which manipulate...</p><p class="fake-li"><a href="#casting/stack"><i>The Stack</i></a>, which is a list of...</p><p class="fake-li"><i>Iotas</i>, which are simply units of information.</p>
+    <p>Once I&#39;ve drawn enough patterns to cast a spell, the grid will disappear as the <span style="color: #74b3f2">media</span> I&#39;ve stored up is released. Holding Sneak while using my <a href="#items/staff"><span style="color: #b0b">staff</span></a> will also clear the grid, if I don&#39;t mind the chance of mishap. (It seems that the more <span style="color: #74b3f2">media</span> I&#39;ve built up, the more likely I&#39;ll meet misfortune.)</p><p>So how do patterns work? In short:</p><p class="fake-li " style="--level: 1;"><i>Patterns</i> will execute...</p><p class="fake-li " style="--level: 1;"><i>Actions</i>, which manipulate...</p><p class="fake-li " style="--level: 1;"><a href="#casting/stack"><i>The Stack</i></a>, which is a list of...</p><p class="fake-li " style="--level: 1;"><i>Iotas</i>, which are simply units of information.</p>
 <br />
     <p>First, <span style="color: #8d6acc">patterns</span>. These are essential-- they&#39;re what I use to manipulate the <span style="color: #74b3f2">media</span> around me. Certain patterns, when drawn, will cause <span style="color: #8d6acc">actions</span> to happen. Actions are what actually <i>do</i> the magic; all patterns influence <span style="color: #74b3f2">media</span> in particular ways, and when those influences end up doing something useful, we call it an action.</p><p><span style="color: #74b3f2">Media</span> can be fickle: if I draw an invalid pattern, I&#39;ll get some <a href="#casting/influences"><span style="color: #fc77be">garbage</span></a> result somewhere on my stack (read on...)</p>
 <br />
@@ -965,13 +965,13 @@
   </details>
       <p>It&#39;s interesting to note that the <i>rotation</i> of a pattern doesn&#39;t seem to matter at all. These two patterns both perform an action called <a href="#patterns/basics@hexcasting:get_caster"><span style="color: #fc77be">Mind&#39;s Reflection</span></a>, for example.</p>
 <br />
-    <p>A <span style="color: #b38ef3">Hex</span> is cast by drawing (valid) actions in sequence. Each action might do one of a few things:</p><p class="fake-li">Gather some information about the environment, leaving it on the top of the stack;</p><p class="fake-li">manipulate the info gathered (e.g. adding two numbers); or</p><p class="fake-li">perform some magical effect, like summoning lightning or an explosion. (These actions are called &#34;spells.&#34;)</p><p>When I start casting a <span style="color: #b38ef3">Hex</span>, it creates an empty stack. Actions manipulate the top of that stack.</p>
+    <p>A <span style="color: #b38ef3">Hex</span> is cast by drawing (valid) actions in sequence. Each action might do one of a few things:</p><p class="fake-li " style="--level: 1;">Gather some information about the environment, leaving it on the top of the stack;</p><p class="fake-li " style="--level: 1;">manipulate the info gathered (e.g. adding two numbers); or</p><p class="fake-li " style="--level: 1;">perform some magical effect, like summoning lightning or an explosion. (These actions are called &#34;spells.&#34;)</p><p>When I start casting a <span style="color: #b38ef3">Hex</span>, it creates an empty stack. Actions manipulate the top of that stack.</p>
 <br />
     <p>For example, <a href="#patterns/basics@hexcasting:get_caster"><span style="color: #fc77be">Mind&#39;s Reflection</span></a> will create an iota representing <i>me</i>, the caster, and add it to the top of the stack. <a href="#patterns/basics@hexcasting:entity_pos/eye"><span style="color: #fc77be">Compass Purification</span></a> will take the iota at the top the stack, if it represents an entity, and transform it into an iota representing that entity&#39;s location.</p><p>So, drawing those patterns in that order would result in an iota on the stack representing my position.</p>
 <br />
-    <p><span style="color: #8d6acc">Iotas</span> can represent things like myself or my position, but there are several other types I can manipulate with <span style="color: #8d6acc">Actions</span>. Here&#39;s a comprehensive list:</p><p class="fake-li">Numbers (which some legends called &#34;doubles&#34;);</p><p class="fake-li">Vectors, a collection of three numbers representing a position, movement, or direction in the world;</p><p class="fake-li">Booleans or &#34;bools&#34; for short, representing an abstract True or False,</p>
+    <p><span style="color: #8d6acc">Iotas</span> can represent things like myself or my position, but there are several other types I can manipulate with <span style="color: #8d6acc">Actions</span>. Here&#39;s a comprehensive list:</p><p class="fake-li " style="--level: 1;">Numbers (which some legends called &#34;doubles&#34;);</p><p class="fake-li " style="--level: 1;">Vectors, a collection of three numbers representing a position, movement, or direction in the world;</p><p class="fake-li " style="--level: 1;">Booleans or &#34;bools&#34; for short, representing an abstract True or False,</p>
 <br />
-    <p></p><p class="fake-li">Entities, like myself, chickens, and minecarts;</p><p class="fake-li">Influences, peculiar types of iota that seem to represent abstract ideas;</p><p class="fake-li">Patterns themselves, used for crafting magic items and truly mind-boggling feats like <i>spells that cast other spells</i>; and</p><p class="fake-li">A list of several of the above, gathered into a single iota.</p>
+    <p></p><p class="fake-li " style="--level: 1;">Entities, like myself, chickens, and minecarts;</p><p class="fake-li " style="--level: 1;">Influences, peculiar types of iota that seem to represent abstract ideas;</p><p class="fake-li " style="--level: 1;">Patterns themselves, used for crafting magic items and truly mind-boggling feats like <i>spells that cast other spells</i>; and</p><p class="fake-li " style="--level: 1;">A list of several of the above, gathered into a single iota.</p>
 <br />
     <p>Of course, there&#39;s no such thing as a free lunch. All spells, and certain other actions, require <span style="color: #74b3f2">media</span> as payment.</p><p>The best I can figure, a <span style="color: #b38ef3">Hex</span> is a little bit like a plan of action presented to Nature-- in this analogy, the <span style="color: #74b3f2">media</span> is used to provide the arguments to back it up, so Nature will accept your plan and carry it out.</p>
 <br />
@@ -1013,7 +1013,7 @@
     <a href="https://www.youtube.com/watch?v=fNk_zzaMoSs" target="_blank">3blue1brown</a>
   </h4>
 <br />
-    <p>Additionally, it seems that the mages who manipulated <span style="color: #8d6acc">Psi energy</span> (the so-called &#34;spellslingers&#34;), despite their poor naming sense, had some quite-effective lessons on vectors to teach their acolytes. I&#39;ve taken the liberty of linking to one of their texts on the next page.</p><p>They seem to have used different language for their spellcasting:</p><p class="fake-li">A &#34;Spell Piece&#34; was their name for an action;</p><p class="fake-li">a &#34;Trick&#34; was their name for a spell; and</p><p class="fake-li">an &#34;Operator&#34; was their name for a non-spell action.</p>
+    <p>Additionally, it seems that the mages who manipulated <span style="color: #8d6acc">Psi energy</span> (the so-called &#34;spellslingers&#34;), despite their poor naming sense, had some quite-effective lessons on vectors to teach their acolytes. I&#39;ve taken the liberty of linking to one of their texts on the next page.</p><p>They seem to have used different language for their spellcasting:</p><p class="fake-li " style="--level: 1;">A &#34;Spell Piece&#34; was their name for an action;</p><p class="fake-li " style="--level: 1;">a &#34;Trick&#34; was their name for a spell; and</p><p class="fake-li " style="--level: 1;">an &#34;Operator&#34; was their name for a non-spell action.</p>
 <br />
       <p>Link here.</p>
   <h4 class="linkout">
@@ -1106,7 +1106,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>A <span style="color: #8d6acc">Stack</span>, also known as a &#34;LIFO&#34;, is a concept borrowed from computer science. In short, it&#39;s a collection of things designed so that you can only interact with the most recently used thing.</p><p>Think of a stack of plates, where new plates are added to the top: if you want to interact with a plate halfway down the stack, you have to remove the plates above it in order to get ahold of it.</p>
 <br />
-    <p>Because a stack is so simple, there&#39;s only so many things you can do with it:</p><p class="fake-li"><i>Adding something to it</i>, known formally as pushing,</p><p class="fake-li"><i>Removing the last added element</i>, known as popping, or</p><p class="fake-li"><i>Examining or modifying the last added element</i>, known as peeking.<br />We call the last-added element the &#34;top&#34; of the stack, in accordance with the dinner plate analogy.</p><p>As an example, if we push 1 to a stack, then push 2, then pop, the top of the stack is now 1.</p>
+    <p>Because a stack is so simple, there&#39;s only so many things you can do with it:</p><p class="fake-li " style="--level: 1;"><i>Adding something to it</i>, known formally as pushing,</p><p class="fake-li " style="--level: 1;"><i>Removing the last added element</i>, known as popping, or</p><p class="fake-li " style="--level: 1;"><i>Examining or modifying the last added element</i>, known as peeking.<br />We call the last-added element the &#34;top&#34; of the stack, in accordance with the dinner plate analogy.</p><p>As an example, if we push 1 to a stack, then push 2, then pop, the top of the stack is now 1.</p>
 <br />
     <p>Actions are (on the most part) restricted to interacting with the casting stack in these ways. They will pop some iotas they&#39;re interested in (known as &#34;arguments&#34; or &#34;parameters&#34;), process them, and push some number of results.</p><p>Of course, some actions (e.g. <a href="#patterns/basics@hexcasting:get_caster"><span style="color: #fc77be">Mind&#39;s Reflection</span></a>) might pop no arguments, and some actions (particularly spells) might push nothing afterwards.</p>
 <br />
@@ -1132,7 +1132,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>The names given to actions by the ancients were certainly peculiar, but I think there&#39;s a certain kind of logic to them.</p><p>There seem to be certain groups of actions with common names, named for the number of iotas they remove from and add to the stack.</p>
 <br />
-    <p></p><p class="fake-li">A <span style="color: #8d6acc">Reflection</span> pops nothing and pushes one iota.</p><p class="fake-li">A <span style="color: #8d6acc">Purification</span> pops one and pushes one.</p><p class="fake-li">A <span style="color: #8d6acc">Distillation</span> pops two and pushes one.</p><p class="fake-li">An <span style="color: #8d6acc">Exaltation</span> pops three or more and pushes one.</p><p class="fake-li">A <span style="color: #8d6acc">Decomposition</span> pops one argument and pushes two.</p><p class="fake-li">A <span style="color: #8d6acc">Disintegration</span> pops one and pushes three or more.</p><p class="fake-li">Finally, a <span style="color: #8d6acc">Gambit</span> pushes or pops some other number (or rearranges the stack in some other manner).</p>
+    <p></p><p class="fake-li " style="--level: 1;">A <span style="color: #8d6acc">Reflection</span> pops nothing and pushes one iota.</p><p class="fake-li " style="--level: 1;">A <span style="color: #8d6acc">Purification</span> pops one and pushes one.</p><p class="fake-li " style="--level: 1;">A <span style="color: #8d6acc">Distillation</span> pops two and pushes one.</p><p class="fake-li " style="--level: 1;">An <span style="color: #8d6acc">Exaltation</span> pops three or more and pushes one.</p><p class="fake-li " style="--level: 1;">A <span style="color: #8d6acc">Decomposition</span> pops one argument and pushes two.</p><p class="fake-li " style="--level: 1;">A <span style="color: #8d6acc">Disintegration</span> pops one and pushes three or more.</p><p class="fake-li " style="--level: 1;">Finally, a <span style="color: #8d6acc">Gambit</span> pushes or pops some other number (or rearranges the stack in some other manner).</p>
 <br />
     <p>Spells seem to be exempt from this nomenclature and are more or less named after what they do-- after all, why call it a <span style="color: #fc77be">Demoman&#39;s Gambit</span> when you could just say <a href="#patterns/spells/basic@hexcasting:explode"><span style="color: #fc77be">Explosion</span></a>?</p>
 <br />
@@ -9245,15 +9245,15 @@
     class="permalink small"
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
-    <p><i>I only managed to find these five entries from this log.</i></p><p>Detonation #26</p><p class="fake-li">Location: Carpenter&#39;s North</p><p class="fake-li">Population: 174</p><p class="fake-li">Nodes Formed: 3</p><p class="fake-li">Node Distance from Epicenter: 55-80m vertical, 85-156m horizontal</p><p class="fake-li">Media Generation: 1320 uθ/min</p>
+    <p><i>I only managed to find these five entries from this log.</i></p><p>Detonation #26</p><p class="fake-li " style="--level: 1;">Location: Carpenter&#39;s North</p><p class="fake-li " style="--level: 1;">Population: 174</p><p class="fake-li " style="--level: 1;">Nodes Formed: 3</p><p class="fake-li " style="--level: 1;">Node Distance from Epicenter: 55-80m vertical, 85-156m horizontal</p><p class="fake-li " style="--level: 1;">Media Generation: 1320 uθ/min</p>
 <br />
-    <p>Detonation #27</p><p class="fake-li">Location: Brackenfalls</p><p class="fake-li">Population: 79</p><p class="fake-li">Nodes Formed: 1</p><p class="fake-li">Node Distance from Epicenter: 95m vertical, 67m horizontal</p><p class="fake-li">Media Generation: 412 uθ/min</p>
+    <p>Detonation #27</p><p class="fake-li " style="--level: 1;">Location: Brackenfalls</p><p class="fake-li " style="--level: 1;">Population: 79</p><p class="fake-li " style="--level: 1;">Nodes Formed: 1</p><p class="fake-li " style="--level: 1;">Node Distance from Epicenter: 95m vertical, 67m horizontal</p><p class="fake-li " style="--level: 1;">Media Generation: 412 uθ/min</p>
 <br />
-    <p>Detonation #28</p><p class="fake-li">Location: Greyston</p><p class="fake-li">Population: approx. 1000</p><p class="fake-li">Nodes Formed: 18</p><p class="fake-li">Node Distance from Epicenter: 47-110m vertical, 59-289m horizontal</p><p class="fake-li">Media Generation: 8478 uθ/min</p>
+    <p>Detonation #28</p><p class="fake-li " style="--level: 1;">Location: Greyston</p><p class="fake-li " style="--level: 1;">Population: approx. 1000</p><p class="fake-li " style="--level: 1;">Nodes Formed: 18</p><p class="fake-li " style="--level: 1;">Node Distance from Epicenter: 47-110m vertical, 59-289m horizontal</p><p class="fake-li " style="--level: 1;">Media Generation: 8478 uθ/min</p>
 <br />
-    <p>Detonation #29</p><p class="fake-li">Location: Unnamed; village two days west of Greyston</p><p class="fake-li">Population: 35</p><p class="fake-li">Nodes Formed: 0</p><p class="fake-li">Node Distance from Epicenter: N/A</p><p class="fake-li">Media Generation: N/A</p><p>Note: inhabitants still affected in the normal way</p>
+    <p>Detonation #29</p><p class="fake-li " style="--level: 1;">Location: Unnamed; village two days west of Greyston</p><p class="fake-li " style="--level: 1;">Population: 35</p><p class="fake-li " style="--level: 1;">Nodes Formed: 0</p><p class="fake-li " style="--level: 1;">Node Distance from Epicenter: N/A</p><p class="fake-li " style="--level: 1;">Media Generation: N/A</p><p>Note: inhabitants still affected in the normal way</p>
 <br />
-    <p>Detonation #30</p><p class="fake-li">Location: Boiling Brook</p><p class="fake-li">Population: 231</p><p class="fake-li">Nodes Formed: 4</p><p class="fake-li">Node Distance from Epicenter: 61-89m vertical, 78-191m horizontal</p><p class="fake-li">Media Generation: 1862 uθ/min</p>
+    <p>Detonation #30</p><p class="fake-li " style="--level: 1;">Location: Boiling Brook</p><p class="fake-li " style="--level: 1;">Population: 231</p><p class="fake-li " style="--level: 1;">Nodes Formed: 4</p><p class="fake-li " style="--level: 1;">Node Distance from Epicenter: 61-89m vertical, 78-191m horizontal</p><p class="fake-li " style="--level: 1;">Media Generation: 1862 uθ/min</p>
 <br />
     <p>Conclusion: approx 60 needed for one node. Too few consumes them but does not provide enough energy for node formation. Little correlation between input count and breadth/depth.</p><p>Effects on inhabitants still consistently more severe than with single-target testing, especially the physical effects.</p>
 <br />
@@ -10040,7 +10040,7 @@
       <p>Like <a href="#patterns/basics@hexcasting:raycast"><span style="color: #fc77be">Archer&#39;s Distillation</span></a>, but instead returns a vector representing the answer to the question: Which <i>side</i> of the block am I looking at? Costs a negligible amount of <span style="color: #74b3f2">media</span>.</p>
   </div>
 <br />
-    <p>More specifically, it returns the <i>normal vector</i> of the face hit, or a unit vector pointing perpendicular to the face.</p><p class="fake-li">If I am looking at a floor, it will return (0, 1, 0).</p><p class="fake-li">If I am looking at the south face of a block, it will return (0, 0, 1).</p>
+    <p>More specifically, it returns the <i>normal vector</i> of the face hit, or a unit vector pointing perpendicular to the face.</p><p class="fake-li " style="--level: 1;">If I am looking at a floor, it will return (0, 1, 0).</p><p class="fake-li " style="--level: 1;">If I am looking at the south face of a block, it will return (0, 0, 1).</p>
 <br />
   <div id="patterns/basics@hexcasting:raycast/entity" class="">
 <h4 class="pattern-title">Scout&#39;s Distillation (vector, vector → entity)<a
@@ -10348,7 +10348,7 @@
       <p>Irritatingly, there is no easy way to draw numbers. Here is the method Nature deigned to give us.</p>
   </div>
 <br />
-    <p>First, I draw one of the two shapes shown on the other page. Next, the <i>angles</i> following will modify a running count starting at 0.</p><p class="fake-li">Forward: Add 1</p><p class="fake-li">Left: Add 5</p><p class="fake-li">Right: Add 10</p><p class="fake-li">Sharp Left: Multiply by 2</p><p class="fake-li">Sharp Right: Divide by 2.<br />The clockwise version of the pattern, on the right of the other page, will negate the value at the very end. (The left-hand counter-clockwise version keeps the number positive).</p><p>Once I finish drawing, the number&#39;s pushed to the top of the stack.</p>
+    <p>First, I draw one of the two shapes shown on the other page. Next, the <i>angles</i> following will modify a running count starting at 0.</p><p class="fake-li " style="--level: 1;">Forward: Add 1</p><p class="fake-li " style="--level: 1;">Left: Add 5</p><p class="fake-li " style="--level: 1;">Right: Add 10</p><p class="fake-li " style="--level: 1;">Sharp Left: Multiply by 2</p><p class="fake-li " style="--level: 1;">Sharp Right: Divide by 2.<br />The clockwise version of the pattern, on the right of the other page, will negate the value at the very end. (The left-hand counter-clockwise version keeps the number positive).</p><p>Once I finish drawing, the number&#39;s pushed to the top of the stack.</p>
 <br />
   <h4>Example 1</h4>
   <details class="details-collapsible">
@@ -10629,7 +10629,7 @@
       <p>Perform addition.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into their sum.</p><p class="fake-li">With a number and a vector, removes the number from the stack and adds it to each element of the vector.</p><p class="fake-li">With two vectors, combines them by summing corresponding components into a new vector (i.e. [1, 2, 3] + [0, 4, -1] = [1, 6, 2]).</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers at the top of the stack, combines them into their sum.</p><p class="fake-li " style="--level: 1;">With a number and a vector, removes the number from the stack and adds it to each element of the vector.</p><p class="fake-li " style="--level: 1;">With two vectors, combines them by summing corresponding components into a new vector (i.e. [1, 2, 3] + [0, 4, -1] = [1, 6, 2]).</p>
 <br />
   <div id="patterns/math@hexcasting:sub" class="">
 <h4 class="pattern-title">Subtractive Distillation (num/vec, num/vec → num/vec)<a
@@ -10687,7 +10687,7 @@
       <p>Perform subtraction.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into their difference.</p><p class="fake-li">With a number and a vector, removes the number from the stack and subtracts it from each element of the vector.</p><p class="fake-li">With two vectors, combines them by subtracting each component.</p><p>In all cases, the top of the stack or its components are subtracted <i>from</i> the second-from-the-top.</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers at the top of the stack, combines them into their difference.</p><p class="fake-li " style="--level: 1;">With a number and a vector, removes the number from the stack and subtracts it from each element of the vector.</p><p class="fake-li " style="--level: 1;">With two vectors, combines them by subtracting each component.</p><p>In all cases, the top of the stack or its components are subtracted <i>from</i> the second-from-the-top.</p>
 <br />
   <div id="patterns/math@hexcasting:mul_dot" class="">
 <h4 class="pattern-title">Multiplicative Dstl. (num/vec, num/vec → num/vec)<a
@@ -10745,7 +10745,7 @@
       <p>Perform multiplication or the dot product.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers, combines them into their product.</p><p class="fake-li">With a number and a vector, removes the number from the stack and multiplies each component of the vector by that number.</p><p class="fake-li">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-dot-product.html" target="_blank">dot product</a>.</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers, combines them into their product.</p><p class="fake-li " style="--level: 1;">With a number and a vector, removes the number from the stack and multiplies each component of the vector by that number.</p><p class="fake-li " style="--level: 1;">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-dot-product.html" target="_blank">dot product</a>.</p>
 <br />
   <div id="patterns/math@hexcasting:div_cross" class="">
 <h4 class="pattern-title">Division Dstl. (num/vec, num/vec → num/vec)<a
@@ -10803,7 +10803,7 @@
       <p>Perform division or the cross product.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers, combines them into their quotient.</p><p class="fake-li">With a number and a vector, removes the number and divides it by each element of the vector.</p><p class="fake-li">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-cross-product.html" target="_blank">cross product</a>.</p><p>In the first and second cases, the top of the stack or its components comprise the dividend, and the second-from-the-top or its components are the divisor.</p><p>WARNING: Never divide by zero!</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers, combines them into their quotient.</p><p class="fake-li " style="--level: 1;">With a number and a vector, removes the number and divides it by each element of the vector.</p><p class="fake-li " style="--level: 1;">With two vectors, combines them into their <a href="https://www.mathsisfun.com/algebra/vectors-cross-product.html" target="_blank">cross product</a>.</p><p>In the first and second cases, the top of the stack or its components comprise the dividend, and the second-from-the-top or its components are the divisor.</p><p>WARNING: Never divide by zero!</p>
 <br />
   <div id="patterns/math@hexcasting:abs_len" class="">
 <h4 class="pattern-title">Length Purification (num/vec → number)<a
@@ -10919,7 +10919,7 @@
       <p>Perform exponentiation or vector projection.</p>
   </div>
 <br />
-    <p>With two numbers, combines them by raising the first to the power of the second.</p><p class="fake-li">With a number and a vector, removes the number and raises each component of the vector to the number&#39;s power.</p><p class="fake-li">With two vectors, combines them into the <a href="https://en.wikipedia.org/wiki/Vector_projection" target="_blank">vector projection</a> of the top of the stack onto the second-from-the-top.</p><p>In the first and second cases, the first argument or its components are the base, and the second argument or its components are the exponent.</p>
+    <p>With two numbers, combines them by raising the first to the power of the second.</p><p class="fake-li " style="--level: 1;">With a number and a vector, removes the number and raises each component of the vector to the number&#39;s power.</p><p class="fake-li " style="--level: 1;">With two vectors, combines them into the <a href="https://en.wikipedia.org/wiki/Vector_projection" target="_blank">vector projection</a> of the top of the stack onto the second-from-the-top.</p><p>In the first and second cases, the first argument or its components are the base, and the second argument or its components are the exponent.</p>
 <br />
   <div id="patterns/math@hexcasting:floor" class="">
 <h4 class="pattern-title">Floor Purification (num → num)<a
@@ -16530,7 +16530,7 @@
       <p>Unifies two sets.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit in either bitset.</p><p class="fake-li">With two lists, this creates a list of every element from the first list, plus every element from the second list that is not in the first list. This is similar to <a href="#patterns/lists@hexcasting:concat"><span style="color: #fc77be">Combination Distillation</span></a>.</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit in either bitset.</p><p class="fake-li " style="--level: 1;">With two lists, this creates a list of every element from the first list, plus every element from the second list that is not in the first list. This is similar to <a href="#patterns/lists@hexcasting:concat"><span style="color: #fc77be">Combination Distillation</span></a>.</p>
 <br />
   <div id="patterns/sets@hexcasting:and_bit" class="">
 <h4 class="pattern-title">Intersection Distillation (num, num/list, list → num/list)<a
@@ -16588,7 +16588,7 @@
       <p>Takes the intersection of two sets.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>both</i> bitsets.</p><p class="fake-li">With two lists, this creates a list of every element from the first list that is also in the second list.</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>both</i> bitsets.</p><p class="fake-li " style="--level: 1;">With two lists, this creates a list of every element from the first list that is also in the second list.</p>
 <br />
   <div id="patterns/sets@hexcasting:xor_bit" class="">
 <h4 class="pattern-title">Exclusionary Distillation (num, num/list, list → num/list)<a
@@ -16646,7 +16646,7 @@
       <p>Takes the exclusive disjunction of two sets.</p>
   </div>
 <br />
-    <p>As such:</p><p class="fake-li">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>exactly one</i> of the bitsets.</p><p class="fake-li">With two lists, this creates a list of every element in both lists that is <i>not</i> in the other list.</p>
+    <p>As such:</p><p class="fake-li " style="--level: 1;">With two numbers at the top of the stack, combines them into a bitset containing every &#34;on&#34; bit present in <i>exactly one</i> of the bitsets.</p><p class="fake-li " style="--level: 1;">With two lists, this creates a list of every element in both lists that is <i>not</i> in the other list.</p>
 <br />
   <div id="patterns/sets@hexcasting:not_bit" class="">
 <h4 class="pattern-title">Inversion Purification (num → num)<a
@@ -16892,7 +16892,7 @@
       <p>Remove a list of patterns and a list from the stack, then cast the given pattern over each element of the second list.</p>
   </div>
 <br />
-    <p>More specifically, for each element in the second list, it will:</p><p class="fake-li">Create a new stack, with everything on the current stack plus that element</p><p class="fake-li">Draw all the patterns in the first list</p><p class="fake-li">Save all the iotas remaining on the stack to a list<br />Then, after all is said and done, pushes the list of saved iotas onto the main stack.</p><p>No wonder all the practitioners of this art go mad.</p>
+    <p>More specifically, for each element in the second list, it will:</p><p class="fake-li " style="--level: 1;">Create a new stack, with everything on the current stack plus that element</p><p class="fake-li " style="--level: 1;">Draw all the patterns in the first list</p><p class="fake-li " style="--level: 1;">Save all the iotas remaining on the stack to a list<br />Then, after all is said and done, pushes the list of saved iotas onto the main stack.</p><p>No wonder all the practitioners of this art go mad.</p>
 <br />
   <div id="patterns/meta@hexcasting:halt" class="">
 <h4 class="pattern-title">Charon&#39;s Gambit<a
@@ -17369,7 +17369,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p>Certain spells, such as <a href="#patterns/spells/blockworks@hexcasting:place_block"><span style="color: #fc77be">Place Block</span></a>, will consume additional items from my inventory. When this happens, the spell will first look for the item to use, and then draw from all such items in my inventory.</p><p>This process is called &#34;picking an item.&#34;</p>
 <br />
-    <p>More specifically:</p><p class="fake-li">First, the spell will search for the first valid item in my hotbar to the <i>right of my <a href="#items/staff"><span style="color: #b0b">staff</span></a></i>, wrapping around at the right-hand side, and starting at the first slot if my <a href="#items/staff"><span style="color: #b0b">staff</span></a> is in my off-hand.</p><p class="fake-li">Second, the spell will draw that item from as <i>far back in my inventory</i> as possible, prioritizing the main inventory over the hotbar.</p>
+    <p>More specifically:</p><p class="fake-li " style="--level: 1;">First, the spell will search for the first valid item in my hotbar to the <i>right of my <a href="#items/staff"><span style="color: #b0b">staff</span></a></i>, wrapping around at the right-hand side, and starting at the first slot if my <a href="#items/staff"><span style="color: #b0b">staff</span></a> is in my off-hand.</p><p class="fake-li " style="--level: 1;">Second, the spell will draw that item from as <i>far back in my inventory</i> as possible, prioritizing the main inventory over the hotbar.</p>
 <br />
     <p>This way, I can keep a &#34;chooser&#34; item on my hotbar to tell the spell what to use, and fill the rest of my inventory with that item to keep the spell well-stocked.</p>
 <br />
@@ -18881,7 +18881,7 @@
   ><i class="bi bi-link-45deg"></i></a></h3>
     <p><i>Hence, away! Now all is well,<br />One aloof stand sentinel.</i></p><p>A <a href="#patterns/spells/sentinels"><span style="color: #8d6acc">Sentinel</span></a> is a mysterious force I can summon to assist in the casting of <span style="color: #b38ef3">Hexes</span>, like a familiar or guardian spirit. It appears as a spinning geometric shape to my eyes, but is invisible to everyone else.</p>
 <br />
-    <p>It has several interesting properties:</p><p class="fake-li">It does not appear to be tangible; no one can touch it.</p><p class="fake-li">Only my <span style="color: #b38ef3">Hexes</span> can interact with it.</p><p class="fake-li">Once summoned, it stays in place until banished.</p><p class="fake-li">I am always able to see it if I&#39;m close enough, even through solid objects.</p>
+    <p>It has several interesting properties:</p><p class="fake-li " style="--level: 1;">It does not appear to be tangible; no one can touch it.</p><p class="fake-li " style="--level: 1;">Only my <span style="color: #b38ef3">Hexes</span> can interact with it.</p><p class="fake-li " style="--level: 1;">Once summoned, it stays in place until banished.</p><p class="fake-li " style="--level: 1;">I am always able to see it if I&#39;m close enough, even through solid objects.</p>
 <br />
   <div id="patterns/spells/sentinels@hexcasting:sentinel/create" class="">
 <h4 class="pattern-title">Summon Sentinel (vector →)<a

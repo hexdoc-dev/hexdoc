@@ -69,7 +69,8 @@ def branch() -> str:
         check=True,
     )
 
-    assert (branch := result.stdout.strip())
+    # FIXME: removesuffix is only necessary for pre-new-textures tests
+    assert (branch := result.stdout.strip().removesuffix("_old"))
     return branch
 
 
