@@ -51,5 +51,5 @@
 {%- endmacro %}
 
 {% macro paragraph_list_item(style) -%}
-  <p class="fake-li">{{ caller() }}</p>
+  <p class="fake-li {{ 'fake-li-alt' if style.level % 2 == 0 }}" style="--level: {{ style.level }};">{{ caller() }}</p>
 {%- endmacro %}

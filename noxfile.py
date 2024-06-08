@@ -282,7 +282,7 @@ def dummy_setup(session: nox.Session):
                             "categories/foo.json": {
                                 "name": "Dummy Category",
                                 "icon": "minecraft:amethyst_shard",
-                                "description": "Foo bar baz qux quux corge grault garply waldo fred plugh xyzzy thud",
+                                "description": "Foo bar baz qux$(br)$(li)quux$(br)$(li2)corge$(br)$(li3)grault$(br)$(li4)garply$(li)waldo$(br)fred plugh xyzzy thud",
                                 "sortnum": 0,
                             },
                             "entries/bar.json": {

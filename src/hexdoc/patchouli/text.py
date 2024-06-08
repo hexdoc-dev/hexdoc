@@ -252,26 +252,28 @@ class ParagraphStyle(Style, frozen=True):
     subtype: ParagraphStyleSubtype
 
     @classmethod
-    def try_parse(cls, style_str: str) -> Self | None:
-        match style_str:
-            case "br2":
-                return cls.paragraph()
-            case "li":
-                return cls.list_item()
-            case _:
-                pass
+    def try_parse(cls, style_str: str) -> ParagraphStyle | None:
+        if style_str == "br2":
+            return cls.paragraph()
+
+        # https://github.com/VazkiiMods/Patchouli/blob/4522fbb3e4/Xplat/src/main/java/vazkii/patchouli/client/book/text/BookTextParser.java#L346-L355
+        if re.fullmatch(r"li\d?", style_str):
+            level_str = style_str.removeprefix("li")
+            level = int(level_str) if level_str.isnumeric() else 1
+            return ListItemStyle(level=level)
 
     @classmethod
-    def paragraph(cls) -> Self:
-        return cls(subtype=ParagraphStyleSubtype.paragraph)
-
-    @classmethod
-    def list_item(cls) -> Self:
-        return cls(subtype=ParagraphStyleSubtype.list_item)
+    def paragraph(cls):
+        return ParagraphStyle(subtype=ParagraphStyleSubtype.paragraph)
 
     @property
     def macro(self) -> str:
         return f"paragraph_{self.subtype.name}"
+
+
+class ListItemStyle(ParagraphStyle, frozen=True):
+    subtype: Literal[ParagraphStyleSubtype.list_item] = ParagraphStyleSubtype.list_item
+    level: int
 
 
 class FunctionStyle(Style, frozen=True):
