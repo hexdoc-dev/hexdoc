@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from enum import Enum, auto
 from fnmatch import fnmatch
@@ -19,6 +20,9 @@ from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import PydanticURL, TryGetEnum, classproperty
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
+
+logger = logging.getLogger(__name__)
+
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",
@@ -80,20 +84,14 @@ class BookLink(HexdocModel):
         # anchor
         if "#" in raw_value:
             id_str, anchor = raw_value.split("#", 1)
-
-            # id should be case-insensitive, so lowercase it and update raw_value
-            # TODO: this is pretty gross
-            id_str = id_str.lower()
-            raw_value = f"{id_str}#{anchor}"
         else:
-            id_str, anchor = raw_value.lower(), None
-            raw_value = id_str
+            id_str, anchor = raw_value, None
 
-        # id of category or entry being linked to
+        # case-insensitive id of the category or entry being linked to
+        # namespace defaults to the namespace of the book, not minecraft
+        id_str = id_str.lower()
         if ":" in id_str:
             id = ResourceLocation.from_str(id_str)
-            # eg. link to patterns/spells/links instead of hexal:patterns/spells/links
-            raw_value = raw_value.removeprefix(f"{id.namespace}:")
         else:
             id = book_id.with_path(id_str)
 
@@ -102,6 +100,13 @@ class BookLink(HexdocModel):
     @property
     def as_tuple(self) -> tuple[ResourceLocation, str | None]:
         return (self.id, self.anchor)
+
+    @property
+    def book_links_key(self) -> str:
+        key = str(self.id)
+        if self.anchor is not None:
+            key += f"#{self.anchor}"
+        return key
 
     @property
     def fragment(self) -> str:
@@ -313,9 +318,10 @@ class LinkStyle(Style, frozen=True):
         match self.value:
             case str(href):
                 return href
-            case BookLink(raw_value=key) as book_link:
+            case BookLink(book_links_key=key) as book_link:
                 book_links: BookLinks = context["book_links"]
                 if key not in book_links:
+                    logger.debug(f"{key=}\n{book_link=}\n{book_links=}")
                     raise ValueError(f"broken link: {book_link}")
                 return str(book_links[key])
 

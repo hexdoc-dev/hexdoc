@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### Fixed
 
 * Add missing handler for nested list styles (`$(li2)`, `$(li3)`, etc).
+* Fix book links to other extension books on 1.19 and below (also fixes [#75](https://github.com/hexdoc-dev/hexdoc/issues/75))
 
 ## `1!0.1.0a17`
 

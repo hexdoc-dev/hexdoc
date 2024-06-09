@@ -76,11 +76,18 @@ class Category(IDModel, Sortable):
         return sorted_dict(categories)
 
     @property
-    def raw_link(self):
-        return self.id.path
+    def book_link_key(self):
+        """Key to look up this category in `BookContext.book_links`."""
+        return str(self.id)
 
     @property
     def fragment(self):
+        """URL fragment for this category in `BookContext.book_links`."""
+        return self.id.path
+
+    @property
+    def redirect_path(self):
+        """Path to this category when generating redirect pages."""
         return self.id.path
 
     @property

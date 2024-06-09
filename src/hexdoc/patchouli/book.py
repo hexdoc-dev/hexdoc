@@ -93,7 +93,7 @@ class Book(HexdocModel):
             self._categories[id] = category
 
             link_base = book_ctx.get_link_base(category.resource_dir)
-            book_ctx.book_links[category.raw_link] = link_base.with_fragment(
+            book_ctx.book_links[category.book_link_key] = link_base.with_fragment(
                 category.fragment
             )
 
@@ -122,15 +122,15 @@ class Book(HexdocModel):
                 internal_entries[entry.category_id][entry.id] = entry
 
             link_base = book_ctx.get_link_base(resource_dir)
-            book_ctx.book_links[entry.raw_link] = link_base.with_fragment(
+            book_ctx.book_links[entry.book_link_key] = link_base.with_fragment(
                 entry.fragment
             )
 
             for page in entry.pages:
-                page_raw_link = page.raw_link(entry.raw_link)
+                page_key = page.book_link_key(entry.book_link_key)
                 page_fragment = page.fragment(entry.fragment)
-                if page_raw_link is not None and page_fragment is not None:
-                    book_ctx.book_links[page_raw_link] = link_base.with_fragment(
+                if page_key is not None and page_fragment is not None:
+                    book_ctx.book_links[page_key] = link_base.with_fragment(
                         page_fragment
                     )
 

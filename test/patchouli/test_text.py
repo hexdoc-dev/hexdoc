@@ -280,7 +280,7 @@ def test_case_insensitive_entry_id():
         link_overrides={},
     )
 
-    href = style.href({"book_links": {"items/staff": URL("link")}})
+    href = style.href({"book_links": {"namespace:items/staff": URL("link")}})
 
     assert href == "link"
 
@@ -292,7 +292,7 @@ def test_case_sensitive_page_anchor_match():
         link_overrides={},
     )
 
-    href = style.href({"book_links": {"items/staff#anchor": URL("link")}})
+    href = style.href({"book_links": {"namespace:items/staff#anchor": URL("link")}})
 
     assert href == "link"
 
@@ -305,4 +305,4 @@ def test_case_sensitive_page_anchor_broken():
     )
 
     with pytest.raises(ValueError):
-        style.href({"book_links": {"items/staff#anchor": URL("link")}})
+        style.href({"book_links": {"namespace:items/staff#anchor": URL("link")}})

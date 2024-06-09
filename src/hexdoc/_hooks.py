@@ -97,7 +97,7 @@ class HexdocModPlugin(ModPlugin):
         templates: DefaultRenderedTemplates = {}
 
         for category in book.categories.values():
-            templates[redirect_path(category.raw_link)] = (
+            templates[redirect_path(category.redirect_path)] = (
                 "redirects/category.html.jinja",
                 {
                     "category": category,
@@ -106,7 +106,7 @@ class HexdocModPlugin(ModPlugin):
             )
 
             for entry in category.entries.values():
-                templates[redirect_path(entry.raw_link)] = (
+                templates[redirect_path(entry.redirect_path)] = (
                     "redirects/entry.html.jinja",
                     {
                         "category": category,
@@ -116,7 +116,7 @@ class HexdocModPlugin(ModPlugin):
                 )
 
                 for page in entry.pages:
-                    page_path = page.raw_link_path(entry.raw_link)
+                    page_path = page.redirect_path(entry.redirect_path)
                     if page_path is not None:
                         templates[redirect_path(page_path)] = (
                             "redirects/page.html.jinja",
