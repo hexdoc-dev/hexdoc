@@ -1,6 +1,7 @@
+{% import "macros/formatting.html.jinja" as fmt with context -%}
+
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
-    <!-- toggle and name -->
     <div class="navbar-header">
       <button
         type="button"
@@ -17,9 +18,19 @@
       <a class="navbar-brand" href="{{ relative_site_url }}">{{ _("hexdoc."~props.modid~".title") }}</a>
     </div>
 
-    <!-- content -->
     <div class="collapse navbar-collapse" id="navbar-collapse">
+      {% set navbar = navbar|default({}) %}
+      {% if navbar.left|default(false) %}
+        <ul class="nav navbar-nav navbar-left">
+          {% for item in navbar.left %}
+            {{ fmt.navbar_link(item) }}
+          {% endfor %}
+        </ul>
+      {% endif %}
       <ul class="nav navbar-nav navbar-right">
+        {% for item in navbar.center|default([]) %}
+          {{ fmt.navbar_link(item) }}
+        {% endfor %}
         <li class="dropdown">
           <a
             href=""
@@ -42,6 +53,9 @@
           >{{ lang_name }} <span class="caret"></span></a>
           <ul class="dropdown-menu dropdown-menu-left" id="lang-dropdown"></ul>
         </li>
+        {% for item in navbar.right|default([]) %}
+          {{ fmt.navbar_link(item) }}
+        {% endfor %}
       </ul>
     </div>
   </div>

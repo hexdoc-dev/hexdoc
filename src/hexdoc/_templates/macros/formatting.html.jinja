@@ -62,3 +62,20 @@
     <span class="collapse-recipe-hide">{{ _(base_key~".hide") }}</span>
   </summary>
 {%- endmacro %}
+
+{% defaultmacro navbar_link(data) -%}
+  {% set external = data.external|default(true) %}
+  {% set icon = data.icon|default("box-arrow-up-right" if external else false) %}
+  <li>
+    <a
+      href="{{ data.href }}"
+      {% if external %}
+        target="_blank"
+      {% endif %}
+      class="navbar-link"
+      role="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >{{ data.text|safe }}{% if icon %} <i class="bi bi-{{ icon }} external-link-icon"></i>{% endif %}</a>
+  </li>
+{%- enddefaultmacro %}
