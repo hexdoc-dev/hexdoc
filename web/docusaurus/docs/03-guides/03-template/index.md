@@ -31,4 +31,4 @@ right = [
 |`text`|string/html|Text to be displayed in the navbar. May contain HTML.|✅|
 |`href`|string|Link URL to open.|✅|
 |`external`|boolean|If `true` (the default), this link will open in a new tab.||
-|`icon`|string|[Bootstrap icon id](https://icons.getbootstrap.com) to display. If `external` is `true`, defaults to <ExternalLinkIcon />.||
+|`icon`|string|[Bootstrap icon id](https://icons.getbootstrap.com) to display. If `external` is `true`, defaults to `box-arrow-up-right` (<ExternalLinkIcon />).||
