@@ -58,7 +58,6 @@
   <body>
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
-    <!-- toggle and name -->
     <div class="navbar-header">
       <button
         type="button"
@@ -74,7 +73,6 @@
       </button>
       <a class="navbar-brand" href="../../../..">Mod Book</a>
     </div>
-    <!-- content -->
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
