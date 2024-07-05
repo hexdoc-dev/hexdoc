@@ -46,7 +46,7 @@ def test_ordered_set_validation_error():
     ],
 )
 def test_url_validate(raw_url: str, want_url: URL):
-    ta = TypeAdapter(PydanticURL)
+    ta = TypeAdapter[PydanticURL](PydanticURL)
 
     assert ta.validate_python(raw_url) == URL(want_url)
 
@@ -59,6 +59,6 @@ def test_url_validate(raw_url: str, want_url: URL):
     ],
 )
 def test_url_serialize(url: URL, want_raw_url: str):
-    ta = TypeAdapter(PydanticURL)
+    ta = TypeAdapter[PydanticURL](PydanticURL)
 
     assert ta.dump_python(url) == want_raw_url
