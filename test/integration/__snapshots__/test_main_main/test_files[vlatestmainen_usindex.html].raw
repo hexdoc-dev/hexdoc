@@ -75,6 +75,16 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
+            <li>
+    <a
+      href="https://github.com/GITHUB_REPOSITORY/tree/GITHUB_SHA"
+        target="_blank"
+      class="navbar-link"
+      role="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >GitHub <i class="bi bi-box-arrow-up-right external-link-icon"></i></a>
+  </li>
         <li class="dropdown">
           <a
             href=""

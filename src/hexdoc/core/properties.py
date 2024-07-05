@@ -60,8 +60,16 @@ class EnvironmentVariableProps(HexdocSettings):
 
         return (
             URL("https://raw.githubusercontent.com")
-            / self.repo_owner
-            / self.repo_name
+            / self.github_repository
+            / self.github_sha
+        )
+
+    @property
+    def source_url(self) -> URL:
+        return (
+            URL("https://github.com")
+            / self.github_repository
+            / "tree"
             / self.github_sha
         )
 

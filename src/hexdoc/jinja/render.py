@@ -29,6 +29,7 @@ from .extensions import DefaultMacroExtension, IncludeRawExtension
 from .filters import (
     hexdoc_item,
     hexdoc_localize,
+    hexdoc_smart_var,
     hexdoc_texture,
     hexdoc_wrap,
 )
@@ -108,6 +109,7 @@ def create_jinja_env_with_loader(loader: BaseLoader):
         "hexdoc_localize": hexdoc_localize,
         "hexdoc_texture": hexdoc_texture,
         "hexdoc_item": hexdoc_item,
+        "hexdoc_smart_var": hexdoc_smart_var,
     }
 
     return env
@@ -194,6 +196,7 @@ def render_book(
         "site_url": str(props.env.github_pages_url),
         "relative_site_url": relative_site_url,
         "page_url": str(page_url),
+        "source_url": str(props.env.source_url),
         "version": version,
         "lang": lang,
         "lang_name": lang_name,
@@ -205,6 +208,11 @@ def render_book(
         "safari_pinned_tab_color": "#332233",
         "minecraft_version": minecraft_version or "???",
         "full_version": plugin.full_version,
+        "navbar": {  # default navbar links (ignored if set in props)
+            "center": [
+                {"text": "GitHub", "href": {"variable": "source_url"}},
+            ],
+        },
         "_": lambda key: hexdoc_localize(  # i18n helper
             key,
             do_format=False,

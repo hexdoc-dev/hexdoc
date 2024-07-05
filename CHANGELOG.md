@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [UNRELEASED]
+
+### Added
+
+* New Jinja template filter: `hexdoc_smart_var`
+  * Can be used to allow runtime variable lookups based on values in `props.template.args`. This is currently used by the [custom navbar links](https://hexdoc.hexxy.media/docs/guides/template/#navbar) feature.
+
+### Changed
+
+* A GitHub link is now added to the navbar by default (fixes [#26](https://github.com/hexdoc-dev/hexdoc/issues/26)). See the [docs](https://hexdoc.hexxy.media/docs/guides/template/#navbar) for more info.
+
 ## `1!0.1.0a19`
 
 ### Added

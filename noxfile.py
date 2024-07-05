@@ -518,6 +518,7 @@ def dummy_setup(session: nox.Session):
                     ]
                     right = [
                         { text="Right", href="https://google.ca", icon="box-arrow-up-left" },
+                        { text="GitHub", href.variable="source_url" },
                     ]
                     """
                 ),

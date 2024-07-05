@@ -64,11 +64,11 @@
 {%- endmacro %}
 
 {% defaultmacro navbar_link(data) -%}
-  {% set external = data.external|default(true) %}
-  {% set icon = data.icon|default("box-arrow-up-right" if external else false) %}
+  {% set external = data.external|default(true)|hexdoc_smart_var %}
+  {% set icon = data.icon|default("box-arrow-up-right" if external else false)|hexdoc_smart_var %}
   <li>
     <a
-      href="{{ data.href }}"
+      href="{{ data.href|hexdoc_smart_var }}"
       {% if external %}
         target="_blank"
       {% endif %}
@@ -76,6 +76,6 @@
       role="button"
       aria-haspopup="true"
       aria-expanded="false"
-    >{{ data.text|safe }}{% if icon %} <i class="bi bi-{{ icon }} external-link-icon"></i>{% endif %}</a>
+    >{{ data.text|hexdoc_smart_var|safe }}{% if icon %} <i class="bi bi-{{ icon }} external-link-icon"></i>{% endif %}</a>
   </li>
 {%- enddefaultmacro %}

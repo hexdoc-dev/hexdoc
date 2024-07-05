@@ -103,3 +103,23 @@ def hexdoc_item(
         id,
         context=cast(dict[str, Any], context),  # lie
     )
+
+
+@pass_context
+@make_jinja_exceptions_suck_a_bit_less
+def hexdoc_smart_var(context: Context, value: Any):
+    """Smart template argument filter.
+
+    If `value` is of the form `{"!Variable": str(ref)}`, returns the value of the
+    template variable called `ref`.
+
+    Otherwise, returns `value` unchanged.
+    """
+
+    match value:
+        case {**items} if len(items) != 1:
+            return value
+        case {"variable": str(ref)}:
+            return context.resolve(ref)
+        case _:
+            return value
