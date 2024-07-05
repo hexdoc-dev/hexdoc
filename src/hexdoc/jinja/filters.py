@@ -110,7 +110,7 @@ def hexdoc_item(
 def hexdoc_smart_var(context: Context, value: Any):
     """Smart template argument filter.
 
-    If `value` is of the form `{"!Variable": str(ref)}`, returns the value of the
+    If `value` is of the form `{"variable": str(ref)}`, returns the value of the
     template variable called `ref`.
 
     Otherwise, returns `value` unchanged.
