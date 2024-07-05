@@ -503,8 +503,8 @@ def render_model(
             site_url=URL(),
             site_dir=output_dir,
         )
-        url = image_loader.render_model(ResourceLocation.from_str(model_id))
-        print(f"Rendered model {model_id} to {url}.")
+        result = image_loader.render_model(ResourceLocation.from_str(model_id))
+        print(f"Rendered model {model_id} to {result.url}.")
 
 
 @app.command()
