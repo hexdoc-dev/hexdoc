@@ -71,14 +71,17 @@ Placeholders must reference keys containing string values; the following example
 
 ### Parent references
 
-The key `^` may be used to reference the table containing the current table (ie. the parent table). It can be used multiple times to reference grandparents, great-grandparents, and so on. Parent references may optionally be separated by `.` characters.
+The key `^` may be used to reference the table containing the current table (ie. the parent table). It can be used multiple times to reference grandparents, great-grandparents, and so on. Parent references may optionally be separated and/or followed by `.` characters.
 
 <Tabs groupId="parser" values={parserTabValues}>
   <TabItem value="input">
     ```toml
+    [foo]
+    key1 = "{^baz.var}"
+
     [foo.bar]
-    key1 = "{^^baz.var}"
-    key2 = "{^.^.baz.var}"
+    key2 = "{^^baz.var}"
+    key3 = "{^.^.baz.var}"
 
     [baz]
     var = "value"
@@ -86,9 +89,12 @@ The key `^` may be used to reference the table containing the current table (ie.
   </TabItem>
   <TabItem value="output">
     ```toml
-    [foo.bar]
+    [foo]
     key1 = "value"
+
+    [foo.bar]
     key2 = "value"
+    key3 = "value"
 
     [baz]
     var = "value"
@@ -104,11 +110,12 @@ The key `$` may be used at the start of a placeholder key to reference the root 
   <TabItem value="input">
     ```toml
     [foo]
-    key1 = "{$var}"
+    key1 = "{$baz.var}"
 
     [foo.bar]
-    key2 = "$.var"
+    key2 = "$.baz.var"
 
+    [baz]
     var = "value"
     ```
   </TabItem>
@@ -120,6 +127,7 @@ The key `$` may be used at the start of a placeholder key to reference the root 
     [foo.bar]
     key2 = "value"
 
+    [baz]
     var = "value"
     ```
   </TabItem>
