@@ -181,7 +181,7 @@ For this reason, it is usually more readable to use root references within array
 
 To make your `hexdoc.toml` file easier to maintain, you can add custom fields starting with the prefix `_`. All fields starting with `_` will be silently ignored by hexdoc (instead of raising a validation error for unrecognized fields).
 
-For example, custom fields and placeholders are used by the [hexdoc project templates](./03-template) to define common paths that are used in multiple places:
+For example, custom fields and placeholders are used by the [hexdoc project templates](./template) to define common paths that are used in multiple places:
 
 <Tabs groupId="parser" values={parserTabValues}>
   <TabItem value="input">
