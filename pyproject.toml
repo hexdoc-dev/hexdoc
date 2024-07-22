@@ -74,6 +74,7 @@ test = [
     "pyright==1.1.361",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
+    "pytest-describe~=2.2",
     "syrupy~=4.6",
     "copier_template_tester",
     "pyyaml-include<2", # https://github.com/copier-org/copier/issues/1568
