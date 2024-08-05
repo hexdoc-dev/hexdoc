@@ -15,6 +15,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 * A GitHub link is now added to the navbar by default (fixes [#26](https://github.com/hexdoc-dev/hexdoc/issues/26)). See the [docs](https://hexdoc.hexxy.media/docs/guides/template/#navbar) for more info.
 
+### Fixed
+
+* Fix the root-level redirect not being generated in cases where there are no versioned books and no book exists for the default branch.
+
 ## `1!0.1.0a19`
 
 ### Added
