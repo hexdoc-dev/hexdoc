@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import math
 import re
 from typing import Annotated, Literal
@@ -8,6 +9,8 @@ from pydantic import AfterValidator, Field
 
 from hexdoc.model import IGNORE_EXTRA_CONFIG, HexdocModel
 from hexdoc.utils.types import Vec3, Vec4, clamped
+
+logger = logging.getLogger(__name__)
 
 
 class Element(HexdocModel):
@@ -91,7 +94,7 @@ class ElementFace(HexdocModel):
     UV is optional, and if not supplied it automatically generates based on the
     element's position.
     """
-    texture: TextureVariable
+    texture: ElementFaceTextureVariable
     """Specifies the texture in form of the texture variable prepended with a #."""
     cullface: FaceName | None = None
     """Specifies whether a face does not need to be rendered when there is a block
@@ -178,8 +181,30 @@ class ElementFaceUV(HexdocModel):
 
 
 def _validate_texture_variable(value: str):
-    assert re.fullmatch(r"#\w+", value)
+    if not re.fullmatch(r"#\w+", value):
+        raise ValueError(
+            f"Malformed texture variable, expected `#` followed by at least 1 word character (^#\\w+$): {value}"
+        )
     return value
 
 
 TextureVariable = Annotated[str, AfterValidator(_validate_texture_variable)]
+
+
+def _validate_element_face_texture_variable(value: str):
+    # the minecraft:block/heavy_core model in 1.21.0 doesn't use # for its texture variables ???
+    # https://bugs.mojang.com/browse/MC-270059
+    # TODO: this is not a very useful error message since it doesn't say what model it's from
+    if re.fullmatch(r"\w+", value):
+        logger.warning(
+            f"Malformed texture variable, expected to start with `#`: {value}"
+        )
+        value = "#" + value
+    return value
+
+
+ElementFaceTextureVariable = Annotated[
+    str,
+    AfterValidator(_validate_element_face_texture_variable),
+    AfterValidator(_validate_texture_variable),
+]
