@@ -8,7 +8,18 @@ For a complete example, see [examples/model_rendering](https://github.com/hexdoc
 
 1. In a [virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments), install the following Python packages:
    * `hexdoc>=1!0.1.0a15`
-   * `hexdoc-minecraft~={GAME_VERSION}.0` (eg. `hexdoc-minecraft~=1.19.2.0`)
+   * `hexdoc-minecraft~={GAME_VERSION}.0.dev` (eg. `hexdoc-minecraft~=1.19.2.0.dev`)
+
+:::tip
+
+For example, the following command should successfully install the right packages for rendering models with Minecraft 1.20.1:
+
+```
+pip install hexdoc hexdoc-minecraft~=1.20.1.0.dev
+```
+
+:::
+
 2. Create a [`hexdoc.toml` config file](../../configuration):
 
     ```toml title="hexdoc.toml"
