@@ -12,7 +12,7 @@ from hexdoc.core import (
 from hexdoc.core.compat import AtLeast_1_20, Before_1_20
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
-from hexdoc.utils import ContextSource, cast_context, sorted_dict
+from hexdoc.utils import ContextSource, cast_context
 
 from .book_context import BookContext
 from .category import Category
@@ -141,9 +141,11 @@ class Book(HexdocModel):
 
         for category_id, new_entries in internal_entries.items():
             category = self._categories[category_id]
-            category.entries = sorted_dict(category.entries | new_entries)
+            category.entries |= new_entries
             if is_spoiler := spoilered_categories.get(category.id):
                 category.is_spoiler = is_spoiler
+
+        self._categories = Category.apply_relations(self._categories)
 
     @model_validator(mode="before")
     @classmethod

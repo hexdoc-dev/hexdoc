@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Self
 
 from pydantic import Field
@@ -22,7 +24,12 @@ class Category(IDModel, Sortable):
     """
 
     entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(default_factory=dict)
+    children: SkipJsonSchema[dict[ResourceLocation, Category]] = Field(
+        default_factory=dict
+    )
     is_spoiler: SkipJsonSchema[bool] = False
+    has_entries_in_tree: SkipJsonSchema[bool] = False
+    """True if this category or any of its sub-categories has at least one entry."""
 
     # required
     name: LocalizedStr
@@ -47,14 +54,27 @@ class Category(IDModel, Sortable):
 
         # load
         categories = dict[ResourceLocation, Self]()
-        G = TypedDiGraph[ResourceLocation]()
 
         for resource_dir, id, data in loader.load_book_assets(
             book_id,
             "categories",
             use_resource_pack,
         ):
-            category = categories[id] = cls.load(resource_dir, id, data, context)
+            categories[id] = cls.load(resource_dir, id, data, context)
+
+        return categories
+
+    @classmethod
+    def apply_relations(
+        cls,
+        categories: dict[ResourceLocation, Self],
+    ) -> dict[ResourceLocation, Self]:
+        """Set fields that require all categories and entries to be loaded first."""
+
+        G = TypedDiGraph[ResourceLocation]()
+        for category in categories.values():
+            category.entries = sorted_dict(category.entries)
+            category.has_entries_in_tree = bool(category.entries)
             if category.parent_id:
                 G.add_edge(category.parent_id, category.id)
 
@@ -66,13 +86,30 @@ class Category(IDModel, Sortable):
                 + "\n  ".join(f"{u} -> {v}" for u, v in cycle)
             )
 
+        topological_sort = list(G.topological_sort())
+
         # late-init _parent_cmp_key
-        for parent_id in G.topological_sort():
+        for parent_id in topological_sort:
             parent = categories[parent_id]
             for _, child_id in G.iter_out_edges(parent_id):
-                categories[child_id]._parent_cmp_key = parent._cmp_key
+                child = categories[child_id]
+                child._parent_cmp_key = parent._cmp_key
+                parent.children[child_id] = child
 
-        # return sorted by sortnum, which requires parent to be initialized
+        # set fields that depend on all/any of its children
+        for child_id in reversed(topological_sort):
+            child = categories[child_id]
+            if child.parent_id:
+                parent = categories[child.parent_id]
+                parent.is_spoiler = parent.is_spoiler and child.is_spoiler
+                parent.has_entries_in_tree = (
+                    parent.has_entries_in_tree or child.has_entries_in_tree
+                )
+
+        # sort by sortnum, which requires parent to be initialized
+        for category in categories.values():
+            category.children = sorted_dict(category.children)
+
         return sorted_dict(categories)
 
     @property
