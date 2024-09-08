@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 ### Fixed
 
 * Fix the root-level redirect not being generated in cases where there are no versioned books and no book exists for the default branch.
+* Fix crash on startup by adding a dependency exclusion for Pydantic v2.9.0 (see [pydantic/pydantic#10345](https://github.com/pydantic/pydantic/issues/10345)).
 
 ## `1!0.1.0a19`
 
