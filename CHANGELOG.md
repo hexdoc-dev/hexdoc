@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a20`
+
+### Added
+
+* New Jinja template filter: `hexdoc_smart_var`
+  * Can be used to allow runtime variable lookups based on values in `props.template.args`. This is currently used by the [custom navbar links](https://hexdoc.hexxy.media/docs/guides/template/#navbar) feature.
+
+### Changed
+
+* A GitHub link is now added to the navbar by default (fixes [#26](https://github.com/hexdoc-dev/hexdoc/issues/26)). See the [docs](https://hexdoc.hexxy.media/docs/guides/template/#navbar) for more info.
+
+### Fixed
+
+* Fix the root-level redirect not being generated in cases where there are no versioned books and no book exists for the default branch.
+* Fix crash on startup by adding a dependency exclusion for Pydantic v2.9.0 (see [pydantic/pydantic#10345](https://github.com/pydantic/pydantic/issues/10345)).
+
+## `1!0.1.0a19`
+
+### Added
+
+* Allow adding custom links to the web book navbar ([docs](https://hexdoc.hexxy.media/docs/guides/template)).
+
+## `1!0.1.0a18`
+
+### Fixed
+
+* Add missing handler for nested list styles (`$(li2)`, `$(li3)`, etc).
+* Fix book links to other extension books on 1.19 and below (also fixes [#75](https://github.com/hexdoc-dev/hexdoc/issues/75))
+
 ## `1!0.1.0a17`
 
 ### Fixed

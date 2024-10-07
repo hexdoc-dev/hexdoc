@@ -62,3 +62,20 @@
     <span class="collapse-recipe-hide">{{ _(base_key~".hide") }}</span>
   </summary>
 {%- endmacro %}
+
+{% defaultmacro navbar_link(data) -%}
+  {% set external = data.external|default(true)|hexdoc_smart_var %}
+  {% set icon = data.icon|default("box-arrow-up-right" if external else false)|hexdoc_smart_var %}
+  <li>
+    <a
+      href="{{ data.href|hexdoc_smart_var }}"
+      {% if external %}
+        target="_blank"
+      {% endif %}
+      class="navbar-link"
+      role="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >{{ data.text|hexdoc_smart_var|safe }}{% if icon %} <i class="bi bi-{{ icon }} external-link-icon"></i>{% endif %}</a>
+  </li>
+{%- enddefaultmacro %}

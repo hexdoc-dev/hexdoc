@@ -31,6 +31,7 @@ TOMLDict = dict[str, "TOMLValue"]
 
 
 def fill_placeholders(data: TOMLDict):
+    """Replaces hexdoc-style string placeholders in-place in a parsed TOML file."""
     _fill_placeholders(data, [data], set())
 
 

@@ -56,5 +56,5 @@
 {%- endmacro %}
 
 {% macro paragraph_list_item(style) -%}
-  * {{ caller() }}\n
+{{ "  " * style.level }}* {{ caller() }}\n
 {%- endmacro %}

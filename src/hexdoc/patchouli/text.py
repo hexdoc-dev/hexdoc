@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import re
 from enum import Enum, auto
 from fnmatch import fnmatch
@@ -18,6 +19,9 @@ from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import PydanticURL, TryGetEnum, classproperty
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
+
+logger = logging.getLogger(__name__)
+
 
 DEFAULT_MACROS = {
     "$(obf)": "$(k)",
@@ -79,20 +83,14 @@ class BookLink(HexdocModel):
         # anchor
         if "#" in raw_value:
             id_str, anchor = raw_value.split("#", 1)
-
-            # id should be case-insensitive, so lowercase it and update raw_value
-            # TODO: this is pretty gross
-            id_str = id_str.lower()
-            raw_value = f"{id_str}#{anchor}"
         else:
-            id_str, anchor = raw_value.lower(), None
-            raw_value = id_str
+            id_str, anchor = raw_value, None
 
-        # id of category or entry being linked to
+        # case-insensitive id of the category or entry being linked to
+        # namespace defaults to the namespace of the book, not minecraft
+        id_str = id_str.lower()
         if ":" in id_str:
             id = ResourceLocation.from_str(id_str)
-            # eg. link to patterns/spells/links instead of hexal:patterns/spells/links
-            raw_value = raw_value.removeprefix(f"{id.namespace}:")
         else:
             id = book_id.with_path(id_str)
 
@@ -101,6 +99,13 @@ class BookLink(HexdocModel):
     @property
     def as_tuple(self) -> tuple[ResourceLocation, str | None]:
         return (self.id, self.anchor)
+
+    @property
+    def book_links_key(self) -> str:
+        key = str(self.id)
+        if self.anchor is not None:
+            key += f"#{self.anchor}"
+        return key
 
     @property
     def fragment(self) -> str:
@@ -251,26 +256,28 @@ class ParagraphStyle(Style, frozen=True):
     subtype: ParagraphStyleSubtype
 
     @classmethod
-    def try_parse(cls, style_str: str) -> Self | None:
-        match style_str:
-            case "br2":
-                return cls.paragraph()
-            case "li":
-                return cls.list_item()
-            case _:
-                pass
+    def try_parse(cls, style_str: str) -> ParagraphStyle | None:
+        if style_str == "br2":
+            return cls.paragraph()
+
+        # https://github.com/VazkiiMods/Patchouli/blob/4522fbb3e4/Xplat/src/main/java/vazkii/patchouli/client/book/text/BookTextParser.java#L346-L355
+        if re.fullmatch(r"li\d?", style_str):
+            level_str = style_str.removeprefix("li")
+            level = int(level_str) if level_str.isnumeric() else 1
+            return ListItemStyle(level=level)
 
     @classmethod
-    def paragraph(cls) -> Self:
-        return cls(subtype=ParagraphStyleSubtype.paragraph)
-
-    @classmethod
-    def list_item(cls) -> Self:
-        return cls(subtype=ParagraphStyleSubtype.list_item)
+    def paragraph(cls):
+        return ParagraphStyle(subtype=ParagraphStyleSubtype.paragraph)
 
     @property
     def macro(self) -> str:
         return f"paragraph_{self.subtype.name}"
+
+
+class ListItemStyle(ParagraphStyle, frozen=True):
+    subtype: Literal[ParagraphStyleSubtype.list_item] = ParagraphStyleSubtype.list_item
+    level: int
 
 
 class FunctionStyle(Style, frozen=True):
@@ -310,9 +317,10 @@ class LinkStyle(Style, frozen=True):
         match self.value:
             case str(href):
                 return href
-            case BookLink(raw_value=key) as book_link:
+            case BookLink(book_links_key=key) as book_link:
                 book_links: BookLinks = context["book_links"]
                 if key not in book_links:
+                    logger.debug(f"{key=}\n{book_link=}\n{book_links=}")
                     raise ValueError(f"broken link: {book_link}")
                 return str(book_links[key])
 

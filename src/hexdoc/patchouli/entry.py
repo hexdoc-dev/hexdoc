@@ -49,11 +49,18 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
                 yield page.anchor
 
     @property
-    def raw_link(self):
-        return self.id.path
+    def book_link_key(self):
+        """Key to look up this entry in `BookContext.book_links`."""
+        return str(self.id)
 
     @property
     def fragment(self):
+        """URL fragment for this entry in `BookContext.book_links`."""
+        return self.id.path
+
+    @property
+    def redirect_path(self):
+        """Path to this entry when generating redirect pages."""
         return self.id.path
 
     @property

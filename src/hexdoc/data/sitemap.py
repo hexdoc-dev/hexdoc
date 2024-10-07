@@ -1,4 +1,5 @@
 import shutil
+import textwrap
 from collections import defaultdict
 from pathlib import Path
 
@@ -98,7 +99,13 @@ def delete_updated_books(*, src: Path, dst: Path, release: bool):
         if dst_dir.exists():
             if release:
                 raise ValueError(
-                    f"Tried to overwrite book directory in release mode: {dst_dir}"
+                    textwrap.dedent(
+                        f"""
+                        Release mode is enabled, refusing to overwrite existing directory: {dst_dir}
+                            Note: this combination of mod and book version has already been released.
+                            Try incrementing the book version number (usually in __version__.py).
+                        """
+                    ).strip()
                 )
             shutil.rmtree(dst_dir)
 

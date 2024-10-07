@@ -1,5 +1,5 @@
 import functools
-from typing import Callable, ParamSpec, TypeVar
+from typing import Any, Callable, ParamSpec, TypeVar
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
@@ -97,3 +97,23 @@ def hexdoc_texture_image(context: Context, id: str | ResourceLocation):
 @make_jinja_exceptions_suck_a_bit_less
 def hexdoc_item_image(context: Context, id: str | ResourceLocation | ItemStack):
     return validate_image(ItemImage, id, context)
+
+
+@pass_context
+@make_jinja_exceptions_suck_a_bit_less
+def hexdoc_smart_var(context: Context, value: Any):
+    """Smart template argument filter.
+
+    If `value` is of the form `{"variable": str(ref)}`, returns the value of the
+    template variable called `ref`.
+
+    Otherwise, returns `value` unchanged.
+    """
+
+    match value:
+        case {**items} if len(items) != 1:
+            return value
+        case {"variable": str(ref)}:
+            return context.resolve(ref)
+        case _:
+            return value

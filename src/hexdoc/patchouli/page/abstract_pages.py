@@ -59,17 +59,23 @@ class Page(TypeTaggedTemplate, AdvancementSpoilered, type=None):
     def template(cls) -> str:
         return cls.template_id.template_path("pages")
 
-    def raw_link(self, entry_raw_link: str):
+    def book_link_key(self, entry_key: str):
+        """Key to look up this page in `BookContext.book_links`, or `None` if this page
+        has no anchor."""
         if self.anchor is not None:
-            return f"{entry_raw_link}#{self.anchor}"
-
-    def raw_link_path(self, entry_raw_link: str):
-        if self.anchor is not None:
-            return f"{entry_raw_link}/{self.anchor}"
+            return f"{entry_key}#{self.anchor}"
 
     def fragment(self, entry_fragment: str):
+        """URL fragment for this page in `BookContext.book_links`, or `None` if this
+        page has no anchor."""
         if self.anchor is not None:
             return f"{entry_fragment}@{self.anchor}"
+
+    def redirect_path(self, entry_path: str):
+        """Path to this page when generating redirect pages, or `None` if this page has
+        no anchor."""
+        if self.anchor is not None:
+            return f"{entry_path}/{self.anchor}"
 
     def _get_advancement(self):
         # implements AdvancementSpoilered

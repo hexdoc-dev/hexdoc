@@ -390,8 +390,17 @@ def merge(
 
     if root_redirect is None:
         # TODO: use plugin to build this path
+        # TODO: refactor
         if item := sitemap.get(f"latest/{props.default_branch}"):
             root_redirect = item.default_marker.redirect_contents
+        elif sitemap:
+            key = sorted(sitemap.keys())[0]
+            root_redirect = sitemap[key].default_marker.redirect_contents
+            logger.warning(
+                f"No book exists for the default branch `{props.default_branch}`, generating root redirect to `{key}` (check the value of `default_branch` in hexdoc.toml)"
+            )
+        else:
+            logger.error("No books found, skipping root redirect")
 
     if root_redirect is not None:
         redirects[Path()] = root_redirect

@@ -282,7 +282,7 @@ def dummy_setup(session: nox.Session):
                             "categories/foo.json": {
                                 "name": "Dummy Category",
                                 "icon": "minecraft:amethyst_shard",
-                                "description": "Foo bar baz qux quux corge grault garply waldo fred plugh xyzzy thud",
+                                "description": "Foo bar baz qux$(br)$(li)quux$(br)$(li2)corge$(br)$(li3)grault$(br)$(li4)garply$(li)waldo$(br)fred plugh xyzzy thud",
                                 "sortnum": 0,
                             },
                             "entries/bar.json": {
@@ -510,6 +510,19 @@ def dummy_setup(session: nox.Session):
                     mod_name = "Dummy"
                     author = "author"
                     show_landing_text = true
+
+                    [template.args.navbar]
+                    left = [
+                        { text="<strong>Left</strong>", href="https://google.ca" },
+                    ]
+                    center = [
+                        { text="Center 1", href="https://google.ca", external=false },
+                        { text="Center 2", href="https://google.ca", external=false, icon="box-arrow-down-right" },
+                    ]
+                    right = [
+                        { text="Right", href="https://google.ca", icon="box-arrow-up-left" },
+                        { text="GitHub", href.variable="source_url" },
+                    ]
                     """
                 ),
                 "nodemon.json": {
