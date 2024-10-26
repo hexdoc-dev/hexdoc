@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a21`
+
+### Fixed
+
+* Fix broken environment variable loading by adding a dependency exclusion for Pydantic Settings v2.6.0 (see [pydantic/pydantic-settings#445](https://github.com/pydantic/pydantic-settings/issues/445)).
+
 ## `1!0.1.0a20`
 
 ### Added
