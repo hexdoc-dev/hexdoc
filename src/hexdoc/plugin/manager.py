@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 from .book_plugin import BookPlugin
 from .mod_plugin import DefaultRenderedTemplates, ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
-from .types import HookReturns
+from .types import HookReturn, HookReturns
 
 _T = TypeVar("_T")
 
@@ -117,19 +117,19 @@ class PluginManager(ValidationContext):
 
     def _init_book_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_book_plugin)
-        for plugin in flatten(caller.try_call()):
+        for plugin in flatten_hook_returns(caller.try_call()):
             self.book_plugins[plugin.modid] = plugin
 
     def _init_mod_plugins(self):
         caller = self._hook_caller(PluginSpec.hexdoc_mod_plugin)
-        for plugin in flatten(
+        for plugin in flatten_hook_returns(
             caller.try_call(
                 branch=self.branch,
                 props=self.props,
             )
         ):
             self.mod_plugins[plugin.modid] = plugin
-            self.item_image_types += flatten([plugin.item_image_types()])
+            self.item_image_types += flatten_hook_return(plugin.item_image_types())
 
     def register(self, plugin: Any, name: str | None = None):
         self.inner.register(plugin, name)
@@ -207,7 +207,7 @@ class PluginManager(ValidationContext):
     def update_context(self, context: dict[str, Any]) -> Iterator[ValidationContext]:
         caller = self._hook_caller(PluginSpec.hexdoc_update_context)
         if returns := caller.try_call(context=context):
-            yield from flatten(returns)
+            yield from flatten_hook_returns(returns)
 
     def update_jinja_env(self, env: SandboxedEnvironment, modids: Sequence[str]):
         for modid in modids:
@@ -222,7 +222,7 @@ class PluginManager(ValidationContext):
 
     def load_resources(self, modid: str) -> Iterator[ModuleType]:
         plugin = self.mod_plugin(modid)
-        for package in flatten([plugin.resource_dirs()]):
+        for package in flatten_hook_return(plugin.resource_dirs()):
             yield import_package(package)
 
     def load_tagged_unions(self) -> Iterator[ModuleType]:
@@ -253,7 +253,7 @@ class PluginManager(ValidationContext):
                         package_name=import_package(package).__name__,
                         package_path=package_path,
                     )
-                    for package, package_path in flatten([result])
+                    for package, package_path in flatten_hook_return(result)
                 ]
             )
 
@@ -289,7 +289,7 @@ class PluginManager(ValidationContext):
         **kwargs: _P.kwargs,
     ) -> Iterator[ModuleType]:
         packages = self._hook_caller(__spec)(*args, **kwargs)
-        for package in flatten(packages):
+        for package in flatten_hook_returns(packages):
             yield import_package(package)
 
     @overload
@@ -305,12 +305,16 @@ class PluginManager(ValidationContext):
         return TypedHookCaller(None, caller)
 
 
-def flatten(values: list[list[_T] | _T] | None) -> Iterator[_T]:
+def flatten_hook_returns(values: HookReturns[_T] | None) -> Iterator[_T]:
     for value in values or []:
-        if isinstance(value, list):
-            yield from value
-        else:
-            yield value
+        yield from flatten_hook_return(value)
+
+
+def flatten_hook_return(values: HookReturn[_T] | None) -> Iterator[_T]:
+    if isinstance(values, list):
+        yield from values
+    else:
+        yield values  # type: ignore
 
 
 def import_package(package: Package) -> ModuleType:

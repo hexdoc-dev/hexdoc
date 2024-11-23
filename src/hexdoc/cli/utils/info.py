@@ -12,7 +12,7 @@ from hexdoc.core import (
     Properties,
 )
 from hexdoc.plugin import ModPlugin, PluginManager
-from hexdoc.plugin.manager import flatten, import_package
+from hexdoc.plugin.manager import flatten_hook_return, import_package
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def _plugins(pm: PluginManager):
 
 
 def _jinja_template_roots(mod_plugin: ModPlugin):
-    for package, folder in flatten([mod_plugin.jinja_template_root() or []]):
+    for package, folder in flatten_hook_return(mod_plugin.jinja_template_root()):
         module_path = _get_package_path(package)
         folder_path = module_path / folder
         yield _relative_path(folder_path)
