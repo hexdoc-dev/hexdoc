@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import math
 import re
+from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import AfterValidator, Field
@@ -73,7 +74,13 @@ class ElementRotation(HexdocModel):
                 return (0, 0, angle)
 
 
-FaceName = Literal["down", "up", "north", "south", "west", "east"]
+class FaceName(StrEnum):
+    down = "down"
+    up = "up"
+    north = "north"
+    south = "south"
+    west = "west"
+    east = "east"
 
 
 class ElementFace(HexdocModel):
@@ -148,17 +155,17 @@ class ElementFaceUV(HexdocModel):
 
         uvs: Vec4
         match direction:
-            case "down":
+            case FaceName.down:
                 uvs = (x1, 16 - z2, x2, 16 - z1)
-            case "up":
+            case FaceName.up:
                 uvs = (x1, z1, x2, z2)
-            case "north":
+            case FaceName.north:
                 uvs = (16 - x2, 16 - y2, 16 - x1, 16 - y1)
-            case "south":
+            case FaceName.south:
                 uvs = (x1, 16 - y2, x2, 16 - y1)
-            case "west":
+            case FaceName.west:
                 uvs = (z1, 16 - y2, z2, 16 - y1)
-            case "east":
+            case FaceName.east:
                 uvs = (16 - z2, 16 - y2, 16 - z1, 16 - y1)
 
         return cls(uvs=uvs)

@@ -1,7 +1,17 @@
 import functools
 from abc import ABC, abstractmethod
 from enum import Enum, unique
-from typing import Annotated, Any, Callable, Mapping, ParamSpec, Protocol, get_args
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    Mapping,
+    ParamSpec,
+    Protocol,
+    TypeGuard,
+    get_args,
+    overload,
+)
 
 from ordered_set import OrderedSet, OrderedSetInitializer
 from pydantic import (
@@ -20,6 +30,8 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 
 _T_float = TypeVar("_T_float", default=float)
+
+_T_dict = TypeVar("_T_dict", bound=dict[Any, Any])
 
 
 Vec2 = tuple[_T_float, _T_float]
@@ -175,7 +187,7 @@ def typed_partial(f: Callable[_P, _R]) -> Callable[_P, Callable[_P, _R]]:
     def builder_builder(*partial_args: _P.args, **partial_kwargs: _P.kwargs):
         @functools.wraps(f)
         def builder(*args: _P.args, **kwargs: _P.kwargs):
-            return f(*partial_args, *args, **partial_kwargs, **kwargs)
+            return f(*partial_args, *args, **partial_kwargs, **kwargs)  # type: ignore
 
         return builder
 
@@ -188,3 +200,16 @@ def cast_nullable(value: _T) -> _T | None:
     At runtime, just returns the value as-is.
     """
     return value
+
+
+@overload
+def isdict(value: _T_dict) -> TypeGuard[_T_dict]: ...
+
+
+@overload
+def isdict(value: Any) -> TypeGuard[dict[Any, Any]]: ...
+
+
+def isdict(value: Any) -> TypeGuard[dict[Any, Any]]:
+    """As `isinstance(value, dict)`, but narrows to `dict[Any, Any]` instead of unknown."""
+    return isinstance(value, dict)

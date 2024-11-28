@@ -43,7 +43,7 @@ def orbit_camera(pitch: float, yaw: float):
     ), eye
 
 
-def direction_camera(pos: FaceName, up: FaceName = "up"):
+def direction_camera(pos: FaceName, up: FaceName = FaceName.up):
     """eg. north -> camera is placed to the north of the model, looking south"""
     eye = get_direction_vec(pos, 64)
     return Matrix44.look_at(

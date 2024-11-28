@@ -62,7 +62,7 @@ dependencies = [
     "minecraft-render~=2.0.0a6",
 
     # Favicons deps, because it's vendored
-    "pillow~=9.5.0",
+    "pillow~=11.0.0",
     "rich~=13.3.4",
     "svglib~=1.5.1",
 ]
@@ -72,7 +72,7 @@ pdoc = [
     "pdoc~=14.1",
 ]
 test = [
-    "pyright==1.1.361",
+    "pyright==1.1.389",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
     "pytest-describe~=2.2",
@@ -203,7 +203,6 @@ exclude = [
 
 typeCheckingMode = "basic"
 
-enableExperimentalFeatures = true
 strictDictionaryInference = true
 strictListInference = true
 strictSetInference = true

@@ -5,6 +5,7 @@ import math
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
+from typing import Iterator
 
 import numpy as np
 from PIL import Image
@@ -105,7 +106,7 @@ class ModelTexture:
 
     @cached_property
     @listify
-    def frames(self):
+    def frames(self) -> Iterator[Image.Image]:
         """Returns a list of animation frames, where each frame lasts for one tick.
 
         If `animation` is None, just returns `[image]`.

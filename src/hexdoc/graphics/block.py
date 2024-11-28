@@ -62,7 +62,7 @@ class BlockRenderer(WindowConfig):
             dtype="f4",
         ) * Matrix44.from_scale((1, -1, 1), "f4")
 
-        self.camera, self.eye = direction_camera(pos="south")
+        self.camera, self.eye = direction_camera(pos=FaceName.south)
 
         self.lights = [
             ((0, -1, 0), LIGHT_TOP),
@@ -100,9 +100,9 @@ class BlockRenderer(WindowConfig):
         pos = 8
         neg = 0
         for from_, to, color, direction in [
-            ((0, neg, neg), (0, pos, pos), (1, 0, 0, 0.75), "east"),
-            ((neg, 0, neg), (pos, 0, pos), (0, 1, 0, 0.75), "up"),
-            ((neg, neg, 0), (pos, pos, 0), (0, 0, 1, 0.75), "south"),
+            ((0, neg, neg), (0, pos, pos), (1, 0, 0, 0.75), FaceName.east),
+            ((neg, 0, neg), (pos, 0, pos), (0, 1, 0, 0.75), FaceName.up),
+            ((neg, neg, 0), (pos, pos, 0), (0, 0, 1, 0.75), FaceName.south),
         ]:
             vao = VAO()
             verts = get_face_verts(from_, to, direction)
@@ -153,7 +153,9 @@ class BlockRenderer(WindowConfig):
             frame_height = texture.frame_height
             layers = len(texture.frames)
 
-            min_alpha, _ = cast(tuple[int, int], image.getextrema()[3])
+            extrema = image.getextrema()
+            assert len(extrema) >= 4, f"Expected 4 bands but got {len(extrema)}"
+            min_alpha, _ = extrema[3]
             if min_alpha < 255:
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
@@ -256,7 +258,7 @@ class BlockRenderer(WindowConfig):
             mode="RGBA",
             size=self.wnd.fbo.size,
             data=self.wnd.fbo.read(components=4),
-        ).transpose(Image.FLIP_TOP_BOTTOM)
+        ).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         return image
 

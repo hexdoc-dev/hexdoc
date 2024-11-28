@@ -11,6 +11,7 @@ from typing import (
     Iterable,
     LiteralString,
     Self,
+    TypeVar,
     Unpack,
 )
 
@@ -40,6 +41,8 @@ from hexdoc.utils import (
 
 from .base import HexdocModel
 
+_T_UnionModel = TypeVar("_T_UnionModel", bound="UnionModel")
+
 TagValue = str | NoValueType
 
 _RESOLVED = "__resolved"
@@ -55,15 +58,15 @@ class UnionModel(HexdocModel):
         value: Any,
         context: dict[str, Any] | None,
         *,
-        model_types: Iterable[type[Self]],
+        model_types: Iterable[type[_T_UnionModel]],
         allow_ambiguous: bool,
         error_name: LiteralString = "HexdocUnionMatchError",
         error_text: Iterable[LiteralString] = [],
         error_data: dict[str, Any] = {},
-    ) -> Self:
+    ) -> _T_UnionModel:
         # try all the types
         exceptions: list[InitErrorDetails] = []
-        matches: dict[type[Self], Self] = {}
+        matches: dict[type[_T_UnionModel], _T_UnionModel] = {}
 
         for model_type in model_types:
             try:
@@ -271,14 +274,14 @@ class InternallyTaggedUnion(UnionModel):
             raise
 
     @model_validator(mode="before")
-    def _pop_temporary_keys(cls, value: dict[Any, Any] | Any):
+    def _pop_temporary_keys(cls, value: Any) -> Any:
         if isinstance(value, dict) and _RESOLVED in value:
             # copy because this validator may be called multiple times
             # eg. two types with the same key
             value = value.copy()
             value.pop(_RESOLVED)
             assert value.pop(cls._tag_key, NoValue) == cls._tag_value
-        return value
+        return value  # pyright: ignore[reportUnknownVariableType]
 
     @classmethod
     @override

@@ -6,7 +6,7 @@ import logging
 import re
 from enum import Enum, auto
 from fnmatch import fnmatch
-from typing import Literal, Self, final
+from typing import Literal, Self, TypedDict, final
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
@@ -285,6 +285,10 @@ class FunctionStyle(Style, frozen=True):
     value: str
 
 
+class BookLinksDict(TypedDict):
+    book_links: BookLinks
+
+
 class LinkStyle(Style, frozen=True):
     type: Literal[SpecialStyleType.link] = SpecialStyleType.link
     value: str | BookLink
@@ -313,7 +317,7 @@ class LinkStyle(Style, frozen=True):
         return cls(value=value, external=external)
 
     @pass_context
-    def href(self, context: Context | dict[{"book_links": BookLinks}]):  # noqa
+    def href(self, context: Context | BookLinksDict):
         match self.value:
             case str(href):
                 return href

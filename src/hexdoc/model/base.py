@@ -120,7 +120,13 @@ class HexdocModel(BaseModel):
             else:
                 annotations = []
 
-            if any(isinstance(a, SkipValidation) for a in annotations):
+            if any(
+                isinstance(
+                    a,
+                    SkipValidation,  # pyright: ignore[reportArgumentType]
+                )
+                for a in annotations
+            ):
                 return
 
             origin_stack.append(origin)

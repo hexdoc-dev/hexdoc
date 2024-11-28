@@ -23,6 +23,6 @@ class ClassPropertyDescriptor(Generic[_T_cv, _R_co]):
 def classproperty(
     func: Callable[[type[_T_cv]], _R_co],
 ) -> ClassPropertyDescriptor[_T_cv, _R_co]:
-    if isinstance(func, classmethod):
+    if isinstance(func, classmethod):  # pyright: ignore[reportUnnecessaryIsInstance]
         return ClassPropertyDescriptor(func)
     return ClassPropertyDescriptor(classmethod(func))

@@ -110,7 +110,7 @@ class Properties(BaseProperties):
     lang: defaultdict[
         str,
         Annotated[LangProps, Field(default_factory=lambda: LangProps())],
-    ] = Field(default_factory=lambda: defaultdict(LangProps))
+    ] = Field(default_factory=lambda: defaultdict[str, LangProps](LangProps))
     """Per-language configuration. The key should be the language code, eg. `en_us`."""
 
     extra: dict[str, Any] = Field(default_factory=dict)
