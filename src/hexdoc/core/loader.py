@@ -10,7 +10,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
-from pydantic import SkipValidation
+from pydantic import Field, SkipValidation
 from pydantic.dataclasses import dataclass
 
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel
@@ -50,6 +50,7 @@ class ModResourceLoader(ValidationContext):
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
+    _cache: dict[Path, str] = Field(default_factory=dict)
 
     @classmethod
     def clean_and_load_all(
@@ -447,12 +448,17 @@ class ModResourceLoader(ValidationContext):
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> _T:
-        if not path.is_file():
-            raise FileNotFoundError(path)
+        if path in self._cache:
+            data = self._cache[path]
+            logger.debug(f"Fetching {path} from cache")
+        else:
+            if not path.is_file():
+                raise FileNotFoundError(path)
 
-        logger.debug(f"Loading {path}")
+            logger.debug(f"Loading {path}")
 
-        data = path.read_text("utf-8")
+            data = path.read_text("utf-8")
+            self._cache[path] = data
         value = decode(data)
 
         if resource_dir.reexport and export is not False:
