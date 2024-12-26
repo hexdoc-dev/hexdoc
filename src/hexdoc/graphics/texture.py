@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.core.properties import AnimatedTexturesProps
 from hexdoc.utils import listify
+from hexdoc.utils.logging import TRACE
 
 from .model import Animation, AnimationFrame, AnimationMeta
 
@@ -36,7 +37,7 @@ class ModelTexture:
     @classmethod
     def load(cls, loader: ModResourceLoader, texture_id: ResourceLocation | Path):
         if cached := _TEXTURE_CACHE.get(texture_id):
-            logger.debug(f"Cache hit: {texture_id}")
+            logger.log(TRACE, f"Cache hit: {texture_id}")
             return cached
 
         match texture_id:

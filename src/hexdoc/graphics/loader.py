@@ -15,6 +15,7 @@ from hexdoc.core.properties import (
 )
 from hexdoc.core.resource import BaseResourceLocation
 from hexdoc.utils import ValidationContext
+from hexdoc.utils.logging import TRACE
 
 from .model import BlockModel
 from .renderer import ImageType, ModelRenderer
@@ -123,7 +124,7 @@ class ImageLoader(ValidationContext):
 
     def _load_model(self, model_id: ResourceLocation) -> LoadedModel | BlockModel:
         if result := self._model_cache.get(model_id):
-            logger.debug(f"Cache hit: {model_id} = {result}")
+            logger.log(TRACE, f"Cache hit: {model_id} = {result}")
             return result
 
         try:

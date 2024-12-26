@@ -16,6 +16,7 @@ from moderngl_window.opengl.vao import VAO
 from PIL import Image
 from pyrr import Matrix44
 
+from hexdoc.utils.logging import TRACE
 from hexdoc.utils.types import Vec3, Vec4
 
 from .camera import direction_camera
@@ -157,14 +158,16 @@ class BlockRenderer(WindowConfig):
             assert len(extrema) >= 4, f"Expected 4 bands but got {len(extrema)}"
             min_alpha, _ = extrema[3]
             if min_alpha < 255:
-                logger.debug(f"Transparent texture: {name} ({min_alpha=})")
+                logger.log(TRACE, f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
 
             data = bytes()
             for frame in texture.frames:
                 data += frame.tobytes()
 
-            logger.debug(f"Texture array: {image.width=}, {frame_height=}, {layers=}")
+            logger.log(
+                TRACE, f"Texture array: {image.width=}, {frame_height=}, {layers=}"
+            )
             texture_array = self.ctx.texture_array(
                 size=(image.width, frame_height, layers),
                 components=4,
