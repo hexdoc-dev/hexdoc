@@ -561,7 +561,13 @@ def render_models(
             bar = tqdm(iterator)
             for model_id in bar:
                 bar.set_postfix_str(str(model_id))
-                image_loader.render_model(model_id)
+                try:
+                    image_loader.render_model(model_id)
+                except Exception:
+                    logger.warning(f"Failed to render model: {model_id}")
+                    if not props.textures.can_be_missing(model_id):
+                        raise
+                    logger.debug("Error:", exc_info=True)
 
     logger.info("Done.")
 
