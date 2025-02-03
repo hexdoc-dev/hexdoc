@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Self
 
-from pydantic import ValidationInfo, field_validator, model_validator
+from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from hexdoc.core import Entity, ItemStack, ResourceLocation
 from hexdoc.minecraft import I18n, LocalizedStr
@@ -167,6 +167,11 @@ class StonecuttingPage(
     pass
 
 
-class SpotlightPage(PageWithTitle, type="patchouli:spotlight"):
+class SpotlightPage(PageWithText, type="patchouli:spotlight"):
+    title_field: LocalizedStr | None = Field(default=None, alias="title")
     item: ItemWithTexture
     link_recipe: bool = False
+
+    @property
+    def title(self) -> LocalizedStr | None:
+        return self.title_field or self.item.name

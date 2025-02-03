@@ -2,7 +2,6 @@
 {% import "macros/textures.html.jinja" as texture_macros with context -%}
 
 {% block inner_body %}
-  <h4 class="spotlight-title page-header">{{ page.item.name }}</h4>
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
@@ -16,3 +15,5 @@
 {% block redirect_image -%}
   {{ texture_macros.item_url(page.item) }}
 {%- endblock redirect_image %}
+
+{% block title_attrs %} class="spotlight-title page-header"{% endblock title_attrs %}
