@@ -69,7 +69,9 @@ class ItemWithTexture(InlineItemModel, BaseWithTexture[ItemStack, ItemTexture]):
         """Implements InlineModel."""
 
         i18n = I18n.of(context)
-        if item.path.startswith("texture"):
+        if (name := item.get_name()) is not None:
+            pass
+        elif item.path.startswith("texture"):
             name = i18n.localize_texture(item.id)
         else:
             name = i18n.localize_item(item)

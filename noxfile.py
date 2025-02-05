@@ -316,6 +316,11 @@ def dummy_setup(session: nox.Session):
                                         "item": "minecraft:stone",
                                         "anchor": "spotlight",
                                     },
+                                    {
+                                        "type": "patchouli:spotlight",
+                                        "text": "spotlight with named item!",
+                                        "item": """minecraft:stone{display:{Name:'{"text":"dirt?","color":"white"}'}}""",
+                                    },
                                 ],
                             },
                             "entries/patchistuff.json": {

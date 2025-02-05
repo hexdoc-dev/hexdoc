@@ -4,15 +4,22 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Annotated, Any, ClassVar, Literal, Self, TypeVar
 
+from nbtlib import (
+    Compound,
+    Path as NBTPath,
+    parse_nbt,  # pyright: ignore[reportUnknownVariableType]
+)
 from pydantic import (
     BeforeValidator,
     ConfigDict,
+    JsonValue,
     TypeAdapter,
     field_validator,
     model_serializer,
@@ -86,6 +93,7 @@ def resloc_json_schema_extra(
     config=DEFAULT_CONFIG
     | ConfigDict(
         json_schema_extra=resloc_json_schema_extra,
+        arbitrary_types_allowed=True,
     ),
 )
 class BaseResourceLocation:
@@ -255,8 +263,39 @@ class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
     count: int | None = None
     nbt: str | None = None
 
+    _data: Compound | None = None
+
     def __init_subclass__(cls, **kwargs: Any):
         super().__init_subclass__(regex=cls._from_str_regex, **kwargs)
+
+    def __post_init__(self):
+        object.__setattr__(self, "_data", _parse_nbt(self.nbt))
+
+    @property
+    def data(self):
+        return self._data
+
+    def get_name(self) -> str | None:
+        if self.data is None:
+            return None
+
+        component_json = self.data.get(NBTPath("display.Name"))  # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+        if not isinstance(component_json, str):
+            return None
+
+        try:
+            component: JsonValue = json.loads(component_json)
+        except ValueError:
+            return None
+
+        if not isinstance(component, dict):
+            return None
+
+        name = component.get("text")
+        if not isinstance(name, str):
+            return None
+
+        return name
 
     @override
     def i18n_key(self, root: str = "item") -> str:
@@ -300,3 +339,18 @@ def _add_hashtag_to_tag(value: Any):
 AssumeTag = Annotated[_T, BeforeValidator(_add_hashtag_to_tag)]
 """Validator that adds `#` to the start of strings, and sets `ResourceLocation.is_tag`
 to `True`."""
+
+
+def _parse_nbt(nbt: str | None) -> Compound | None:
+    if nbt is None:
+        return None
+
+    try:
+        result = parse_nbt(nbt)
+    except ValueError as e:
+        raise ValueError(f"Failed to parse sNBT literal '{nbt}': {e}") from e
+
+    if not isinstance(result, Compound):
+        raise ValueError(f"Expected Compound, got {type(result)}: {result}")
+
+    return result

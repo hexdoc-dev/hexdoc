@@ -23,50 +23,100 @@ def test_resourcelocation(s: str, expected: ResourceLocation, str_prefix: str):
     assert str(actual) == str_prefix + s
 
 
-item_stacks: list[tuple[str, ItemStack, str]] = [
+item_stacks: list[tuple[str, ItemStack, str, str | None]] = [
     (
         "stone",
         ItemStack("minecraft", "stone", None, None),
         "minecraft:",
+        None,
     ),
     (
         "hexcasting:patchouli_book",
         ItemStack("hexcasting", "patchouli_book", None, None),
         "",
+        None,
     ),
     (
         "minecraft:stone#64",
         ItemStack("minecraft", "stone", 64, None),
         "",
+        None,
     ),
     (
-        "minecraft:diamond_pickaxe{display:{Lore:['A really cool pickaxe']}",
+        "minecraft:diamond_pickaxe{display:{Lore:['A really cool pickaxe']}}",
         ItemStack(
             "minecraft",
             "diamond_pickaxe",
             None,
-            "{display:{Lore:['A really cool pickaxe']}",
+            "{display:{Lore:['A really cool pickaxe']}}",
         ),
         "",
+        None,
     ),
     (
-        "minecraft:diamond_pickaxe#64{display:{Lore:['A really cool pickaxe']}",
+        "minecraft:diamond_pickaxe#64{display:{Lore:['A really cool pickaxe']}}",
         ItemStack(
             "minecraft",
             "diamond_pickaxe",
             64,
-            "{display:{Lore:['A really cool pickaxe']}",
+            "{display:{Lore:['A really cool pickaxe']}}",
         ),
         "",
+        None,
+    ),
+    (
+        """minecraft:diamond_pickaxe{display:{Name:'{"text": "foo"}'}}""",
+        ItemStack(
+            "minecraft",
+            "diamond_pickaxe",
+            None,
+            """{display:{Name:'{"text": "foo"}'}}""",
+        ),
+        "",
+        "foo",
+    ),
+    (
+        """minecraft:diamond_pickaxe{display:{Name:'{"text": "foo}'}}""",
+        ItemStack(
+            "minecraft",
+            "diamond_pickaxe",
+            None,
+            """{display:{Name:'{"text": "foo}'}}""",
+        ),
+        "",
+        None,
+    ),
+    (
+        """minecraft:diamond_pickaxe{displayy:{Name:'{"text": "foo"}'}}""",
+        ItemStack(
+            "minecraft",
+            "diamond_pickaxe",
+            None,
+            """{displayy:{Name:'{"text": "foo"}'}}""",
+        ),
+        "",
+        None,
+    ),
+    (
+        """minecraft:diamond_pickaxe{display:{Namee:'{"text": "foo"}'}}""",
+        ItemStack(
+            "minecraft",
+            "diamond_pickaxe",
+            None,
+            """{display:{Namee:'{"text": "foo"}'}}""",
+        ),
+        "",
+        None,
     ),
 ]
 
 
-@pytest.mark.parametrize("s,expected,str_prefix", item_stacks)
-def test_itemstack(s: str, expected: ItemStack, str_prefix: str):
+@pytest.mark.parametrize("s,expected,str_prefix,name", item_stacks)
+def test_itemstack(s: str, expected: ItemStack, str_prefix: str, name: str | None):
     actual = ItemStack.from_str(s)
     assert actual == expected
     assert str(actual) == str_prefix + s
+    assert actual.get_name() == name
 
 
 @pytest.mark.parametrize(
