@@ -28,6 +28,7 @@ from pydantic import (
 from pydantic.config import JsonDict
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
+from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import override
 
 from hexdoc.model import DEFAULT_CONFIG
@@ -263,7 +264,7 @@ class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
     count: int | None = None
     nbt: str | None = None
 
-    _data: Compound | None = None
+    _data: SkipJsonSchema[Compound | None] = None
 
     def __init_subclass__(cls, **kwargs: Any):
         super().__init_subclass__(regex=cls._from_str_regex, **kwargs)
