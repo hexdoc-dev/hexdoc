@@ -43,7 +43,7 @@ class BaseMinecraftModel(HexdocModel, ABC):
     If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
     tag from the previous model.
     """
-    gui_light: Literal["front", "side"] = Field(None, validate_default=False)
+    gui_light: Literal["front", "side"] = Field(None, validate_default=False)  # type: ignore
     """If set to `side` (default), the model is rendered like a block.
 
     If set to `front`, model is shaded like a flat item.

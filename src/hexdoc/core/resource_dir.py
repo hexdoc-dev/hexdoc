@@ -144,7 +144,7 @@ class PathResourceDir(BasePathResourceDir):
     path: RelativePath
     """A path relative to `hexdoc.toml`."""
 
-    archive: bool = Field(default=None, validate_default=False)
+    archive: bool = Field(default=None, validate_default=False)  # type: ignore
     """If true, treat this path as a zip archive (eg. a mod's `.jar` file).
 
     If `path` ends with `.jar` or `.zip`, defaults to `True`.

@@ -98,7 +98,7 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     icon: RelativePath | None = None
     include: PydanticOrderedSet[str]
 
-    render_from: PydanticOrderedSet[str] = Field(None, validate_default=False)
+    render_from: PydanticOrderedSet[str] = Field(None, validate_default=False)  # type: ignore
     """List of modids to include default rendered templates from.
 
     If not provided, defaults to `self.include`.
