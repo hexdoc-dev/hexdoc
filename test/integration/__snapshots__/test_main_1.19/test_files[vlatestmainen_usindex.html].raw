@@ -1237,7 +1237,11 @@
     title="Permalink"
   ><i class="bi bi-link-45deg"></i></a></h3>
   <div id="items/amethyst@dust" class="">
-  <h4 class="spotlight-title page-header">Amethyst Dust</h4>
+<h4 class="spotlight-title page-header">Amethyst Dust<a
+    href="#items/amethyst@dust"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
@@ -1255,7 +1259,11 @@
   </div>
 <br />
   <div id="items/amethyst@shard" class="">
-  <h4 class="spotlight-title page-header">Amethyst Shard</h4>
+<h4 class="spotlight-title page-header">Amethyst Shard<a
+    href="#items/amethyst@shard"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
@@ -1273,7 +1281,11 @@
   </div>
 <br />
   <div id="items/amethyst@charged" class="">
-  <h4 class="spotlight-title page-header">Charged Amethyst</h4>
+<h4 class="spotlight-title page-header">Charged Amethyst<a
+    href="#items/amethyst@charged"
+    class="permalink small"
+    title="Permalink"
+  ><i class="bi bi-link-45deg"></i></a></h4>
   <div class="spotlight">
     <img
       alt="Spotlight inventory slot"
