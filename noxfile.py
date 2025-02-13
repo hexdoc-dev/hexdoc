@@ -299,6 +299,28 @@ def dummy_setup(session: nox.Session):
                                         "type": "dummy:example",
                                         "example_value": "insert funny message here",
                                     },
+                                    {
+                                        "type": "patchouli:spotlight",
+                                        "text": "spotlight!",
+                                        "item": "minecraft:stone",
+                                    },
+                                    {
+                                        "type": "patchouli:spotlight",
+                                        "title": "title!",
+                                        "text": "spotlight with title!",
+                                        "item": "minecraft:stone",
+                                    },
+                                    {
+                                        "type": "patchouli:spotlight",
+                                        "text": "spotlight with anchor!",
+                                        "item": "minecraft:stone",
+                                        "anchor": "spotlight",
+                                    },
+                                    {
+                                        "type": "patchouli:spotlight",
+                                        "text": "spotlight with named item!",
+                                        "item": """minecraft:stone{display:{Name:'{"text":"dirt?","color":"white"}'}}""",
+                                    },
                                 ],
                             },
                             "entries/patchistuff.json": {

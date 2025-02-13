@@ -3,7 +3,7 @@
 import os
 import subprocess
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, assert_type
 
 import pytest
 from hexdoc.cli.app import build, callback
@@ -23,7 +23,14 @@ CHECK_RENDERED_FILENAMES = [
 
 def rename_snapshot(snapshot: SnapshotAssertion, index: str):
     location = snapshot.test_location
-    location.filepath = location.filepath.replace(".py", f"_{index}.py")  # TODO: hack
+
+    # TODO: hack
+    assert_type(location.filepath, str)
+    object.__setattr__(
+        location,
+        "filepath",
+        location.filepath.replace(".py", f"_{index}.py"),
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)

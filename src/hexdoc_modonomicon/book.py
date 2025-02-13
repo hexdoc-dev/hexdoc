@@ -14,7 +14,7 @@ class Modonomicon(HexdocModel):
 
     tooltip: LocalizedStr | None = None
     generate_book_item: bool = True
-    model: ResourceLocation | None = Field("modonomicon:modonomicon_purple")
+    model: ResourceLocation | None = Field("modonomicon:modonomicon_purple")  # type: ignore
     custom_book_item: ResourceLocation | None = None
     creative_tab: str = "misc"
     default_title_color: int = 0
@@ -33,7 +33,7 @@ class Modonomicon(HexdocModel):
     search_button_x_offset: int = 0
     search_button_y_offset: int = 0
     read_all_button_y_offset: int = 0
-    turn_page_sound: ResourceLocation = Field("minecraft:turn_page")
+    turn_page_sound: ResourceLocation = Field("minecraft:turn_page")  # type: ignore
 
     @model_validator(mode="after")
     def _validate_constraints(self):

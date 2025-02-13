@@ -18,6 +18,7 @@ from typing_extensions import TypeVar, override
 from yarl import URL
 
 from hexdoc.core import I18n, ItemStack, LocalizedStr, Properties, ResourceLocation
+from hexdoc.core.i18n import LocalizedItem
 from hexdoc.model import (
     InlineItemModel,
     InlineModel,
@@ -176,7 +177,10 @@ class SingleItemImage(URLImage, ItemImage):
 
     @override
     def _get_name(self, info: ValidationInfo):
-        return I18n.of(info).localize_item(self.id)
+        # TODO: i'm not sure if this is really the right place to put this
+        if (name := self.item.get_name()) is not None:
+            return LocalizedItem.with_value(name)
+        return I18n.of(info).localize_item(self.item)
 
 
 class CyclingImage(HexdocImage, template_id="hexdoc:cycling"):
