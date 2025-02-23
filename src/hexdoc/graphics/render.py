@@ -242,7 +242,9 @@ class BlockRendererConfig(WindowConfig):
             logger.debug(f"Loading texture {name}: {info}")
             image = Image.open(info.image_path).convert("RGBA")
 
-            min_alpha, _ = cast(tuple[int, int], image.getextrema()[3])
+            extrema = image.getextrema()
+            assert len(extrema) >= 4, f"Expected 4 bands but got {len(extrema)}"
+            min_alpha, _ = extrema[3]
             if min_alpha < 255:
                 logger.debug(f"Transparent texture: {name} ({min_alpha=})")
                 transparent_textures.add(name)
@@ -355,7 +357,7 @@ class BlockRendererConfig(WindowConfig):
             mode="RGBA",
             size=self.wnd.fbo.size,
             data=self.wnd.fbo.read(components=4),
-        ).transpose(Image.FLIP_TOP_BOTTOM)
+        ).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
         image.save(output_path, format="png")
