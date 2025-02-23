@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a22`
+
+### Changed
+
+* Update Pillow to 11.0, which should hopefully allow hexdoc to be used with Python 3.12+.
+* ItemStack now uses [nbtlib](https://pypi.org/project/nbtlib/) to parse NBT tags.
+* Spotlight pages now use item names from NBT tags if set.
+
+### Fixed
+
+* Avoid adding a double title to spotlight pages with a title field.
+
 ## `1!0.1.0a21`
 
 ### Fixed
