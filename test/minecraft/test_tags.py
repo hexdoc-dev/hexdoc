@@ -164,52 +164,19 @@ def test_load_tag_file(raw_data: str, want_values: list[TagValue]):
             ],
             """{"values":[{"id":"minecraft:stone","required":false}],"replace":false}""",
         ),
-        # (
-        #     """\
-        #     {
-        #         "values": [
-        #             "minecraft:stone"
-        #         ]
-        #     }
-        #     """,
-        #     [
-        #         ResourceLocation("minecraft", "stone"),
-        #     ],
-        # ),
-        # (
-        #     """\
-        #     {
-        #         "values": [
-        #             {"id": "minecraft:stone", "required": false}
-        #         ]
-        #     }
-        #     """,
-        #     [
-        #         OptionalTagValue(
-        #             id=ResourceLocation("minecraft", "stone"),
-        #             required=False,
-        #         ),
-        #     ],
-        # ),
-        # (
-        #     """\
-        #     {
-        #         "values": [
-        #             "hextweaks:infusion",
-        #             "hextweaks:nuke_chunk_nowill",
-        #             {"id": "hextweaks:you_like_drinking_potions","required": false}
-        #         ]
-        #     }
-        #     """,
-        #     [
-        #         ResourceLocation("hextweaks", "infusion"),
-        #         ResourceLocation("hextweaks", "nuke_chunk_nowill"),
-        #         OptionalTagValue(
-        #             id=ResourceLocation("hextweaks", "you_like_drinking_potions"),
-        #             required=False,
-        #         ),
-        #     ],
-        # ),
+        (
+            [
+                ResourceLocation("hextweaks", "infusion"),
+                ResourceLocation("hextweaks", "nuke_chunk_nowill"),
+                OptionalTagValue(
+                    id=ResourceLocation("hextweaks", "you_like_drinking_potions"),
+                    required=False,
+                ),
+            ],
+            False,
+            None,
+            """{"values":["hextweaks:infusion","hextweaks:nuke_chunk_nowill",{"id":"hextweaks:you_like_drinking_potions","required":false}],"replace":false}""",
+        ),
     ],
 )
 def test_export_tag(
