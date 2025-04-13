@@ -1,0 +1,58 @@
+{
+  hexdoc: {
+    welcome: {
+      "header": "Онлайн версия документации для {}.",
+      "bleeding_edge": "Эта страница собрана из последней версии кода на GitHub. \
+        Здесь могут описываться $(bold)новые/$ вещи, которые могут у вас и не быть, \
+        даже на последней версии с Modrinth/CurseForge!",
+      "spoilers": "$(bold)Размытие записи являются спойлерами/$. \
+        Нажмите на них, чтобы убрать размытие, но будьте осторожны - эти записи могут заспойлерить конечные стадии игры. \
+        В качестве альтернативы, нажмите $(l:?nospoiler)сюда/$, чтобы открыть версию без размытия спойлеров.",
+      "old_version": "$(italic)Прошлое - это другая страна. Там всё иначе./$",
+    },
+
+    toc: {
+      // use the span tag to make everything after it wrap with the toc button
+      // or put it at the very end to make the button wrap by itself
+      // either way, do NOT remove it entirely
+      title: "<span class=\"nobr\">Содержание",
+      toggle_all: "Переключить все",
+    },
+
+    nav: {
+      dropdown: {
+        minecraft: "Minecraft {version}",
+      },
+    },
+
+    linkout: "Ссылка: ",
+
+    recipe: {
+      show: "Нажмите, чтобы показать рецепты",
+      hide: "Нажмите, чтобы скрыть рецепты",
+      smelting: {
+        cooktime: "{} Секунд",
+        exp: "{} XP"
+      }
+    },
+
+    multiblock: {
+      show: "Нажмите, чтобы показать мультиблочную структуру",
+      hide: "Нажмите, чтобы скрыть мультиблочную структуру",
+    },
+
+    when_clicked: "При нажатии исполнит: {}",
+
+    any_block:  "Любой блок",
+
+    redirect: {
+      "category.title": "Категория: {}",
+      "entry.title": "Глава: {}",
+      "page.title": "Страница: {}",
+    },
+
+    footer: "Неофициальный продукт Minecraft. Не одобрен и не связан с компанией Mojang или Microsoft.$(br2)\
+      Контент и материалы Minecraft являются интеллектуальной собственностью их соответствующих владельцев.$(br2)\
+      Сделано с ❤️ используя $(l:https://pypi.org/project/hexdoc/)hexdoc/$."
+  },
+}
