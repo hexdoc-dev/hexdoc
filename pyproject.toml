@@ -37,6 +37,8 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    # https://github.com/hexdoc-dev/hexdoc/issues/88
+    "click<8.2.0",
     "frozendict~=2.4",
     "hatch~=1.9",
     "importlib_resources~=6.0",
