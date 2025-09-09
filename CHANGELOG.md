@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a27`
+
+### Added
+
+* Added a page template for `patchouli:relations` pages, by penguinencounter in [#92](https://github.com/hexdoc-dev/hexdoc/pull/92).
+
+### Fixed
+
+* Changed animated texture type from linear to steps to fix glitched animations on page load, by penguinencounter in [#89](https://github.com/hexdoc-dev/hexdoc/pull/89).
+
 ## `1!0.1.0a26`
 
 ### Fixed
