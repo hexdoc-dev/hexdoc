@@ -1,6 +1,8 @@
 from collections import defaultdict
 from typing import Self
 
+from jinja2 import pass_context
+from jinja2.runtime import Context
 from pydantic import Field, ValidationInfo, field_validator, model_validator
 
 from hexdoc.core import Entity, ItemStack, ResourceLocation
@@ -147,6 +149,13 @@ class QuestPage(PageWithText, type="patchouli:quest"):
 class RelationsPage(PageWithText, type="patchouli:relations"):
     entries: list[ResourceLocation]
     title: LocalizedStr = LocalizedStr.with_value("Related Chapters")
+
+    @pass_context
+    def get_entries(self, context: Context) -> list[ResourceLocation]:
+        for entry in self.entries:
+            if entry not in context["book"].all_entries:
+                raise ValueError(f"Broken entry reference in relations: {entry}")
+        return self.entries
 
 
 class SmeltingPage(PageWithDoubleRecipe[SmeltingRecipe], type="patchouli:smelting"):

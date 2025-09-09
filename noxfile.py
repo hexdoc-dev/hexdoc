@@ -383,6 +383,21 @@ def dummy_setup(session: nox.Session):
                                         "trigger": "story/smelt_iron",
                                         "text": "Wow, what a wonderful quest this is here",
                                     },
+                                    {
+                                        "type": "patchouli:relations",
+                                        "entries": [
+                                            "dummy:otherrecipes",
+                                            "dummy:bar",
+                                        ],
+                                        "text": "have a look at these related entries!!",
+                                    },
+                                    {
+                                        "type": "patchouli:link",
+                                        "url": "https://github.com/hexdoc-dev/hexdoc",
+                                        "link_text": "hexdoc GitHub",
+                                        "text": "Link page",
+                                    },
+                                    {"type": "patchouli:empty"},
                                 ],
                             },
                             "entries/otherrecipes.json": {
