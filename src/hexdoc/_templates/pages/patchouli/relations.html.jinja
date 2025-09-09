@@ -1,0 +1,12 @@
+{% extends "pages/patchouli/text.html.jinja" %}
+
+{% import "macros/formatting.html.jinja" as fmt with context %}
+
+{% block inner_body %}
+<ul>
+  {% for ref in page.get_entries() %}
+    <li>{{ fmt.maybe_spoilered_link(book.all_entries[ref]) }}</li>
+  {% endfor %}
+</ul>
+{{ super() }}
+{% endblock %}
