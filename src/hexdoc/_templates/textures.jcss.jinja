@@ -1,6 +1,6 @@
 {% for animation in animations %}
   .{{ animation.css_class }} {
-    animation: {{ animation.css_class }} {{ animation.time_seconds }}s linear infinite;
+    animation: {{ animation.css_class }} {{ animation.time_seconds }}s steps(1, start) infinite;
     background-size: 100%;
     background-image: url("{{ animation.url }}");
   }
