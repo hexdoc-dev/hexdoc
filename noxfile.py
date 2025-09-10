@@ -271,12 +271,27 @@ def dummy_setup(session: nox.Session):
         "--data=multiloader=false",
     )
 
+    # Example image:
+    # PNG image, 16x16, 1-bit indexed color
+    # Palette: 0 = #202020 1 = #50ff50 (green)
+    # No compression, filter 0 on all scanlines (none)
+    image = (
+        b"\x89PNG\r\n\x1a\n"
+        b"\0\0\0\x0dIHDR\0\0\0\x10\0\0\0\x10\x01\x03\0\0\0\x25\x3d\x6d\x22"
+        b"\0\0\0\x06PLTE\x22\x22\x22\x50\xff\x50\xca\xca\x84\x15"
+        b"\0\0\0\x3bIDAT\x78\x01\x01\x30\0\xcf\xff\0\0\0\0\x7f\xfe\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x7f\xfe\0\0\0\x92\xd5\x06\x13\xec\x45\xbf\x6a"
+        b"\0\0\0\0IEND\xae\x42\x60\x82"
+    )
+
     session.log(f"write_file_tree({DUMMY_PATH}, ...)")
     write_file_tree(
         DUMMY_PATH,
         {
             "doc": {
                 "resources": {
+                    "assets/minecraft/textures/entities": {
+                        "chicken.png": ("wb", image)
+                    },
                     "assets/dummy/patchouli_books/dummybook": {
                         "en_us": {
                             "categories/foo.json": {
@@ -390,6 +405,11 @@ def dummy_setup(session: nox.Session):
                                             "dummy:bar",
                                         ],
                                         "text": "have a look at these related entries!!",
+                                    },
+                                    {
+                                        "type": "patchouli:entity",
+                                        "entity": "minecraft:chicken",
+                                        "text": "ah yes, the chicken. it lays eggs and stuff",
                                     },
                                     {
                                         "type": "patchouli:link",
