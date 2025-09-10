@@ -4,18 +4,20 @@
 {% import "macros/textures.html.jinja" as texture_macros with context %}
 
 {% block body %}
-<h4>
-  {{- page.get_name() -}}
-  {%- if page_anchor_id is defined %}
-    {{- fmt.permalink(page_anchor_id) -}}
-  {% endif -%}
-</h4>
-<p class="image-wrapper">
-  {{ texture_macros.render_texture(
-    name=page.get_name(),
-    texture=page.texture,
-    class_names=["entity-display"]
-  ) }}
-</p>
-{{ fmt.styled(page.text) }}
+  <h4>
+    {{- page.name -}}
+    {%- if page_anchor_id is defined %}
+      {{- fmt.permalink(page_anchor_id) -}}
+    {% endif -%}
+  </h4>
+  {% block image %}
+    <p class="image-wrapper">
+      {{ texture_macros.render_texture(
+        name=page.entity_name,
+        texture=page.texture,
+        class_names=["entity-display"]
+      ) }}
+    </p>
+  {% endblock image %}
+  {{ fmt.styled(page.text) }}
 {% endblock %}

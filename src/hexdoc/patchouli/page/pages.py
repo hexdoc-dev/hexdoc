@@ -53,7 +53,7 @@ class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
 
 
 class EntityPage(PageWithText, type="patchouli:entity"):
-    _default_name: LocalizedStr = PrivateAttr()
+    _entity_name: LocalizedStr = PrivateAttr()
     _texture: PNGTexture = PrivateAttr()
 
     entity: Entity
@@ -61,12 +61,17 @@ class EntityPage(PageWithText, type="patchouli:entity"):
     offset: float = 0
     rotate: bool = True
     default_rotation: float = -45
-    name: LocalizedStr | None = None
+    name_field: LocalizedStr | None = Field(default=None, serialization_alias="name")
 
-    def get_name(self):
-        if self.name is None:
-            return self._default_name
-        return self.name
+    @property
+    def entity_name(self):
+        return self._entity_name
+
+    @property
+    def name(self):
+        if self.name_field is None or not self.name_field.value:
+            return self._entity_name
+        return self.name_field
 
     @property
     def texture(self):
@@ -78,7 +83,7 @@ class EntityPage(PageWithText, type="patchouli:entity"):
         # causes circular references with the PNGTexture
         assert info.context is not None
         i18n = I18n.of(info)
-        self._default_name = i18n.localize_entity(self.entity.id)
+        self._entity_name = i18n.localize_entity(self.entity.id)
         self._texture = PNGTexture.load_id(
             id="textures/entities" / self.entity.id + ".png", context=info.context
         )
