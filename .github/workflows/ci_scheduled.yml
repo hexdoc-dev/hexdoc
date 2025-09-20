@@ -15,3 +15,4 @@ jobs:
     permissions:
       contents: write
       pages: read
+      id-token: write
