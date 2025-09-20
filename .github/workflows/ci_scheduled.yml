@@ -7,7 +7,11 @@ on:
     # run every Saturday at 11 EST / 12 EDT
     # because new Pydantic versions keep breaking things :(
     - cron: 0 16 * * 6
+  workflow_dispatch:
 
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: write
+      pages: read
