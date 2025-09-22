@@ -46,16 +46,26 @@ def flatten_html(html: str):
     return "".join(line.lstrip() for line in html.splitlines())
 
 
-def hexdoc_block(value: FormatTree):
+def hexdoc_block(value: FormatTree, ext: str = "html"):
     loader = PackageLoader("hexdoc", "_templates")
     env = create_jinja_env_with_loader(loader)
     template = env.from_string(
         """\
-        {%- import "macros/formatting.html.jinja" as fmt with context -%}
+        {%- import "macros/formatting.{ext}.jinja" as fmt with context -%}
         {{- fmt.styled(value) -}}
-        """
+        """.replace("{ext}", ext)
     )
     return template.render(value=value)
+
+
+def test_markdown_escape():
+    tree = format_with_mocks(
+        "all ↗ makes the result $(bold)* 2 + 1/$, all → makes it $(bold)* 2/$, and all ↘ for $(bold)/ 10/$."
+    )
+    assert (
+        hexdoc_block(tree, "md")
+        == "all ↗ makes the result **\\* 2 + 1**, all → makes it **\\* 2**, and all ↘ for **/ 10**.\n"
+    )
 
 
 def test_link():
