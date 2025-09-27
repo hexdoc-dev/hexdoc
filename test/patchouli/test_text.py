@@ -60,11 +60,11 @@ def hexdoc_block(value: FormatTree, ext: str = "html"):
 
 def test_markdown_escape():
     tree = format_with_mocks(
-        "all ↗ makes the result $(bold)* 2 + 1/$, all → makes it $(bold)* 2/$, and all ↘ for $(bold)/ 10/$."
+        "all ↗ makes the result $(bold)* 2 + 1/$,$(br)all → makes it $(bold)* 2/$,$(br2)and all ↘ for $(bold)/ 10/$."
     )
     assert (
         hexdoc_block(tree, "md")
-        == "all ↗ makes the result **\\* 2 + 1**, all → makes it **\\* 2**, and all ↘ for **/ 10**.\n"
+        == "all ↗ makes the result **\\* 2 + 1**,\nall → makes it **\\* 2**,\nand all ↘ for **/ 10**.\n"
     )
 
 
