@@ -195,6 +195,14 @@ class ModPlugin(ABC):
             render_dir=render_dir,
         )
 
+    @property
+    def flags(self) -> dict[str, bool]:
+        """Set default values for Patchouli config flags.
+
+        Unlike the table in `hexdoc.toml`, this is available for use in dependents.
+        """
+        return {}
+
 
 class VersionedModPlugin(ModPlugin):
     """Like `ModPlugin`, but the versioned site path uses the plugin and mod version."""

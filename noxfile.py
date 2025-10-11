@@ -299,12 +299,20 @@ def dummy_setup(session: nox.Session):
                                 "icon": "minecraft:amethyst_shard",
                                 "description": "Foo bar baz qux$(br)$(li)quux$(br)$(li2)corge$(br)$(li3)grault$(br)$(li4)garply$(li)waldo$(br)fred plugh xyzzy thud",
                                 "sortnum": 0,
+                                "flag": "foo:bar",
+                            },
+                            "categories/disabled.json": {
+                                "name": "Disabled",
+                                "icon": "minecraft:bedrock",
+                                "description": "Disabled",
+                                "flag": "foo:baz",
                             },
                             "entries/bar.json": {
                                 "name": "Dummy Entry",
                                 "category": "dummy:foo",
                                 "icon": "minecraft:textures/mob_effect/nausea.png",
                                 "sortnum": 0,
+                                "flag": "foo:bar",
                                 "pages": [
                                     {
                                         "type": "patchouli:text",
@@ -471,6 +479,77 @@ def dummy_setup(session: nox.Session):
                                     },
                                 ],
                             },
+                            "entries/flags.json": {
+                                "name": "Flags",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:paper",
+                                "pages": [
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 1",
+                                        "flag": "does not exist",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 2",
+                                        "flag": "foo:bar",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 3",
+                                        "flag": "advancements_disabled_foo",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 4",
+                                        "flag": "mod:aaaaaaaaa",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 5",
+                                        "flag": "mod:minecraft",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 1",
+                                        "flag": "foo:baz",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 2",
+                                        "flag": "mod:foo",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 3",
+                                        "flag": "advancements_disabled_bar",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 4",
+                                        "flag": "debug",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "web only",
+                                        "flag": "mod:hexdoc:web_only",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "ingame only",
+                                        "flag": "!mod:hexdoc:web_only",
+                                    },
+                                ],
+                            },
+                            "entries/disabled.json": {
+                                "name": "Disabled",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:bedrock",
+                                "flag": "foo:baz",
+                                "pages": [
+                                    "disabled",
+                                ],
+                            },
                         },
                     },
                     "data/dummy": {
@@ -552,6 +631,12 @@ def dummy_setup(session: nox.Session):
                         { modid="hexdoc" },
                     ]
                     export_dir = "src/hexdoc_dummy/_export/generated"
+
+                    [flags]
+                    "foo:bar" = true
+                    advancements_disabled_foo = true
+                    "foo:baz" = false
+                    "mod:foo" = false
 
                     [template]
                     icon = "icon.png"

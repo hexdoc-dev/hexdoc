@@ -32,10 +32,14 @@ if TYPE_CHECKING:
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
 
+import logging
+
 from .book_plugin import BookPlugin
 from .mod_plugin import DefaultRenderedTemplates, ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
 from .types import HookReturns
+
+logger = logging.getLogger(__name__)
 
 _T = TypeVar("_T")
 
@@ -290,6 +294,34 @@ class PluginManager(ValidationContext):
         packages = self._hook_caller(__spec)(*args, **kwargs)
         for package in flatten(packages):
             yield import_package(package)
+
+    def load_flags(self) -> dict[str, bool]:
+        # https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/config-gating
+        flags = {
+            "debug": False,
+            "advancements_disabled": False,
+            "testing_mode": False,
+        }
+
+        # first, resolve exported flags by OR
+        for modid, plugin in self.mod_plugins.items():
+            for flag, value in plugin.flags.items():
+                if flag in flags:
+                    resolved = flags[flag] = flags[flag] or value
+                    logger.debug(
+                        f"{modid} exports flag {flag}={value}, resolving to {resolved}"
+                    )
+                else:
+                    flags[flag] = value
+                    logger.debug(f"{modid} exports flag {flag}={value}")
+
+        # then, apply local overrides
+        flags |= self.props.flags
+
+        # any missing flags will default to True
+
+        logger.debug(f"Resolved flags: {flags}")
+        return flags
 
     @overload
     def _hook_caller(self, spec: Callable[_P, None]) -> _NoCallTypedHookCaller[_P]: ...

@@ -1,6 +1,7 @@
+import logging
 from typing import Iterable, Iterator
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
@@ -11,10 +12,12 @@ from hexdoc.utils import Sortable
 
 from .page import CraftingPage, Page, PageWithTitle
 from .text import FormatTree
-from .utils import AdvancementSpoilered
+from .utils import AdvancementSpoilered, Flagged
+
+logger = logging.getLogger(__name__)
 
 
-class Entry(IDModel, Sortable, AdvancementSpoilered):
+class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
     """Entry json file, with pages and localizations.
 
     See: https://vazkiimods.github.io/Patchouli/docs/reference/entry-json
@@ -28,7 +31,6 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
 
     # optional (entry.json)
     advancement: ResourceLocation | None = None
-    flag: str | None = None
     priority: bool = False
     secret: bool = False
     read_by_default: bool = False
@@ -117,6 +119,19 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
     def _get_advancement(self):
         # implements AdvancementSpoilered
         return self.advancement
+
+    @model_validator(mode="after")
+    def _skip_disabled_pages(self):
+        new_pages = list[Page]()
+        for i, page in enumerate(self.pages):
+            if not page.is_flag_enabled:
+                logger.info(
+                    f"Skipping page {i} of entry {self.id} due to disabled flag {page.flag}"
+                )
+                continue
+            new_pages.append(page)
+        self.pages = new_pages
+        return self
 
 
 class _CraftingPageAccumulator(PageWithTitle, template_type="patchouli:crafting"):

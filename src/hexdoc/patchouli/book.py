@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from typing import Any, Literal
 
@@ -18,6 +19,8 @@ from .book_context import BookContext
 from .category import Category
 from .entry import Entry
 from .text import FormattingContext, FormatTree
+
+logger = logging.getLogger(__name__)
 
 
 class Book(HexdocModel):
@@ -120,6 +123,9 @@ class Book(HexdocModel):
             use_resource_pack=self.use_resource_pack,
         ):
             entry = Entry.load(resource_dir, id, data, cast_context(context))
+            if not entry.is_flag_enabled:
+                logger.info(f"Skipping entry {id} due to disabled flag {entry.flag}")
+                continue
 
             spoilered_categories[entry.category_id] = (
                 entry.is_spoiler and spoilered_categories.get(entry.category_id, True)

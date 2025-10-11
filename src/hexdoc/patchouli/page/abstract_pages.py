@@ -10,19 +10,18 @@ from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
 
 from ..text import FormatTree
-from ..utils import AdvancementSpoilered
+from ..utils import AdvancementSpoilered, Flagged
 
 _T_Recipe = TypeVar("_T_Recipe", bound=Recipe)
 
 
-class Page(TypeTaggedTemplate, AdvancementSpoilered, type=None):
+class Page(TypeTaggedTemplate, AdvancementSpoilered, Flagged, type=None):
     """Base class for Patchouli page types.
 
     See: https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/page-types
     """
 
     advancement: ResourceLocation | None = None
-    flag: str | None = None
     anchor: str | None = None
 
     def __init_subclass__(
