@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a31`
+
+### Added
+
+* Added proper support for Patchouli's config flag system. See https://hexdoc.hexxy.media for more details.
+
+### Changed
+
+* A warning is now logged for entries with no pages.
+
+### Fixed
+
+* Fixed a bug that prevented books with empty entries from building.
+
 ## `1!0.1.0a30`
 
 ### Fixed
