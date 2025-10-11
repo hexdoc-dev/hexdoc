@@ -202,7 +202,7 @@ class BaseProperties(StripHiddenModel, ValidationContext):
 
     @override
     @classmethod
-    def model_json_schema(
+    def model_json_schema(  # pyright: ignore[reportIncompatibleMethodOverride]
         cls,
         by_alias: bool = True,
         ref_template: str = DEFAULT_REF_TEMPLATE,
