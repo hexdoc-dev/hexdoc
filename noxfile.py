@@ -301,6 +301,11 @@ def dummy_setup(session: nox.Session):
                                 "sortnum": 0,
                                 "flag": "foo:bar",
                             },
+                            "categories/empty.json": {
+                                "name": "Empty",
+                                "icon": "minecraft:glass_pane",
+                                "description": "Empty category",
+                            },
                             "categories/disabled.json": {
                                 "name": "Disabled",
                                 "icon": "minecraft:bedrock",
@@ -540,6 +545,12 @@ def dummy_setup(session: nox.Session):
                                         "flag": "!mod:hexdoc:web_only",
                                     },
                                 ],
+                            },
+                            "entries/empty.json": {
+                                "name": "Empty entry",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:glass_pane",
+                                "pages": [],
                             },
                             "entries/disabled.json": {
                                 "name": "Disabled",
