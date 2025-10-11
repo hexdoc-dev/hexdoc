@@ -130,6 +130,10 @@ class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
                 )
                 continue
             new_pages.append(page)
+        if not new_pages:
+            logger.warning(
+                f"Entry has no pages{' after applying flags' if self.pages else ''}: {self.id}"
+            )
         self.pages = new_pages
         return self
 
