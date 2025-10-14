@@ -355,8 +355,9 @@ def merge(
             continue
 
         redirects[plugin.site_root / version] = item.default_marker.redirect_contents
-        for lang, marker in item.markers.items():
-            redirects[plugin.site_root / version / lang] = marker.redirect_contents
+        if plugin.site_root / version != plugin.versioned_site_path:  # hacky hacky
+            for lang, marker in item.markers.items():
+                redirects[plugin.site_root / version / lang] = marker.redirect_contents
 
         item_version = Version(version)
         if not root_version or item_version > root_version:
