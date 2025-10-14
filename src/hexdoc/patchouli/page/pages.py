@@ -10,6 +10,7 @@ from pydantic import (
     field_validator,
     model_validator,
 )
+from typing_extensions import override
 
 from hexdoc.core import Entity, ItemStack, ResourceLocation
 from hexdoc.minecraft import I18n, LocalizedStr
@@ -26,7 +27,14 @@ from hexdoc.minecraft.recipe import (
 from hexdoc.model import HexdocModel
 
 from ..text import FormatTree
-from .abstract_pages import Page, PageWithDoubleRecipe, PageWithText, PageWithTitle
+from .abstract_pages import (
+    Page,
+    PageWithDoubleRecipe,
+    PageWithDoubleRecipeAccumulator,
+    PageWithText,
+    PageWithTitle,
+    RecipeAccumulatorPage,
+)
 
 
 class TextPage(Page, type="patchouli:text"):
@@ -44,7 +52,18 @@ class CampfireCookingPage(
     pass
 
 
-class CraftingPage(PageWithDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
+class CraftingPage(
+    PageWithDoubleRecipeAccumulator[CraftingRecipe], type="patchouli:crafting"
+):
+    @classmethod
+    @override
+    def accumulator_type(cls):
+        return CraftingAccumulatorPage
+
+
+class CraftingAccumulatorPage(
+    RecipeAccumulatorPage[CraftingPage, CraftingRecipe], page_type=CraftingPage
+):
     pass
 
 

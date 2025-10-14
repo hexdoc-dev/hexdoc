@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [UNRELEASED]
 
+### Added
+
+* Added base classes `PageWithAccumulator`, `AccumulatorPage`, etc. to allow consecutive pages of the same type to be merged into a single page.
+
+### Changed
+
+* `CraftingPage` now extends `PageWithDoubleRecipeAccumulator` instead of `PageWithDoubleRecipe`.
+
 ### Fixed
 
 * Fixed a validation failure when using [Fabric Resource Conditions](https://github.com/FabricMC/fabric/blob/761f669d0a6fbfe2ae6d71d767651f32a13d37fc/fabric-resource-conditions-api-v1/src/main/java/net/fabricmc/fabric/api/resource/conditions/v1/ResourceConditions.java#L64).

@@ -1,17 +1,16 @@
 import logging
-from typing import Iterable, Iterator
+from typing import Any, Iterable, Iterator
 
 from pydantic import Field, model_validator
 
 from hexdoc.core import ItemStack, ResourceLocation
 from hexdoc.minecraft import LocalizedStr
 from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
-from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
+from hexdoc.patchouli.page.abstract_pages import AccumulatorPage, PageWithAccumulator
 from hexdoc.utils import Sortable
 
-from .page import CraftingPage, Page, PageWithTitle
-from .text import FormatTree
+from .page import Page
 from .utils import AdvancementSpoilered, Flagged
 
 logger = logging.getLogger(__name__)
@@ -73,48 +72,29 @@ class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
                 return page
 
     def preprocess_pages(self) -> Iterator[Page]:
-        """Combines adjacent CraftingPage recipes as much as possible."""
-        accumulator = _CraftingPageAccumulator.blank()
+        """Combines adjacent PageWithAccumulator recipes as much as possible."""
+        acc: AccumulatorPage[Any] | None = None
 
         for page in self.pages:
-            match page:
-                case CraftingPage(
-                    recipes=list(recipes),
-                    text=None,
-                    title=None,
-                    anchor=None,
-                ):
-                    accumulator.recipes += recipes
-                case CraftingPage(
-                    recipes=list(recipes),
-                    title=LocalizedStr() as title,
-                    text=None,
-                    anchor=None,
-                ):
-                    if accumulator.recipes:
-                        yield accumulator
-                    accumulator = _CraftingPageAccumulator.blank()
-                    accumulator.recipes += recipes
-                    accumulator.title = title
-                case CraftingPage(
-                    recipes=list(recipes),
-                    title=None,
-                    text=FormatTree() as text,
-                    anchor=None,
-                ):
-                    accumulator.title = None
-                    accumulator.text = text
-                    accumulator.recipes += recipes
-                    yield accumulator
-                    accumulator = _CraftingPageAccumulator.blank()
-                case _:
-                    if accumulator.recipes:
-                        yield accumulator
-                        accumulator = _CraftingPageAccumulator.blank()
-                    yield page
+            if isinstance(page, PageWithAccumulator):
+                if not (acc and acc.can_append(page)):
+                    if acc and acc.has_content:
+                        yield acc
+                    acc = page.accumulator_type().from_page(page)
 
-        if accumulator.recipes:
-            yield accumulator
+                acc.append(page)
+
+                if not acc.can_append_more:
+                    yield acc
+                    acc = None
+            else:
+                if acc and acc.has_content:
+                    yield acc
+                acc = None
+                yield page
+
+        if acc and acc.has_content:
+            yield acc
 
     def _get_advancement(self):
         # implements AdvancementSpoilered
@@ -136,11 +116,3 @@ class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
             )
         self.pages = new_pages
         return self
-
-
-class _CraftingPageAccumulator(PageWithTitle, template_type="patchouli:crafting"):
-    recipes: list[CraftingRecipe] = Field(default_factory=list)
-
-    @classmethod
-    def blank(cls):
-        return cls.model_construct()
