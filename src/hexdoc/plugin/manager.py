@@ -28,6 +28,7 @@ from jinja2.sandbox import SandboxedEnvironment
 from hexdoc.utils import ContextSource, ValidationContext
 
 if TYPE_CHECKING:
+    from hexdoc.cli.app import LoadedBookInfo
     from hexdoc.core import Properties, ResourceLocation
     from hexdoc.minecraft import I18n
     from hexdoc.patchouli import FormatTree
@@ -212,16 +213,54 @@ class PluginManager(ValidationContext):
         if returns := caller.try_call(context=context):
             yield from flatten(returns)
 
-    def update_jinja_env(self, env: SandboxedEnvironment, modids: Sequence[str]):
+    def update_jinja_env(self, modids: Sequence[str], env: SandboxedEnvironment):
         for modid in modids:
             plugin = self.mod_plugin(modid)
             plugin.update_jinja_env(env)
         return env
 
+    def pre_render_site(
+        self,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).pre_render_site(self.props, books, env, output_dir)
+
+    def post_render_site(
+        self,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).post_render_site(self.props, books, env, output_dir)
+
     def update_template_args(self, template_args: dict[str, Any]):
         caller = self._hook_caller(PluginSpec.hexdoc_update_template_args)
         caller.try_call(template_args=template_args)
         return template_args
+
+    def pre_render_book(
+        self,
+        template_args: dict[str, Any],
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).pre_render_book(template_args, output_dir)
+
+    def post_render_book(
+        self,
+        template_args: dict[str, Any],
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).post_render_book(template_args, output_dir)
 
     def load_resources(self, modid: str) -> Iterator[ModuleType]:
         plugin = self.mod_plugin(modid)

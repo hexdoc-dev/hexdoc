@@ -254,6 +254,10 @@ def build(
         env = create_jinja_env(pm, props.template.include, props_file)
 
         logger.info(f"Rendering book for {len(books)} language(s).")
+
+        site_dir.mkdir(parents=True, exist_ok=True)
+        pm.pre_render_site(books, env, site_dir, props.template.include)
+
         for book_info in books:
             try:
                 templates = get_templates(
@@ -311,6 +315,8 @@ def build(
                 if not props.lang[book_info.language].ignore_errors:
                     raise
                 logger.exception(f"Failed to render book for {book_info.language}")
+
+        pm.post_render_site(books, env, site_dir, props.template.include)
 
     logger.info("Done.")
     return site_dir

@@ -15,6 +15,7 @@ from hexdoc.utils import ContextSource
 from .types import HookReturn
 
 if TYPE_CHECKING:
+    from hexdoc.cli.app import LoadedBookInfo
     from hexdoc.core import ModResourceLoader, Properties
     from hexdoc.minecraft.assets import HexdocAssetLoader
 
@@ -139,6 +140,33 @@ class ModPlugin(ABC):
         This is called after hexdoc is done setting up the Jinja environment but before
         rendering the book.
         """
+
+    def pre_render_site(
+        self,
+        props: Properties,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+    ) -> None:
+        """Called once, after hexdoc is done setting up the Jinja environment but before
+        rendering the book."""
+
+    def post_render_site(
+        self,
+        props: Properties,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+    ) -> None:
+        """Called once, at the end of `hexdoc build`."""
+
+    def pre_render_book(self, template_args: dict[str, Any], output_dir: Path) -> None:
+        """Called once per language, just before rendering the book for that
+        language."""
+
+    def post_render_book(self, template_args: dict[str, Any], output_dir: Path) -> None:
+        """Called once per language, after all book files for that language are
+        rendered."""
 
     # utils
 
