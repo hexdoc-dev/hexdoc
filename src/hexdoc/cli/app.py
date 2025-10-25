@@ -18,6 +18,7 @@ from hexdoc.__version__ import VERSION
 from hexdoc.core import ModResourceLoader, ResourceLocation
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import (
+    SitemapMarker,
     delete_updated_books,
     dump_sitemap,
     load_sitemap,
@@ -356,14 +357,17 @@ def merge(
     root_version: Version | None = None
     root_redirect: str | None = None
 
+    def add_redirect(marker: SitemapMarker, path: Path):
+        if path != Path(marker.path.removeprefix("/")):
+            redirects[path] = marker.redirect_contents
+
     for version, item in sitemap.items():
         if version.startswith("latest"):  # TODO: check type of item instead
             continue
 
-        redirects[plugin.site_root / version] = item.default_marker.redirect_contents
-        if plugin.site_root / version != plugin.versioned_site_path:  # hacky hacky
-            for lang, marker in item.markers.items():
-                redirects[plugin.site_root / version / lang] = marker.redirect_contents
+        add_redirect(item.default_marker, plugin.site_root / version)
+        for lang, marker in item.markers.items():
+            add_redirect(marker, plugin.site_root / version / lang)
 
         item_version = Version(version)
         if not root_version or item_version > root_version:
