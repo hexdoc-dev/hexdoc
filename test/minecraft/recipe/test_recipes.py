@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import TypeAdapter
+
 from hexdoc.core.i18n import I18n
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.properties import LangProps, Properties
@@ -12,7 +14,6 @@ from hexdoc.core.resource_dir import PathResourceDir
 from hexdoc.minecraft.recipe.recipes import CraftingShapelessRecipe, Recipe
 from hexdoc.plugin.manager import PluginManager
 from hexdoc.utils.context import ContextSource
-from pydantic import TypeAdapter
 
 
 @pytest.fixture

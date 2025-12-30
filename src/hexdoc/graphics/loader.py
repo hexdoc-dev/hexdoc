@@ -233,7 +233,7 @@ class ImageLoader(ValidationContext):
         # TODO: implement a smarter way of choosing an override?
         n = len(model.overrides)
         for i, override in enumerate(model.overrides):
-            logger.debug(f"Rendering model override ({i+1}/{n}): {override.model}")
+            logger.debug(f"Rendering model override ({i + 1}/{n}): {override.model}")
             try:
                 return self._render_model_recursive(override.model)
             except Exception as e:

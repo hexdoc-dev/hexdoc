@@ -1,6 +1,7 @@
+from pydantic import Field, model_validator
+
 from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.model import HexdocModel
-from pydantic import Field, model_validator
 
 
 def _gui_texture(name: str):
@@ -40,8 +41,8 @@ class Modonomicon(HexdocModel):
         if self.generate_book_item:
             assert self.model, "model is required if generate_book_item is True"
         else:
-            assert (
-                self.custom_book_item
-            ), "custom_book_item is required if generate_book_item is False"
+            assert self.custom_book_item, (
+                "custom_book_item is required if generate_book_item is False"
+            )
 
         return self

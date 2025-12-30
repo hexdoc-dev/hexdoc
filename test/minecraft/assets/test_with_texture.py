@@ -1,12 +1,13 @@
 from typing import Any
 
 import pytest
+from pydantic import TypeAdapter
+
 from hexdoc.core import I18n, Properties
 from hexdoc.core.properties import LangProps
 from hexdoc.graphics import ItemImage, TagImage
 from hexdoc.plugin import PluginManager
 from hexdoc.utils.context import ContextSource
-from pydantic import TypeAdapter
 
 
 @pytest.fixture

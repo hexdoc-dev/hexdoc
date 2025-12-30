@@ -1,8 +1,9 @@
 from typing import Any
 
 import pytest
-from hexdoc.graphics.model.element import ElementFaceTextureVariable, TextureVariable
 from pydantic import TypeAdapter
+
+from hexdoc.graphics.model.element import ElementFaceTextureVariable, TextureVariable
 
 
 @pytest.mark.parametrize(

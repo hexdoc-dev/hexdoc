@@ -4,6 +4,10 @@ from pathlib import Path
 from typing import Any, Callable
 
 import pytest
+from jinja2.sandbox import SandboxedEnvironment
+from markupsafe import Markup
+from pytest import FixtureRequest, Mark
+
 from hexdoc.jinja.render import create_jinja_env
 from hexdoc.plugin import (
     ModPlugin,
@@ -12,9 +16,6 @@ from hexdoc.plugin import (
     UpdateTemplateArgsImpl,
     hookimpl,
 )
-from jinja2.sandbox import SandboxedEnvironment
-from markupsafe import Markup
-from pytest import FixtureRequest, Mark
 
 RenderTemplate = Callable[[list[str]], str]
 

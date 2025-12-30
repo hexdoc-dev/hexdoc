@@ -14,7 +14,6 @@ from hexdoc.plugin import (
     hookimpl,
 )
 from hexdoc.utils import ContextSource, JSONDict, cast_context
-
 from hexdoc_modonomicon.book import Modonomicon
 
 

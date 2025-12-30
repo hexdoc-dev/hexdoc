@@ -176,7 +176,7 @@ def repl(*, props_file: PropsOption):
         banner=dedent(
             f"""\
             [hexdoc repl] Python {sys.version}
-            Locals: {', '.join(sorted(repl_locals.keys()))}"""
+            Locals: {", ".join(sorted(repl_locals.keys()))}"""
         ),
         readfunc=repl_readfunc(),
         local=repl_locals,

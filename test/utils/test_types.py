@@ -1,8 +1,9 @@
 import pytest
-from hexdoc.model.types import Color
-from hexdoc.utils.types import PydanticOrderedSet, PydanticURL
 from pydantic import TypeAdapter, ValidationError
 from yarl import URL
+
+from hexdoc.model.types import Color
+from hexdoc.utils.types import PydanticOrderedSet, PydanticURL
 
 colors: list[str] = [
     "#0099FF",

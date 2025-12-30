@@ -1,9 +1,10 @@
 from types import SimpleNamespace
 
+from jinja2 import PackageLoader
+
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.jinja.render import create_jinja_env_with_loader
 from hexdoc.patchouli.page.pages import ImagePage
-from jinja2 import PackageLoader
 
 
 def test_no_title():

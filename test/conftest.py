@@ -4,12 +4,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from hexdoc.core.properties import Properties
-from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
+
+from hexdoc.core.properties import Properties
+from hexdoc.plugin import PluginManager
 
 collect_ignore = [
     "noxfile.py",

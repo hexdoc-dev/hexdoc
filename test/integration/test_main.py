@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, assert_type
 
 import pytest
-from hexdoc.cli.app import build, callback
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
+
+from hexdoc.cli.app import build, callback
 
 from ..conftest import list_directory
 
