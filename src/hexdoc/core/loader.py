@@ -10,7 +10,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
 
-from pydantic import SkipValidation
+from pydantic import Field, SkipValidation
 from pydantic.dataclasses import dataclass
 
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel
@@ -50,6 +50,7 @@ class ModResourceLoader(ValidationContext):
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
+    _cache: dict[Path, str] = Field(default_factory=lambda: {})
 
     @classmethod
     def clean_and_load_all(
@@ -59,12 +60,24 @@ class ModResourceLoader(ValidationContext):
         *,
         export: bool = False,
     ):
+        return cls.load_all(props, pm, export=export, clean=True)
+
+    @classmethod
+    def load_all(
+        cls,
+        props: Properties,
+        pm: PluginManager,
+        *,
+        export: bool = False,
+        clean: bool = False,
+    ) -> Self:
         # clear the export dir so we start with a clean slate
         if props.export_dir and export:
-            subprocess.run(
-                ["git", "clean", "-fdX", props.export_dir],
-                cwd=props.props_dir,
-            )
+            if clean:
+                subprocess.run(
+                    ["git", "clean", "-fdX", props.export_dir],
+                    cwd=props.props_dir,
+                )
 
             write_to_path(
                 props.export_dir / "__init__.py",
@@ -76,20 +89,6 @@ class ModResourceLoader(ValidationContext):
                 ),
             )
 
-        return cls.load_all(
-            props,
-            pm,
-            export=export,
-        )
-
-    @classmethod
-    def load_all(
-        cls,
-        props: Properties,
-        pm: PluginManager,
-        *,
-        export: bool = False,
-    ) -> Self:
         export_dir = props.export_dir if export else None
         stack = ExitStack()
 
@@ -449,12 +448,17 @@ class ModResourceLoader(ValidationContext):
         decode: Callable[[str], _T] = decode_json_dict,
         export: ExportFn[_T] | Literal[False] | None = None,
     ) -> _T:
-        if not path.is_file():
-            raise FileNotFoundError(path)
+        if path in self._cache:
+            data = self._cache[path]
+            logger.debug(f"Fetching {path} from cache")
+        else:
+            if not path.is_file():
+                raise FileNotFoundError(path)
 
-        logger.debug(f"Loading {path}")
+            logger.debug(f"Loading {path}")
 
-        data = path.read_text("utf-8")
+            data = path.read_text("utf-8")
+            self._cache[path] = data
         value = decode(data)
 
         if resource_dir.reexport and export is not False:
@@ -468,15 +472,46 @@ class ModResourceLoader(ValidationContext):
 
         return value
 
-    @overload
-    def export(self, /, path: Path, data: str, *, cache: bool = False) -> None: ...
+    def export_resources(
+        self,
+        type: ResourceType,
+        *,
+        namespace: str,
+        folder: str | Path,
+        glob: str | list[str] = "**/*",
+        allow_missing: bool = False,
+        internal_only: bool = False,
+    ):
+        for resource_dir, _, path in self.find_resources(
+            type,
+            namespace=namespace,
+            folder=folder,
+            glob=glob,
+            allow_missing=allow_missing,
+            internal_only=internal_only,
+        ):
+            if resource_dir.reexport:
+                self.export(
+                    path=path.relative_to(resource_dir.path),
+                    data=path.read_bytes(),
+                )
 
     @overload
     def export(
         self,
         /,
         path: Path,
-        data: str,
+        data: str | bytes,
+        *,
+        cache: bool = False,
+    ) -> None: ...
+
+    @overload
+    def export(
+        self,
+        /,
+        path: Path,
+        data: str | bytes,
         value: _T,
         *,
         decode: Callable[[str], _T] = decode_json_dict,
@@ -484,10 +519,10 @@ class ModResourceLoader(ValidationContext):
         cache: bool = False,
     ) -> None: ...
 
-    def export(
+    def export(  # pyright: ignore[reportInconsistentOverload]
         self,
         path: Path,
-        data: str,
+        data: str | bytes,
         value: _T = None,
         *,
         decode: Callable[[str], _T] = decode_json_dict,

@@ -57,6 +57,7 @@ dependencies = [
     "pygithub~=2.1",
     "pyjson5~=1.6",
     "requests~=2.31",
+    "tqdm~=4.66",
     "typer~=0.12",
     "typing_extensions~=4.6",
     "yarl~=1.9",
@@ -75,7 +76,7 @@ pdoc = [
     "pdoc~=14.1",
 ]
 test = [
-    "pyright==1.1.361",
+    "pyright==1.1.389",
     "pytest~=7.4",
     "pytest-dependency~=0.5",
     "pytest-describe~=2.2",
@@ -85,7 +86,7 @@ test = [
 ]
 dev = [
     "hexdoc[pdoc,test]",
-    "ruff~=0.3.2",
+    "ruff~=0.14.10",
     "pre-commit",
     "nox[uv]",
 ]
@@ -193,6 +194,7 @@ include = [
 ]
 extraPaths = [
     "vendor",
+    "typings",
 ]
 exclude = [
     "noxfile.py",
@@ -205,7 +207,6 @@ exclude = [
 
 typeCheckingMode = "basic"
 
-enableExperimentalFeatures = true
 strictDictionaryInference = true
 strictListInference = true
 strictSetInference = true

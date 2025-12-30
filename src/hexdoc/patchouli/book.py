@@ -6,14 +6,15 @@ from pydantic import Field, PrivateAttr, ValidationInfo, model_validator
 
 from hexdoc.core import (
     ItemStack,
+    LocalizedStr,
     ModResourceLoader,
     ResLoc,
     ResourceLocation,
 )
 from hexdoc.core.compat import AtLeast_1_20, Before_1_20
-from hexdoc.minecraft import LocalizedStr
 from hexdoc.model import Color, HexdocModel
 from hexdoc.utils import ContextSource, cast_context, sorted_dict
+from hexdoc.utils.types import isdict
 
 from .book_context import BookContext
 from .category import Category
@@ -36,8 +37,12 @@ class Book(HexdocModel):
     """
 
     # not in book.json
-    _categories: dict[ResourceLocation, Category] = PrivateAttr(default_factory=dict)
-    _all_entries: dict[ResourceLocation, Entry] = PrivateAttr(default_factory=dict)
+    _categories: dict[ResourceLocation, Category] = PrivateAttr(
+        default_factory=lambda: {}
+    )
+    _all_entries: dict[ResourceLocation, Entry] = PrivateAttr(
+        default_factory=lambda: {}
+    )
 
     # required
     name: LocalizedStr
@@ -162,8 +167,8 @@ class Book(HexdocModel):
 
     @model_validator(mode="before")
     @classmethod
-    def _pre_root(cls, data: dict[Any, Any] | Any):
-        if isinstance(data, dict) and "index_icon" not in data:
+    def _pre_root(cls, data: Any):
+        if isdict(data) and "index_icon" not in data:
             data["index_icon"] = data.get("model")
         return data
 

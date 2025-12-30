@@ -1,9 +1,10 @@
 from typing import Unpack
 
+from pydantic import ConfigDict
+
 from hexdoc.core import ResourceLocation
 from hexdoc.model import TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, NoValue, classproperty
-from pydantic import ConfigDict
 
 
 class Page(TypeTaggedTemplate, type=None):

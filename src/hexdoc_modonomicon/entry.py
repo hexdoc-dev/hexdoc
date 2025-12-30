@@ -1,8 +1,8 @@
-from hexdoc.core import ResourceLocation
-from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
-from hexdoc.model import HexdocModel
 from pydantic import Field
+
+from hexdoc.core import LocalizedStr, ResourceLocation
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
+from hexdoc.model import HexdocModel
 
 from .condition import Condition
 from .page import Page
@@ -23,7 +23,7 @@ class Entry(HexdocModel):
     category: ResourceLocation
     name: LocalizedStr
     description: LocalizedStr
-    icon: ItemWithTexture | NamedTexture
+    icon: ImageField[ItemImage | TextureImage]
     x: int
     y: int
 
@@ -31,7 +31,7 @@ class Entry(HexdocModel):
     background_u_index: int = 0
     background_v_index: int = 0
     condition: Condition | None = None
-    parents: list[EntryParent] = Field(default_factory=list)
-    pages: list[Page] = Field(default_factory=list)
+    parents: list[EntryParent] = Field(default_factory=lambda: [])
+    pages: list[Page] = Field(default_factory=lambda: [])
     category_to_open: ResourceLocation | None = None
     command_to_run_on_first_read: ResourceLocation | None = None

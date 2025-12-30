@@ -36,7 +36,7 @@ nox.options.sessions = [
 # tests
 
 
-@nox.session
+@nox.session(tags=["test_fast"])
 def pyright(session: nox.Session):
     session.install("-e", ".[test]")
 
@@ -47,7 +47,7 @@ def pyright(session: nox.Session):
     session.run("pyright", *args)
 
 
-@nox.session(tags=["test"])
+@nox.session(tags=["test", "test_fast"])
 def test(session: nox.Session):
     session.install("-e", ".[test]")
 
@@ -61,46 +61,45 @@ def test_build(session: nox.Session):
     session.run("hexdoc", "build", "--branch=main", env=MOCK_ENV)
 
 
-@nox.session(tags=["test", "post_build"])
-@nox.parametrize(["branch"], ["1.19_old", "main_old"])
+@nox.session(tags=["test"])
+@nox.parametrize(["branch"], ["1.19", "main"])
 def test_hexcasting(session: nox.Session, branch: str):
-    with session.cd("submodules/HexMod"):
-        original_branch = run_silent_external(
-            session, "git", "rev-parse", "--abbrev-ref", "HEAD"
-        )
-        if original_branch == "HEAD":  # properly handle detached HEAD
-            original_branch = run_silent_external(session, "git", "rev-parse", "HEAD")
+    submodule = f"submodules/HexMod_{branch}"
 
-        session.run("git", "checkout", branch, external=True)
+    session.install("-e", ".[test]", "-e", f"./{submodule}")
 
-    try:
-        session.install("-e", ".[test]", "-e", "./submodules/HexMod")
+    session.run(
+        "hexdoc",
+        "build",
+        "--branch=main",
+        f"--props={submodule}/doc/hexdoc.toml",
+        env=MOCK_ENV,
+    )
 
-        session.run(
-            "hexdoc",
-            "--quiet-lang=ru_ru",
-            "--quiet-lang=zh_cn",
-            "build",
-            "--branch=main",
-            "--props=submodules/HexMod/doc/hexdoc.toml",
-            env=MOCK_ENV,
-        )
-
-        session.run(
-            "pytest",
-            "-m",
-            "hexcasting",
-            *session.posargs,
-            env={"MOCK_PLATFORM": "Windows"},
-        )
-    finally:
-        with session.cd("submodules/HexMod"):
-            session.run("git", "checkout", original_branch, external=True)
+    session.run(
+        "pytest",
+        "-m",
+        "hexcasting",
+        *session.posargs,
+        env={
+            "MOCK_PLATFORM": "Windows",
+            "TEST_SUBMODULE": submodule,
+            "TEST_BRANCH": branch,
+        },
+    )
 
 
-@nox.session(tags=["test", "post_build"])
+@nox.session(tags=["test"])
 def test_copier(session: nox.Session):
-    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod")
+    session.install("pip", "-e", ".[test]", "-e", "./submodules/HexMod_main")
+
+    session.run(
+        "hexdoc",
+        "build",
+        "--branch=main",
+        "--props=submodules/HexMod_main/doc/hexdoc.toml",
+        env=MOCK_ENV,
+    )
 
     template_repo = Path("submodules/hexdoc-hexcasting-template")
     rendered_template = template_repo / ".ctt" / "test_copier"
@@ -174,7 +173,8 @@ def pdoc(session: nox.Session):
 
 
 # docs for the docs!
-@nox.session(tags=["docs"], python=False)
+# note: we can't use python=False because then --no-install doesn't work
+@nox.session(tags=["docs"])
 def docusaurus(session: nox.Session):
     shutil.copytree("media", f"{STATIC_GENERATED}/img", dirs_exist_ok=True)
 
@@ -227,7 +227,7 @@ def tag(session: nox.Session):
 def setup(session: nox.Session):
     session.install("uv", "pre-commit")
 
-    if not Path("submodules/HexMod/pyproject.toml").exists():
+    if not Path("submodules/HexMod_main/pyproject.toml").exists():
         session.run("git", "submodule", "update", "--init")
 
     rmtree(session, "venv", onerror=on_rm_error)
@@ -237,7 +237,7 @@ def setup(session: nox.Session):
         *("uv", "pip", "install"),
         "--quiet",
         "-e=.[dev]",
-        "-e=./submodules/HexMod",
+        "-e=./submodules/HexMod_main",
         env={
             "VIRTUAL_ENV": str(Path.cwd() / "venv"),
         },
@@ -648,6 +648,9 @@ def dummy_setup(session: nox.Session):
                     advancements_disabled_foo = true
                     "foo:baz" = false
                     "mod:foo" = false
+
+                    [textures]
+                    strict = false
 
                     [template]
                     icon = "icon.png"

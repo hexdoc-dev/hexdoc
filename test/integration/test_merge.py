@@ -4,12 +4,13 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pytest import MonkeyPatch
+
 from hexdoc.cli import app
 from hexdoc.plugin import hookimpl
 from hexdoc.plugin.manager import PluginManager
 from hexdoc.plugin.mod_plugin import ModPluginWithBook
 from hexdoc.plugin.specs import ModPluginImpl
-from pytest import MonkeyPatch
 
 from ..tree import write_file_tree
 

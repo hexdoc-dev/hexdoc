@@ -1,12 +1,17 @@
+import inspect
 import string
-from typing import Any
+import textwrap
+from typing import Any, ClassVar, Sequence
 
-from pydantic import field_validator, model_validator
+from pydantic import ConfigDict, field_validator, model_validator
 from pydantic.dataclasses import dataclass
+from pydantic.fields import FieldInfo
+from typing_extensions import Unpack
 
+from hexdoc.utils import Inherit, InheritType
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
-from .base import DEFAULT_CONFIG
+from .base import DEFAULT_CONFIG, HexdocModel
 
 
 @dataclass(
@@ -64,3 +69,44 @@ class Color:
             raise ValueError(f"invalid color code: {value}")
 
         return value
+
+
+class MustBeAnnotated(HexdocModel):
+    _annotation_type: ClassVar[type[Any] | None]
+
+    def __init_subclass__(
+        cls,
+        annotation: type[Any] | InheritType | None = Inherit,
+        **kwargs: Unpack[ConfigDict],
+    ):
+        super().__init_subclass__(**kwargs)
+        if annotation != Inherit:
+            if annotation and not inspect.isclass(annotation):
+                raise TypeError(
+                    f"Expected annotation to be a type or None, got {type(annotation)}: {annotation}"
+                )
+            cls._annotation_type = annotation
+
+    @classmethod
+    def __hexdoc_check_model_field__(
+        cls,
+        model_type: type[HexdocModel],
+        field_name: str,
+        field_info: FieldInfo,
+        origin_stack: Sequence[Any],
+        annotation_stack: Sequence[Any],
+    ) -> None:
+        if cls._annotation_type is None:
+            return
+        if cls._annotation_type not in annotation_stack:
+            annotation = cls._annotation_type.__name__
+            raise TypeError(
+                textwrap.dedent(
+                    f"""\
+                    {cls.__name__} must be annotated with {annotation} (eg. {annotation}[{cls.__name__}]) when used as a validation type hint.
+                      Model: {model_type}
+                      Field: {field_name}
+                      Type:  {field_info.rebuild_annotation()}
+                    """.rstrip()
+                )
+            )

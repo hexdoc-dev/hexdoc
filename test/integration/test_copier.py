@@ -5,9 +5,10 @@ import sys
 from pathlib import Path
 
 import pytest
-from hexdoc.cli import ci
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
+
+from hexdoc.cli import ci
 
 from ..conftest import list_directory
 from ..tree import write_file_tree

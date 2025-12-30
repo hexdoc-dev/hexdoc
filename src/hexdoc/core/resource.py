@@ -207,6 +207,8 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
         return fnmatch(str(self), str(pattern))
 
     def template_path(self, type: str, folder: str = "") -> str:
+        """Returns a Jinja template path in the format
+        `{type}/{namespace}/{folder}/{path}`."""
         return self.file_path_stub(type, folder, assume_json=False).as_posix()
 
     def file_path_stub(

@@ -28,6 +28,7 @@ def build(
     *,
     props_file: PropsOption,
     release: ReleaseOption,
+    clean_exports: bool = True,
 ):
     from . import app as hexdoc_app
 
@@ -52,6 +53,7 @@ def build(
         branch=env.branch,
         props_file=props_file,
         release=release,
+        clean_exports=clean_exports,
     )
 
     site_dist = site_path / "dist"

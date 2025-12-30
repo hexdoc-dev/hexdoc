@@ -1,14 +1,14 @@
 {% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/images.html.jinja" as Images with context -%}
 
 {% block inner_body %}
   <p class="img-wrapper">
     {% for image in page.images %}
       {#- TODO: figure out a better default name if there's no title #}
       {{
-        texture_macros.render_texture(
+        Images.image(
           name=page.title or "",
-          texture=image,
+          image=image,
           lazy=false,
         )
       }}
@@ -18,7 +18,7 @@
 {% endblock inner_body %}
 
 {% block redirect_image -%}
-  {{ texture_macros.texture_url(page.images|first) }}
+  {{ Images.url(page.images|first) }}
 {%- endblock redirect_image %}
 
 {% block redirect_extra_opengraph %}

@@ -43,8 +43,6 @@
 
     when_clicked: "When clicked, would execute: {}",
 
-    any_block:  "Any Block",
-
     redirect: {
       "category.title": "Category: {}",
       "entry.title": "Entry: {}",
@@ -55,4 +53,6 @@
       Minecraft content and materials are the intellectual property of their respective owners.$(br2)\
       Made with ❤️ using $(l:https://pypi.org/project/hexdoc/)hexdoc/$."
   },
+
+  "gui.hexdoc.any_block": "Any Block",
 }

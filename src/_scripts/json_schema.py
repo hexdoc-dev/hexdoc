@@ -4,11 +4,12 @@ from typing import Annotated, Any, Optional
 
 import rich
 import typer
+from pydantic import BaseModel, TypeAdapter
+from typer import Argument, Option
+
 from hexdoc.cli.utils import DefaultTyper
 from hexdoc.cli.utils.args import parse_import_class
 from hexdoc.core.compat import MinecraftVersion
-from pydantic import BaseModel, TypeAdapter
-from typer import Argument, Option
 
 app = DefaultTyper()
 

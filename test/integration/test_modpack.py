@@ -2,17 +2,20 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pytest import MonkeyPatch
+from yarl import URL
+
 from hexdoc._hooks import HexdocPlugin
 from hexdoc.cli.utils.load import init_context
-from hexdoc.core import ModResourceLoader
+from hexdoc.core import I18n, ModResourceLoader
 from hexdoc.core.compat import MinecraftVersion
 from hexdoc.core.properties import Properties
 from hexdoc.core.resource import ResourceLocation
-from hexdoc.minecraft import I18n
+from hexdoc.graphics.loader import ImageLoader
+from hexdoc.graphics.renderer import ModelRenderer
 from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.text import FormatTree
 from hexdoc.plugin import PluginManager
-from pytest import MonkeyPatch
 
 from ..tree import write_file_tree
 
@@ -70,7 +73,7 @@ def props(tmp_path: Path):
                 {"modid": "hexdoc"},
             ],
             "textures": {
-                "missing": ["minecraft:stone"],
+                "strict": False,
             },
         },
     )
@@ -83,9 +86,27 @@ def loader(props: Properties, pm: PluginManager):
 
 
 @pytest.fixture
-def book_and_context(pm: PluginManager, loader: ModResourceLoader):
+def renderer(loader: ModResourceLoader):
+    with ModelRenderer(loader=loader) as renderer:
+        yield renderer
+
+
+@pytest.fixture
+def book_and_context(
+    tmp_path: Path,
+    pm: PluginManager,
+    loader: ModResourceLoader,
+    renderer: ModelRenderer,
+):
     props = loader.props
     assert props.book_id
+
+    image_loader = ImageLoader(
+        loader=loader,
+        renderer=renderer,
+        site_dir=tmp_path,
+        site_url=URL(),
+    )
 
     book_plugin = pm.book_plugin(props.book_type)
 
@@ -97,18 +118,17 @@ def book_and_context(pm: PluginManager, loader: ModResourceLoader):
         lang=props.default_lang,
     )
 
-    context = init_context(
+    with init_context(
         book_id=book_id,
         book_data=book_data,
         pm=pm,
         loader=loader,
+        image_loader=image_loader,
         i18n=i18n,
         all_metadata={},
-    )
-
-    book = book_plugin.validate_book(book_data, context=context)
-
-    yield book, context
+    ) as context:
+        book = book_plugin.validate_book(book_data, context=context)
+        yield book, context
 
 
 def test_book_name(book_and_context: tuple[Book, dict[str, Any]]):

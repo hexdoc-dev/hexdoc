@@ -120,9 +120,8 @@ class Tag(HexdocModel):
     def _load_values(self, loader: ModResourceLoader) -> Iterator[TagValue]:
         for value in self.values:
             match value:
-                case (
-                    (ResourceLocation() as child_id)
-                    | OptionalTagValue(id=child_id)
+                case (ResourceLocation() as child_id) | OptionalTagValue(
+                    id=child_id
                 ) if child_id.is_tag:
                     try:
                         child = Tag.load(self.registry, child_id, loader)

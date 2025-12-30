@@ -20,7 +20,7 @@
             "args": [
                 "build",
                 // "--props",
-                // "./submodules/HexMod/doc/hexdoc.toml",
+                // "./submodules/HexMod_main/doc/hexdoc.toml",
                 // "--release",
             ],
             "console": "integratedTerminal",

@@ -1,24 +1,22 @@
 import logging
+from contextlib import contextmanager
 from pathlib import Path
 from textwrap import indent
 from typing import Any, Literal, overload
 
+from yarl import URL
+
 from hexdoc.core import (
+    I18n,
     MinecraftVersion,
     ModResourceLoader,
     Properties,
     ResourceLocation,
 )
-from hexdoc.data import HexdocMetadata, load_metadata_textures
-from hexdoc.minecraft import I18n, Tag
-from hexdoc.minecraft.assets import (
-    AnimatedTexture,
-    HexdocAssetLoader,
-    PNGTexture,
-    Texture,
-    TextureContext,
-    TextureLookups,
-)
+from hexdoc.data import HexdocMetadata
+from hexdoc.graphics.loader import ImageLoader
+from hexdoc.minecraft import Tag
+from hexdoc.model import init_context as set_init_context
 from hexdoc.patchouli import BookContext
 from hexdoc.patchouli.text import DEFAULT_MACROS, FormattingContext
 from hexdoc.plugin import BookPlugin, ModPlugin, ModPluginWithBook, PluginManager
@@ -70,32 +68,13 @@ def load_common_data(
     return props, pm, book_plugin, mod_plugin
 
 
-def render_textures_and_export_metadata(
-    loader: ModResourceLoader,
-    asset_loader: HexdocAssetLoader,
-):
+def export_metadata(loader: ModResourceLoader, site_url: URL):
     all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-
-    all_lookups = load_metadata_textures(all_metadata)
-    image_textures = {
-        id: texture
-        for texture_type in [PNGTexture, AnimatedTexture]
-        for id, texture in texture_type.get_lookup(all_lookups).items()
-    }
-
-    internal_lookups = TextureLookups[Texture](dict)
-    if loader.props.textures.enabled:
-        logger.info(f"Loading and rendering textures to {asset_loader.render_dir}.")
-        for id, texture in asset_loader.load_and_render_internal_textures(
-            image_textures
-        ):
-            texture.insert_texture(internal_lookups, id)
 
     # this mod's metadata
     metadata = HexdocMetadata(
-        book_url=asset_loader.site_url / loader.props.default_lang,
+        book_url=site_url / loader.props.default_lang,
         asset_url=loader.props.env.asset_url,
-        textures=internal_lookups,
     )
 
     loader.export(
@@ -113,15 +92,19 @@ def render_textures_and_export_metadata(
 
 
 # TODO: refactor a lot of this out
+@contextmanager
 def init_context(
     *,
     book_id: ResourceLocation,
     book_data: dict[str, Any],
     pm: PluginManager,
     loader: ModResourceLoader,
+    image_loader: ImageLoader,
     i18n: I18n,
     all_metadata: dict[str, HexdocMetadata],
 ):
+    """This is only a contextmanager so it can call `hexdoc.model.init_context`."""
+
     props = loader.props
 
     context = dict[str, Any]()
@@ -130,11 +113,8 @@ def init_context(
         props,
         pm,
         loader,
+        image_loader,
         i18n,
-        TextureContext(
-            textures=load_metadata_textures(all_metadata),
-            allowed_missing_textures=props.textures.missing,
-        ),
         FormattingContext(
             book_id=book_id,
             macros=DEFAULT_MACROS | book_data.get("macros", {}) | props.macros,
@@ -154,4 +134,5 @@ def init_context(
     for item in pm.update_context(context):
         item.add_to_context(context)
 
-    return context
+    with set_init_context(context):
+        yield context

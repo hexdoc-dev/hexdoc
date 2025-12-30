@@ -3,6 +3,7 @@
 import textwrap
 
 import pytest
+
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.minecraft.tags import OptionalTagValue, Tag, TagValue
 from hexdoc.utils.types import PydanticOrderedSet

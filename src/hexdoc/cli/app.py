@@ -11,11 +11,14 @@ from typing import Annotated, Any, Optional
 
 import typer
 from packaging.version import Version
+from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 from typer import Argument, Option
 from yarl import URL
 
 from hexdoc.__version__ import VERSION
-from hexdoc.core import ModResourceLoader, ResourceLocation
+from hexdoc.core import I18n, ModResourceLoader, ResourceLocation
+from hexdoc.core.properties import AnimationFormat
 from hexdoc.data.metadata import HexdocMetadata
 from hexdoc.data.sitemap import (
     SitemapMarker,
@@ -23,17 +26,9 @@ from hexdoc.data.sitemap import (
     dump_sitemap,
     load_sitemap,
 )
-from hexdoc.graphics.render import BlockRenderer, DebugType
+from hexdoc.graphics import DebugType, ModelRenderer
+from hexdoc.graphics.loader import ImageLoader
 from hexdoc.jinja.render import create_jinja_env, get_templates, render_book
-from hexdoc.minecraft import I18n
-from hexdoc.minecraft.assets import (
-    AnimatedTexture,
-    PNGTexture,
-    TextureContext,
-)
-from hexdoc.minecraft.assets.load_assets import render_block
-from hexdoc.minecraft.models.item import ItemModel
-from hexdoc.minecraft.models.load import load_model
 from hexdoc.patchouli import BookContext, FormattingContext
 from hexdoc.plugin import ModPluginWithBook
 from hexdoc.utils import git_root, setup_logging, write_to_path
@@ -51,22 +46,12 @@ from .utils.args import (
     VerbosityOption,
 )
 from .utils.load import (
+    export_metadata,
     init_context,
     load_common_data,
-    render_textures_and_export_metadata,
 )
 
 logger = logging.getLogger(__name__)
-
-
-def set_default_env():
-    """Sets placeholder values for unneeded environment variables."""
-    for key, value in {
-        "GITHUB_REPOSITORY": "placeholder/placeholder",
-        "GITHUB_SHA": "",
-        "GITHUB_PAGES_URL": "",
-    }.items():
-        os.environ.setdefault(key, value)
 
 
 @dataclass(kw_only=True)
@@ -97,11 +82,27 @@ def callback(
         Option("--version", "-V", callback=version_callback, is_eager=True),
     ] = False,
 ):
+    setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
+
     if quiet_lang:
         logger.warning(
             "`--quiet-lang` is deprecated, use `props.lang.{lang}.quiet` instead."
         )
-    setup_logging(verbosity, ci=False, quiet_langs=quiet_lang)
+
+    if not os.getenv("CI"):
+        set_any = False
+        for key, value in {
+            "GITHUB_REPOSITORY": "placeholder/placeholder",
+            "GITHUB_SHA": "00000000",
+            "GITHUB_PAGES_URL": "https://example.hexxy.media",
+        }.items():
+            if not os.getenv(key):
+                os.environ[key] = value
+                set_any = True
+        if set_any:
+            logger.info(
+                "CI not detected, setting defaults for missing environment variables."
+            )
 
 
 @app.command()
@@ -114,18 +115,21 @@ def repl(*, props_file: PropsOption):
 
     try:
         props, pm, book_plugin, plugin = load_common_data(props_file, branch="")
-        repl_locals |= dict(
-            props=props,
-            pm=pm,
-            plugin=plugin,
-        )
 
         loader = ModResourceLoader.load_all(
             props,
             pm,
             export=False,
         )
-        repl_locals["loader"] = loader
+
+        renderer = ModelRenderer(loader=loader)
+
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=URL(),
+            site_dir=Path("out"),
+        )
 
         if props.book_id:
             book_id, book_data = book_plugin.load_book_data(props.book_id, loader)
@@ -139,18 +143,28 @@ def repl(*, props_file: PropsOption):
         )[props.default_lang]
 
         all_metadata = loader.load_metadata(model_type=HexdocMetadata)
-        repl_locals["all_metadata"] = all_metadata
+
+        repl_locals |= dict(
+            props=props,
+            pm=pm,
+            plugin=plugin,
+            loader=loader,
+            renderer=renderer,
+            image_loader=image_loader,
+            all_metadata=all_metadata,
+        )
 
         if book_id and book_data:
-            context = init_context(
+            with init_context(
                 book_id=book_id,
                 book_data=book_data,
                 pm=pm,
                 loader=loader,
+                image_loader=image_loader,
                 i18n=i18n,
                 all_metadata=all_metadata,
-            )
-            book = book_plugin.validate_book(book_data, context=context)
+            ) as context:
+                book = book_plugin.validate_book(book_data, context=context)
             repl_locals |= dict(
                 book=book,
                 context=context,
@@ -162,7 +176,7 @@ def repl(*, props_file: PropsOption):
         banner=dedent(
             f"""\
             [hexdoc repl] Python {sys.version}
-            Locals: {', '.join(sorted(repl_locals.keys()))}"""
+            Locals: {", ".join(sorted(repl_locals.keys()))}"""
         ),
         readfunc=repl_readfunc(),
         local=repl_locals,
@@ -177,6 +191,7 @@ def build(
     branch: BranchOption,
     release: ReleaseOption = False,
     clean: bool = False,
+    clean_exports: bool = True,
     props_file: PropsOption,
 ) -> Path:
     """Export resources and render the web book.
@@ -190,18 +205,37 @@ def build(
         output_dir /= props.env.hexdoc_subdirectory
 
     logger.info("Exporting resources.")
-    with ModResourceLoader.clean_and_load_all(props, pm, export=True) as loader:
+    with (
+        ModResourceLoader.load_all(
+            props, pm, export=True, clean=clean_exports
+        ) as loader,
+        ModelRenderer(loader=loader) as renderer,
+    ):
         site_path = plugin.site_path(versioned=release)
         site_dir = output_dir / site_path
 
-        asset_loader = plugin.asset_loader(
+        image_loader = ImageLoader(
             loader=loader,
-            site_url=props.env.github_pages_url.joinpath(*site_path.parts),
-            asset_url=props.env.asset_url,
-            render_dir=site_dir,
+            renderer=renderer,
+            site_dir=site_dir,
+            site_url=URL().joinpath(*site_path.parts),
         )
 
-        all_metadata = render_textures_and_export_metadata(loader, asset_loader)
+        all_metadata = export_metadata(
+            loader,
+            site_url=props.env.github_pages_url.joinpath(*site_path.parts),
+        )
+
+        # FIXME: put this somewhere saner?
+        logger.info("Exporting all image-related resources.")
+        for folder in ["blockstates", "models", "textures"]:
+            loader.export_resources(
+                "assets",
+                namespace="*",
+                folder=folder,
+                glob="**/*.*",
+                allow_missing=True,
+            )
 
         if not props.book_id:
             logger.info("Skipping book load because props.book_id is not set.")
@@ -218,15 +252,16 @@ def build(
         books = list[LoadedBookInfo]()
         for language, i18n in all_i18n.items():
             try:
-                context = init_context(
+                with init_context(
                     book_id=book_id,
                     book_data=book_data,
                     pm=pm,
                     loader=loader,
+                    image_loader=image_loader,
                     i18n=i18n,
                     all_metadata=all_metadata,
-                )
-                book = book_plugin.validate_book(book_data, context=context)
+                ) as context:
+                    book = book_plugin.validate_book(book_data, context=context)
                 books.append(
                     LoadedBookInfo(
                         language=language,
@@ -276,7 +311,6 @@ def build(
 
                 book_ctx = BookContext.of(book_info.context)
                 formatting_ctx = FormattingContext.of(book_info.context)
-                texture_ctx = TextureContext.of(book_info.context)
 
                 site_book_path = plugin.site_book_path(
                     book_info.language,
@@ -287,11 +321,6 @@ def build(
 
                 template_args: dict[str, Any] = book_info.context | {
                     "all_metadata": all_metadata,
-                    "png_textures": PNGTexture.get_lookup(texture_ctx.textures),
-                    "animations": sorted(  # this MUST be sorted to avoid flaky tests
-                        AnimatedTexture.get_lookup(texture_ctx.textures).values(),
-                        key=lambda t: t.css_class,
-                    ),
                     "book": book_info.book,
                     "book_links": book_ctx.book_links,
                 }
@@ -465,12 +494,13 @@ def render_model(
     model_id: str,
     *,
     props_file: PropsOption,
-    output_path: Annotated[Path, Option("--output", "-o")] = Path("out.png"),
+    output_dir: Annotated[Path, Option("--output", "-o")] = Path("out"),
     axes: bool = False,
     normals: bool = False,
+    size: Optional[int] = None,
+    format: Optional[AnimationFormat] = None,
 ):
     """Use hexdoc's block rendering to render an item or block model."""
-    set_default_env()
     props, pm, *_ = load_common_data(props_file, branch="")
 
     debug = DebugType.NONE
@@ -479,16 +509,26 @@ def render_model(
     if normals:
         debug |= DebugType.NORMALS
 
-    with ModResourceLoader.load_all(props, pm, export=False) as loader:
-        _, model = load_model(loader, ResourceLocation.from_str(model_id))
-        while isinstance(model, ItemModel) and model.parent:
-            _, model = load_model(loader, model.parent)
+    if format:
+        props.textures.animated.format = format
 
-        if isinstance(model, ItemModel):
-            raise ValueError(f"Invalid block id: {model_id}")
-
-        with BlockRenderer(loader=loader, debug=debug) as renderer:
-            renderer.render_block_model(model, output_path)
+    with (
+        ModResourceLoader.load_all(props, pm, export=False) as loader,
+        ModelRenderer(
+            loader=loader,
+            debug=debug,
+            block_size=size,
+            item_size=size,
+        ) as renderer,
+    ):
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=URL(),
+            site_dir=output_dir,
+        )
+        result = image_loader.render_model(ResourceLocation.from_str(model_id))
+        print(f"Rendered model {model_id} to {result.url}.")
 
 
 @app.command()
@@ -506,23 +546,43 @@ def render_models(
 
     site_url = URL(site_url_str or "")
 
-    set_default_env()
-    props, pm, _, plugin = load_common_data(props_file, branch="")
+    props, pm, *_ = load_common_data(props_file, branch="")
 
-    with ModResourceLoader.load_all(props, pm, export=export_resources) as loader:
+    with (
+        ModResourceLoader.load_all(props, pm, export=export_resources) as loader,
+        ModelRenderer(loader=loader) as renderer,
+    ):
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_url=site_url,
+            site_dir=output_dir,
+        )
+
         if model_ids:
-            with BlockRenderer(loader=loader, output_dir=output_dir) as renderer:
-                for model_id in model_ids:
-                    model_id = ResourceLocation.from_str(model_id)
-                    render_block(model_id, renderer, site_url)
+            iterator = (ResourceLocation.from_str(model_id) for model_id in model_ids)
         else:
-            asset_loader = plugin.asset_loader(
-                loader=loader,
-                site_url=site_url,
-                asset_url=props.env.asset_url,
-                render_dir=output_dir,
+            iterator = (
+                "item" / item_id
+                for _, item_id, _ in loader.find_resources(
+                    "assets",
+                    namespace="*",
+                    folder="models/item",
+                    internal_only=True,
+                )
             )
-            render_textures_and_export_metadata(loader, asset_loader)
+
+        with logging_redirect_tqdm():
+            bar = tqdm(iterator)
+            for model_id in bar:
+                bar.set_postfix_str(str(model_id))
+                try:
+                    image_loader.render_model(model_id)
+                except Exception:
+                    logger.warning(f"Failed to render model: {model_id}")
+                    if not props.textures.can_be_missing(model_id):
+                        raise
+                    logger.debug("Error:", exc_info=True)
 
     logger.info("Done.")
 
