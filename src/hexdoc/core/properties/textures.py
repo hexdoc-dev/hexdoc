@@ -79,7 +79,7 @@ class AnimatedTexturesProps(StripHiddenModel):
 
 
 class TextureOverrides(StripHiddenModel):
-    models: dict[ResourceLocation, Override] = Field(default_factory=dict)
+    models: dict[ResourceLocation, Override] = Field(default_factory=lambda: {})
     """Model overrides.
 
     Key: model id (eg. `minecraft:item/stick`).
@@ -97,14 +97,14 @@ class TexturesProps(StripHiddenModel):
     """Controls whether flat item renders should be enlarged after rendering, or left at
     the default size (usually 16x16). Defaults to `True`."""
 
-    missing: set[ResourceLocation] | Literal["*"] = Field(default_factory=set)
+    missing: set[ResourceLocation] | Literal["*"] = Field(default_factory=lambda: set())
 
     animated: AnimatedTexturesProps = Field(default_factory=AnimatedTexturesProps)
 
     overrides: TextureOverrides = Field(default_factory=TextureOverrides)
 
     override: dict[ResourceLocation, URLOverride | TextureOverride] = Field(
-        default_factory=dict,
+        default_factory=lambda: {},
         deprecated=deprecated("Use textures.overrides.models instead"),
     )
     """DEPRECATED - Use `textures.overrides.models` instead."""

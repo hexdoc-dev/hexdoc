@@ -6,6 +6,7 @@ from jinja2.runtime import Context
 from pydantic import (
     Field,
     PrivateAttr,
+    TypeAdapter,
     ValidationInfo,
     field_validator,
     model_validator,
@@ -13,8 +14,9 @@ from pydantic import (
 from typing_extensions import override
 
 from hexdoc.core import Entity, LocalizedStr, ResourceLocation
+from hexdoc.core.i18n import I18n
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
-from hexdoc.graphics.validators import TagImage
+from hexdoc.graphics.validators import HexdocImage, TagImage
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -73,7 +75,7 @@ class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
 
 class EntityPage(PageWithText, type="patchouli:entity"):
     _entity_name: LocalizedStr = PrivateAttr()
-    _texture: PNGTexture = PrivateAttr()
+    _texture: HexdocImage = PrivateAttr()
 
     entity: Entity
     scale: float = 1
@@ -103,8 +105,9 @@ class EntityPage(PageWithText, type="patchouli:entity"):
         assert info.context is not None
         i18n = I18n.of(info)
         self._entity_name = i18n.localize_entity(self.entity.id)
-        self._texture = PNGTexture.load_id(
-            id="textures/entities" / self.entity.id + ".png", context=info.context
+        self._texture = TypeAdapter(ImageField[TextureImage]).validate_python(
+            "textures/entities" / self.entity.id + ".png",
+            context=info.context,
         )
         return self
 

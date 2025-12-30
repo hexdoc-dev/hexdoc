@@ -27,7 +27,7 @@ class Category(HexdocModel):
     sort_number: int = -1
     condition: Condition | None = None
     background: ResourceLocation = _gui_texture("dark_slate_seamless")
-    background_parallax_layers: list[ParallaxLayer] = Field(default_factory=list)
+    background_parallax_layers: list[ParallaxLayer] = Field(default_factory=lambda: [])
     background_height: int = 512
     background_width: int = 512
     entry_textures: ResourceLocation = _gui_texture("entry_textures")

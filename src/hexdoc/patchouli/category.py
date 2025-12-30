@@ -24,7 +24,9 @@ class Category(IDModel, Sortable, Flagged):
     See: https://vazkiimods.github.io/Patchouli/docs/reference/category-json
     """
 
-    entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(default_factory=dict)
+    entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(
+        default_factory=lambda: {}
+    )
     is_spoiler: SkipJsonSchema[bool] = False
 
     # required

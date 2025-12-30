@@ -66,7 +66,7 @@ class BaseProperties(StripHiddenModel, ValidationContext):
 
     @override
     @classmethod
-    def model_json_schema(
+    def model_json_schema(  # pyright: ignore[reportIncompatibleMethodOverride]
         cls,
         by_alias: bool = True,
         ref_template: str = DEFAULT_REF_TEMPLATE,
@@ -86,7 +86,7 @@ class Properties(BaseProperties):
 
     # TODO: make another properties type without book_id
     book_id: ResourceLocation | None = Field(alias="book", default=None)
-    extra_books: list[ResourceLocation] = Field(default_factory=list)
+    extra_books: list[ResourceLocation] = Field(default_factory=lambda: [])
 
     default_lang: str = "en_us"
     default_branch: str = "main"
@@ -98,7 +98,7 @@ class Properties(BaseProperties):
     resource_dirs: Sequence[ResourceDir]
     export_dir: RelativePath | None = None
 
-    entry_id_blacklist: set[ResourceLocation] = Field(default_factory=set)
+    entry_id_blacklist: set[ResourceLocation] = Field(default_factory=lambda: set())
 
     macros: dict[str, str] = Field(default_factory=dict)
     link_overrides: dict[str, str] = Field(default_factory=dict)

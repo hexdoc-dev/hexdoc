@@ -50,7 +50,7 @@ class ModResourceLoader(ValidationContext):
     export_dir: Path | None
     resource_dirs: Sequence[PathResourceDir]
     _stack: SkipValidation[ExitStack]
-    _cache: dict[Path, str] = Field(default_factory=dict)
+    _cache: dict[Path, str] = Field(default_factory=lambda: {})
 
     @classmethod
     def clean_and_load_all(

@@ -37,8 +37,12 @@ class Book(HexdocModel):
     """
 
     # not in book.json
-    _categories: dict[ResourceLocation, Category] = PrivateAttr(default_factory=dict)
-    _all_entries: dict[ResourceLocation, Entry] = PrivateAttr(default_factory=dict)
+    _categories: dict[ResourceLocation, Category] = PrivateAttr(
+        default_factory=lambda: {}
+    )
+    _all_entries: dict[ResourceLocation, Entry] = PrivateAttr(
+        default_factory=lambda: {}
+    )
 
     # required
     name: LocalizedStr

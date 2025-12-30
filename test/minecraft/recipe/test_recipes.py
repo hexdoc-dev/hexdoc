@@ -1,15 +1,14 @@
-from collections import defaultdict
 from contextlib import ExitStack
 from pathlib import Path
 from typing import Any
 
 import pytest
+from hexdoc.core.i18n import I18n
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.properties import LangProps, Properties
+from hexdoc.core.properties.textures import TexturesProps
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.minecraft.assets.textures import TextureContext
-from hexdoc.minecraft.i18n import I18n
 from hexdoc.minecraft.recipe.recipes import CraftingShapelessRecipe, Recipe
 from hexdoc.plugin.manager import PluginManager
 from hexdoc.utils.context import ContextSource
@@ -18,7 +17,11 @@ from pydantic import TypeAdapter
 
 @pytest.fixture
 def context():
-    props = Properties.model_construct()
+    props = Properties.model_construct(
+        textures=TexturesProps.model_construct(
+            strict=True,
+        ),
+    )
 
     pm = PluginManager("branch", props=props)
 
@@ -42,20 +45,12 @@ def context():
         lang_props=LangProps(),
     )
 
-    texture_ctx = TextureContext(
-        textures=defaultdict(dict),
-        allowed_missing_textures={
-            ResourceLocation("minecraft", "*"),
-        },
-    )
-
     context: ContextSource = {}
     for ctx in [
         props,
         pm,
         loader,
         i18n,
-        texture_ctx,
     ]:
         ctx.add_to_context(context)
 

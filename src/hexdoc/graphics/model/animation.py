@@ -45,7 +45,7 @@ class Animation(HexdocModel):
     """
     frametime: int = Field(1, ge=1)
     """Sets the default time for each frame in increments of one game tick."""
-    frames: list[AnimationFrame] = Field(default_factory=list)
+    frames: list[AnimationFrame] = Field(default_factory=lambda: [])
     """Contains a list of frames.
 
     Integer values are a number corresponding to position of a frame from the top,
@@ -75,10 +75,10 @@ class Animation(HexdocModel):
 
 
 class AnimationFrame(HexdocModel):
-    index: int = Field(None, ge=0, validate_default=False)
+    index: int = Field(None, ge=0, validate_default=False)  # pyright: ignore[reportAssignmentType]
     """A number corresponding to position of a frame from the top, with the top
     frame being 0."""
-    time: int = Field(None, ge=1, validate_default=False)
+    time: int = Field(None, ge=1, validate_default=False)  # pyright: ignore[reportAssignmentType]
     """The time in ticks to show this frame."""
 
     @model_validator(mode="before")

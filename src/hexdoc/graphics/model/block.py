@@ -30,7 +30,9 @@ class BlockModel(HexdocModel):
     If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
     tag from the previous model.
     """
-    display: dict[DisplayPositionName, DisplayPosition] = Field(default_factory=dict)
+    display: dict[DisplayPositionName, DisplayPosition] = Field(
+        default_factory=lambda: {}
+    )
     """Holds the different places where item models are displayed.
 
     `fixed` refers to item frames, while the rest are as their name states.
@@ -46,7 +48,7 @@ class BlockModel(HexdocModel):
     If both "parent" and "elements" are set, the "elements" tag overrides the "elements"
     tag from the previous model.
     """
-    gui_light: Literal["front", "side"] = Field(None, validate_default=False)
+    gui_light: Literal["front", "side"] = Field(None, validate_default=False)  # pyright: ignore[reportAssignmentType]
     """If set to `side` (default), the model is rendered like a block.
 
     If set to `front`, model is shaded like a flat item.
@@ -80,7 +82,7 @@ class BlockModel(HexdocModel):
 
     # internal fields
     _builtin_parent: BuiltInModelType | None = PrivateAttr(None)
-    _id: ResourceLocation = PrivateAttr(None)
+    _id: ResourceLocation = PrivateAttr(None)  # pyright: ignore[reportAssignmentType]
 
     @classmethod
     def load_and_resolve(cls, loader: ModResourceLoader, model_id: ResourceLocation):

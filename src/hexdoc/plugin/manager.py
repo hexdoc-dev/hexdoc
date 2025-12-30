@@ -101,9 +101,9 @@ class PluginManager(ValidationContext):
     load: InitVar[bool] = True
     """If true (the default), calls `init_entrypoints` and `init_mod_plugins`."""
 
-    mod_plugins: dict[str, ModPlugin] = field(default_factory=dict)
-    book_plugins: dict[str, BookPlugin[Any]] = field(default_factory=dict)
-    item_image_types: list[type[ItemImage]] = field(default_factory=list)
+    mod_plugins: dict[str, ModPlugin] = field(default_factory=lambda: {})
+    book_plugins: dict[str, BookPlugin[Any]] = field(default_factory=lambda: {})
+    item_image_types: list[type[ItemImage]] = field(default_factory=lambda: [])
 
     def __post_init__(self, load: bool):
         self.inner = pluggy.PluginManager(HEXDOC_PROJECT_NAME)

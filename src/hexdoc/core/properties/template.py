@@ -25,13 +25,13 @@ class TemplateProps(StripHiddenModel, validate_assignment=True):
     icon: RelativePath | None = None
     include: PydanticOrderedSet[str]
 
-    render_from: PydanticOrderedSet[str] = Field(None, validate_default=False)
+    render_from: PydanticOrderedSet[str] = Field(None, validate_default=False)  # pyright: ignore[reportAssignmentType]
     """List of modids to include default rendered templates from.
 
     If not provided, defaults to `self.include`.
     """
-    render: dict[Path, str] = Field(default_factory=dict)
-    extend_render: dict[Path, str] = Field(default_factory=dict)
+    render: dict[Path, str] = Field(default_factory=lambda: {})
+    extend_render: dict[Path, str] = Field(default_factory=lambda: {})
 
     redirect: tuple[Path, str] | None = (Path("index.html"), "redirect.html.jinja")
     """filename, template"""

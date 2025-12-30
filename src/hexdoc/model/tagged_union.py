@@ -240,7 +240,7 @@ class InternallyTaggedUnion(UnionModel):
             case InternallyTaggedUnion() if isinstance(value, cls):
                 return value
             case dict() if _RESOLVED not in value:
-                data: dict[str, Any] = value
+                data: dict[str, Any] = value  # pyright: ignore[reportUnknownVariableType]
                 data[_RESOLVED] = True
             case _:
                 return handler(value)
@@ -278,7 +278,7 @@ class InternallyTaggedUnion(UnionModel):
         if isinstance(value, dict) and _RESOLVED in value:
             # copy because this validator may be called multiple times
             # eg. two types with the same key
-            value = value.copy()
+            value = value.copy()  # pyright: ignore[reportUnknownVariableType]
             value.pop(_RESOLVED)
             assert value.pop(cls._tag_key, NoValue) == cls._tag_value
         return value  # pyright: ignore[reportUnknownVariableType]
