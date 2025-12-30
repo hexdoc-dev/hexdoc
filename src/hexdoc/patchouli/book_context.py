@@ -14,6 +14,7 @@ class BookContext(ValidationContextModel):
     book_links: BookLinks = Field(default_factory=dict)
     spoilered_advancements: set[ResourceLocation]
     all_metadata: dict[str, HexdocMetadata]
+    flags: dict[str, bool]
 
     def get_link_base(self, resource_dir: PathResourceDir) -> URL:
         modid = resource_dir.modid

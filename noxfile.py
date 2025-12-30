@@ -271,12 +271,27 @@ def dummy_setup(session: nox.Session):
         "--data=multiloader=false",
     )
 
+    # Example image:
+    # PNG image, 16x16, 1-bit indexed color
+    # Palette: 0 = #202020 1 = #50ff50 (green)
+    # No compression, filter 0 on all scanlines (none)
+    image = (
+        b"\x89PNG\r\n\x1a\n"
+        b"\0\0\0\x0dIHDR\0\0\0\x10\0\0\0\x10\x01\x03\0\0\0\x25\x3d\x6d\x22"
+        b"\0\0\0\x06PLTE\x22\x22\x22\x50\xff\x50\xca\xca\x84\x15"
+        b"\0\0\0\x3bIDAT\x78\x01\x01\x30\0\xcf\xff\0\0\0\0\x7f\xfe\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x40\x02\0\x7f\xfe\0\0\0\x92\xd5\x06\x13\xec\x45\xbf\x6a"
+        b"\0\0\0\0IEND\xae\x42\x60\x82"
+    )
+
     session.log(f"write_file_tree({DUMMY_PATH}, ...)")
     write_file_tree(
         DUMMY_PATH,
         {
             "doc": {
                 "resources": {
+                    "assets/minecraft/textures/entities": {
+                        "chicken.png": ("wb", image)
+                    },
                     "assets/dummy/patchouli_books/dummybook": {
                         "en_us": {
                             "categories/foo.json": {
@@ -284,12 +299,25 @@ def dummy_setup(session: nox.Session):
                                 "icon": "minecraft:amethyst_shard",
                                 "description": "Foo bar baz qux$(br)$(li)quux$(br)$(li2)corge$(br)$(li3)grault$(br)$(li4)garply$(li)waldo$(br)fred plugh xyzzy thud",
                                 "sortnum": 0,
+                                "flag": "foo:bar",
+                            },
+                            "categories/empty.json": {
+                                "name": "Empty",
+                                "icon": "minecraft:glass_pane",
+                                "description": "Empty category",
+                            },
+                            "categories/disabled.json": {
+                                "name": "Disabled",
+                                "icon": "minecraft:bedrock",
+                                "description": "Disabled",
+                                "flag": "foo:baz",
                             },
                             "entries/bar.json": {
                                 "name": "Dummy Entry",
                                 "category": "dummy:foo",
                                 "icon": "minecraft:textures/mob_effect/nausea.png",
                                 "sortnum": 0,
+                                "flag": "foo:bar",
                                 "pages": [
                                     {
                                         "type": "patchouli:text",
@@ -383,6 +411,26 @@ def dummy_setup(session: nox.Session):
                                         "trigger": "story/smelt_iron",
                                         "text": "Wow, what a wonderful quest this is here",
                                     },
+                                    {
+                                        "type": "patchouli:relations",
+                                        "entries": [
+                                            "dummy:otherrecipes",
+                                            "dummy:bar",
+                                        ],
+                                        "text": "have a look at these related entries!!",
+                                    },
+                                    {
+                                        "type": "patchouli:entity",
+                                        "entity": "minecraft:chicken",
+                                        "text": "ah yes, the chicken. it lays eggs and stuff",
+                                    },
+                                    {
+                                        "type": "patchouli:link",
+                                        "url": "https://github.com/hexdoc-dev/hexdoc",
+                                        "link_text": "hexdoc GitHub",
+                                        "text": "Link page",
+                                    },
+                                    {"type": "patchouli:empty"},
                                 ],
                             },
                             "entries/otherrecipes.json": {
@@ -434,6 +482,83 @@ def dummy_setup(session: nox.Session):
                                         "recipe": "dummy:test_blasting",
                                         "text": "Blasting Time !",
                                     },
+                                ],
+                            },
+                            "entries/flags.json": {
+                                "name": "Flags",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:paper",
+                                "pages": [
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 1",
+                                        "flag": "does not exist",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 2",
+                                        "flag": "foo:bar",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 3",
+                                        "flag": "advancements_disabled_foo",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 4",
+                                        "flag": "mod:aaaaaaaaa",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "enabled 5",
+                                        "flag": "mod:minecraft",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 1",
+                                        "flag": "foo:baz",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 2",
+                                        "flag": "mod:foo",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 3",
+                                        "flag": "advancements_disabled_bar",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "disabled 4",
+                                        "flag": "debug",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "web only",
+                                        "flag": "mod:hexdoc:web_only",
+                                    },
+                                    {
+                                        "type": "patchouli:text",
+                                        "text": "ingame only",
+                                        "flag": "!mod:hexdoc:web_only",
+                                    },
+                                ],
+                            },
+                            "entries/empty.json": {
+                                "name": "Empty entry",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:glass_pane",
+                                "pages": [],
+                            },
+                            "entries/disabled.json": {
+                                "name": "Disabled",
+                                "category": "dummy:foo",
+                                "icon": "minecraft:bedrock",
+                                "flag": "foo:baz",
+                                "pages": [
+                                    "disabled",
                                 ],
                             },
                         },
@@ -517,6 +642,12 @@ def dummy_setup(session: nox.Session):
                         { modid="hexdoc" },
                     ]
                     export_dir = "src/hexdoc_dummy/_export/generated"
+
+                    [flags]
+                    "foo:bar" = true
+                    advancements_disabled_foo = true
+                    "foo:baz" = false
+                    "mod:foo" = false
 
                     [textures]
                     strict = false

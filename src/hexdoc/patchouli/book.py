@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from typing import Any, Literal
 
@@ -20,6 +21,8 @@ from .category import Category
 from .entry import Entry
 from .text import FormattingContext, FormatTree
 
+logger = logging.getLogger(__name__)
+
 
 class Book(HexdocModel):
     """Main Patchouli book class.
@@ -35,6 +38,7 @@ class Book(HexdocModel):
 
     # not in book.json
     _categories: dict[ResourceLocation, Category] = PrivateAttr(default_factory=dict)
+    _all_entries: dict[ResourceLocation, Entry] = PrivateAttr(default_factory=dict)
 
     # required
     name: LocalizedStr
@@ -78,6 +82,13 @@ class Book(HexdocModel):
     def categories(self):
         return self._categories
 
+    @property
+    def all_entries(self):
+        """
+        Note: includes external entries as well (not just internal ones)
+        """
+        return self._all_entries
+
     def _load_categories(self, context: ContextSource, book_ctx: BookContext):
         categories = Category.load_all(
             cast_context(context),
@@ -113,6 +124,9 @@ class Book(HexdocModel):
             use_resource_pack=self.use_resource_pack,
         ):
             entry = Entry.load(resource_dir, id, data, cast_context(context))
+            if not entry.is_flag_enabled:
+                logger.info(f"Skipping entry {id} due to disabled flag {entry.flag}")
+                continue
 
             spoilered_categories[entry.category_id] = (
                 entry.is_spoiler and spoilered_categories.get(entry.category_id, True)
@@ -121,6 +135,7 @@ class Book(HexdocModel):
             # i used the entry to insert the entry (pretty sure thanos said that)
             if resource_dir.internal:
                 internal_entries[entry.category_id][entry.id] = entry
+            self._all_entries[entry.id] = entry
 
             link_base = book_ctx.get_link_base(resource_dir)
             book_ctx.book_links[entry.book_link_key] = link_base.with_fragment(

@@ -1,7 +1,7 @@
 import os
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import pytest
 from hexdoc.core.properties import Properties
@@ -41,13 +41,18 @@ def path_snapshot(snapshot: SnapshotAssertion):
 
 
 @pytest.fixture
-def pm():
-    return PluginManager(branch="main", props=cast(Properties, None))
+def pm_props():
+    return Properties.model_construct(flags={})
 
 
 @pytest.fixture
-def empty_pm():
-    return PluginManager(branch="main", props=cast(Properties, None), load=False)
+def pm(pm_props: Properties):
+    return PluginManager(branch="main", props=pm_props)
+
+
+@pytest.fixture
+def empty_pm(pm_props: Properties):
+    return PluginManager(branch="main", props=pm_props, load=False)
 
 
 @pytest.fixture(scope="session")

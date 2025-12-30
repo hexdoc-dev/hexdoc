@@ -1,4 +1,4 @@
-from typing import ClassVar, Iterator, Unpack
+from typing import Any, ClassVar, Iterator, Unpack
 
 from pydantic import (
     ConfigDict,
@@ -36,6 +36,14 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
     show_notification: AtLeast_1_20[bool] | Before_1_20[None] = Field(
         default_factory=ValueIfVersion(">=1.20", True, None)
     )
+
+    fabric_load_conditions: list[dict[str, Any]] | None = Field(
+        default=None, alias="fabric:load_conditions"
+    )
+    """Fabric resource conditions.
+
+    https://github.com/FabricMC/fabric/blob/761f669d0a6fbfe2ae6d71d767651f32a13d37fc/fabric-resource-conditions-api-v1/src/main/java/net/fabricmc/fabric/api/resource/conditions/v1/ResourceConditions.java#L64
+    """
 
     # not in the actual model
 

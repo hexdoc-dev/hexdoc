@@ -256,6 +256,8 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
 ResLoc = ResourceLocation
 
 
+# FIXME: commas?????????????????
+# https://vazkiimods.github.io/Patchouli/docs/patchouli-advanced/itemstack-format
 @dataclass(frozen=True, repr=False)
 class ItemStack(BaseResourceLocation, regex=_make_regex(count=True, nbt=True)):
     """Represents an item with optional count and NBT.
@@ -348,12 +350,15 @@ def _parse_nbt(nbt: str | None) -> Compound | None:
     if nbt is None:
         return None
 
+    # TODO: maybe re-add strict parsing when we're sure it will actually work?
     try:
         result = parse_nbt(nbt)
-    except ValueError as e:
-        raise ValueError(f"Failed to parse sNBT literal '{nbt}': {e}") from e
+    except Exception as e:
+        logger.warning(f"Failed to parse sNBT literal '{nbt}': {e}")
+        return None
 
     if not isinstance(result, Compound):
-        raise ValueError(f"Expected Compound, got {type(result)}: {result}")
+        logger.warning(f"Expected Compound, got {type(result)}: {result}")
+        return None
 
     return result

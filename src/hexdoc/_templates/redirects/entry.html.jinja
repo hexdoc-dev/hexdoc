@@ -8,7 +8,9 @@
 {%- endblock title %}
 
 {% block description -%}
-  {{ fmt_txt.styled(entry.first_text_page.text) }}
+  {%- if entry.first_text_page -%}
+    {{ fmt_txt.styled(entry.first_text_page.text) }}
+  {%- endif -%}
 {%- endblock description %}
 
 {% block image -%}

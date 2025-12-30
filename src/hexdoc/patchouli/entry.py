@@ -1,19 +1,21 @@
-from typing import Iterable, Iterator
+import logging
+from typing import Any, Iterable, Iterator
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from hexdoc.core import ItemStack, LocalizedStr, ResourceLocation
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
-from hexdoc.minecraft.recipe import CraftingRecipe
 from hexdoc.model import Color, IDModel
+from hexdoc.patchouli.page.abstract_pages import AccumulatorPage, PageWithAccumulator
 from hexdoc.utils import Sortable
 
-from .page import CraftingPage, Page, PageWithTitle
-from .text import FormatTree
-from .utils import AdvancementSpoilered
+from .page import Page
+from .utils import AdvancementSpoilered, Flagged
+
+logger = logging.getLogger(__name__)
 
 
-class Entry(IDModel, Sortable, AdvancementSpoilered):
+class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
     """Entry json file, with pages and localizations.
 
     See: https://vazkiimods.github.io/Patchouli/docs/reference/entry-json
@@ -27,7 +29,6 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
 
     # optional (entry.json)
     advancement: ResourceLocation | None = None
-    flag: str | None = None
     priority: bool = False
     secret: bool = False
     read_by_default: bool = False
@@ -70,57 +71,47 @@ class Entry(IDModel, Sortable, AdvancementSpoilered):
                 return page
 
     def preprocess_pages(self) -> Iterator[Page]:
-        """Combines adjacent CraftingPage recipes as much as possible."""
-        accumulator = _CraftingPageAccumulator.blank()
+        """Combines adjacent PageWithAccumulator recipes as much as possible."""
+        acc: AccumulatorPage[Any] | None = None
 
         for page in self.pages:
-            match page:
-                case CraftingPage(
-                    recipes=list(recipes),
-                    text=None,
-                    title=None,
-                    anchor=None,
-                ):
-                    accumulator.recipes += recipes
-                case CraftingPage(
-                    recipes=list(recipes),
-                    title=LocalizedStr() as title,
-                    text=None,
-                    anchor=None,
-                ):
-                    if accumulator.recipes:
-                        yield accumulator
-                    accumulator = _CraftingPageAccumulator.blank()
-                    accumulator.recipes += recipes
-                    accumulator.title = title
-                case CraftingPage(
-                    recipes=list(recipes),
-                    title=None,
-                    text=FormatTree() as text,
-                    anchor=None,
-                ):
-                    accumulator.title = None
-                    accumulator.text = text
-                    accumulator.recipes += recipes
-                    yield accumulator
-                    accumulator = _CraftingPageAccumulator.blank()
-                case _:
-                    if accumulator.recipes:
-                        yield accumulator
-                        accumulator = _CraftingPageAccumulator.blank()
-                    yield page
+            if isinstance(page, PageWithAccumulator):
+                if not (acc and acc.can_append(page)):
+                    if acc and acc.has_content:
+                        yield acc
+                    acc = page.accumulator_type().from_page(page)
 
-        if accumulator.recipes:
-            yield accumulator
+                acc.append(page)
+
+                if not acc.can_append_more:
+                    yield acc
+                    acc = None
+            else:
+                if acc and acc.has_content:
+                    yield acc
+                acc = None
+                yield page
+
+        if acc and acc.has_content:
+            yield acc
 
     def _get_advancement(self):
         # implements AdvancementSpoilered
         return self.advancement
 
-
-class _CraftingPageAccumulator(PageWithTitle, template_type="patchouli:crafting"):
-    recipes: list[CraftingRecipe] = Field(default_factory=list)
-
-    @classmethod
-    def blank(cls):
-        return cls.model_construct()
+    @model_validator(mode="after")
+    def _skip_disabled_pages(self):
+        new_pages = list[Page]()
+        for i, page in enumerate(self.pages):
+            if not page.is_flag_enabled:
+                logger.info(
+                    f"Skipping page {i} of entry {self.id} due to disabled flag {page.flag}"
+                )
+                continue
+            new_pages.append(page)
+        if not new_pages:
+            logger.warning(
+                f"Entry has no pages{' after applying flags' if self.pages else ''}: {self.id}"
+            )
+        self.pages = new_pages
+        return self

@@ -1,3 +1,7 @@
+{% macro plain_text() -%}
+  {{ caller()|replace("*", "\\*") }}
+{%- endmacro %}
+
 {# CommandStyle #}
 
 {% macro command_obfuscated(style) -%}
@@ -52,9 +56,9 @@
 {# ParagraphStyle #}
 
 {% macro paragraph_paragraph(style) -%}
-  {{ caller() }}\n
+  {{ caller()~"\n" }}
 {%- endmacro %}
 
 {% macro paragraph_list_item(style) -%}
-{{ "  " * style.level }}* {{ caller() }}\n
+{{ "  " * style.level }}- {{ caller()~"\n" }}
 {%- endmacro %}

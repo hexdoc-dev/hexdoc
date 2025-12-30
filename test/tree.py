@@ -8,7 +8,8 @@ if TYPE_CHECKING:
 else:
     from typing import Any as JSONValue
 
-FileValue = JSONValue | tuple[Literal["a"], str] | Callable[[str | None], str]
+OpenMode = Literal["w", "a", "wb", "ab"]
+FileValue = JSONValue | tuple[OpenMode, str | bytes] | Callable[[str | None], str]
 
 FileTree = dict[str, "FileTree | FileValue"]
 
@@ -28,7 +29,12 @@ def write_file_tree(root: str | Path, tree: FileTree):
             case tuple((mode, text)):
                 # append to existing file
                 with path.open(mode) as f:
-                    f.write(dedent(text))
+                    if isinstance(text, bytes):
+                        f.write(text)
+                    elif isinstance(text, str):
+                        f.write(dedent(text))
+                    else:
+                        raise TypeError()
             case str() as text:
                 # anything else - usually just text
                 path.parent.mkdir(parents=True, exist_ok=True)

@@ -113,7 +113,7 @@ class Tag(HexdocModel):
             tag = self
         else:
             tag = self.model_copy(
-                update={"raw_values": current.values | self.values},
+                update={"values": current.values | self.values},
             )
         return tag.model_dump_json(by_alias=True)
 

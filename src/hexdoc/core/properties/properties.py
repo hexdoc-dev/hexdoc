@@ -105,6 +105,12 @@ class Properties(BaseProperties):
 
     textures: TexturesProps = Field(default_factory=lambda: TexturesProps())
 
+    flags: dict[str, bool] = Field(default_factory=dict)
+    """Local Patchouli flag overrides.
+
+    This has the final say over built-in defaults and flags exported by other mods.
+    """
+
     template: TemplateProps | None = None
 
     lang: defaultdict[

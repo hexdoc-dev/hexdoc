@@ -136,7 +136,6 @@ class PydanticOrderedSet(OrderedSet[_T]):
         # serialize to list
         return core_schema.plain_serializer_function_ser_schema(
             function=cls._get_items,
-            return_schema=handler.generate_schema(list[type_arg]),
         )
 
     def _get_items(self):

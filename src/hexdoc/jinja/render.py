@@ -87,7 +87,7 @@ def create_jinja_env(pm: PluginManager, include: Sequence[str], props_file: Path
         )
     )
 
-    return pm.update_jinja_env(env, include)
+    return pm.update_jinja_env(include, env)
 
 
 def create_jinja_env_with_loader(loader: BaseLoader):
@@ -234,6 +234,8 @@ def render_book(
     }
     pm.update_template_args(template_args)
 
+    pm.pre_render_book(template_args, output_dir, props.template.include)
+
     for filename, (template, extra_args) in templates.items():
         file = template.render(template_args | dict(extra_args))
         stripped_file = strip_empty_lines(file)
@@ -284,6 +286,8 @@ def render_book(
         )
 
     (output_dir / MARKER_NAME).write_text(marker.model_dump_json(), "utf-8")
+
+    pm.post_render_book(template_args, output_dir, props.template.include)
 
 
 def strip_empty_lines(text: str) -> str:

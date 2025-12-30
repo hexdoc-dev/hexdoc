@@ -1,7 +1,16 @@
 from collections import defaultdict
 from typing import Self
 
-from pydantic import Field, ValidationInfo, field_validator, model_validator
+from jinja2 import pass_context
+from jinja2.runtime import Context
+from pydantic import (
+    Field,
+    PrivateAttr,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
+from typing_extensions import override
 
 from hexdoc.core import Entity, LocalizedStr, ResourceLocation
 from hexdoc.graphics import ImageField, ItemImage, TextureImage
@@ -18,7 +27,14 @@ from hexdoc.minecraft.recipe import (
 from hexdoc.model import HexdocModel
 
 from ..text import FormatTree
-from .abstract_pages import Page, PageWithDoubleRecipe, PageWithText, PageWithTitle
+from .abstract_pages import (
+    Page,
+    PageWithDoubleRecipe,
+    PageWithDoubleRecipeAccumulator,
+    PageWithText,
+    PageWithTitle,
+    RecipeAccumulatorPage,
+)
 
 
 class TextPage(Page, type="patchouli:text"):
@@ -36,7 +52,18 @@ class CampfireCookingPage(
     pass
 
 
-class CraftingPage(PageWithDoubleRecipe[CraftingRecipe], type="patchouli:crafting"):
+class CraftingPage(
+    PageWithDoubleRecipeAccumulator[CraftingRecipe], type="patchouli:crafting"
+):
+    @classmethod
+    @override
+    def accumulator_type(cls):
+        return CraftingAccumulatorPage
+
+
+class CraftingAccumulatorPage(
+    RecipeAccumulatorPage[CraftingPage, CraftingRecipe], page_type=CraftingPage
+):
     pass
 
 
@@ -45,12 +72,41 @@ class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
 
 
 class EntityPage(PageWithText, type="patchouli:entity"):
+    _entity_name: LocalizedStr = PrivateAttr()
+    _texture: PNGTexture = PrivateAttr()
+
     entity: Entity
     scale: float = 1
     offset: float = 0
     rotate: bool = True
     default_rotation: float = -45
-    name: LocalizedStr | None = None
+    name_field: LocalizedStr | None = Field(default=None, serialization_alias="name")
+
+    @property
+    def entity_name(self):
+        return self._entity_name
+
+    @property
+    def name(self):
+        if self.name_field is None or not self.name_field.value:
+            return self._entity_name
+        return self.name_field
+
+    @property
+    def texture(self):
+        return self._texture
+
+    @model_validator(mode="after")
+    def _get_texture(self, info: ValidationInfo) -> Self:
+        # can't be on Entity's validator because it's frozen and
+        # causes circular references with the PNGTexture
+        assert info.context is not None
+        i18n = I18n.of(info)
+        self._entity_name = i18n.localize_entity(self.entity.id)
+        self._texture = PNGTexture.load_id(
+            id="textures/entities" / self.entity.id + ".png", context=info.context
+        )
+        return self
 
 
 class ImagePage(PageWithTitle, type="patchouli:image"):
@@ -143,6 +199,13 @@ class QuestPage(PageWithText, type="patchouli:quest"):
 class RelationsPage(PageWithText, type="patchouli:relations"):
     entries: list[ResourceLocation]
     title: LocalizedStr = LocalizedStr.with_value("Related Chapters")
+
+    @pass_context
+    def get_entries(self, context: Context) -> list[ResourceLocation]:
+        for entry in self.entries:
+            if entry not in context["book"].all_entries:
+                raise ValueError(f"Broken entry reference in relations: {entry}")
+        return self.entries
 
 
 class SmeltingPage(PageWithDoubleRecipe[SmeltingRecipe], type="patchouli:smelting"):

@@ -49,10 +49,4 @@
             "fileMatch": ["**/patchouli_books/*/*/entries/**/*.json"],
         },
     ],
-    "files.exclude": {
-        ".ruff_cache": true,
-        ".nox": true,
-        "dist": true,
-        "node_modules": true,
-    }
 }

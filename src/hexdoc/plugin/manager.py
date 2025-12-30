@@ -28,14 +28,19 @@ from jinja2.sandbox import SandboxedEnvironment
 from hexdoc.utils import ContextSource, ValidationContext
 
 if TYPE_CHECKING:
+    from hexdoc.cli.app import LoadedBookInfo
     from hexdoc.core import I18n, Properties, ResourceLocation
     from hexdoc.graphics.validators import ItemImage
     from hexdoc.patchouli import FormatTree
+
+import logging
 
 from .book_plugin import BookPlugin
 from .mod_plugin import DefaultRenderedTemplates, ModPlugin, ModPluginWithBook
 from .specs import HEXDOC_PROJECT_NAME, PluginSpec
 from .types import HookReturn, HookReturns
+
+logger = logging.getLogger(__name__)
 
 _T = TypeVar("_T")
 
@@ -209,16 +214,54 @@ class PluginManager(ValidationContext):
         if returns := caller.try_call(context=context):
             yield from flatten_hook_returns(returns)
 
-    def update_jinja_env(self, env: SandboxedEnvironment, modids: Sequence[str]):
+    def update_jinja_env(self, modids: Sequence[str], env: SandboxedEnvironment):
         for modid in modids:
             plugin = self.mod_plugin(modid)
             plugin.update_jinja_env(env)
         return env
 
+    def pre_render_site(
+        self,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).pre_render_site(self.props, books, env, output_dir)
+
+    def post_render_site(
+        self,
+        books: list[LoadedBookInfo],
+        env: SandboxedEnvironment,
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).post_render_site(self.props, books, env, output_dir)
+
     def update_template_args(self, template_args: dict[str, Any]):
         caller = self._hook_caller(PluginSpec.hexdoc_update_template_args)
         caller.try_call(template_args=template_args)
         return template_args
+
+    def pre_render_book(
+        self,
+        template_args: dict[str, Any],
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).pre_render_book(template_args, output_dir)
+
+    def post_render_book(
+        self,
+        template_args: dict[str, Any],
+        output_dir: Path,
+        modids: Sequence[str],
+    ):
+        for modid in modids:
+            self.mod_plugin(modid).post_render_book(template_args, output_dir)
 
     def load_resources(self, modid: str) -> Iterator[ModuleType]:
         plugin = self.mod_plugin(modid)
@@ -291,6 +334,34 @@ class PluginManager(ValidationContext):
         packages = self._hook_caller(__spec)(*args, **kwargs)
         for package in flatten_hook_returns(packages):
             yield import_package(package)
+
+    def load_flags(self) -> dict[str, bool]:
+        # https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/config-gating
+        flags = {
+            "debug": False,
+            "advancements_disabled": False,
+            "testing_mode": False,
+        }
+
+        # first, resolve exported flags by OR
+        for modid, plugin in self.mod_plugins.items():
+            for flag, value in plugin.flags.items():
+                if flag in flags:
+                    resolved = flags[flag] = flags[flag] or value
+                    logger.debug(
+                        f"{modid} exports flag {flag}={value}, resolving to {resolved}"
+                    )
+                else:
+                    flags[flag] = value
+                    logger.debug(f"{modid} exports flag {flag}={value}")
+
+        # then, apply local overrides
+        flags |= self.props.flags
+
+        # any missing flags will default to True
+
+        logger.debug(f"Resolved flags: {flags}")
+        return flags
 
     @overload
     def _hook_caller(self, spec: Callable[_P, None]) -> _NoCallTypedHookCaller[_P]: ...

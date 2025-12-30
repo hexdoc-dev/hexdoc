@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Self
 
 from pydantic import Field
@@ -12,9 +13,12 @@ from hexdoc.utils.graphs import TypedDiGraph
 
 from .entry import Entry
 from .text import FormatTree
+from .utils import Flagged
+
+logger = logging.getLogger(__name__)
 
 
-class Category(IDModel, Sortable):
+class Category(IDModel, Sortable, Flagged):
     """Category with pages and localizations.
 
     See: https://vazkiimods.github.io/Patchouli/docs/reference/category-json
@@ -31,7 +35,6 @@ class Category(IDModel, Sortable):
     # optional
     parent_id: ResourceLocation | None = Field(default=None, alias="parent")
     _parent_cmp_key: tuple[int, ...] | None = None
-    flag: str | None = None
     sortnum: int = 0
     secret: bool = False
 
@@ -53,7 +56,16 @@ class Category(IDModel, Sortable):
             "categories",
             use_resource_pack,
         ):
-            category = categories[id] = cls.load(resource_dir, id, data, context)
+            # Patchouli checks flags before resolving category parents
+            # https://github.com/VazkiiMods/Patchouli/blob/abd6d03a08c37bcf116730021fda9f477412b31f/Xplat/src/main/java/vazkii/patchouli/client/book/BookContentsBuilder.java#L151
+            category = cls.load(resource_dir, id, data, context)
+            if not category.is_flag_enabled:
+                logger.info(
+                    f"Skipping category {id} due to disabled flag {category.flag}"
+                )
+                continue
+
+            categories[id] = category
             if category.parent_id:
                 G.add_edge(category.parent_id, category.id)
 
@@ -67,7 +79,13 @@ class Category(IDModel, Sortable):
 
         # late-init _parent_cmp_key
         for parent_id in G.topological_sort():
-            parent = categories[parent_id]
+            parent = categories.get(parent_id)
+            if parent is None:
+                children = ", ".join(str(v) for _, v in G.iter_out_edges(parent_id))
+                raise ValueError(
+                    f"Parent category {parent_id} required by {children} does not exist"
+                )
+
             for _, child_id in G.iter_out_edges(parent_id):
                 categories[child_id]._parent_cmp_key = parent._cmp_key
 

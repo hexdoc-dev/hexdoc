@@ -4,13 +4,115 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [UNRELEASED]
+## `1!0.1.0a35`
+
+### Fixed
+
+* Fixed another issue with the web book being overwritten by a redirect page if the plugin version is removed from the site path.
+
+## `1!0.1.0a34`
+
+### Added
+
+* Added several new hooks to `ModPlugin` for running code before/after the web book is generated.
+
+## `1!0.1.0a33`
+
+### Fixed
+
+* Fixed the web book being overwritten by a redirect page if the plugin version is removed from the site path.
+
+## `1!0.1.0a32`
+
+### Added
+
+* Added base classes `PageWithAccumulator`, `AccumulatorPage`, etc. to allow consecutive pages of the same type to be merged into a single page.
 
 ### Changed
 
-* Update dependencies:
-  * Pyright: `1.1.389`
-  * Pillow: `11.0.0`
+* `CraftingPage` now extends `PageWithDoubleRecipeAccumulator` instead of `PageWithDoubleRecipe`.
+
+### Fixed
+
+* Fixed a validation failure when using [Fabric Resource Conditions](https://github.com/FabricMC/fabric/blob/761f669d0a6fbfe2ae6d71d767651f32a13d37fc/fabric-resource-conditions-api-v1/src/main/java/net/fabricmc/fabric/api/resource/conditions/v1/ResourceConditions.java#L64).
+
+## `1!0.1.0a31`
+
+### Added
+
+* Added proper support for Patchouli's config flag system. See https://hexdoc.hexxy.media for more details.
+
+### Changed
+
+* A warning is now logged for entries with no pages.
+
+### Fixed
+
+* Fixed a bug that prevented books with empty entries from building.
+
+## `1!0.1.0a30`
+
+### Fixed
+
+* Fixed Markdown newlines being incorrectly escaped in some cases.
+
+## `1!0.1.0a29`
+
+### Fixed
+
+* Fixed incorrect Markdown escaping in `macros/styles.md.jinja`.
+
+## `1!0.1.0a28`
+
+### Added
+
+* Added a page template for `patchouli:entity` pages, by penguinencounter in [#93](https://github.com/hexdoc-dev/hexdoc/pull/93).
+
+## `1!0.1.0a27`
+
+### Added
+
+* Added a page template for `patchouli:relations` pages, by penguinencounter in [#92](https://github.com/hexdoc-dev/hexdoc/pull/92).
+
+### Fixed
+
+* Changed animated texture type from linear to steps to fix glitched animations on page load, by penguinencounter in [#89](https://github.com/hexdoc-dev/hexdoc/pull/89).
+
+## `1!0.1.0a26`
+
+### Fixed
+
+* Hotfix: Require `click<8.2.0` to work around issue where `HEXDOC_RELEASE` always parses as True ([#88](https://github.com/hexdoc-dev/hexdoc/issues/88)).
+
+## `1!0.1.0a25`
+
+### Contributions
+
+* Add ru_ru localization for main hexdoc lang, by JustS-js in [#87](https://github.com/hexdoc-dev/hexdoc/pull/87).
+
+## `1!0.1.0a24`
+
+### Fixed
+
+* Fix incorrect tag serialization caused by PydanticOrderedSet, which resulted in tags with optional entries failing to load in certain cases.
+
+## `1!0.1.0a23`
+
+### Fixed
+
+* Hotfix: Log a warning instead of failing the build when item NBT parsing fails.
+
+## `1!0.1.0a22`
+
+### Changed
+
+* Update Pillow to 11.0, which should hopefully allow hexdoc to be used with Python 3.12+.
+* ItemStack now uses [nbtlib](https://pypi.org/project/nbtlib/) to parse NBT tags.
+* Spotlight pages now use item names from NBT tags if set.
+
+### Fixed
+
+* Avoid adding a double title to spotlight pages with a title field.
 
 ## `1!0.1.0a21`
 

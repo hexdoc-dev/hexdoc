@@ -126,6 +126,7 @@ def init_context(
                 loader
             ).value_ids_set,
             all_metadata=all_metadata,
+            flags=pm.load_flags(),
         ),
     ]:
         item.add_to_context(context)

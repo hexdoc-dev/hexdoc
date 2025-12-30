@@ -1,3 +1,7 @@
+{% macro plain_text() -%}
+  {{ caller() }}
+{%- endmacro %}
+
 {# CommandStyle #}
 
 {% macro command_obfuscated(style) -%}

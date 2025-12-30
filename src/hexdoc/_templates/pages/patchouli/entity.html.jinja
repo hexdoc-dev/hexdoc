@@ -1,0 +1,23 @@
+{% extends "pages/patchouli/page.html.jinja" %}
+
+{% import "macros/formatting.html.jinja" as fmt with context %}
+{% import "macros/textures.html.jinja" as texture_macros with context %}
+
+{% block body %}
+  <h4>
+    {{- page.name -}}
+    {%- if page_anchor_id is defined %}
+      {{- fmt.permalink(page_anchor_id) -}}
+    {% endif -%}
+  </h4>
+  {% block image %}
+    <p class="image-wrapper">
+      {{ texture_macros.render_texture(
+        name=page.entity_name,
+        texture=page.texture,
+        class_names=["entity-display"]
+      ) }}
+    </p>
+  {% endblock image %}
+  {{ fmt.styled(page.text) }}
+{% endblock %}
