@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hexdoc"
-dynamic = ["version, "readme""]
+dynamic = ["version", "readme"]
 description = "Python web book docgen for Patchouli and Hex Casting."
 authors = [
     { name="object-Object" },
