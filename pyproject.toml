@@ -2,6 +2,7 @@
 requires = [
     "hatchling>=1.19.0",
     "hatch-regex-commit",
+        "hatch-fancy-pypi-readme",
 ]
 build-backend = "hatchling.build"
 
@@ -9,13 +10,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hexdoc"
-dynamic = ["version"]
+dynamic = ["version, "readme""]
 description = "Python web book docgen for Patchouli and Hex Casting."
 authors = [
     { name="object-Object" },
     { name="Alwinfy" },
 ]
-readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["hexdoc"]
 classifiers = [
@@ -252,3 +252,12 @@ reportUnusedVariable = "warning"
 
 reportMissingTypeStubs = "none"
 reportDuplicateImport = "none"
+
+
+# hatch-fancy-pypi-readme configuration
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+end-before = "## Contributing"
