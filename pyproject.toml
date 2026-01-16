@@ -2,7 +2,7 @@
 requires = [
     "hatchling>=1.19.0",
     "hatch-regex-commit",
-        "hatch-fancy-pypi-readme",
+    "hatch-fancy-pypi-readme",
 ]
 build-backend = "hatchling.build"
 
