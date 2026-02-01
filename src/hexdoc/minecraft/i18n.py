@@ -358,8 +358,11 @@ class I18n(ValidationContextModel):
         return self.localize(f"{root}.{texture_id.namespace}.{rest}", silent=silent)
 
     def localize_lang(self, silent: bool = False):
-        name = self.localize("language.name", silent=silent)
+        name = self.localize("language.name", default="", silent=silent)
         region = self.localize("language.region", silent=silent)
+        # don't allow language names to fall back to English (United States)
+        if name.value == "":
+            return self.lang
         return f"{name} ({region})"
 
     @model_validator(mode="after")
