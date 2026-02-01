@@ -6,6 +6,7 @@ import shutil
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import langcodes
 from _hexdoc_favicons import Favicons
 from jinja2 import (
     BaseLoader,
@@ -200,6 +201,7 @@ def render_book(
         "version": version,
         "lang": lang,
         "lang_name": lang_name,
+        "lang_html": langcodes.standardize_tag(lang),
         "is_bleeding_edge": version.startswith("latest"),
         "favicons_html": favicons_html,
         "favicons_formats": favicons_formats,

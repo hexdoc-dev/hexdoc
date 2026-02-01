@@ -43,6 +43,7 @@ dependencies = [
     "hatch~=1.9",
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
+    "langcodes~=3.5",
     "moderngl[headless]~=5.10",
     "moderngl-window~=2.4",
     "more_itertools~=10.1",

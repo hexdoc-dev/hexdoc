@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a36`
+
+### Changed
+
+* The `lang` attribute in `index.html` is now generated using [langcodes](https://pypi.org/project/langcodes/) instead of always defaulting to `en`.
+
+### Fixed
+
+* Fixed the language selector defaulting to "English (United States)" if the translation is missing.
+
 ## `1!0.1.0a35`
 
 ### Fixed
