@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import json
 import logging
+import textwrap
 from collections import defaultdict
 from functools import total_ordering
 from typing import Any, Callable, Self
 
+import langcodes
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
@@ -123,6 +125,15 @@ class I18n(ValidationContextModel):
 
         for resource_dir, lang_id, data in cls._load_lang_resources(loader):
             lang = lang_id.path
+            if not langcodes.tag_is_valid(lang):
+                modid = resource_dir.modid or lang_id.namespace
+                raise ValueError(
+                    textwrap.dedent(f"""\
+                        Attempted to load invalid lang (provided by {modid}): {lang}
+                        Resource dir: {resource_dir.path}
+                    """).rstrip()
+                )
+
             lookups[lang] |= cls.parse_lookup(data)
             if not resource_dir.external:
                 internal_langs.add(lang)
@@ -156,6 +167,9 @@ class I18n(ValidationContextModel):
         enabled: bool,
         lang: str,
     ) -> Self:
+        if not langcodes.tag_is_valid(lang):
+            raise ValueError(f"Invalid lang: {lang}")
+
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
