@@ -40,7 +40,7 @@ dependencies = [
     # https://github.com/hexdoc-dev/hexdoc/issues/88
     "click<8.2.0",
     "frozendict~=2.4",
-    "hatch~=1.9",
+    "hatch>=1.16.5,<2",
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
     "langcodes~=3.5",
