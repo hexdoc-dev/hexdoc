@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a38`
+
+### Fixed
+
+* Bumped minimum Hatch dependency to 1.16.5 to fix a crash in `hexdoc ci build`.
+
 ## `1!0.1.0a37`
 
 ### Changed
