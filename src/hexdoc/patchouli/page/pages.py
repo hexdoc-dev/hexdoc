@@ -15,6 +15,8 @@ from typing_extensions import override
 from hexdoc.core import Entity, ItemStack, ResourceLocation
 from hexdoc.minecraft import I18n, LocalizedStr
 from hexdoc.minecraft.assets import ItemWithTexture, PNGTexture, TagWithTexture, Texture
+from hexdoc.minecraft.assets.items import ImageTexture
+from hexdoc.minecraft.assets.load_assets import validate_texture
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -188,10 +190,31 @@ class MultiblockPage(PageWithText, type="patchouli:multiblock"):
     multiblock: Multiblock | None = None
     enable_visualize: bool = True
 
+    _texture: ImageTexture | None = PrivateAttr(None)
+
+    @property
+    def texture(self):
+        return self._texture
+
+    @property
+    def _texture_id(self):
+        if self.multiblock_id:
+            return self.multiblock_id.with_path(
+                f"textures/multiblock/hexdoc/{self.multiblock_id.path}.png"
+            )
+
     @model_validator(mode="after")
-    def _check_multiblock(self) -> Self:
+    def _check_multiblock(self, info: ValidationInfo) -> Self:
         if self.multiblock_id is None and self.multiblock is None:
             raise ValueError(f"One of multiblock_id or multiblock must be set\n{self}")
+
+        if texture_id := self._texture_id:
+            self._texture = validate_texture(
+                texture_id,
+                context=info,
+                model_type=ImageTexture,
+            )
+
         return self
 
 

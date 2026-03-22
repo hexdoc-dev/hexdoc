@@ -3,25 +3,32 @@
 {% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {% block inner_body %}
-  {% if page.multiblock is defined %}
   <h5 class="multiblock-name">
     {{ page.name }}
   </h5>
   <details class="details-collapsible multiblock-details">
     {{ fmt.dropdown("hexdoc.multiblock") }}
-    {% for item, count in page.multiblock.bill_of_materials() %}
-      <div class="multiblock-ingredient">
-        <div class="item-slot">
-          <img
-            alt="Spotlight inventory slot"
-            src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
-          >
-          {{ texture_macros.render_item(item) }}
+    {% if page.multiblock is not none %}
+      {% for item, count in page.multiblock.bill_of_materials() %}
+        <div class="multiblock-ingredient">
+          <div class="item-slot">
+            <img
+              alt="Spotlight inventory slot"
+              src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
+            >
+            {{ texture_macros.render_item(item) }}
+          </div>
+          <span class="multiblock-ingredient-amount">{{ count }}x {{ item.name }}</span>
         </div>
-        <span class="multiblock-ingredient-amount">{{ count }}x {{ item.name }}</span>
-      </div>
-    {% endfor %}
-  {% endif %}
+      {% endfor %}
+    {% else %}
+      {{
+        texture_macros.render_texture(
+          name=page.name,
+          texture=page.texture,
+        )
+      }}
+    {% endif %}
   </details>
   {{ super() }}
 {% endblock inner_body %}
