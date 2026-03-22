@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a39`
+
+### Changed
+
+* Multiblock pages using `multiblock_id` are now required to provide a texture at `assets/{namespace}/textures/multiblock/hexdoc/{path}.png` to render in the multiblock dropdown.
+
+### Fixed
+
+* Fixed a bug where multiblock pages using `multiblock_id` would generate invalid HTML or crash.
+
 ## `1!0.1.0a38`
 
 ### Fixed
