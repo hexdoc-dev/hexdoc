@@ -26,12 +26,12 @@ Making changes to these settings will immediately trigger the built-in `pages-bu
 
 ## Deploying with GitHub Actions
 
-You can use the [`hexdoc-dev/hexdoc/.github/workflows/hexdoc.yml`](https://github.com/hexdoc-dev/hexdoc/blob/main/.github/workflows/hexdoc.yml) reusable workflow to build and deploy a hexdoc book using [GitHub Actions](https://docs.github.com/en/actions).
+You can use the [`hexdoc-dev/actions/.github/workflows/hexdoc.yml`](https://github.com/hexdoc-dev/actions/blob/main/.github/workflows/hexdoc.yml) reusable workflow to build and deploy a hexdoc book using [GitHub Actions](https://docs.github.com/en/actions).
 
 Try using [hexdoc-mod-template](https://github.com/hexdoc-dev/hexdoc-mod-template) to generate a sample project, or see [Hex Casting](https://github.com/FallingColors/HexMod/blob/efc889998ff54c13c08d40bcf07c2069c4cae6ee/.github/workflows/build_docs.yml#L26) for a real-world example.
 
 :::hex-casting
 
-[hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting-template) is a version of hexdoc-mod-template designed specifically for creating new Hex Casting addons. It's also compatible with [hexdummy](https://github.com/FallingColors/hexdummy).
+[hexdoc-hexcasting-template](https://github.com/hexdoc-dev/hexdoc-hexcasting-template) is a version of hexdoc-mod-template designed specifically for use with Hex Casting addons. Alternatively, [HexDummy](https://github.com/FallingColors/hexdummy) comes with built-in hexdoc support.
 
 :::
