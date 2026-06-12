@@ -6,7 +6,6 @@ import textwrap
 from collections import defaultdict
 from collections.abc import Callable
 from functools import total_ordering
-from pathlib import Path
 from typing import Any, Self
 
 import langcodes
@@ -127,7 +126,7 @@ class I18n(ValidationContextModel):
         internal_langs = set[str]()
 
         for resource_dir, lang_id, data in cls._load_lang_resources(loader):
-            lang = Path(lang_id.path).stem
+            lang = lang_id.path
             if not langcodes.tag_is_valid(lang):
                 modid = resource_dir.modid or lang_id.namespace
                 raise ValueError(
@@ -225,6 +224,7 @@ class I18n(ValidationContextModel):
                 (".yml", ".yaml"): decode_and_flatten_yaml_dict,
             },
             export=cls._export,
+            strip_suffix=True,
         )
 
     @classmethod

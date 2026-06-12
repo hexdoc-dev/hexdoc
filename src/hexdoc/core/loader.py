@@ -25,7 +25,7 @@ from hexdoc.utils import (
     write_to_path,
 )
 from hexdoc.utils.cd import relative_path_root
-from hexdoc.utils.deserialize import pick_decoder
+from hexdoc.utils.deserialize import decode_yaml_dict, pick_decoder
 from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
@@ -194,11 +194,22 @@ class ModResourceLoader(ValidationContext):
         )
 
         for book_id in books_to_check:
-            yield from self.load_resources(
+            yield from self.load_resources_with_decoders(
                 type="assets" if use_resource_pack else "data",
                 folder=Path("patchouli_books") / book_id.path / lang / folder,
                 namespace=book_id.namespace,
+                glob=[
+                    "**/*.json",
+                    "**/*.json5",
+                    "**/*.yml",
+                    "**/*.yaml",
+                ],
+                decoders={
+                    (".json", ".json5"): decode_json_dict,
+                    (".yml", ".yaml"): decode_yaml_dict,
+                },
                 allow_missing=True,
+                strip_suffix=True,
             )
 
     @overload
@@ -374,6 +385,7 @@ class ModResourceLoader(ValidationContext):
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
         internal_only: bool = False,
+        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     @overload
@@ -385,6 +397,7 @@ class ModResourceLoader(ValidationContext):
         id: ResourceLocation,
         allow_missing: bool = False,
         internal_only: bool = False,
+        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     def find_resources(
@@ -397,6 +410,7 @@ class ModResourceLoader(ValidationContext):
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
         internal_only: bool = False,
+        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         """Search for a glob under a given resource location in all of `resource_dirs`.
 
@@ -452,7 +466,7 @@ class ModResourceLoader(ValidationContext):
                     for path in base_path.glob(glob_):
                         # only strip json/json5, not eg. png
                         id_path = path.relative_to(base_path)
-                        if "json" in path.name:
+                        if strip_suffix:
                             id_path = strip_suffixes(id_path)
 
                         id = ResourceLocation(
