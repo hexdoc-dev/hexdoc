@@ -2,8 +2,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from pytest import MonkeyPatch
-
 from hexdoc._hooks import HexdocPlugin
 from hexdoc.cli.utils.load import init_context
 from hexdoc.core import ModResourceLoader
@@ -14,6 +12,7 @@ from hexdoc.minecraft import I18n
 from hexdoc.patchouli.book import Book
 from hexdoc.patchouli.text import FormatTree
 from hexdoc.plugin import PluginManager
+from pytest import MonkeyPatch
 
 from ..tree import write_file_tree
 

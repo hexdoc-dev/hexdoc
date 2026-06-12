@@ -110,7 +110,7 @@ class ModResourceLoader(ValidationContext):
     def __enter__(self):
         return self
 
-    def __exit__(self, *exc_details: object):
+    def __exit__(self, *exc_details: Any):
         return self._stack.__exit__(*exc_details)
 
     def close(self):
