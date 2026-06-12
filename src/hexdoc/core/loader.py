@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
+from typing import Any, Literal, Self, TypeVar, overload
 
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
@@ -110,7 +110,7 @@ class ModResourceLoader(ValidationContext):
     def __enter__(self):
         return self
 
-    def __exit__(self, *exc_details: Any):
+    def __exit__(self, *exc_details: object):
         return self._stack.__exit__(*exc_details)
 
     def close(self):
@@ -266,24 +266,31 @@ class ModResourceLoader(ValidationContext):
     ) -> tuple[PathResourceDir, Path]:
         """Find the first file with this resource location in `resource_dirs`.
 
-        If no file extension is provided, `.json` / `.json5` is assumed.
+        If no file extension is provided, `.json` / `.json5` / `.yml` is assumed.
 
         Raises FileNotFoundError if the file does not exist.
         """
 
         if isinstance(type, Path):
-            path_stub = type
+            path_stubs = [type]
         else:
             assert folder is not None and id is not None
-            path_stub = id.file_path_stub(type, folder)
+            has_suffix = Path(type).suffix != ""
+            if not has_suffix:
+                path_stubs = [
+                    (id + ".json").file_path_stub(type, folder, False),
+                    (id + ".json5").file_path_stub(type, folder, False),
+                    (id + ".yml").file_path_stub(type, folder, False),
+                ]
+            else:
+                path_stubs = [
+                    id.file_path_stub(type, folder, False),
+                ]
 
         # check by descending priority, return the first that exists
-        for resource_dir in self.resource_dirs:
-            path = resource_dir.path / path_stub
-            if path.is_file():
-                return resource_dir, path
-            if path.suffix == ".json":
-                path = path.with_suffix(".json5")
+        for path_stub in path_stubs:
+            for resource_dir in self.resource_dirs:
+                path = resource_dir.path / path_stub
                 if path.is_file():
                     return resource_dir, path
 
