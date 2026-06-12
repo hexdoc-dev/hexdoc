@@ -8,7 +8,7 @@ from collections.abc import Callable, Iterator, Sequence
 from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Literal, Self, TypeVar, overload
+from typing import Any, Literal, Mapping, Self, TypeVar, overload
 
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
@@ -25,6 +25,7 @@ from hexdoc.utils import (
     write_to_path,
 )
 from hexdoc.utils.cd import relative_path_root
+from hexdoc.utils.deserialize import pick_decoder
 from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
@@ -266,7 +267,7 @@ class ModResourceLoader(ValidationContext):
     ) -> tuple[PathResourceDir, Path]:
         """Find the first file with this resource location in `resource_dirs`.
 
-        If no file extension is provided, `.json` / `.json5` / `.yml` is assumed.
+        If no file extension is provided, `.json` / `.json5` / `.yml` / `.yaml` is assumed.
 
         Raises FileNotFoundError if the file does not exist.
         """
@@ -275,12 +276,12 @@ class ModResourceLoader(ValidationContext):
             path_stubs = [type]
         else:
             assert folder is not None and id is not None
-            has_suffix = Path(type).suffix != ""
-            if not has_suffix:
+            if not Path(type).suffix:
                 path_stubs = [
                     (id + ".json").file_path_stub(type, folder, False),
                     (id + ".json5").file_path_stub(type, folder, False),
                     (id + ".yml").file_path_stub(type, folder, False),
+                    (id + ".yaml").file_path_stub(type, folder, False),
                 ]
             else:
                 path_stubs = [
@@ -337,6 +338,28 @@ class ModResourceLoader(ValidationContext):
                 resource_dir,
                 path,
                 decode=decode,
+                export=export,
+            )
+            yield resource_dir, value_id, value
+
+    def load_resources_with_decoders(
+        self,
+        type: ResourceType,
+        *,
+        decoders: Mapping[tuple[str, ...], Callable[[str], _T]] = {
+            tuple([".json*"]): decode_json_dict
+        },
+        export: ExportFn[_T] | Literal[False] | None = None,
+        **kwargs: Any,
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
+        """Like `find_resources`, but also loads the file contents and reexports it."""
+        for resource_dir, value_id, path in self.find_resources(type, **kwargs):
+            decoder = pick_decoder(str(path.suffix), decoders)
+
+            value = self._load_path(
+                resource_dir,
+                path,
+                decode=decoder,
                 export=export,
             )
             yield resource_dir, value_id, value

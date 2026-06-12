@@ -5,7 +5,7 @@ import yaml
 _T_co = TypeVar("_T_co", covariant=True)
 
 
-def decode_yaml_dict(data: str | bytes) -> dict[str, str]:
+def decode_yaml_dict(data: str | bytes) -> dict[str, Any]:
     match data:
         case str():
             decoded = yaml.full_load(data)
@@ -36,7 +36,7 @@ def _flatten_inner(obj: dict[str, Any], prefix: str) -> dict[str, str]:
 
         match value:
             case dict():
-                _update_disallow_duplicates(out, _flatten_inner(value, key))
+                _update_disallow_duplicates(out, _flatten_inner(value, key))  # type: ignore
             case str():
                 _update_disallow_duplicates(out, {key: value})
             case _:

@@ -90,6 +90,7 @@ dev = [
     "ruff~=0.3.2",
     "pre-commit",
     "nox[uv]",
+    "types-pyyaml>=6.0.12.20260518",
 ]
 
 [project.urls]
@@ -254,8 +255,3 @@ reportUnusedVariable = "warning"
 
 reportMissingTypeStubs = "none"
 reportDuplicateImport = "none"
-
-[dependency-groups]
-dev = [
-    "types-pyyaml>=6.0.12.20260518",
-]

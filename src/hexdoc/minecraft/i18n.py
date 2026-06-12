@@ -6,7 +6,6 @@ import textwrap
 from collections import defaultdict
 from collections.abc import Callable
 from functools import total_ordering
-from itertools import chain
 from pathlib import Path
 from typing import Any, Self
 
@@ -24,7 +23,7 @@ from hexdoc.core.properties import LangProps
 from hexdoc.model import HexdocModel, ValidationContextModel
 from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.utils import decode_and_flatten_json_dict
-from hexdoc.utils.deserialize.yml import decode_and_flatten_yaml_dict
+from hexdoc.utils.deserialize import decode_and_flatten_yaml_dict
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
 logger = logging.getLogger(__name__)
@@ -209,32 +208,23 @@ class I18n(ValidationContextModel):
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):
-        return chain(
-            loader.load_resources(
-                "assets",
-                namespace="*",
-                folder="lang",
-                glob=[
-                    f"{lang}.json",
-                    f"{lang}.json5",
-                    f"{lang}.flatten.json",
-                    f"{lang}.flatten.json5",
-                ],
-                decode=decode_and_flatten_json_dict,
-                export=cls._export,
-                allow_missing=True,
-            ),
-            loader.load_resources(
-                "assets",
-                namespace="*",
-                folder="lang",
-                glob=[
-                    f"{lang}.yml",
-                ],
-                decode=decode_and_flatten_yaml_dict,
-                export=cls._export,
-                allow_missing=True,
-            ),
+        return loader.load_resources_with_decoders(
+            "assets",
+            namespace="*",
+            folder="lang",
+            glob=[
+                f"{lang}.json",
+                f"{lang}.json5",
+                f"{lang}.flatten.json",
+                f"{lang}.flatten.json5",
+                f"{lang}.yml",
+                f"{lang}.yaml",
+            ],
+            decoders={
+                (".json", ".json5"): decode_and_flatten_json_dict,
+                (".yml", ".yaml"): decode_and_flatten_yaml_dict,
+            },
+            export=cls._export,
         )
 
     @classmethod
