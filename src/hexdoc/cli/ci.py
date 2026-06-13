@@ -28,6 +28,7 @@ def build(
     *,
     props_file: PropsOption,
     release: ReleaseOption,
+    run_hatch_build: bool = True,
 ):
     from . import app as hexdoc_app
 
@@ -54,12 +55,13 @@ def build(
         release=release,
     )
 
-    site_dist = site_path / "dist"
-    if site_dist.is_dir():
-        shutil.rmtree(site_dist)
+    if run_hatch_build:
+        site_dist = site_path / "dist"
+        if site_dist.is_dir():
+            shutil.rmtree(site_dist)
 
-    subprocess.run(["hatch", "build", "--clean"], check=True)
-    shutil.copytree("dist", site_dist)
+        subprocess.run(["hatch", "build", "--clean"], check=True)
+        shutil.copytree("dist", site_dist)
 
     env.set_output("pages-url", pages_url)
 
