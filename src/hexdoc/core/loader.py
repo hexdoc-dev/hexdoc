@@ -209,7 +209,6 @@ class ModResourceLoader(ValidationContext):
                     (".yml", ".yaml"): decode_yaml_dict,
                 },
                 allow_missing=True,
-                strip_suffix=True,
             )
 
     @overload
@@ -282,12 +281,11 @@ class ModResourceLoader(ValidationContext):
 
         Raises FileNotFoundError if the file does not exist.
         """
-
         if isinstance(type, Path):
             path_stubs = [type]
         else:
             assert folder is not None and id is not None
-            if not Path(type).suffix:
+            if not Path(id.path).suffix:
                 path_stubs = [
                     (id + ".json").file_path_stub(type, folder, False),
                     (id + ".json5").file_path_stub(type, folder, False),
@@ -299,6 +297,7 @@ class ModResourceLoader(ValidationContext):
                     id.file_path_stub(type, folder, False),
                 ]
 
+        # print(path_stubs)
         # check by descending priority, return the first that exists
         for path_stub in path_stubs:
             for resource_dir in self.resource_dirs:
@@ -385,7 +384,6 @@ class ModResourceLoader(ValidationContext):
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
         internal_only: bool = False,
-        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     @overload
@@ -397,7 +395,6 @@ class ModResourceLoader(ValidationContext):
         id: ResourceLocation,
         allow_missing: bool = False,
         internal_only: bool = False,
-        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]: ...
 
     def find_resources(
@@ -410,7 +407,6 @@ class ModResourceLoader(ValidationContext):
         glob: str | list[str] = "**/*",
         allow_missing: bool = False,
         internal_only: bool = False,
-        strip_suffix: bool = False,
     ) -> Iterator[tuple[PathResourceDir, ResourceLocation, Path]]:
         """Search for a glob under a given resource location in all of `resource_dirs`.
 
@@ -466,7 +462,7 @@ class ModResourceLoader(ValidationContext):
                     for path in base_path.glob(glob_):
                         # only strip json/json5, not eg. png
                         id_path = path.relative_to(base_path)
-                        if strip_suffix:
+                        if path.name.endswith((".yaml", ".yml", ".json", ".json5")):
                             id_path = strip_suffixes(id_path)
 
                         id = ResourceLocation(

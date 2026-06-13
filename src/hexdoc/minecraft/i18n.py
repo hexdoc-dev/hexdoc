@@ -224,7 +224,6 @@ class I18n(ValidationContextModel):
                 (".yml", ".yaml"): decode_and_flatten_yaml_dict,
             },
             export=cls._export,
-            strip_suffix=True,
         )
 
     @classmethod
