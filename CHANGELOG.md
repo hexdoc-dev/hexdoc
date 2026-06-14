@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a40`
+
+### Added
+
+* Added support for loading YAML-formatted lang and Patchouli files, by Master-Bw3 in [#102](https://github.com/hexdoc-dev/hexdoc/pull/102).
+* Added an option to skip running `hatch build` in `hexdoc ci build`.
+
 ## `1!0.1.0a39`
 
 ### Changed
