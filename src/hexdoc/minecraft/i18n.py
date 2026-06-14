@@ -4,8 +4,9 @@ import json
 import logging
 import textwrap
 from collections import defaultdict
+from collections.abc import Callable
 from functools import total_ordering
-from typing import Any, Callable, Self
+from typing import Any, Self
 
 import langcodes
 from pydantic import ValidationInfo, model_validator
@@ -21,6 +22,7 @@ from hexdoc.core.properties import LangProps
 from hexdoc.model import HexdocModel, ValidationContextModel
 from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.utils import decode_and_flatten_json_dict
+from hexdoc.utils.deserialize import decode_and_flatten_yaml_dict
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
 logger = logging.getLogger(__name__)
@@ -205,7 +207,7 @@ class I18n(ValidationContextModel):
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):
-        return loader.load_resources(
+        return loader.load_resources_with_decoders(
             "assets",
             namespace="*",
             folder="lang",
@@ -214,8 +216,13 @@ class I18n(ValidationContextModel):
                 f"{lang}.json5",
                 f"{lang}.flatten.json",
                 f"{lang}.flatten.json5",
+                f"{lang}.yml",
+                f"{lang}.yaml",
             ],
-            decode=decode_and_flatten_json_dict,
+            decoders={
+                (".json", ".json5"): decode_and_flatten_json_dict,
+                (".yml", ".yaml"): decode_and_flatten_yaml_dict,
+            },
             export=cls._export,
         )
 

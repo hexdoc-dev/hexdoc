@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import logging
 import subprocess
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import ExitStack
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable, Literal, Self, Sequence, TypeVar, overload
+from typing import Any, Literal, Mapping, Self, TypeVar, overload
 
 from pydantic import SkipValidation
 from pydantic.dataclasses import dataclass
@@ -25,6 +25,7 @@ from hexdoc.utils import (
     write_to_path,
 )
 from hexdoc.utils.cd import relative_path_root
+from hexdoc.utils.deserialize import decode_yaml_dict, pick_decoder
 from hexdoc.utils.types import PydanticOrderedSet
 
 from .properties import Properties
@@ -193,10 +194,20 @@ class ModResourceLoader(ValidationContext):
         )
 
         for book_id in books_to_check:
-            yield from self.load_resources(
+            yield from self.load_resources_with_decoders(
                 type="assets" if use_resource_pack else "data",
                 folder=Path("patchouli_books") / book_id.path / lang / folder,
                 namespace=book_id.namespace,
+                glob=[
+                    "**/*.json",
+                    "**/*.json5",
+                    "**/*.yml",
+                    "**/*.yaml",
+                ],
+                decoders={
+                    (".json", ".json5"): decode_json_dict,
+                    (".yml", ".yaml"): decode_yaml_dict,
+                },
                 allow_missing=True,
             )
 
@@ -266,24 +277,31 @@ class ModResourceLoader(ValidationContext):
     ) -> tuple[PathResourceDir, Path]:
         """Find the first file with this resource location in `resource_dirs`.
 
-        If no file extension is provided, `.json` / `.json5` is assumed.
+        If no file extension is provided, `.json` / `.json5` / `.yml` / `.yaml` is assumed.
 
         Raises FileNotFoundError if the file does not exist.
         """
-
         if isinstance(type, Path):
-            path_stub = type
+            path_stubs = [type]
         else:
             assert folder is not None and id is not None
-            path_stub = id.file_path_stub(type, folder)
+            if not Path(id.path).suffix:
+                path_stubs = [
+                    (id + ".json").file_path_stub(type, folder, False),
+                    (id + ".json5").file_path_stub(type, folder, False),
+                    (id + ".yml").file_path_stub(type, folder, False),
+                    (id + ".yaml").file_path_stub(type, folder, False),
+                ]
+            else:
+                path_stubs = [
+                    id.file_path_stub(type, folder, False),
+                ]
 
+        # print(path_stubs)
         # check by descending priority, return the first that exists
-        for resource_dir in self.resource_dirs:
-            path = resource_dir.path / path_stub
-            if path.is_file():
-                return resource_dir, path
-            if path.suffix == ".json":
-                path = path.with_suffix(".json5")
+        for path_stub in path_stubs:
+            for resource_dir in self.resource_dirs:
+                path = resource_dir.path / path_stub
                 if path.is_file():
                     return resource_dir, path
 
@@ -330,6 +348,28 @@ class ModResourceLoader(ValidationContext):
                 resource_dir,
                 path,
                 decode=decode,
+                export=export,
+            )
+            yield resource_dir, value_id, value
+
+    def load_resources_with_decoders(
+        self,
+        type: ResourceType,
+        *,
+        decoders: Mapping[tuple[str, ...], Callable[[str], _T]] = {
+            tuple([".json*"]): decode_json_dict
+        },
+        export: ExportFn[_T] | Literal[False] | None = None,
+        **kwargs: Any,
+    ) -> Iterator[tuple[PathResourceDir, ResourceLocation, _T]]:
+        """Like `find_resources`, but also loads the file contents and reexports it."""
+        for resource_dir, value_id, path in self.find_resources(type, **kwargs):
+            decoder = pick_decoder(str(path.suffix), decoders)
+
+            value = self._load_path(
+                resource_dir,
+                path,
+                decode=decoder,
                 export=export,
             )
             yield resource_dir, value_id, value
@@ -422,7 +462,7 @@ class ModResourceLoader(ValidationContext):
                     for path in base_path.glob(glob_):
                         # only strip json/json5, not eg. png
                         id_path = path.relative_to(base_path)
-                        if "json" in path.name:
+                        if path.name.endswith((".yaml", ".yml", ".json", ".json5")):
                             id_path = strip_suffixes(id_path)
 
                         id = ResourceLocation(
