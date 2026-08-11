@@ -5,6 +5,7 @@
   <a href="https://pypi.org/project/hexdoc/"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/hexdoc"></a>
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/hexdoc">
   <a href="https://github.com/hexdoc-dev/hexdoc/actions/workflows/ci.yml"><img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/hexdoc-dev/hexdoc/ci.yml?logo=github&label=ci"></a>
+  <a href="https://weblate.hexxy.media/engage/hexdoc/"><img src="https://weblate.hexxy.media/widget/hexdoc/svg-badge.svg" alt="Translation status"></a>
   <a href="https://github.com/hexdoc-dev/hexdoc#badges"><img src="https://img.shields.io/endpoint?url=https://hexxy.media/api/v0/badge/hexdoc" alt="hexdoc" style="max-width:100%;"></a>
 </p>
 
