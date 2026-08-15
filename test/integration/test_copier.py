@@ -100,8 +100,6 @@ def output_dir(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
     ci.build(
         props_file=Path("doc/hexdoc.toml"),
         release=False,
-        # hack
-        run_hatch_build=False,
     )
 
     yield Path("_site/src/docs").resolve()
