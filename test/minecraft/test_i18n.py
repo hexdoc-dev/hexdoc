@@ -58,3 +58,26 @@ def test_disabled_i18n(pm: PluginManager):
     )
 
     assert str(page.title) == "key"
+
+
+def test_localize_lang_fallback():
+    i18n = I18n(
+        lookup={},
+        lang="ja_jp",
+        default_i18n=I18n(
+            lookup={
+                "language.name": LocalizedStr(key="language.name", value="English"),
+                "language.region": LocalizedStr(
+                    key="language.region", value="United States"
+                ),
+            },
+            lang="en_us",
+            default_i18n=None,
+            enabled=True,
+            lang_props=LangProps(),
+        ),
+        enabled=True,
+        lang_props=LangProps(),
+    )
+
+    assert i18n.localize_lang() == "ja_jp"

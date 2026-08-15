@@ -292,6 +292,9 @@ def dummy_setup(session: nox.Session):
                     "assets/minecraft/textures/entities": {
                         "chicken.png": ("wb", image)
                     },
+                    "assets/dummy/textures/multiblock/hexdoc": {
+                        "test_multiblock.png": ("wb", image)
+                    },
                     "assets/dummy/patchouli_books/dummybook": {
                         "en_us": {
                             "categories/foo.json": {
@@ -405,6 +408,11 @@ def dummy_setup(session: nox.Session):
                                             },
                                         },
                                         "text": "Multi Block Test !",
+                                    },
+                                    {
+                                        "type": "patchouli:multiblock",
+                                        "name": "Multiblock id test",
+                                        "multiblock_id": "dummy:test_multiblock",
                                     },
                                     {
                                         "type": "patchouli:quest",

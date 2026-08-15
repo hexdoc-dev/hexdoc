@@ -40,22 +40,24 @@ dependencies = [
     # https://github.com/hexdoc-dev/hexdoc/issues/88
     "click<8.2.0",
     "frozendict~=2.4",
-    "hatch~=1.9",
+    "hatch>=1.16.5,<2",
     "importlib_resources~=6.0",
     "Jinja2~=3.1",
+    "langcodes~=3.5",
     "moderngl[headless]~=5.10",
     "moderngl-window~=2.4",
     "more_itertools~=10.1",
     "nbtlib==1.12.1",
     "networkx~=3.2",
     "ordered-set~=4.1",
-    "packaging~=23.2",
+    "packaging>=23.2",
     "pluggy~=1.3",
     # !=2.6.0 - https://github.com/pydantic/pydantic-settings/issues/445
     "pydantic_settings~=2.0,!=2.6.0",
     "pydantic>=2.7.1,<3,!=2.9.0",
     "pygithub~=2.1",
     "pyjson5~=1.6",
+    "PyYAML~=6.0",
     "requests~=2.31",
     "tqdm~=4.66",
     "typer~=0.12",
@@ -89,6 +91,7 @@ dev = [
     "ruff~=0.14.10",
     "pre-commit",
     "nox[uv]",
+    "types-pyyaml>=6.0.12.20260518",
 ]
 
 [project.urls]

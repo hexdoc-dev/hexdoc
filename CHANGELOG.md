@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `1!0.1.0a40`
+
+### Added
+
+* Added support for loading YAML-formatted lang and Patchouli files, by Master-Bw3 in [#102](https://github.com/hexdoc-dev/hexdoc/pull/102).
+* Added an option to skip running `hatch build` in `hexdoc ci build`.
+
+## `1!0.1.0a39`
+
+### Changed
+
+* Multiblock pages using `multiblock_id` are now required to provide a texture at `assets/{namespace}/textures/multiblock/hexdoc/{path}.png` to render in the multiblock dropdown.
+
+### Fixed
+
+* Fixed a bug where multiblock pages using `multiblock_id` would generate invalid HTML or crash.
+
+## `1!0.1.0a38`
+
+### Fixed
+
+* Bumped minimum Hatch dependency to 1.16.5 to fix a crash in `hexdoc ci build`.
+
+## `1!0.1.0a37`
+
+### Changed
+
+* Improved the error message when attempting to load a language file with a malformed filename.
+
+## `1!0.1.0a36`
+
+### Changed
+
+* The `lang` attribute in `index.html` is now generated using [langcodes](https://pypi.org/project/langcodes/) instead of always defaulting to `en`.
+
+### Fixed
+
+* Fixed the language selector defaulting to "English (United States)" if the translation is missing.
+
 ## `1!0.1.0a35`
 
 ### Fixed

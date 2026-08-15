@@ -2,15 +2,19 @@ from __future__ import annotations
 
 import json
 import logging
+import textwrap
 from collections import defaultdict
+from collections.abc import Callable
 from functools import total_ordering
-from typing import Any, Callable, Self
+from typing import Any, Self
 
+import langcodes
 from pydantic import ValidationInfo, model_validator
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
 from hexdoc.model.base import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.utils import decode_and_flatten_json_dict
+from hexdoc.utils.deserialize import decode_and_flatten_yaml_dict
 from hexdoc.utils.json_schema import inherited, json_schema_extra_config, type_str
 
 from .compat import ValueIfVersion
@@ -120,6 +124,15 @@ class I18n(ValidationContextModel):
 
         for resource_dir, lang_id, data in cls._load_lang_resources(loader):
             lang = lang_id.path
+            if not langcodes.tag_is_valid(lang):
+                modid = resource_dir.modid or lang_id.namespace
+                raise ValueError(
+                    textwrap.dedent(f"""\
+                        Attempted to load invalid lang (provided by {modid}): {lang}
+                        Resource dir: {resource_dir.path}
+                    """).rstrip()
+                )
+
             lookups[lang] |= cls.parse_lookup(data)
             if not resource_dir.external:
                 internal_langs.add(lang)
@@ -153,6 +166,9 @@ class I18n(ValidationContextModel):
         enabled: bool,
         lang: str,
     ) -> Self:
+        if not langcodes.tag_is_valid(lang):
+            raise ValueError(f"Invalid lang: {lang}")
+
         lookup = dict[str, LocalizedStr]()
         is_internal = False
 
@@ -188,7 +204,7 @@ class I18n(ValidationContextModel):
 
     @classmethod
     def _load_lang_resources(cls, loader: ModResourceLoader, lang: str = "*"):
-        return loader.load_resources(
+        return loader.load_resources_with_decoders(
             "assets",
             namespace="*",
             folder="lang",
@@ -197,8 +213,13 @@ class I18n(ValidationContextModel):
                 f"{lang}.json5",
                 f"{lang}.flatten.json",
                 f"{lang}.flatten.json5",
+                f"{lang}.yml",
+                f"{lang}.yaml",
             ],
-            decode=decode_and_flatten_json_dict,
+            decoders={
+                (".json", ".json5"): decode_and_flatten_json_dict,
+                (".yml", ".yaml"): decode_and_flatten_yaml_dict,
+            },
             export=cls._export,
         )
 
@@ -360,8 +381,11 @@ class I18n(ValidationContextModel):
         return self.localize(f"{root}.{texture_id.namespace}.{rest}", silent=silent)
 
     def localize_lang(self, silent: bool = False):
-        name = self.localize("language.name", silent=silent)
+        name = self.localize("language.name", default="", silent=silent)
         region = self.localize("language.region", silent=silent)
+        # don't allow language names to fall back to English (United States)
+        if name.value == "":
+            return self.lang
         return f"{name} ({region})"
 
     @model_validator(mode="after")

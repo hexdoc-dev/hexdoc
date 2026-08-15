@@ -187,10 +187,30 @@ class MultiblockPage(PageWithText, type="patchouli:multiblock"):
     multiblock: Multiblock | None = None
     enable_visualize: bool = True
 
+    _image: TextureImage | None = PrivateAttr(None)
+
+    @property
+    def image(self):
+        return self._image
+
+    @property
+    def _image_id(self):
+        if self.multiblock_id:
+            return self.multiblock_id.with_path(
+                f"textures/multiblock/hexdoc/{self.multiblock_id.path}.png"
+            )
+
     @model_validator(mode="after")
-    def _check_multiblock(self) -> Self:
+    def _check_multiblock(self, info: ValidationInfo) -> Self:
         if self.multiblock_id is None and self.multiblock is None:
             raise ValueError(f"One of multiblock_id or multiblock must be set\n{self}")
+
+        if image_id := self._image_id:
+            self._image = TextureImage.load_id(
+                id=image_id,
+                context=info.context or {},
+            )
+
         return self
 
 
