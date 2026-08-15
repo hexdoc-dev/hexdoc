@@ -384,8 +384,8 @@ def flatten_hook_returns(values: HookReturns[_T] | None) -> Iterator[_T]:
 def flatten_hook_return(values: HookReturn[_T] | None) -> Iterator[_T]:
     if isinstance(values, list):
         yield from values
-    else:
-        yield values  # type: ignore
+    elif values:
+        yield values
 
 
 def import_package(package: Package) -> ModuleType:

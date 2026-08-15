@@ -24,8 +24,6 @@ __all__ = [
     "ValueIfVersion",
     "VersionSource",
     "Versioned",
-    "compat",
-    "properties",
 ]
 
 from .compat import (
