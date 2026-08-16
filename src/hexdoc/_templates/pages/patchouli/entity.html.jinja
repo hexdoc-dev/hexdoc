@@ -1,7 +1,7 @@
 {% extends "pages/patchouli/page.html.jinja" %}
 
 {% import "macros/formatting.html.jinja" as fmt with context %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/images.html.jinja" as Images with context %}
 
 {% block body %}
   <h4>
@@ -12,11 +12,13 @@
   </h4>
   {% block image %}
     <p class="image-wrapper">
-      {{ texture_macros.render_texture(
-        name=page.entity_name,
-        texture=page.texture,
-        class_names=["entity-display"]
-      ) }}
+      {{
+        Images.image(
+          name=page.entity_name,
+          image=page.image,
+          class_names=["entity-display"]
+        )
+      }}
     </p>
   {% endblock image %}
   {{ fmt.styled(page.text) }}
