@@ -62,7 +62,12 @@ def build(
         if site_dist.is_dir():
             shutil.rmtree(site_dist)
 
-        subprocess.run(["python", "-m", "build", "--installer", "uv"], check=True)
+        subprocess.run(
+            ["python", "-m", "build", "--sdist", "--installer", "uv"], check=True
+        )
+        subprocess.run(
+            ["python", "-m", "build", "--wheel", "--installer", "uv"], check=True
+        )
         shutil.copytree("dist", site_dist)
 
     env.set_output("pages-url", pages_url)
