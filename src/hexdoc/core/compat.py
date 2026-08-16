@@ -119,6 +119,14 @@ After_1_20 = Annotated[_T, IsVersion(">1.20")]
 """Alias for `Annotated[_T, IsVersion("<1.20")]`."""
 
 
+Before_1_21 = Annotated[_T, IsVersion("<1.21")]
+"""Alias for `Annotated[_T, IsVersion("<1.21")]`."""
+AtLeast_1_21 = Annotated[_T, IsVersion(">=1.21")]
+"""Alias for `Annotated[_T, IsVersion(">=1.21")]`."""
+After_1_21 = Annotated[_T, IsVersion(">1.21")]
+"""Alias for `Annotated[_T, IsVersion("<1.21")]`."""
+
+
 @dataclass(frozen=True)
 class ValueIfVersion(Versioned, Generic[_If, _Else]):
     value_if: _If

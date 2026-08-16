@@ -10,6 +10,7 @@ from pydantic import (
 )
 
 from hexdoc.core import AssumeTag, ModResourceLoader, ResourceLocation
+from hexdoc.core.compat import IsVersion
 from hexdoc.graphics.validators import HexdocImage, ImageField, ItemImage, TagImage
 from hexdoc.model import HexdocModel, NoValue, TypeTaggedUnion
 from hexdoc.utils import listify
@@ -38,9 +39,23 @@ class MinecraftItemTagIngredient(ItemIngredient, type=NoValue):
         return self.tag
 
 
-class ItemResult(HexdocModel):
+@IsVersion("<1.21")
+class ItemResult_1_20(HexdocModel):
     item: ImageField[ItemImage]
     count: int = 1
+
+
+@IsVersion(">=1.21")
+class ItemResult_1_21(HexdocModel):
+    id: ImageField[ItemImage]
+    count: int = 1
+
+    @property
+    def item(self):
+        return self.id
+
+
+ItemResult = ItemResult_1_20 | ItemResult_1_21
 
 
 def _validate_single_item_to_list(value: Any):

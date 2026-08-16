@@ -58,7 +58,7 @@ def _make_regex(count: bool = False, nbt: bool = False) -> re.Pattern[str]:
     if count:
         pattern += r"(?:#(?P<count>[0-9]+))?"
     if nbt:
-        pattern += r"(?P<nbt>{.*})?"
+        pattern += r"(?P<nbt>(?:\[.*\]|{.*}))?"
     return re.compile(pattern)
 
 

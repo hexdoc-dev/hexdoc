@@ -17,7 +17,7 @@ from hexdoc.core import (
     ResourceLocation,
     ValueIfVersion,
 )
-from hexdoc.core.compat import AtLeast_1_20, Before_1_20
+from hexdoc.core.compat import AtLeast_1_20, Before_1_20, IsVersion
 from hexdoc.graphics import HexdocImage, ImageField, ItemImage, TextureImage
 from hexdoc.model import ResourceModel, TypeTaggedTemplate
 from hexdoc.utils import Inherit, InheritType, classproperty
@@ -45,6 +45,10 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
     https://github.com/FabricMC/fabric/blob/761f669d0a6fbfe2ae6d71d767651f32a13d37fc/fabric-resource-conditions-api-v1/src/main/java/net/fabricmc/fabric/api/resource/conditions/v1/ResourceConditions.java#L64
     """
 
+    neoforge_conditions: list[dict[str, Any]] | None = Field(
+        default=None, alias="neoforge:conditions"
+    )
+
     # not in the actual model
 
     _workstation: ClassVar[ResourceLocation | None] = None
@@ -71,7 +75,11 @@ class Recipe(TypeTaggedTemplate, ResourceModel):
 
     @classmethod
     def load_resource(cls, id: ResourceLocation, loader: ModResourceLoader):
-        return loader.load_resource("data", "recipes", id)
+        return loader.load_resource(
+            "data",
+            "recipe" if IsVersion(">=1.21") else "recipes",
+            id,
+        )
 
     @classproperty
     @classmethod
