@@ -1,7 +1,7 @@
 {% extends "redirects/book_link.html.jinja" %}
 
 {% import "macros/formatting.txt.jinja" as fmt_txt with context %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
+{% import "macros/images.html.jinja" as Images with context %}
 
 {% block title -%}
   {{ _('hexdoc.redirect.category.title').format(category.name) }}
@@ -12,5 +12,5 @@
 {%- endblock description %}
 
 {% block image -%}
-  {{ texture_macros.icon_url(category.icon) }}
+  {{ Images.url(category.icon) }}
 {%- endblock image %}

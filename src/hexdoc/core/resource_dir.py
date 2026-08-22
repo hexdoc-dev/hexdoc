@@ -18,8 +18,8 @@ from typing_extensions import override
 from hexdoc.model import HexdocModel
 from hexdoc.model.base import DEFAULT_CONFIG
 from hexdoc.plugin import PluginManager
-from hexdoc.utils import JSONDict, RelativePath
-from hexdoc.utils.types import cast_nullable
+from hexdoc.utils import RelativePath
+from hexdoc.utils.types import cast_nullable, isdict
 
 
 class BaseResourceDir(HexdocModel, ABC):
@@ -65,8 +65,8 @@ class BaseResourceDir(HexdocModel, ABC):
 
     @model_validator(mode="before")
     @classmethod
-    def _default_reexport(cls, data: JSONDict | Any):
-        if not isinstance(data, dict):
+    def _default_reexport(cls, data: Any) -> Any:
+        if not isdict(data):
             return data
 
         external = cls._get_external(data)
@@ -79,7 +79,7 @@ class BaseResourceDir(HexdocModel, ABC):
         return data
 
     @classmethod
-    def _get_external(cls, data: JSONDict | Any):
+    def _get_external(cls, data: dict[Any, Any]):
         match data:
             case {"external": bool(), "internal": bool()}:
                 raise ValueError(f"Expected internal OR external, got both: {data}")

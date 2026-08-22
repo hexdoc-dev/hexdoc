@@ -3,9 +3,12 @@ from argparse import Namespace
 from typing import Any, cast
 
 import pytest
+from jinja2 import PackageLoader
+from yarl import URL
+
+from hexdoc.core import I18n
 from hexdoc.core.resource import ResourceLocation
 from hexdoc.jinja.render import create_jinja_env_with_loader
-from hexdoc.minecraft import I18n
 from hexdoc.patchouli.text import (
     DEFAULT_MACROS,
     BookLink,
@@ -17,8 +20,6 @@ from hexdoc.patchouli.text import (
     SpecialStyleType,
 )
 from hexdoc.plugin import PluginManager
-from jinja2 import PackageLoader
-from yarl import URL
 
 
 class MockPluginManager:

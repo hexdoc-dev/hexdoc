@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Any, Mapping
 
 from jinja2.sandbox import SandboxedEnvironment
 from typing_extensions import override
-from yarl import URL
 
 from hexdoc.utils import ContextSource
 
@@ -16,8 +15,8 @@ from .types import HookReturn
 
 if TYPE_CHECKING:
     from hexdoc.cli.app import LoadedBookInfo
-    from hexdoc.core import ModResourceLoader, Properties
-    from hexdoc.minecraft.assets import HexdocAssetLoader
+    from hexdoc.core import Properties
+    from hexdoc.graphics.validators import ItemImage
 
 DefaultRenderedTemplates = Mapping[
     str | Path,
@@ -168,6 +167,10 @@ class ModPlugin(ABC):
         """Called once per language, after all book files for that language are
         rendered."""
 
+    def item_image_types(self) -> HookReturn[type[ItemImage[Any]]]:
+        """List of `ModelImage` types to attempt when loading a block/item model."""
+        return []
+
     # utils
 
     def site_path(self, versioned: bool):
@@ -204,24 +207,6 @@ class ModPlugin(ABC):
         * value: `v/latest/main`
         """
         return self.site_root / "latest" / self.branch
-
-    def asset_loader(
-        self,
-        loader: ModResourceLoader,
-        *,
-        site_url: URL,
-        asset_url: URL,
-        render_dir: Path,
-    ) -> HexdocAssetLoader:
-        # unfortunately, this is necessary to avoid some *real* ugly circular imports
-        from hexdoc.minecraft.assets import HexdocAssetLoader
-
-        return HexdocAssetLoader(
-            loader=loader,
-            site_url=site_url,
-            asset_url=asset_url,
-            render_dir=render_dir,
-        )
 
     @property
     def flags(self) -> dict[str, bool]:

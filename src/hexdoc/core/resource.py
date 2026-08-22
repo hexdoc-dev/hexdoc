@@ -58,7 +58,7 @@ def _make_regex(count: bool = False, nbt: bool = False) -> re.Pattern[str]:
     if count:
         pattern += r"(?:#(?P<count>[0-9]+))?"
     if nbt:
-        pattern += r"(?P<nbt>{.*})?"
+        pattern += r"(?P<nbt>(?:\[.*\]|{.*}))?"
     return re.compile(pattern)
 
 
@@ -207,6 +207,8 @@ class ResourceLocation(BaseResourceLocation, regex=_make_regex()):
         return fnmatch(str(self), str(pattern))
 
     def template_path(self, type: str, folder: str = "") -> str:
+        """Returns a Jinja template path in the format
+        `{type}/{namespace}/{folder}/{path}`."""
         return self.file_path_stub(type, folder, assume_json=False).as_posix()
 
     def file_path_stub(

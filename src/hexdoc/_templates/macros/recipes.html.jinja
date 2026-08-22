@@ -1,4 +1,4 @@
-{% import "macros/textures.html.jinja" as texture_macros with context -%}
+{% import "macros/images.html.jinja" as Images with context -%}
 {% import "macros/formatting.html.jinja" as fmt with context -%}
 
 {# show the names of all the recipe results in a list of recipes #}
@@ -21,7 +21,7 @@
       {{ render_ingredients(ingredient.default, true) }}
       {{ render_ingredients(ingredient.if_loaded, true) }}
     {% else %}
-      {{ texture_macros.render_item(ingredient.item, is_first=loop.first and not is_recursive) }}
+      {{ Images.item(ingredient.item, is_first=loop.first and not is_recursive) }}
     {% endif %}
   {% endfor %}
 {%- endmacro %}

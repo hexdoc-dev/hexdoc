@@ -9,6 +9,7 @@ from typing import Any, Mapping
 import hexdoc
 from hexdoc import HEXDOC_MODID, VERSION
 from hexdoc.core import IsVersion, ModResourceLoader, ResourceLocation
+from hexdoc.graphics.validators import ItemImage, SingleItemImage
 from hexdoc.minecraft.recipe import (
     ingredients as minecraft_ingredients,
     recipes as minecraft_recipes,
@@ -82,7 +83,6 @@ class HexdocModPlugin(ModPlugin):
         return {
             "index.html": "index.html.jinja",
             "index.css": "index.css.jinja",
-            "textures.css": "textures.jcss.jinja",
             "index.js": "index.js.jinja",
         }
 
@@ -129,6 +129,9 @@ class HexdocModPlugin(ModPlugin):
                         )
 
         return templates
+
+    def item_image_types(self) -> HookReturn[type[ItemImage]]:
+        return SingleItemImage
 
 
 class PatchouliBookPlugin(BookPlugin[Book]):

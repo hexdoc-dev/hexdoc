@@ -1,11 +1,12 @@
 from typing import Any, cast
 
 import pytest
+from pydantic import TypeAdapter
+
 from hexdoc.core.properties import Properties
 from hexdoc.model import HexdocModel, TypeTaggedUnion
 from hexdoc.plugin import PluginManager
 from hexdoc.utils.singletons import NoValue
-from pydantic import TypeAdapter
 
 
 class _TaggedUnion(TypeTaggedUnion, type=NoValue):

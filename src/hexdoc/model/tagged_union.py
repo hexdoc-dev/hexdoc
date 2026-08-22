@@ -4,7 +4,16 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, ClassVar, Generator, Self, Unpack
+from typing import (
+    Any,
+    ClassVar,
+    Generator,
+    Iterable,
+    LiteralString,
+    Self,
+    TypeVar,
+    Unpack,
+)
 
 import more_itertools
 from pydantic import (
@@ -32,6 +41,8 @@ from hexdoc.utils import (
 
 from .base import HexdocModel
 
+_T_UnionModel = TypeVar("_T_UnionModel", bound="UnionModel")
+
 TagValue = str | NoValueType
 
 _RESOLVED = "__resolved"
@@ -40,7 +51,96 @@ _RESOLVED = "__resolved"
 _is_loaded = False
 
 
-class InternallyTaggedUnion(HexdocModel):
+class UnionModel(HexdocModel):
+    @classmethod
+    def _resolve_union(
+        cls,
+        value: Any,
+        context: dict[str, Any] | None,
+        *,
+        model_types: Iterable[type[_T_UnionModel]],
+        allow_ambiguous: bool,
+        error_name: LiteralString = "HexdocUnionMatchError",
+        error_text: Iterable[LiteralString] = [],
+        error_data: dict[str, Any] = {},
+    ) -> _T_UnionModel:
+        # try all the types
+        exceptions: list[InitErrorDetails] = []
+        matches: dict[type[_T_UnionModel], _T_UnionModel] = {}
+
+        for model_type in model_types:
+            try:
+                result = matches[model_type] = model_type.model_validate(
+                    value,
+                    context=context,
+                )
+                if allow_ambiguous:
+                    return result
+            except (ValueError, AssertionError, ValidationError) as e:
+                exceptions.append(
+                    InitErrorDetails(
+                        type=PydanticCustomError(
+                            error_name,
+                            "{exception_class}: {exception}",
+                            {
+                                "exception_class": e.__class__.__name__,
+                                "exception": str(e),
+                            },
+                        ),
+                        loc=(
+                            cls.__name__,
+                            model_type.__name__,
+                        ),
+                        input=value,
+                    )
+                )
+
+        # ensure we only matched one
+        # if allow_ambiguous is True, we should have returned a value already
+        match len(matches):
+            case 1:
+                return matches.popitem()[1]
+            case x if x > 1:
+                ambiguous_types = ", ".join(str(t) for t in matches.keys())
+                reason = f"Ambiguous union match: {ambiguous_types}"
+            case _:
+                reason = "No match found"
+
+        # something went wrong, raise an exception
+        error = PydanticCustomError(
+            f"{error_name}Group",
+            "\n  ".join(
+                (
+                    "Failed to match union {class_name}: {reason}",
+                    "Types: {types}",
+                    "Value: {value}",
+                    *error_text,
+                )
+            ),
+            {
+                "class_name": str(cls),
+                "reason": reason,
+                "types": ", ".join(str(t) for t in model_types),
+                "value": repr(value),
+                **error_data,
+            },
+        )
+
+        if exceptions:
+            exceptions.insert(
+                0,
+                InitErrorDetails(
+                    type=error,
+                    loc=(cls.__name__,),
+                    input=value,
+                ),
+            )
+            raise ValidationError.from_exception_data(error_name, exceptions)
+
+        raise RuntimeError(str(error))
+
+
+class InternallyTaggedUnion(UnionModel):
     """Implements [internally tagged unions](https://serde.rs/enum-representations.html#internally-tagged)
     using the [Registry pattern](https://charlesreid1.github.io/python-patterns-the-registry.html).
 
@@ -140,7 +240,7 @@ class InternallyTaggedUnion(HexdocModel):
             case InternallyTaggedUnion() if isinstance(value, cls):
                 return value
             case dict() if _RESOLVED not in value:
-                data: dict[str, Any] = value
+                data: dict[str, Any] = value  # pyright: ignore[reportUnknownVariableType]
                 data[_RESOLVED] = True
             case _:
                 return handler(value)
@@ -153,89 +253,35 @@ class InternallyTaggedUnion(HexdocModel):
         if tag_types is None:
             raise TypeError(f"Unhandled tag: {tag_key}={tag_value} for {cls}: {data}")
 
-        # try all the types
-        exceptions: list[InitErrorDetails] = []
-        matches: dict[type[Self], Self] = {}
-
-        for inner_type in tag_types:
-            try:
-                matches[inner_type] = inner_type.model_validate(
-                    data, context=info.context
-                )
-            except Exception as e:
-                exceptions.append(
-                    InitErrorDetails(
-                        type=PydanticCustomError(
-                            "TaggedUnionMatchError",
-                            "{exception_class}: {exception}",
-                            {
-                                "exception_class": e.__class__.__name__,
-                                "exception": str(e),
-                            },
-                        ),
-                        loc=(
-                            cls.__name__,
-                            inner_type.__name__,
-                        ),
-                        input=data,
-                    )
-                )
-
-        # ensure we only matched one
-        match len(matches):
-            case 1:
-                return matches.popitem()[1]
-            case x if x > 1:
-                ambiguous_types = ", ".join(str(t) for t in matches.keys())
-                reason = f"Ambiguous union match: {ambiguous_types}"
-            case _:
-                reason = "No match found"
-
-        # something went wrong, raise an exception
-        error = PydanticCustomError(
-            "TaggedUnionMatchErrorGroup",
-            (
-                "Failed to match tagged union {class_name}: {reason}\n"
-                "  Tag: {tag_key}={tag_value}\n"
-                "  Types: {types}\n"
-                "  Data: {data}"
-            ),
-            {
-                "class_name": str(cls),
-                "reason": reason,
-                "tag_key": cls._tag_key,
-                "tag_value": tag_value,
-                "types": ", ".join(str(t) for t in tag_types),
-                "data": repr(data),
-            },
-        )
-
-        if exceptions:
+        try:
+            return cls._resolve_union(
+                data,
+                info.context,
+                model_types=tag_types,
+                allow_ambiguous=False,
+                error_name="TaggedUnionMatchError",
+                error_text=[
+                    "Tag: {tag_key}={tag_value}",
+                ],
+                error_data={
+                    "tag_key": cls._tag_key,
+                    "tag_value": tag_value,
+                },
+            )
+        except Exception:
             if _RESOLVED in data:
                 data.pop(_RESOLVED)  # avoid interfering with other types
-            exceptions.insert(
-                0,
-                InitErrorDetails(
-                    type=error,
-                    loc=(cls.__name__,),
-                    input=data,
-                ),
-            )
-            raise ValidationError.from_exception_data(
-                "TaggedUnionMatchError", exceptions
-            )
-
-        raise RuntimeError(str(error))
+            raise
 
     @model_validator(mode="before")
-    def _pop_temporary_keys(cls, value: dict[Any, Any] | Any):
+    def _pop_temporary_keys(cls, value: Any) -> Any:
         if isinstance(value, dict) and _RESOLVED in value:
             # copy because this validator may be called multiple times
             # eg. two types with the same key
-            value = value.copy()
+            value = value.copy()  # pyright: ignore[reportUnknownVariableType]
             value.pop(_RESOLVED)
             assert value.pop(cls._tag_key, NoValue) == cls._tag_value
-        return value
+        return value  # pyright: ignore[reportUnknownVariableType]
 
     @classmethod
     @override
@@ -343,26 +389,23 @@ class TypeTaggedUnion(InternallyTaggedUnion, key="type", value=None):
         return ResourceLocation
 
 
-class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
-    __template_id: ClassVar[ResourceLocation]
+class TemplateModel(HexdocModel, ABC):
+    _template_id: ClassVar[ResourceLocation | None] = None
 
     def __init_subclass__(
         cls,
         *,
-        type: str | InheritType | None = Inherit,
-        template_type: str | None = None,
+        template_id: str | ResourceLocation | InheritType | None = None,
         **kwargs: Unpack[ConfigDict],
     ) -> None:
-        super().__init_subclass__(type=type, **kwargs)
-
-        # jinja template path
-        if template_type is not None:
-            template_id = ResourceLocation.from_str(template_type)
-        else:
-            template_id = cls.type
-
-        if template_id:
-            cls.__template_id = template_id
+        super().__init_subclass__(**kwargs)
+        match template_id:
+            case str():
+                cls._template_id = ResourceLocation.from_str(template_id)
+            case ResourceLocation() | None:
+                cls._template_id = template_id
+            case InheritType():
+                pass
 
     @classproperty
     @classmethod
@@ -376,4 +419,30 @@ class TypeTaggedTemplate(TypeTaggedUnion, ABC, type=None):
     @classproperty
     @classmethod
     def template_id(cls):
-        return cls.__template_id
+        assert cls._template_id is not None, f"Template id not initialized: {cls}"
+        return cls._template_id
+
+
+class TypeTaggedTemplate(TypeTaggedUnion, TemplateModel, ABC, type=None):
+    def __init_subclass__(
+        cls,
+        *,
+        type: str | InheritType | None = Inherit,
+        template_type: str | ResourceLocation | None = None,
+        **kwargs: Unpack[ConfigDict],
+    ) -> None:
+        if template_type is None:
+            match type:
+                case str():
+                    template_type = type
+                case InheritType() if isinstance(cls.type, ResourceLocation):
+                    template_type = cls.type
+                case _:
+                    pass
+
+        super().__init_subclass__(
+            type=type,
+            # pyright doesn't seem to understand multiple inheritance here
+            template_id=template_type,  # pyright: ignore[reportCallIssue]
+            **kwargs,
+        )

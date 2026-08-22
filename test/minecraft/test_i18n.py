@@ -1,9 +1,9 @@
 from typing import Any
 
 import pytest
-from hexdoc.core import ResourceLocation
+
+from hexdoc.core import I18n, LocalizedStr, ResourceLocation
 from hexdoc.core.properties import LangProps
-from hexdoc.minecraft import I18n, LocalizedStr
 from hexdoc.patchouli.page.abstract_pages import PageWithTitle
 from hexdoc.plugin import PluginManager
 

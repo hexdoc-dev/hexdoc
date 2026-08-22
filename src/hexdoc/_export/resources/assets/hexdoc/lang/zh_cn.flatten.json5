@@ -43,8 +43,6 @@
 
     when_clicked: "点击时执行：{}",
 
-    any_block:  "任意方块",
-
     redirect: {
       "category.title": "类别：{}",
       "entry.title": "条目：{}",
@@ -55,4 +53,6 @@
       Minecraft的游戏内容和资源均为各自所有者的知识财产。$(br2)\
       使用$(l:https://pypi.org/project/hexdoc/)hexdoc/$精心制作。❤️"
   },
+
+  "gui.hexdoc.any_block": "任意方块",
 }

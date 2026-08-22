@@ -3,9 +3,8 @@ from typing import Any, Iterable, Iterator
 
 from pydantic import Field, model_validator
 
-from hexdoc.core import ItemStack, ResourceLocation
-from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
+from hexdoc.core import ItemStack, LocalizedStr, ResourceLocation
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
 from hexdoc.model import Color, IDModel
 from hexdoc.patchouli.page.abstract_pages import AccumulatorPage, PageWithAccumulator
 from hexdoc.utils import Sortable
@@ -25,7 +24,7 @@ class Entry(IDModel, Sortable, AdvancementSpoilered, Flagged):
     # required (entry.json)
     name: LocalizedStr
     category_id: ResourceLocation = Field(alias="category")
-    icon: ItemWithTexture | NamedTexture
+    icon: ImageField[ItemImage | TextureImage]
     pages: list[Page]
 
     # optional (entry.json)

@@ -1,5 +1,6 @@
 __all__ = [
     "DEFAULT_CONFIG",
+    "IGNORE_EXTRA_CONFIG",
     "Color",
     "HexdocModel",
     "HexdocSettings",
@@ -8,19 +9,23 @@ __all__ = [
     "InlineItemModel",
     "InlineModel",
     "InternallyTaggedUnion",
+    "MustBeAnnotated",
     "NoValue",
     "NoValueType",
     "ResourceModel",
     "StripHiddenModel",
     "TagValue",
+    "TemplateModel",
     "TypeTaggedTemplate",
     "TypeTaggedUnion",
+    "UnionModel",
     "ValidationContextModel",
     "init_context",
 ]
 
 from .base import (
     DEFAULT_CONFIG,
+    IGNORE_EXTRA_CONFIG,
     HexdocModel,
     HexdocSettings,
     HexdocTypeAdapter,
@@ -35,7 +40,9 @@ from .tagged_union import (
     NoValue,
     NoValueType,
     TagValue,
+    TemplateModel,
     TypeTaggedTemplate,
     TypeTaggedUnion,
+    UnionModel,
 )
-from .types import Color
+from .types import Color, MustBeAnnotated

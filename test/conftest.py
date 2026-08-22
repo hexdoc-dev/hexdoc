@@ -1,14 +1,16 @@
+import os
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any
 
 import pytest
-from hexdoc.core.properties import Properties
-from hexdoc.plugin import PluginManager
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
 from syrupy.extensions.single_file import SingleFileSnapshotExtension, WriteMode
 from syrupy.types import SerializableData, SerializedData
+
+from hexdoc.core.properties import Properties
+from hexdoc.plugin import PluginManager
 
 collect_ignore = [
     "noxfile.py",
@@ -72,7 +74,9 @@ def env_overrides():
 
 @pytest.fixture(scope="session")
 def hexcasting_props_file():
-    return Path("submodules/HexMod/doc/hexdoc.toml")
+    if (submodule := os.getenv("TEST_SUBMODULE")) is None:
+        raise ValueError("Environment variable not set: TEST_SUBMODULE")
+    return Path(f"{submodule}/doc/hexdoc.toml")
 
 
 @pytest.fixture(autouse=True, scope="session")

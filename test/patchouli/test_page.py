@@ -1,6 +1,7 @@
 from typing import Any
 
 import pytest
+
 from hexdoc.patchouli.book_context import BookContext
 from hexdoc.patchouli.page import EmptyPage, Page
 from hexdoc.plugin import PluginManager

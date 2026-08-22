@@ -1,3 +1,5 @@
-__all__ = ["HexdocMetadata", "load_metadata_textures"]
+__all__ = [
+    "HexdocMetadata",
+]
 
-from .metadata import HexdocMetadata, load_metadata_textures
+from .metadata import HexdocMetadata

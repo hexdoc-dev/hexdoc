@@ -5,9 +5,10 @@ import sys
 from pathlib import Path
 
 import pytest
-from hexdoc.cli import ci
 from pytest import MonkeyPatch
 from syrupy.assertion import SnapshotAssertion
+
+from hexdoc.cli import ci
 
 from ..conftest import list_directory
 from ..tree import write_file_tree
@@ -99,8 +100,6 @@ def output_dir(monkeysession: MonkeyPatch, env_overrides: dict[str, str]):
     ci.build(
         props_file=Path("doc/hexdoc.toml"),
         release=False,
-        # hack
-        run_hatch_build=False,
     )
 
     yield Path("_site/src/docs").resolve()

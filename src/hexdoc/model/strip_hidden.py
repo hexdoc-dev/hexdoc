@@ -4,6 +4,7 @@ from pydantic import ConfigDict, model_validator
 from pydantic.config import JsonDict
 
 from hexdoc.utils.deserialize.assertions import cast_or_raise
+from hexdoc.utils.types import isdict
 
 from .base import DEFAULT_CONFIG, HexdocModel
 
@@ -25,8 +26,8 @@ class StripHiddenModel(HexdocModel):
     )
 
     @model_validator(mode="before")
-    def _pre_root_strip_hidden(cls, values: dict[Any, Any] | Any) -> Any:
-        if not isinstance(values, dict):
+    def _pre_root_strip_hidden(cls, values: Any) -> Any:
+        if not isdict(values):
             return values
 
         return {

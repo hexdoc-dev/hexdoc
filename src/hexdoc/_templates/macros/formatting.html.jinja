@@ -1,6 +1,6 @@
 {% import "macros/styles.html.jinja" as styles_html with context %}
-{% import "macros/textures.html.jinja" as texture_macros with context %}
 {% import "macros/formatting.jinja" as fmt_base with context %}
+{% import "macros/images.html.jinja" as Images with context -%}
 
 {# jump to top icon in section headers #}
 {% macro jump_to_top() -%}
@@ -23,7 +23,7 @@
 {# header for categories and entries #}
 {% macro section_header(value, header_tag, class_name) -%}
   <{{ header_tag }} class="{{ class_name }} page-header">
-    {{ texture_macros.render_icon(value.icon) }}
+    {{ Images.item(value.icon) }}
     {{- value.name ~ jump_to_top() ~ permalink(value.id.path) -}}
   </{{ header_tag }}>
 {%- endmacro %}
@@ -31,7 +31,7 @@
 {# link to value.id, with spoiler blur if value is a spoiler #}
 {% macro maybe_spoilered_link(value) -%}
   <a href="#{{ value.id.path }}" class="toc-elem {{ 'spoilered' if value.is_spoiler }}">
-    {{- texture_macros.render_icon(value.icon) }} {{ value.name -}}
+    {{- Images.item(value.icon) }} {{ value.name -}}
   </a>
 {%- endmacro %}
 
