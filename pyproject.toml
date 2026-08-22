@@ -66,8 +66,8 @@ dependencies = [
 
     # Favicons deps, because it's vendored
     "pillow~=12.0",
-    "rich~=13.3.4",
-    "svglib~=1.5.1",
+    "rich~=13.3",
+    "svglib~=1.5",
 ]
 
 [project.optional-dependencies]
