@@ -80,9 +80,10 @@ jobs:
       matrix:
         nox-args:
           - --tags test_fast
-          - --sessions test_build "test_hexcasting(branch='1.19')"
-          - --sessions test_build "test_hexcasting(branch='main')"
-          - --sessions test_build test_copier
+          # TODO: Reenable when hexcasting and templates support hexdoc 2
+          # - --sessions test_build "test_hexcasting(branch='1.19')"
+          # - --sessions test_build "test_hexcasting(branch='main')"
+          # - --sessions test_build test_copier
     steps:
       - uses: actions/checkout@v4
         with:
