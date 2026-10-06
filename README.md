@@ -17,13 +17,6 @@ This is the library that powers [Hex Casting](https://github.com/gamma-delta/Hex
 
 Check out the docs at [https://hexdoc.hexxy.media](https://hexdoc.hexxy.media)!
 
-## IMPORTANT: Version incompatibilities
-
-There are issues related to installing hexdoc with the following dependency versions:
-* Python 3.12+ on Windows: https://github.com/aio-libs/multidict/issues/887
-
-hexdoc is known to work with Python 3.11.
-
 ## Plugins
 
 hexdoc has a few Copier templates that you can use to set up a hexdoc plugin for your mod:
