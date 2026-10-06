@@ -1,7 +1,8 @@
 import logging
 
-from hexdoc.utils import setup_logging
 from pytest import CaptureFixture
+
+from hexdoc.utils import setup_logging
 
 
 def test_setup_logging_idempotent(capsys: CaptureFixture[str]):

@@ -4,10 +4,9 @@ from typing import Any, Self
 from pydantic import Field
 from pydantic.json_schema import SkipJsonSchema
 
-from hexdoc.core import ResourceLocation
+from hexdoc.core import LocalizedStr, ResourceLocation
 from hexdoc.core.loader import ModResourceLoader
-from hexdoc.minecraft import LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, NamedTexture
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
 from hexdoc.model import IDModel
 from hexdoc.utils import Sortable, sorted_dict
 from hexdoc.utils.graphs import TypedDiGraph
@@ -25,13 +24,15 @@ class Category(IDModel, Sortable, Flagged):
     See: https://vazkiimods.github.io/Patchouli/docs/reference/category-json
     """
 
-    entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(default_factory=dict)
+    entries: SkipJsonSchema[dict[ResourceLocation, Entry]] = Field(
+        default_factory=lambda: {}
+    )
     is_spoiler: SkipJsonSchema[bool] = False
 
     # required
     name: LocalizedStr
     description: FormatTree
-    icon: ItemWithTexture | NamedTexture
+    icon: ImageField[ItemImage | TextureImage]
 
     # optional
     parent_id: ResourceLocation | None = Field(default=None, alias="parent")

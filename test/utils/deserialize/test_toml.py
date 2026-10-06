@@ -3,6 +3,7 @@
 import copy
 
 import pytest
+
 from hexdoc.utils.deserialize.toml import TOMLDict, fill_placeholders
 
 

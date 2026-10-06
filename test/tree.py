@@ -31,7 +31,7 @@ def write_file_tree(root: str | Path, tree: FileTree):
                 with path.open(mode) as f:
                     if isinstance(text, bytes):
                         f.write(text)
-                    elif isinstance(text, str):
+                    elif isinstance(text, str):  # pyright: ignore[reportUnnecessaryIsInstance]
                         f.write(dedent(text))
                     else:
                         raise TypeError()

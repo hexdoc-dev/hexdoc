@@ -12,8 +12,7 @@ from .mod_plugin import ModPlugin
 from .types import HookReturn, HookReturns
 
 if TYPE_CHECKING:
-    from hexdoc.core import Properties, ResourceLocation
-    from hexdoc.minecraft import I18n
+    from hexdoc.core import I18n, Properties, ResourceLocation
     from hexdoc.patchouli import FormatTree
 
 HEXDOC_PROJECT_NAME = "hexdoc"

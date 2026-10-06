@@ -1,0 +1,19 @@
+{% import "macros/images.html.jinja" as Images with context -%}
+
+<div class="{{
+  (class_names + [
+    'texture',
+    'multi-texture',
+    'multi-texture-active' if is_first,
+  ])|join(' ')
+}}">
+  {% for child in image.images %}
+    {{
+      Images.image(
+        child,
+        class_names=class_names,
+        is_first=loop.first,
+      )
+    }}
+  {% endfor %}
+</div>

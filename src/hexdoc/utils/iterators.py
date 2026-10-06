@@ -18,6 +18,8 @@ def must_yield_something(f: Callable[_P, Iterator[_T]]) -> Callable[_P, Iterator
 
 
 def listify(f: Callable[_P, Iterator[_T]]) -> Callable[_P, list[_T]]:
+    """Converts an iterator to a function returning a list."""
+
     @functools.wraps(f)
     def wrapper(*args: _P.args, **kwargs: _P.kwargs) -> list[_T]:
         return list(f(*args, **kwargs))

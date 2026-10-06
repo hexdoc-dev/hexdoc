@@ -1,0 +1,13 @@
+<img
+  {{ ('title="'~name~'"')|safe if title }}
+  alt="{{ name }}"
+  src="{{ relative_site_url }}/{{ image.url }}"
+  {{ 'loading="lazy"'|safe if lazy }}
+  class="{{
+    (class_names + [
+      'texture',
+      'pixelated' if image.pixelated,
+      'multi-texture-active' if is_first,
+    ])|join(' ')
+  }}"
+>

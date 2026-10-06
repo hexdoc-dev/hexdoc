@@ -6,7 +6,7 @@ import logging
 import re
 from enum import Enum, auto
 from fnmatch import fnmatch
-from typing import Literal, Self, final
+from typing import Literal, Self, TypedDict, final
 
 from jinja2 import pass_context
 from jinja2.runtime import Context
@@ -14,8 +14,7 @@ from pydantic import ValidationInfo, model_validator
 from pydantic.dataclasses import dataclass
 from pydantic.functional_validators import ModelWrapValidatorHandler
 
-from hexdoc.core import Properties, ResourceLocation
-from hexdoc.minecraft import I18n, LocalizedStr
+from hexdoc.core import I18n, LocalizedStr, Properties, ResourceLocation
 from hexdoc.model import DEFAULT_CONFIG, HexdocModel, ValidationContextModel
 from hexdoc.plugin import PluginManager
 from hexdoc.utils import PydanticURL, TryGetEnum, classproperty
@@ -286,6 +285,10 @@ class FunctionStyle(Style, frozen=True):
     value: str
 
 
+class BookLinksDict(TypedDict):
+    book_links: BookLinks
+
+
 class LinkStyle(Style, frozen=True):
     type: Literal[SpecialStyleType.link] = SpecialStyleType.link
     value: str | BookLink
@@ -314,7 +317,7 @@ class LinkStyle(Style, frozen=True):
         return cls(value=value, external=external)
 
     @pass_context
-    def href(self, context: Context | dict[{"book_links": BookLinks}]):  # noqa
+    def href(self, context: Context | BookLinksDict):
         match self.value:
             case str(href):
                 return href

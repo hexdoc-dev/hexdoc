@@ -1,25 +1,21 @@
 # pyright: reportUnknownMemberType=false, reportPrivateUsage=false
 
+import os
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING, assert_type
 
 import pytest
-from hexdoc.cli.app import build, callback
 from pytest import MonkeyPatch, TempPathFactory
 from syrupy.assertion import SnapshotAssertion
 
-from ..conftest import list_directory
+from hexdoc.cli.app import build, callback
 
-# include: v/latest/main/assets
-# include: v/latest/main/assets/hexcasting
-# exclude: v/latest/main/assets/hexcasting/textures/block/akashic_ligature.png
-EXCLUDE_GLOB = "**/assets/**/**"
+from ..conftest import list_directory
 
 CHECK_RENDERED_FILENAMES = [
     "v/latest/main/en_us/index.html",
     "v/latest/main/en_us/index.css",
-    "v/latest/main/en_us/textures.css",
     "v/latest/main/en_us/index.js",
     "v/latest/main/en_us/hexcasting.js",
     "v/latest/main/en_us/.sitemap-marker.json",
@@ -68,16 +64,8 @@ def subprocess_output_dir(tmp_path_factory: TempPathFactory) -> Path:
 
 @pytest.fixture
 def branch() -> str:
-    result = subprocess.run(
-        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-        cwd="submodules/HexMod",
-        stdout=subprocess.PIPE,
-        encoding="utf8",
-        check=True,
-    )
-
-    # FIXME: removesuffix is only necessary for pre-new-textures tests
-    assert (branch := result.stdout.strip().removesuffix("_old"))
+    if (branch := os.getenv("TEST_BRANCH")) is None:
+        raise ValueError("Environment variable not set: TEST_BRANCH")
     return branch
 
 
@@ -99,7 +87,7 @@ def test_render_app_release(
     )
 
     rename_snapshot(snapshot, branch)
-    assert list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB) == snapshot
+    assert list_directory(app_output_dir) == snapshot
 
 
 @pytest.mark.hexcasting
@@ -117,8 +105,6 @@ def test_render_app(app_output_dir: Path, hexcasting_props_file: Path):
 def test_render_subprocess(subprocess_output_dir: Path, hexcasting_props_file: Path):
     cmd = [
         "hexdoc",
-        "--quiet-lang=ru_ru",
-        "--quiet-lang=zh_cn",
         "build",
         subprocess_output_dir.as_posix(),
         f"--props={hexcasting_props_file.as_posix()}",
@@ -135,8 +121,8 @@ def test_file_structure(
     snapshot: SnapshotAssertion,
     branch: str,
 ):
-    app_list = list_directory(app_output_dir, exclude_glob=EXCLUDE_GLOB)
-    subprocess_list = list_directory(subprocess_output_dir, exclude_glob=EXCLUDE_GLOB)
+    app_list = list_directory(app_output_dir)
+    subprocess_list = list_directory(subprocess_output_dir)
 
     rename_snapshot(snapshot, branch)
     assert app_list == subprocess_list

@@ -5,6 +5,7 @@ __gradle_version__.py
 out/
 .hexdoc*/
 out.png
+out.gif
 
 node_modules/
 package-lock.json

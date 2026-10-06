@@ -1,6 +1,7 @@
 import pytest
-from hexdoc.core.resource import AssumeTag, ItemStack, ResLoc, ResourceLocation
 from pydantic import TypeAdapter
+
+from hexdoc.core.resource import AssumeTag, ItemStack, ResLoc, ResourceLocation
 
 resource_locations: list[tuple[str, ResourceLocation, str]] = [
     (

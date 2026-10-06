@@ -1,8 +1,9 @@
 import pytest
-from hexdoc.model.types import Color
-from hexdoc.utils.types import PydanticOrderedSet, PydanticURL
 from pydantic import TypeAdapter, ValidationError
 from yarl import URL
+
+from hexdoc.model.types import Color
+from hexdoc.utils.types import PydanticOrderedSet, PydanticURL
 
 colors: list[str] = [
     "#0099FF",
@@ -46,7 +47,7 @@ def test_ordered_set_validation_error():
     ],
 )
 def test_url_validate(raw_url: str, want_url: URL):
-    ta = TypeAdapter[PydanticURL](PydanticURL)
+    ta = TypeAdapter[URL](PydanticURL)
 
     assert ta.validate_python(raw_url) == URL(want_url)
 
@@ -59,6 +60,6 @@ def test_url_validate(raw_url: str, want_url: URL):
     ],
 )
 def test_url_serialize(url: URL, want_raw_url: str):
-    ta = TypeAdapter[PydanticURL](PydanticURL)
+    ta = TypeAdapter[URL](PydanticURL)
 
     assert ta.dump_python(url) == want_raw_url

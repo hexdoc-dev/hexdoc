@@ -25,14 +25,20 @@ def isinstance_or_raise(
     ungenericed_classes = tuple(get_origin(t) or t for t in class_or_tuple)
 
     if not isinstance(val, ungenericed_classes):
-        # just in case the caller messed up the message formatting
-        subs = {
+        level = logger.getEffectiveLevel()
+
+        # truncate absurdly long values
+        str_val = str(val)
+        if len(str_val) > 5000 and level >= logging.DEBUG:
+            str_val = str_val[:5000] + " [...truncated]"
+
+        subs: dict[str, Any] = {
             "expected": list(class_or_tuple),
             "actual": type(val),
-            "value": val,
+            "value": str_val,
         }
 
-        if logger.getEffectiveLevel() >= logging.WARNING:
+        if level >= logging.WARNING:
             default_message = _DEFAULT_MESSAGE_SHORT
         else:
             default_message = _DEFAULT_MESSAGE_LONG
@@ -40,6 +46,7 @@ def isinstance_or_raise(
         if message is None:
             raise TypeError(default_message.format(**subs))
 
+        # just in case the caller messed up the message formatting
         try:
             raise TypeError(message.format(**subs))
         except KeyError:

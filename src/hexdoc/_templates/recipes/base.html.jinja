@@ -1,4 +1,4 @@
-{% import "macros/textures.html.jinja" as texture_macros with context -%}
+{% import "macros/images.html.jinja" as Images with context -%}
 
 <div>
   {% block title %}
@@ -10,7 +10,7 @@
   {% block recipe %}
     <div class="{% block recipe_class %}{% endblock %}">
       {% block gui %}
-        {{ texture_macros.render_recipe_gui(recipe) }}
+        {{ Images.recipe_gui(recipe) }}
       {% endblock%}
 
       {% block content %}{% endblock %}

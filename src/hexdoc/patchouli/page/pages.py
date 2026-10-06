@@ -6,17 +6,17 @@ from jinja2.runtime import Context
 from pydantic import (
     Field,
     PrivateAttr,
+    TypeAdapter,
     ValidationInfo,
     field_validator,
     model_validator,
 )
 from typing_extensions import override
 
-from hexdoc.core import Entity, ItemStack, ResourceLocation
-from hexdoc.minecraft import I18n, LocalizedStr
-from hexdoc.minecraft.assets import ItemWithTexture, PNGTexture, TagWithTexture, Texture
-from hexdoc.minecraft.assets.items import ImageTexture
-from hexdoc.minecraft.assets.load_assets import validate_texture
+from hexdoc.core import Entity, LocalizedStr, ResourceLocation
+from hexdoc.core.i18n import I18n
+from hexdoc.graphics import ImageField, ItemImage, TextureImage
+from hexdoc.graphics.validators import HexdocImage, TagImage
 from hexdoc.minecraft.recipe import (
     BlastingRecipe,
     CampfireCookingRecipe,
@@ -75,7 +75,7 @@ class EmptyPage(Page, type="patchouli:empty", template_type="patchouli:page"):
 
 class EntityPage(PageWithText, type="patchouli:entity"):
     _entity_name: LocalizedStr = PrivateAttr()
-    _texture: PNGTexture = PrivateAttr()
+    _texture: HexdocImage = PrivateAttr()
 
     entity: Entity
     scale: float = 1
@@ -105,14 +105,15 @@ class EntityPage(PageWithText, type="patchouli:entity"):
         assert info.context is not None
         i18n = I18n.of(info)
         self._entity_name = i18n.localize_entity(self.entity.id)
-        self._texture = PNGTexture.load_id(
-            id="textures/entities" / self.entity.id + ".png", context=info.context
+        self._texture = TypeAdapter(ImageField[TextureImage]).validate_python(
+            "textures/entities" / self.entity.id + ".png",
+            context=info.context,
         )
         return self
 
 
 class ImagePage(PageWithTitle, type="patchouli:image"):
-    images: list[Texture]
+    images: list[ImageField[TextureImage]]
     border: bool = False
 
     @property
@@ -132,7 +133,7 @@ class LinkPage(TextPage, type="patchouli:link"):
 class Multiblock(HexdocModel):
     """https://vazkiimods.github.io/Patchouli/docs/patchouli-basics/multiblocks/"""
 
-    mapping: dict[str, ItemWithTexture | TagWithTexture]
+    mapping: dict[str, ImageField[ItemImage | TextureImage]]
     pattern: list[list[str]]
     symmetrical: bool = False
     offset: tuple[int, int, int] | None = None
@@ -168,18 +169,14 @@ class Multiblock(HexdocModel):
     @classmethod
     def _add_default_mapping(
         cls,
-        mapping: dict[str, ItemWithTexture | TagWithTexture],
+        mapping: dict[str, ImageField[ItemImage | TagImage]],
         info: ValidationInfo,
     ):
-        i18n = I18n.of(info)
         return {
-            "_": ItemWithTexture(
-                id=ItemStack("hexdoc", "any"),
-                name=i18n.localize("hexdoc.any_block"),
-                texture=PNGTexture.load_id(
-                    ResourceLocation("hexdoc", "textures/gui/any_block.png"),
-                    context=info,
-                ),
+            # FIXME: this needs to be ItemImage somehow
+            "_": TextureImage.load_id(
+                id=ResourceLocation("hexdoc", "textures/gui/any_block.png"),
+                context=info.context or {},
             ),
         } | mapping
 
@@ -190,14 +187,14 @@ class MultiblockPage(PageWithText, type="patchouli:multiblock"):
     multiblock: Multiblock | None = None
     enable_visualize: bool = True
 
-    _texture: ImageTexture | None = PrivateAttr(None)
+    _image: TextureImage | None = PrivateAttr(None)
 
     @property
-    def texture(self):
-        return self._texture
+    def image(self):
+        return self._image
 
     @property
-    def _texture_id(self):
+    def _image_id(self):
         if self.multiblock_id:
             return self.multiblock_id.with_path(
                 f"textures/multiblock/hexdoc/{self.multiblock_id.path}.png"
@@ -208,11 +205,10 @@ class MultiblockPage(PageWithText, type="patchouli:multiblock"):
         if self.multiblock_id is None and self.multiblock is None:
             raise ValueError(f"One of multiblock_id or multiblock must be set\n{self}")
 
-        if texture_id := self._texture_id:
-            self._texture = validate_texture(
-                texture_id,
-                context=info,
-                model_type=ImageTexture,
+        if image_id := self._image_id:
+            self._image = TextureImage.load_id(
+                id=image_id,
+                context=info.context or {},
             )
 
         return self
@@ -255,7 +251,7 @@ class StonecuttingPage(
 
 class SpotlightPage(PageWithText, type="patchouli:spotlight"):
     title_field: LocalizedStr | None = Field(default=None, alias="title")
-    item: ItemWithTexture
+    item: ImageField[ItemImage]
     link_recipe: bool = False
 
     @property

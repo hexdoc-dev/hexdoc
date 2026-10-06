@@ -1,19 +1,16 @@
 {% extends "pages/patchouli/text.html.jinja" %}
-{% import "macros/textures.html.jinja" as texture_macros with context -%}
+{% import "macros/images.html.jinja" as Images with context -%}
 
 {% block inner_body %}
   <div class="spotlight">
-    <img
-      alt="Spotlight inventory slot"
-      src="{{ 'hexdoc:textures/gui/spotlight.png'|hexdoc_texture }}"
-    >
-    {{ texture_macros.render_item(page.item) }}
+    {{ Images.load_texture("hexdoc:textures/gui/spotlight.png", "Spotlight inventory slot") }}
+    {{ Images.item(page.item) }}
   </div>
   {{ super() }}
 {% endblock inner_body %}
 
 {% block redirect_image -%}
-  {{ texture_macros.item_url(page.item) }}
+  {{ Images.url(page.item) }}
 {%- endblock redirect_image %}
 
 {% block title_attrs %} class="spotlight-title page-header"{% endblock title_attrs %}

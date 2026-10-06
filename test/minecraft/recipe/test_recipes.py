@@ -1,65 +1,81 @@
-from collections import defaultdict
 from contextlib import ExitStack
 from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import TypeAdapter
+from yarl import URL
+
+from hexdoc.core.i18n import I18n
 from hexdoc.core.loader import ModResourceLoader
 from hexdoc.core.properties import LangProps, Properties
+from hexdoc.core.properties.textures import TexturesProps
 from hexdoc.core.resource import ResourceLocation
-from hexdoc.core.resource_dir import PathResourceDir
-from hexdoc.minecraft.assets.textures import TextureContext
-from hexdoc.minecraft.i18n import I18n
+from hexdoc.core.resource_dir import PathResourceDir, PluginResourceDir
+from hexdoc.graphics.loader import ImageLoader
+from hexdoc.graphics.renderer import ModelRenderer
 from hexdoc.minecraft.recipe.recipes import CraftingShapelessRecipe, Recipe
+from hexdoc.model.base import init_context
 from hexdoc.plugin.manager import PluginManager
+from hexdoc.utils.cd import relative_path_root
 from hexdoc.utils.context import ContextSource
-from pydantic import TypeAdapter
 
 
 @pytest.fixture
-def context():
-    props = Properties.model_construct()
+def context(tmp_path: Path):
+    props = Properties.model_construct(
+        textures=TexturesProps.model_construct(
+            missing="*",
+        ),
+    )
 
     pm = PluginManager("branch", props=props)
 
-    loader = ModResourceLoader(
-        props=props,
-        export_dir=None,
-        resource_dirs=[],
-        _stack=ExitStack(),
-    )
+    with (
+        relative_path_root(Path()),
+        PluginResourceDir(modid="hexdoc").load(pm) as resource_dirs,
+    ):
+        loader = ModResourceLoader(
+            props=props,
+            export_dir=None,
+            resource_dirs=resource_dirs,
+            _stack=ExitStack(),
+        )
 
-    i18n = I18n(
-        lookup=I18n.parse_lookup(
-            {
-                "item.minecraft.stick": "Stick",
-                "item.minecraft.diamond": "Diamond",
-            }
-        ),
-        lang="en_us",
-        default_i18n=None,
-        enabled=True,
-        lang_props=LangProps(),
-    )
+        renderer = ModelRenderer(loader=loader)
 
-    texture_ctx = TextureContext(
-        textures=defaultdict(dict),
-        allowed_missing_textures={
-            ResourceLocation("minecraft", "*"),
-        },
-    )
+        image_loader = ImageLoader(
+            loader=loader,
+            renderer=renderer,
+            site_dir=tmp_path,
+            site_url=URL(),
+        )
 
-    context: ContextSource = {}
-    for ctx in [
-        props,
-        pm,
-        loader,
-        i18n,
-        texture_ctx,
-    ]:
-        ctx.add_to_context(context)
+        i18n = I18n(
+            lookup=I18n.parse_lookup(
+                {
+                    "item.minecraft.stick": "Stick",
+                    "item.minecraft.diamond": "Diamond",
+                }
+            ),
+            lang="en_us",
+            default_i18n=None,
+            enabled=True,
+            lang_props=LangProps(),
+        )
 
-    return context
+        context: ContextSource = {}
+        for ctx in [
+            props,
+            pm,
+            loader,
+            image_loader,
+            i18n,
+        ]:
+            ctx.add_to_context(context)
+
+        with init_context(context):
+            yield context
 
 
 def test_shapeless(context: dict[str, Any]):
