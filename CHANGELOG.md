@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Pydantic's HISTORY.md](https://github.com/pydantic/pydantic/blob/main/HISTORY.md), and this project *mostly* adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## `2.0.0rc1` - 2026-10-06
+
+Changelog TODO! This release has many breaking changes that were not written down at the time of implementation.
+
 ## `1!0.1.0a40`
 
 ### Added
