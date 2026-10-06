@@ -191,35 +191,6 @@ def docusaurus(session: nox.Session):
         session.run("npm", "run", command, "--", *args, external=True)
 
 
-# IMPORTANT: must install packaging alongside Nox to use this session!
-# FIXME: this should be in src/_scripts instead
-@nox.session
-def tag(session: nox.Session):
-    from packaging.version import Version
-
-    message = "Automatic PEP 440 release tag"
-
-    # validate some assumptions to make this simpler
-    raw_version = get_hexdoc_version()
-    version = Version(raw_version)
-    assert version.epoch != 0
-    assert len(version.release) == 3
-
-    major, minor, _ = version.release
-    tag = f"v{version.epoch}!{major}"
-
-    # always update the prerelease tag, and also update the release tag if needed
-    update_git_tag(session, tag=tag + ".dev", message=message)
-    if not version.is_prerelease:
-        update_git_tag(session, tag=tag, message=message)
-
-    tag += f".{minor}"
-
-    update_git_tag(session, tag=tag + ".dev", message=message)
-    if not version.is_prerelease:
-        update_git_tag(session, tag=tag, message=message)
-
-
 # development helpers
 
 
@@ -774,21 +745,6 @@ def run_silent(
     )
     assert output
     return output.strip()
-
-
-def update_git_tag(session: nox.Session, *, tag: str, message: str):
-    return session.run(
-        "git",
-        "tag",
-        "-fam",
-        message,
-        tag,
-        external=True,
-        env=dict(
-            GIT_COMMITTER_NAME="GitHub Actions",
-            GIT_COMMITTER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com",
-        ),
-    )
 
 
 def on_rm_error(func: Callable[..., Any], path: str, exc_info: Any):
